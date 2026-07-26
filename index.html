@@ -37,6 +37,7 @@ html[data-theme="dark"]{
   --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.15);
   --ink:#E9EDF6; --ink-2:#9AA4B8; --ink-3:#616B82;
   --tint:rgba(255,255,255,.035); --cell:rgba(255,255,255,.05); --well:inset 0 1px 2px rgba(0,0,0,.3);
+  --sun:#F0625C;
   --shadow:0 1px 0 rgba(255,255,255,.03);
   color-scheme:dark;
 }
@@ -45,6 +46,7 @@ html[data-theme="light"]{
   --line:rgba(18,24,20,.10); --line-2:rgba(18,24,20,.2);
   --ink:#12171A; --ink-2:#5A636E; --ink-3:#8B949F;
   --tint:rgba(18,24,20,.035); --cell:rgba(18,24,20,.055); --well:inset 0 1px 2px rgba(18,24,20,.075);
+  --sun:#D8443F;
   --shadow:0 1px 2px rgba(20,30,20,.05);
   color-scheme:light;
 }
@@ -117,16 +119,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .note-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease)}
 .note.open .note-body{grid-template-rows:1fr}
 .note-inner{overflow:hidden}
-#noteInput{
-  width:100%;min-height:66px;resize:none;border:0;outline:0;background:transparent;
-  font-size:14.5px;line-height:1.6;padding:0 0 16px;
-}
-#noteInput::placeholder{color:var(--ink-3)}
-#noteSaved{
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
-  opacity:0;transition:opacity .35s;padding-bottom:14px;display:block;
-}
-#noteSaved.show{opacity:1}
+.note-pad{padding:0 0 16px}
 
 /* ---------- the weave ---------- */
 .weave{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 0 12px;box-shadow:var(--shadow)}
@@ -166,6 +159,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dcol.wk .dw,.dcol.wk .dd{color:var(--ink-3)}
 .dcol.today .dw{color:var(--ink-2)}
 .dcol.today .dd{color:var(--ink);font-weight:500}
+.dcol.sun .dw,.dcol.sun .dd{color:color-mix(in srgb,var(--sun) 80%,transparent)}
 .dcol.today::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--acc)}
 .hthread{width:3px;height:16px;border-radius:2px;background:var(--c);flex:0 0 auto}
 .hlabel{
@@ -270,11 +264,23 @@ button{background:none;border:0;padding:0;cursor:pointer}
   backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
   border-top:1px solid var(--line);
 }
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 0 7px;color:var(--ink-3);transition:color .25s}
-.tab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring)}
-.tab span{font-size:10px;letter-spacing:.02em;font-weight:500}
+.tab{
+  position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 0 7px;color:var(--ink-3);transition:color .25s var(--ease);
+}
+.tab::before{
+  content:'';position:absolute;top:4px;width:52px;height:28px;border-radius:14px;
+  background:color-mix(in srgb,var(--acc) 15%,transparent);
+  opacity:0;transform:scale(.75);transition:opacity .28s var(--ease),transform .32s var(--spring);
+}
+.tab svg{
+  position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring);
+}
+.tab span{font-size:9.5px;letter-spacing:.01em;font-weight:500;transition:font-weight .2s}
 .tab.on{color:var(--acc)}
-.tab.on svg{transform:translateY(-1px)}
+.tab.on::before{opacity:1;transform:none}
+.tab.on span{font-weight:600}
 .fab{
   position:fixed;right:20px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:45;
   width:54px;height:54px;border-radius:18px;background:var(--acc);color:#14100A;
@@ -317,6 +323,116 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .day.on{background:color-mix(in srgb,var(--acc) 14%,transparent);border-color:color-mix(in srgb,var(--acc) 50%,transparent);color:var(--acc)}
 .hint{font-size:12.5px;color:var(--ink-3);margin:10px 0 0;line-height:1.5}
 .sheet-actions{display:flex;gap:9px;margin-top:24px}
+
+/* ---------- reusable locked note (plan page) ---------- */
+.lnote{
+  --lnx:10px;
+  border-radius:12px;background:transparent;box-shadow:inset 0 0 0 1px transparent;
+  padding:8px var(--lnx);margin:0 calc(-1 * var(--lnx));
+  transition:background .25s var(--ease),box-shadow .25s var(--ease);
+}
+.block .lnote{--lnx:6px}
+.lnote.editing{background:var(--tint);box-shadow:inset 0 0 0 1px var(--line)}
+.lnote-text{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;cursor:text}
+/* an empty note collapses to a single prompt row instead of a blank slab */
+.lnote.blank .lnote-text{display:none}
+.lnote.blank .lnote-foot{margin-top:0}
+.lnote.blank .lnote-hint{color:var(--ink-2)}
+.lnote-ta{
+  width:100%;min-height:58px;border:0;outline:0;background:transparent;resize:none;
+  font-family:inherit;font-size:14px;line-height:1.6;padding:0;color:inherit;
+}
+.lnote-ta::placeholder{color:var(--ink-3)}
+.lnote-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;min-height:22px}
+.lnote-hint{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);transition:color .3s;
+}
+.lnote.editing .lnote-hint{color:var(--acc)}
+.lnote-done{
+  font-size:12.5px;font-weight:600;color:var(--acc);padding:5px 12px;border-radius:9px;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring);
+}
+.lnote-done:active{transform:scale(.92)}
+
+/* ---------- plan ---------- */
+.stripwrap{
+  position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:30;
+  margin:0 -20px 20px;padding:0 20px 11px;background:var(--bg);
+}
+.stripwrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
+.striphead{display:flex;align-items:center;gap:12px;padding:0 0 10px}
+.striphead .eyebrow{flex:1}
+.todaybtn{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);
+  padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--acc) 12%,transparent);
+  transition:transform .2s var(--spring);
+}
+.todaybtn:active{transform:scale(.93)}
+.daystrip{display:flex;gap:6px;overflow-x:auto;padding:1px 0 2px;scroll-behavior:smooth}
+.dchip{
+  flex:0 0 auto;width:48px;padding:8px 0 7px;border-radius:13px;text-align:center;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink);
+  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring);
+}
+.dchip:active{transform:scale(.94)}
+.dchip .w{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);transition:color .24s}
+.dchip .d{font-size:14.5px;font-weight:600;letter-spacing:-.02em;margin-top:2px;line-height:1.15}
+.dchip .dot{display:block;width:4px;height:4px;border-radius:50%;background:transparent;margin:3px auto 0}
+.dchip.today{border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.dchip.today .dot{background:var(--acc)}
+.dchip.sun .w,.dchip.sun .d{color:var(--sun)}
+.dchip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.dchip.on .w{color:var(--bg);opacity:.62}
+.dchip.on .dot{background:var(--bg);opacity:.7}
+.dchip.sun.on{background:var(--sun);border-color:var(--sun);color:#fff}
+.dchip.sun.on .w,.dchip.sun.on .d{color:#fff}
+.dchip.sun.on .w{opacity:.75}
+.dchip.sun.on .dot{background:#fff}
+.msep{flex:0 0 auto;width:1px;background:var(--line-2);margin:9px 5px;border-radius:1px}
+.psec{display:block;margin:0 2px 10px}
+.psec.gap{margin-top:26px}
+.pcard,.block{
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:14px;margin-bottom:10px;
+}
+.pcard{margin-bottom:0}
+.block{transition:background .3s var(--ease),border-color .3s var(--ease)}
+.block.done{
+  border-color:color-mix(in srgb,var(--c) 32%,transparent);
+  background:color-mix(in srgb,var(--c) 7%,var(--surf));
+}
+.block-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bcheck{
+  width:26px;height:26px;border-radius:8px;flex:0 0 auto;position:relative;
+  background:var(--cell);box-shadow:var(--well);display:grid;place-items:center;
+  transition:background .28s var(--ease),box-shadow .28s var(--ease),transform .2s var(--spring);
+}
+.bcheck:active{transform:scale(.88)}
+.bcheck.on{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
+  box-shadow:0 2px 8px -4px color-mix(in srgb,var(--c) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.bcheck svg{
+  width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;
+  transition:stroke-dashoffset .34s var(--ease) .05s,opacity .12s;
+}
+.bcheck.on svg{stroke-dashoffset:0;opacity:1}
+.bcheck.locked{opacity:.45}
+.bname{flex:1;min-width:0;font-size:15px;font-weight:600;letter-spacing:-.015em}
+.btag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);flex:0 0 auto}
+.btag.on{color:var(--c)}
+.btag.sun{color:var(--sun)}
+.psec .sun{color:var(--sun)}
+.stag{
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--line-2);border-radius:6px;padding:1px 5px;margin-left:8px;white-space:nowrap;
+}
+.toggle-row{display:flex;align-items:center;gap:14px}
+.toggle-row .t{flex:1;min-width:0}
+.toggle-row .t .n{font-size:14.5px;font-weight:500}
+.toggle-row .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4}
 
 /* ---------- toast + boot ---------- */
 .toast{
@@ -377,8 +493,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
           <svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="note-body"><div class="note-inner">
-          <textarea id="noteInput" rows="3" placeholder="Anything worth remembering about today"></textarea>
-          <span id="noteSaved">Saved</span>
+          <div class="note-pad"><div id="dayNote"></div></div>
         </div></div>
       </section>
 
@@ -393,6 +508,22 @@ button{background:none;border:0;padding:0;cursor:pointer}
         </div>
         <div class="grid" id="grid"><div class="grid-inner" id="gridInner"></div></div>
       </section>
+    </section>
+
+    <!-- ===== PLAN ===== -->
+    <section class="view" id="v-plan">
+      <div class="ptitle">
+        <span class="eyebrow">Plan</span>
+        <h2>Study blocks</h2>
+      </div>
+      <div class="stripwrap">
+        <div class="striphead">
+          <span class="eyebrow" id="planMonth">—</span>
+          <button class="todaybtn" id="planToday" hidden>Today</button>
+        </div>
+        <div class="daystrip" id="dayStrip"></div>
+      </div>
+      <div id="planWrap"></div>
     </section>
 
     <!-- ===== HABITS ===== -->
@@ -471,6 +602,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Today</span></button>
+    <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Plan</span></button>
     <button class="tab" data-v="habits"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg><span>Habits</span></button>
     <button class="tab" data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-3-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.2-3l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 3 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.1a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1.1z"/></svg><span>Settings</span></button>
   </nav>
@@ -489,6 +621,13 @@ button{background:none;border:0;padding:0;cursor:pointer}
     <div class="colors" id="fColors"></div>
   </div>
   <div class="field">
+    <div class="toggle-row">
+      <div class="t"><div class="n">Study block</div>
+        <div class="d">Adds it to the Plan page with room for session goals.</div></div>
+      <button class="switch" id="fStudy" role="switch"></button>
+    </div>
+  </div>
+  <div class="field">
     <span class="eyebrow">Active days</span>
     <div class="presets" id="fPresets">
       <button class="preset" data-p="all">Every day</button>
@@ -497,7 +636,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <button class="preset" data-p="sun">Sundays</button>
     </div>
     <div class="days" id="fDays"></div>
-    <p class="hint">Days you switch off are checked for you automatically and cannot be changed.</p>
+    <p class="hint">Days you switch off are checked for you automatically. Settings lets you unlock them; one you then untick counts towards the day again.</p>
   </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="fCancel">Cancel</button>
@@ -515,17 +654,18 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,1);
+    const r=indexedDB.open(DB_NAME,2);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
       if(!d.objectStoreNames.contains('habits')) d.createObjectStore('habits',{keyPath:'id'});
       if(!d.objectStoreNames.contains('records')) d.createObjectStore('records',{keyPath:'key'});
       if(!d.objectStoreNames.contains('notes')) d.createObjectStore('notes',{keyPath:'date'});
       if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'key'});
+      if(!d.objectStoreNames.contains('plans')) d.createObjectStore('plans',{keyPath:'key'});
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -537,7 +677,7 @@ const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
 const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
-let habits=[], recs=new Set(), notes=new Map();
+let habits=[], recs=new Set(), notes=new Map(), plans=new Map();
 let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false};
 
 /* habit threads — a tuned data palette, deliberately separate from the UI accent */
@@ -566,9 +706,10 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 /* ---------- logic ---------- */
 const key=(h,ds)=>h.id+'|'+ds;
 function stateOf(h,ds,dow){
+  const k=key(h,ds);
   if(h.start && ds<h.start) return 'na';
-  if(!h.days.includes(dow)) return 'auto';
-  if(recs.has(key(h,ds))) return 'done';
+  if(!h.days.includes(dow)) return 'auto';   /* rest day: always checked for you */
+  if(recs.has(k)) return 'done';
   return ds===TSTR ? 'todo' : 'miss';
 }
 function dayTally(date){
@@ -576,9 +717,11 @@ function dayTally(date){
   let req=0,done=0,live=0;
   for(const h of habits){
     const st=stateOf(h,ds,dow);
-    if(st==='na') continue;
-    live++; if(st==='auto') continue;
-    req++; if(st==='done') done++;
+    if(st==='na') continue;               /* habit did not exist yet */
+    live++;
+    if(st==='auto') continue;             /* filled for you, nothing to do */
+    req++;                                /* due today, or a rest day you switched off */
+    if(st==='done') done++;
   }
   return {req,done,live,complete:live>0&&done===req};
 }
@@ -641,11 +784,11 @@ function renderHead(){
 
   const tape=$('#tape'); tape.innerHTML='';
   const live=habits.filter(h=>!h.start||TSTR>=h.start);
-  const due=live.filter(h=>h.days.includes(TODAY.getDay()));
+  const due=live.filter(h=>stateOf(h,TSTR,TODAY.getDay())!=='auto');
   if(!due.length){ tape.innerHTML='<i class="seg"></i>'; }
   else due.forEach((h,i)=>{
     const s=document.createElement('i');
-    s.className='seg'+(recs.has(key(h,TSTR))?' on':'');
+    s.className='seg'+(stateOf(h,TSTR,TODAY.getDay())==='done'?' on':'');
     s.style.setProperty('--c',h.color);
     s.style.transitionDelay=(i*30)+'ms';
     tape.appendChild(s);
@@ -677,7 +820,7 @@ function renderGrid(){
   const hc=document.createElement('div'); hc.className='gcells';
   dates.forEach(d=>{
     const dow=d.getDay(), c=document.createElement('div');
-    c.className='dcol'+(dow===0||dow===6?' wk':'')+(ymd(d)===TSTR?' today':'');
+    c.className='dcol'+(dow===0||dow===6?' wk':'')+(dow===0?' sun':'')+(ymd(d)===TSTR?' today':'');
     c.innerHTML='<span class="dw">'+DL[dow]+'</span><span class="dd">'+d.getDate()+'</span>';
     hc.appendChild(c);
   });
@@ -731,7 +874,10 @@ $('#grid').addEventListener('click',e=>{
     c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope');
     toast('Only today can be changed'); return;
   }
-  if(stateOf(h,ds,TODAY.getDay())==='auto'){ toast('Not due on '+DN[TODAY.getDay()]+'s · checked for you'); return; }
+  if(!h.days.includes(TODAY.getDay())){
+    c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope');
+    toast('Not due on '+DN[TODAY.getDay()]+'s · checked for you'); return;
+  }
   toggleCell(h,c);
 });
 
@@ -748,6 +894,7 @@ async function toggleCell(h,c){
     toast('Day complete · '+currentStreak()+'-day streak'); buzz([12,50,18]);
   }
 }
+
 $('#rangeCtrl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   $$('#rangeCtrl button').forEach(x=>x.classList.toggle('on',x===b));
@@ -757,28 +904,22 @@ $('#rangeCtrl').addEventListener('click',e=>{
 /* ===========================================================
    Note
    =========================================================== */
-const noteEl=$('#noteInput');
-const autoGrow=()=>{noteEl.style.height='auto';noteEl.style.height=Math.max(66,noteEl.scrollHeight)+'px';};
 function renderNote(){
-  const v=notes.get(TSTR)||'';
-  noteEl.value=v;
-  $('#note').classList.toggle('has',!!v.trim());
-  autoGrow();
+  buildNote($('#dayNote'),{
+    get:()=>notes.get(TSTR)||'',
+    set:async v=>{
+      if(v.trim()){ notes.set(TSTR,v); await dbPut('notes',{date:TSTR,text:v}); }
+      else{ notes.delete(TSTR); await dbDel('notes',TSTR); }
+      $('#note').classList.toggle('has',!!v.trim());
+    },
+    empty:'Add a note for today',
+    placeholder:'Anything worth remembering about today.'
+  });
+  $('#note').classList.toggle('has',!!(notes.get(TSTR)||'').trim());
 }
 $('#noteToggle').addEventListener('click',()=>{
   const n=$('#note'), open=n.classList.toggle('open');
   $('#noteToggle').setAttribute('aria-expanded',open);
-  if(open) setTimeout(()=>{autoGrow();noteEl.focus();},250);
-});
-let noteT;
-noteEl.addEventListener('input',()=>{
-  autoGrow(); clearTimeout(noteT);
-  noteT=setTimeout(async()=>{
-    const v=noteEl.value; notes.set(TSTR,v);
-    if(v.trim()) await dbPut('notes',{date:TSTR,text:v}); else await dbDel('notes',TSTR);
-    $('#note').classList.toggle('has',!!v.trim());
-    const s=$('#noteSaved'); s.classList.add('show'); setTimeout(()=>s.classList.remove('show'),1400);
-  },550);
 });
 
 /* ===========================================================
@@ -796,7 +937,7 @@ function renderHabits(){
     row.innerHTML=
       '<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>'+
       '<i class="hbar"></i>'+
-      '<div class="hinfo"><div class="n">'+esc(h.name)+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
+      '<div class="hinfo"><div class="n">'+esc(h.name)+(h.study?'<span class="stag">Study</span>':'')+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
       '<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
     list.appendChild(row);
   });
@@ -852,7 +993,7 @@ async function persistOrder(){
 }
 
 /* ---------- sheet ---------- */
-let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6]};
+let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false};
 (function build(){
   const cc=$('#fColors');
   THREADS.forEach(c=>{
@@ -881,12 +1022,15 @@ function syncForm(){
   $$('#fDays .day').forEach(b=>b.classList.toggle('on',form.days.includes(+b.dataset.d)));
   const lbl=scheduleLabel(form.days), map={all:'Every day',wd:'Weekdays',we:'Weekends',sun:'Sundays'};
   $$('#fPresets .preset').forEach(b=>b.classList.toggle('on',map[b.dataset.p]===lbl));
+  $('#fStudy').classList.toggle('on',!!form.study);
 }
+$('#fStudy').addEventListener('click',()=>{ form.study=!form.study; syncForm(); buzz(8); });
 function openSheet(h){
   editing=h||null;
   $('#sheetTitle').textContent=h?'Edit habit':'New habit';
   $('#fName').value=h?h.name:'';
-  form = h ? {color:h.color,days:[...h.days]} : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6]};
+  form = h ? {color:h.color,days:[...h.days],study:!!h.study}
+           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6],study:false};
   syncForm();
   $('#fDeleteWrap').hidden=!h;
   $('#fDelete').textContent='Delete habit'; $('#fDelete').dataset.armed='';
@@ -906,10 +1050,10 @@ $('#fSave').addEventListener('click',async()=>{
   if(!name){ $('#fName').focus(); toast('Give the habit a name'); return; }
   if(!form.days.length){ toast('Pick at least one active day'); return; }
   if(editing){
-    Object.assign(editing,{name,color:form.color,days:form.days});
+    Object.assign(editing,{name,color:form.color,days:form.days,study:form.study});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),name,color:form.color,days:form.days,order:habits.length,start:TSTR,created:Date.now()};
+    const h={id:uid(),name,color:form.color,days:form.days,study:form.study,order:habits.length,start:TSTR,created:Date.now()};
     habits.push(h); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
@@ -925,6 +1069,194 @@ $('#fDelete').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
+   Locked note — read by default, two taps to edit. Used by the
+   plan page so it behaves exactly like the day note on Today.
+   =========================================================== */
+function buildNote(host,o){
+  host.className='lnote';
+  host.innerHTML=
+    '<div class="lnote-text"></div>'+
+    '<textarea class="lnote-ta" hidden></textarea>'+
+    '<div class="lnote-foot"><span class="lnote-hint"></span><button class="lnote-done" hidden>Done</button></div>';
+  const view=$('.lnote-text',host), ta=$('.lnote-ta',host),
+        hint=$('.lnote-hint',host), done=$('.lnote-done',host);
+  let editing=false, saveT=null, hintT=null, lastTap=0;
+  ta.placeholder=o.placeholder||'';
+
+  const val=()=>o.get()||'';
+  const idle=()=>val().trim() ? 'Double-tap to edit' : '+ '+(o.empty||'Add a note');
+  function status(txt,revert){
+    clearTimeout(hintT); hint.textContent=txt;
+    if(revert) hintT=setTimeout(()=>{ hint.textContent=editing?'Editing':idle(); },1500);
+  }
+  function paint(){
+    const v=val();
+    host.classList.toggle('blank',!v.trim() && !editing);
+    view.textContent=v;
+  }
+  function grow(){ ta.style.height='auto'; ta.style.height=Math.max(56,ta.scrollHeight)+'px'; }
+  async function save(){
+    clearTimeout(saveT);
+    if(val()===ta.value) return;
+    await o.set(ta.value); status('Saved',true);
+  }
+  function open(){
+    if(editing) return;
+    editing=true; ta.value=val();
+    host.classList.remove('blank');
+    view.hidden=true; ta.hidden=false; done.hidden=false;
+    host.classList.add('editing'); status('Editing');
+    grow(); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+  }
+  async function close(){
+    if(!editing) return;
+    editing=false; await save();
+    ta.hidden=true; done.hidden=true; view.hidden=false;
+    host.classList.remove('editing'); paint(); status(idle());
+  }
+  host.addEventListener('click',e=>{
+    if(editing || e.target.closest('.lnote-done')) return;
+    e.stopPropagation();
+    const t=Date.now();
+    if(t-lastTap<400){ lastTap=0; open(); buzz(9); }
+    else{ lastTap=t; status('Tap again to edit',true); }
+  });
+  ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
+  done.addEventListener('mousedown',e=>e.preventDefault());
+  done.addEventListener('click',()=>{ close(); buzz(6); });
+  paint(); status(idle());
+  return {close};
+}
+
+/* ===========================================================
+   Plan — one tab per day, study blocks with session goals
+   =========================================================== */
+let planDay=TSTR;
+const planKeyDay=d=>'d:'+d;
+const planKeySession=(h,d)=>'s:'+h.id+':'+d;
+async function savePlan(k,v){
+  if(v.trim()){ plans.set(k,v); await dbPut('plans',{key:k,date:k.slice(-10),text:v}); }
+  else{ plans.delete(k); await dbDel('plans',k); }
+}
+
+function renderPlan(){
+  if(planDay<TSTR) planDay=TSTR;
+  const sel=new Date(planDay+'T00:00:00'), dow=sel.getDay(), isToday=planDay===TSTR;
+  $('#planMonth').textContent=FULLMON[sel.getMonth()]+' '+sel.getFullYear();
+  $('#planToday').hidden=isToday;
+
+  /* 30 days ahead, split by month */
+  const strip=$('#dayStrip'); strip.innerHTML='';
+  let month=TODAY.getMonth();
+  for(let i=0;i<30;i++){
+    const d=addDays(TODAY,i), ds=ymd(d);
+    if(i && d.getMonth()!==month){
+      const sep=document.createElement('div'); sep.className='msep'; strip.appendChild(sep);
+      month=d.getMonth();
+    }
+    const b=document.createElement('button');
+    b.className='dchip'+(ds===planDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'');
+    b.dataset.d=ds;
+    b.innerHTML='<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
+                '<div class="d">'+d.getDate()+'</div><i class="dot"></i>';
+    strip.appendChild(b);
+  }
+  requestAnimationFrame(()=>{
+    const on=$('.dchip.on',strip);
+    if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
+  });
+
+  const wrap=$('#planWrap'); wrap.innerHTML='';
+  const dayName=FULLDAY[dow], red=dow===0?' class="sun"':'';
+
+  /* the day's own note */
+  const l1=document.createElement('span'); l1.className='eyebrow psec';
+  l1.innerHTML=isToday?'Plan for today':'Plan for <span'+red+'>'+dayName+' '+sel.getDate()+'</span>';
+  wrap.appendChild(l1);
+  const card=document.createElement('div'); card.className='pcard'; wrap.appendChild(card);
+  const dn=document.createElement('div'); card.appendChild(dn);
+  buildNote(dn,{
+    get:()=>plans.get(planKeyDay(planDay))||'',
+    set:v=>savePlan(planKeyDay(planDay),v),
+    empty:'Add a plan for the day',
+    placeholder:'What does this day need to look like?'
+  });
+
+  /* study blocks scheduled on this day */
+  const blocks=habits.filter(h=>h.study && h.days.includes(dow) && (!h.start||planDay>=h.start));
+
+  const l2=document.createElement('span'); l2.className='eyebrow psec gap';
+  l2.dataset.sec='study'; l2.dataset.label='Study blocks';
+  wrap.appendChild(l2);
+
+  if(!blocks.length){
+    const e=document.createElement('div'); e.className='empty';
+    e.innerHTML='<h3>Nothing scheduled</h3><p>No study block falls on '+(isToday?'today':dayName)+
+                '. Tag a habit as a study block on the Habits page.</p>';
+    wrap.appendChild(e);
+    updatePlanCounts(); return;
+  }
+
+  blocks.forEach(h=>{
+    const on=recs.has(key(h,planDay));
+    const b=document.createElement('div');
+    b.className='block'+(on?' done':''); b.dataset.sec='study';
+    b.style.setProperty('--c',h.color);
+    b.innerHTML=
+      '<div class="block-head">'+
+        '<button class="bcheck'+(on?' on':'')+(isToday?'':' locked')+'" data-h="'+h.id+'" aria-label="Mark '+esc(h.name)+'">'+
+          '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
+        '<div class="bname">'+esc(h.name)+'</div>'+
+        '<span class="btag'+(on?' on':(dow===0?' sun':''))+'">'+
+          (on?'Done':(isToday?'Today':DN[dow].toUpperCase()+' '+sel.getDate()))+'</span>'+
+      '</div>';
+    wrap.appendChild(b);
+    const sn=document.createElement('div'); b.appendChild(sn);
+    buildNote(sn,{
+      get:()=>plans.get(planKeySession(h,planDay))||'',
+      set:v=>savePlan(planKeySession(h,planDay),v),
+      empty:'Add session goals',
+      placeholder:'Goals for this session, what to cover, what to bring.'
+    });
+  });
+  updatePlanCounts();
+}
+
+/* section headers carry a live count for today, a plain total for later days */
+function updatePlanCounts(){
+  const wrap=$('#planWrap'); if(!wrap) return;
+  $$('.psec[data-sec]',wrap).forEach(l=>{
+    const cards=$$('.block[data-sec="'+l.dataset.sec+'"]',wrap);
+    const done=cards.filter(c=>c.classList.contains('done')).length;
+    l.textContent=l.dataset.label+(cards.length
+      ? (planDay===TSTR ? ' · '+done+' of '+cards.length+' done' : ' · '+cards.length)
+      : '');
+  });
+}
+
+$('#planToday').addEventListener('click',()=>{ planDay=TSTR; renderPlan(); buzz(6); });
+
+$('#dayStrip').addEventListener('click',e=>{
+  const b=e.target.closest('.dchip'); if(!b) return;
+  planDay=b.dataset.d; renderPlan(); buzz(5);
+});
+$('#planWrap').addEventListener('click',async e=>{
+  const b=e.target.closest('.bcheck'); if(!b) return;
+  if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
+  const h=habits.find(x=>x.id===b.dataset.h); if(!h) return;
+  const k=key(h,TSTR), marking=!recs.has(k);
+  if(marking){ recs.add(k); await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()}); }
+  else{ recs.delete(k); await dbDel('records',k); }
+  b.classList.toggle('on',marking);
+  const card=b.closest('.block'); if(card) card.classList.toggle('done',marking);
+  const tag=b.parentElement.querySelector('.btag');
+  if(tag){ tag.textContent=marking?'Done':'Today'; tag.classList.toggle('on',marking); }
+  updatePlanCounts();
+  buzz(marking?12:6);
+  renderHead(); renderGrid();
+});
+
+/* ===========================================================
    Navigation + settings
    =========================================================== */
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -934,6 +1266,7 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   $('#fab').classList.toggle('show',v==='habits');
   scrollTo(0,0);
   if(v==='today') requestAnimationFrame(()=>{const g=$('#grid');g.scrollLeft=g.scrollWidth;});
+  if(v==='plan'){ planDay=TSTR; renderPlan(); }
   if(v==='settings') renderSettings();
   buzz(6);
 }));
@@ -979,8 +1312,8 @@ function renderSettings(){
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
 $('#exportBtn').addEventListener('click',()=>{
-  const data={app:'dayflow',version:2,exported:new Date().toISOString(),
-    habits,records:[...recs],notes:[...notes.entries()],settings:S};
+  const data={app:'dayflow',version:3,exported:new Date().toISOString(),
+    habits,records:[...recs],notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   const a=document.createElement('a'); a.href=url; a.download='dayflow-'+TSTR+'.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000); toast('Exported');
@@ -994,10 +1327,12 @@ $('#importFile').addEventListener('change',async e=>{
     await Promise.all(STORES.map(n=>dbClear(n)));
     habits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
     recs=new Set(d.records||[]); notes=new Map(d.notes||[]);
+    plans=new Map(d.plans||[]);
     S=Object.assign(S,d.settings||{},{seeded:true});
     for(const h of habits) await dbPut('habits',h);
     for(const k of recs){const [hid,date]=k.split('|');await dbPut('records',{key:k,habitId:hid,date,done:1});}
     for(const [date,text] of notes) await dbPut('notes',{date,text});
+    for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
     await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
   }catch(err){ toast('That is not a Dayflow export'); }
   e.target.value='';
@@ -1009,7 +1344,7 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  habits=[]; recs=new Set(); notes=new Map(); S.seeded=false;
+  habits=[]; recs=new Set(); notes=new Map(); plans=new Map(); S.seeded=false;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   renderAll(); renderNote(); toast('Everything reset');
@@ -1094,7 +1429,9 @@ $('#installBtn').addEventListener('click',async()=>{
 const saveSettings=()=>dbPut('meta',{key:'settings',value:S});
 async function loadAll(){
   habits=(await dbAll('habits')).sort((a,b)=>a.order-b.order);
-  recs=new Set((await dbAll('records')).map(r=>r.key));
+  plans=new Map((await dbAll('plans')).map(r=>[r.key,r.text]));
+  const rows=await dbAll('records');
+  recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
   notes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
@@ -1111,10 +1448,18 @@ async function seed(){
   for(const h of habits) await dbPut('habits',h);
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderHead(); renderGrid(); renderHabits(); renderSettings(); }
+function renderAll(){ renderHead(); renderGrid(); renderHabits(); renderPlan(); renderSettings(); }
+
+/* planning notes are working memory, not a record: anything older than today goes */
+async function purgePlans(){
+  for(const k of [...plans.keys()]) if(k.slice(-10) < TSTR){ plans.delete(k); await dbDel('plans',k); }
+}
 function checkRollover(){
   const t=ymd(startOfDay(new Date()));
-  if(t!==TSTR){ TODAY=startOfDay(new Date()); TSTR=t; renderAll(); renderNote(); }
+  if(t!==TSTR){
+    TODAY=startOfDay(new Date()); TSTR=t; planDay=t;
+    purgePlans(); renderAll(); renderNote();
+  }
 }
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRollover();});
 setInterval(checkRollover,60000);
@@ -1124,6 +1469,7 @@ setInterval(checkRollover,60000);
     db=await openDB();
     await loadAll();
     if(!S.seeded && !habits.length) await seed();
+    await purgePlans();
     applySettings();
     $$('#rangeCtrl button').forEach(b=>b.classList.toggle('on',+b.dataset.r===S.range));
     renderAll(); renderNote();
