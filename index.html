@@ -11,7 +11,7 @@
 <meta name="description" content="Dayflow — track the threads of your day.">
 <title>Dayflow</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230B0E16'/%3E%3Crect x='12' y='18' width='40' height='7' rx='3.5' fill='%23F2A93B'/%3E%3Crect x='12' y='29' width='26' height='7' rx='3.5' fill='%233FC7B4'/%3E%3Crect x='12' y='40' width='14' height='7' rx='3.5' fill='%23E86BA0'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230B0E16'/%3E%3Crect x='12' y='18' width='40' height='7' rx='3.5' fill='%23F2A93B'/%3E%3Crect x='12' y='29' width='26' height='7' rx='3.5' fill='%233FC7B4'/%3E%3Crect x='12' y='40' width='14' height='7' rx='3.5' fill='%23E86BA0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAAAP1BMVEULDhbyqTsro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgRfA4AAAAEHRSTlP/////AAAAAAAAAAAAAAAADW2LcQAAAK1JREFUeNrt18FxAkAMBEEk5Z+zI/DHVWAGuiOY12nv8QAAAAAAAAAAAKiZpwomPyd7plc906ueCVYXo2eC1aJFi/6m58NxSZ7x5mBqTtPmJwAA4LX2z4LJ/5e926ve7VXvBquL0bvBatGiPy3ak+cift72aK685p4GAHit+10w+W2z73rVd73qu2B1MfouWC1atGhP3jdFJ894czA1p2nzEwAAAAAAAAAAALylHxtPF2NlUyyQAAAAAElFTkSuQmCC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
@@ -413,6 +413,17 @@ button{background:none;border:0;padding:0;cursor:pointer}
         <h2>Preferences</h2>
       </div>
 
+      <div class="group" id="installGroup" hidden>
+        <span class="eyebrow">Install</span>
+        <div class="panel">
+          <div class="srow">
+            <div class="t"><div class="n" id="installTitle">Install Dayflow</div>
+              <div class="d" id="installHint">Keep it on your home screen and use it offline.</div></div>
+            <button class="btn" id="installBtn" style="width:auto;height:38px;padding:0 16px;font-size:13.5px">Install</button>
+          </div>
+        </div>
+      </div>
+
       <div class="group">
         <span class="eyebrow">Appearance</span>
         <div class="panel">
@@ -451,7 +462,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
           <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
         </div>
       </div>
-      <p class="foot">Dayflow 1.1 · works offline<br>Add to your home screen for the full-screen app</p>
+      <p class="foot">Dayflow 1.2 · one file, nothing to install alongside it<br>Your habits stay on this device</p>
       <input type="file" id="importFile" accept="application/json" hidden>
     </section>
   </main>
@@ -963,6 +974,7 @@ function renderSettings(){
   $('#mirrorSw').classList.toggle('on',S.mirror);
   $('#hapticSw').classList.toggle('on',S.haptics);
   $('#dataStat').textContent=habits.length+' habits · '+recs.size+' marks · '+notes.size+' notes';
+  renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
@@ -1001,6 +1013,79 @@ $('#resetBtn').addEventListener('click',async e=>{
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   renderAll(); renderNote(); toast('Everything reset');
+});
+
+/* ===========================================================
+   Install as an app — manifest and icons are built in the page,
+   so this file needs nothing beside it.
+   =========================================================== */
+const ICON_192='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAAP1BMVEULDhbyqTsAAAAro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCn/OSAAAAEHRSTlP//wD//wAAAAAAAAAAAAAABPwSRQAAAaBJREFUeNrt3Ut2wjAUBNHWs/a/5oxyAvgT55BELrlqBX0nICa81IkyqFPbLrr9NCKXXn/CkMvP/8YQwvwjQhjz9wmhzN8jBLR/UxDQ/E1CWPvXgsD2rwSh7X8VBLf/RRDe/mdBgPufBCHufxQEuf9BEOb+L8E0gAQqCHX/p2ASQIIVzAFIuIIpAAlYMAMgIQsEjAcEnQABAszMzMzMzMzsZ7X/CD7/DwmtsQWtsQWtwQV0QGtwgQABAvwY8nvg5k8J/mOO/5zm/6AxMzMzM3bLO8HnjycsvxF9/0gBHbAscAEdsCxwgQABdwf4MTrNN5lPifu+Rvm/Byb4RWZmZmZm5PpR8PkAQu9sQe9sQe9wAR3QO1wgQICAm3wM+T3gU2Lexxz/Oc3/QWNmZmZmZma3z3/+FiDAExYC3gZ4SEfAuwCvYQ0HeBFuOMCriMMB+MOa3mYdtX+i8778A8v8E9f8I+P8M+8MQR0BirZ/BSjY/jWgUPO3AFcm1DlAgfZvA65J2FlaxSDs7qwiEA5WVl2eUIcb67hrrz8BGKk4M60+AJhVLj7FhCgyAAAAAElFTkSuQmCC';
+const ICON_512='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAAAP1BMVEULDhbyqTsAAAAro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCn/OSAAAAEHRSTlP//wD//wAAAAAAAAAAAAAABPwSRQAABR1JREFUeNrt2MFum1AURdEb2v//5nYSKVKbGGxsmbfXHiGY3bNGzPaSRkfbXrSM5dsQxvRtBWP8NoKxfhvBGL9tYKzfNjDmbxsY67cNjPnbBMb8bQJj/TaBMX+bwNi/TWDM3yYw5m8TGPO3BYz92wTG/G0CY/+2gDF/m8DYvy1g7N8WMOZvExj7twWM/dsCxvxtAWP/NoGxf1vA2L8tYOzfFjD2bwsY+7cFjP3bAsb+bQFj/7aAsX9bwNi/LWDs3xYw9m8LGPsDAEBYwNi/LWDs3xYw9m8LAAAA+5cFjP3bAsb+bQEAAGD/soCxf1sAAADYvyxg7N8WAAAA9i8LAAAA+5cFAACA/csCxv4AABAWMPYHAICwAAAAsH9ZAAAA2L8sAAAA7F8WAAAAAABg/6wAAACwf1kAAAAAAIBrZAUAAAAAADhGG4BbdAUAAAAAdQAuERYAAAAAAKAyAHcoCwAAAGcAQAAIACUBuEJaAAAACAABIAAEgHIAJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEn62oc+jK8P8yNgfgTsT4D9CTA/AvYnAAAA7E+A/QmwPwEAAGB/AgAAwP4EAAAAAAAAAID9CQAAAAAAAAAAAAAAAAAAAAAAAAAAIMD+AAAAAAAAAECA/QEAgAD7AwAAAfYnwP4E2B8AAAiwPwLmJ8D+BNgfAfMjYH4IjC9JkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiT97dd7Z6Dw+BCYHwHzI2B/AuxPQHx+BOxPAABK709AfX8C6vsTAIDS+xMAgNL7EwCAABAAiu5PAAACQAAIAAEgAASAAJA/gQJAAAgALSzAhAAoLMCAACgswHxtAcZrCzAdAAoLMFyagNHaAkzWFmCwNAFjpQkYKozAQJIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSQr2+5TcMTw+BOZHwPwI2J8A+xMQnx8B+xMAgNL7E1Dfn4D6/gQAoPT+BACg9P4EACAABICi+xMAgAAQAAJAAAgAASAA5E+gABAAAkALC3BpABQW4M4AKCzAldsC3LgtwIUBUFiA+6YJuG1bgMu2BbhrmoCbpgm4ZxiBO0qSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJOmN25ygPT8AAAgAASAABIAAUAsAAeX9AQAAAAAEgLoACAjvDwAAAACgNgACuvsDAAAAADhFHAAB2f0BAAAAAAjI7g8AAAAAQEB2fwAAAAAAArL7AwAAAOX9ty9PAkBhAAQU9wcAAALK+wMAAAHl/QEAgIDy/gAAQEB5fwAAIKC8PwAAEFDe/18ABKT2BwAAAsr7AxDff/vvO7UBENDZH4D4/ts3b9UGQEBl/+8AEBDZH4D4/tv3H9QGQEBi/x8AEFDY/ycABAT2ByC+//bzR7UBELD8/jcAELD6/rcAELD4/jcBELD2/rcBELD0/jsAELDy/nsAELDw/rsAELDu/vsAELDs/jsBELDq/nsBELDm/PsBILDm/gcAELDi/kcAELDg/ocAELDc/AcBILDc/kcBELDY/ocBELDU/HcAQGCp/e8BQMA6898HAIF19r8TAAGLzH83AAQW2f9+AAisMP9DABC4/vwPAkDg6vM/DACBa89/AgAErjz/KQAQuO78JwFA4KLrnweAgWvOfyYABK63/skAGLja+ucDgOBS6z8HAANXGf95ACC4xPjPBYDBu2//EgAcvOnwn/0BZoQ5957fX2cAAAAASUVORK5CYII=';
+const ICON_MASK='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAAAP1BMVEULDhbyqTsro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgRfA4AAAAEHRSTlP/////AAAAAAAAAAAAAAAADW2LcQAAAgZJREFUeNrt2MEBQFAMBcGP/numBg7IzpSQt6esBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwcduv2a+8vgbMLwH7KyC/vwLq+yugvr8C6vsroL6/AgRAen8FCAAB0N1fAQJAAAgAASAABIAA8AhCAAiA8QVYVQCEC7BpuwCLtguwZ7sAa7YLsGW7AEumE7BiuQH7AQAAAAAAAAAAAAAAAEn7G5w9Pb8E8vNLID+/BOyvgPr+Cqjvr4D6/goQAOn9FSAA0vsrQACk91eAABAAAkAACAABIAAEgE8gAmB8AcYQAOECTCEAwgUYol2AGdoFGKFdgAnSCTh/OgGnTyfg7AAAAAAAAAAAAAAAAABPHDe4Wnl9DZhfAvZXQH5/BdT3V0B9fwXU91dAfX8FCID0/goQAAKgu78CBIAAEAACQAAIAAHgEYQAEADjC3BLARAuwCXbBbhjuwBXbBfghu0CXLBdgPulE3C7cgOuBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXEygDXNcX9L8GAAAAAElFTkSuQmCC';
+
+/* if a sw.js is ever placed beside this file, use it for full offline caching;
+   when it is absent nothing is logged and the app runs from the browser cache */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  addEventListener('load',()=>{
+    fetch('sw.js',{method:'HEAD'})
+      .then(r=>{ if(r.ok) navigator.serviceWorker.register('sw.js'); })
+      .catch(()=>{});
+  });
+}
+
+if(location.protocol.startsWith('http')){
+  const href=location.href.split('#')[0].split('?')[0];
+  const manifest={
+    name:'Dayflow', short_name:'Dayflow',
+    description:'Track the threads of your day.',
+    start_url:href, scope:href.replace(/[^/]*$/,''),
+    display:'standalone', display_override:['standalone','minimal-ui'],
+    orientation:'portrait',
+    background_color:'#0B0E16', theme_color:'#0B0E16',
+    categories:['productivity','lifestyle'],
+    icons:[
+      {src:ICON_192, sizes:'192x192', type:'image/png', purpose:'any'},
+      {src:ICON_512, sizes:'512x512', type:'image/png', purpose:'any'},
+      {src:ICON_MASK,sizes:'512x512', type:'image/png', purpose:'maskable'}
+    ]
+  };
+  const link=document.createElement('link');
+  link.rel='manifest';
+  link.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
+  document.head.appendChild(link);
+}
+let installEvent=null;
+addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvent=e; renderInstall(); });
+addEventListener('appinstalled',()=>{ installEvent=null; renderInstall(); toast('Dayflow installed'); });
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent);
+
+function renderInstall(){
+  const g=$('#installGroup'), b=$('#installBtn'), t=$('#installTitle'), h=$('#installHint');
+  if(isStandalone()){ g.hidden=true; return; }
+  g.hidden=false; b.hidden=false;
+  if(location.protocol==='file:'){
+    t.textContent='Open from a web address first';
+    h.textContent='Dayflow is running as a downloaded file, so the browser blocks both installing and saving. Put it on any web address, or run a local server in its folder, and everything works.';
+    b.hidden=true;
+  }else if(installEvent){
+    t.textContent='Install Dayflow';
+    h.textContent='Adds it to your home screen and opens it full screen.';
+  }else if(isIOS()){
+    t.textContent='Add to Home Screen';
+    h.textContent='In Safari, tap Share, then Add to Home Screen. Dayflow then opens full screen with its own icon.';
+    b.hidden=true;
+  }else{
+    t.textContent='Add to Home Screen';
+    h.textContent='Open your browser menu and choose Install app or Add to Home Screen.';
+    b.hidden=true;
+  }
+}
+$('#installBtn').addEventListener('click',async()=>{
+  if(!installEvent) return;
+  installEvent.prompt();
+  await installEvent.userChoice;
+  installEvent=null; renderInstall();
 });
 
 /* ===========================================================
