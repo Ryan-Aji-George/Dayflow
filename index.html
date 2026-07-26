@@ -185,7 +185,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .grid{overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .grid-inner{position:relative;width:max-content;min-width:100%;padding-right:18px}
 .grid-inner::before{
-  content:'';position:absolute;z-index:0;right:18px;width:var(--cw);top:0;bottom:0;
+  content:'';position:absolute;z-index:0;right:18px;width:var(--cw);top:0;bottom:3px;
   border-radius:11px;background:color-mix(in srgb,var(--ink) 6%,transparent);
 }
 .grid-inner.mirror::before{right:calc(var(--nw) + 18px)}
@@ -198,12 +198,14 @@ button{background:none;border:0;padding:0;cursor:pointer}
   border-right:1px solid var(--line);
 }
 .grid-inner.mirror .gname{left:auto;right:0;padding:0 18px 0 14px;border-right:0;border-left:1px solid var(--line)}
+.grow:not(.ghead) .gname{cursor:pointer;transition:background .18s var(--ease)}
+.grow:not(.ghead) .gname:active{background:color-mix(in srgb,var(--ink) 6%,var(--surf))}
 .gcells{display:flex;align-items:center;gap:var(--gap)}
-.ghead{margin-bottom:0}
+.ghead{margin-bottom:2px}
 .ghead .gname{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .dcol{
   position:relative;z-index:1;flex:0 0 var(--cw);width:var(--cw);font-family:var(--mono);line-height:1.1;
-  display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:7px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 9px;
 }
 .dcol .dw{font-size:9px;letter-spacing:.04em;color:var(--ink-3);text-transform:uppercase}
 .dcol .dd{font-size:12.5px;color:var(--ink-2)}
@@ -520,9 +522,10 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .btag.on{color:var(--c)}
 .btag.sun{color:var(--sun)}
 .psec .sun{color:var(--sun)}
-.stag{
-  font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);
-  border:1px solid var(--line-2);border-radius:6px;padding:1px 5px;margin-left:8px;white-space:nowrap;
+.sbadge{
+  width:21px;height:21px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+  font-family:var(--mono);font-size:10px;color:var(--ink-2);
+  border:1px solid var(--line-2);
 }
 .toggle-row{display:flex;align-items:center;gap:14px}
 .toggle-row .t{flex:1;min-width:0}
@@ -675,7 +678,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
             <button class="switch" id="mirrorSw" role="switch"></button>
           </div>
           <div class="srow">
-            <div class="t"><div class="n">Haptics</div><div class="d">A short buzz when you mark a day.</div></div>
+            <div class="t"><div class="n">Haptics</div><div class="d">A firm buzz when you tick something off.</div></div>
             <button class="switch" id="hapticSw" role="switch"></button>
           </div>
         </div>
@@ -896,11 +899,6 @@ function fmtMins(m){
   const h=Math.floor(m/60), r=m%60;
   return h ? (r? h+'h '+r+'m' : h+'h') : m+' min';
 }
-function fmtShort(m){
-  if(!m) return '';
-  const h=Math.floor(m/60), r=m%60;
-  return h ? (r? h+'h'+r : h+'h') : m+'m';
-}
 function scheduleLabel(days){
   const s=[...days].sort().join(',');
   if(s==='0,1,2,3,4,5,6') return 'Every day';
@@ -915,7 +913,13 @@ function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('on');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1900);
 }
-const buzz=v=>{ if(S.haptics&&navigator.vibrate) navigator.vibrate(v); };
+const HAPTIC={
+  tick:[26,28,55],          /* firm double thump, ending strong */
+  untick:38,
+  done:[22,45,26,45,90],    /* the whole day landing */
+  medium:16, light:7
+};
+const buzz=v=>{ if(S.haptics&&navigator.vibrate){ try{ navigator.vibrate(v); }catch(e){} } };
 
 /* ===========================================================
    Today
@@ -1012,6 +1016,21 @@ function joinCell(cells,i){
 }
 
 $('#grid').addEventListener('click',e=>{
+  /* tapping the name ticks today for that habit */
+  const name=e.target.closest('.gname');
+  if(name){
+    const row=name.closest('.grow');
+    if(!row || row.classList.contains('ghead')) return;
+    const h=habits.find(x=>x.id===row.dataset.h); if(!h) return;
+    const cell=row.querySelector('.cell[data-d="'+TSTR+'"]');
+    if(!cell) return;
+    const g=$('#grid'); g.scrollLeft=g.scrollWidth;   /* bring today into view */
+    if(!h.days.includes(TODAY.getDay())){
+      cell.classList.remove('nope'); void cell.offsetWidth; cell.classList.add('nope');
+      toast('Not due on '+DN[TODAY.getDay()]+'s · checked for you'); return;
+    }
+    toggleCell(h,cell); return;
+  }
   const c=e.target.closest('.cell'); if(!c) return;
   const ds=c.dataset.d, h=habits.find(x=>x.id===c.dataset.h); if(!h) return;
   if(ds!==TSTR){
@@ -1035,10 +1054,10 @@ async function toggleCell(h,c){
     void c.offsetWidth; c.classList.add('pop');
     c.addEventListener('animationend',()=>c.classList.remove('pop'),{once:true});
   }
-  buzz(marking?12:6); renderHead();
+  buzz(marking?HAPTIC.tick:HAPTIC.untick); renderHead();
   const now=dayTally(TODAY);
   if(now.complete && !was.complete && now.req>0){
-    toast('Day complete · '+currentStreak()+'-day streak'); buzz([12,50,18]);
+    toast('Day complete · '+currentStreak()+'-day streak'); buzz(HAPTIC.done);
   }
   if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
   else await dbDel('records',k);
@@ -1167,7 +1186,8 @@ function renderHabits(){
     row.innerHTML=
       '<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>'+
       '<i class="hbar"></i>'+
-      '<div class="hinfo"><div class="n">'+esc(h.name)+(h.study?'<span class="stag">Study'+(h.mins?' '+fmtShort(h.mins):'')+'</span>':'')+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
+      '<div class="hinfo"><div class="n">'+esc(h.name)+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
+      (h.study?'<span class="sbadge" title="Study block">S</span>':'')+
       '<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
     list.appendChild(row);
   });
@@ -1510,7 +1530,7 @@ $('#planWrap').addEventListener('click',async e=>{
   const tag=b.parentElement.querySelector('.btag');
   if(tag){ tag.textContent=marking?'Done':'Today'; tag.classList.toggle('on',marking); }
   updatePlanCounts();
-  buzz(marking?12:6);
+  buzz(marking?HAPTIC.tick:HAPTIC.untick);
   renderHead(); renderGrid();
   if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
   else await dbDel('records',k);
@@ -1642,7 +1662,7 @@ $('#themeBtn').addEventListener('click',()=>{
   applySettings(); saveSettings(); renderSettings(); buzz(8);
 });
 $('#mirrorSw').addEventListener('click',()=>{S.mirror=!S.mirror;saveSettings();renderSettings();renderGrid();buzz(8);});
-$('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();buzz(10);});
+$('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
 const resolvedTheme=()=>S.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S.theme;
 function applySettings(){
   const t=resolvedTheme();
