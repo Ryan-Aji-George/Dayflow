@@ -253,7 +253,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
   0%{opacity:1;box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 45%,transparent)}
   100%{opacity:0;box-shadow:0 0 0 10px rgba(0,0,0,0)}
 }
-.cell.nope{animation:nope .34s ease}
+.cell.nope,.shake{animation:nope .34s ease}
 @keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
 
 /* ---------- habits ---------- */
@@ -337,6 +337,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
   background:color-mix(in srgb,var(--acc) 15%,transparent);
   opacity:0;transform:scale(.75);transition:opacity .28s var(--ease),transform .32s var(--spring);
 }
+.tab[data-v="vision"] svg{fill:currentColor;stroke:none}
 .tab svg{
   position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring);
@@ -345,16 +346,6 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .tab.on{color:var(--acc)}
 .tab.on::before{opacity:1;transform:none}
 .tab.on span{font-weight:600}
-.fab{
-  position:fixed;right:20px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:45;
-  width:54px;height:54px;border-radius:18px;background:var(--acc);color:#14100A;
-  display:none;place-items:center;box-shadow:0 12px 26px -12px color-mix(in srgb,var(--acc) 70%,transparent);
-  transition:transform .25s var(--spring);
-}
-.fab.show{display:grid;animation:fabIn .4s var(--spring) both}
-.fab:active{transform:scale(.9)}
-.fab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
-@keyframes fabIn{from{transform:scale(0)}to{transform:none}}
 
 /* ---------- sheet ---------- */
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
@@ -533,6 +524,160 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .toggle-row .t .n{font-size:14.5px;font-weight:500}
 .toggle-row .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4}
 
+/* ---------- vision ---------- */
+/* a wash of the accent behind the header */
+.vhead{position:relative;z-index:0;padding:18px 0 22px}
+.vhead::before{
+  content:'';position:absolute;z-index:-1;left:-20px;right:-20px;top:-70px;height:330px;
+  background:radial-gradient(78% 100% at 50% 0%,color-mix(in srgb,var(--acc) 15%,transparent),transparent 70%);
+  pointer-events:none;
+}
+.northstar{
+  display:block;width:100%;border:0;outline:0;background:transparent;padding:0;margin:10px 0 0;
+  font-family:var(--display);font-size:35px;font-weight:700;letter-spacing:-.05em;
+  line-height:1.06;color:var(--ink);
+}
+.northstar::placeholder{color:var(--ink-3)}
+/* the tools sit at the end, out of the way of the board */
+.vbar{display:flex;gap:8px;margin:4px 0 8px}
+.vchip{
+  flex:1;height:40px;border-radius:12px;background:transparent;border:1px solid var(--line);
+  color:var(--ink-2);font-size:13px;font-weight:500;letter-spacing:-.005em;
+  transition:transform .2s var(--spring),background .24s var(--ease),color .24s var(--ease),border-color .24s var(--ease);
+}
+.vchip:active{transform:scale(.96)}
+.vchip.on{background:var(--acc);border-color:var(--acc);color:#14100A;font-weight:600}
+
+/* the board itself is placed by script: every card is absolutely positioned */
+.vgrid{position:relative;margin-bottom:22px}
+.vcard{
+  position:absolute;left:0;top:0;
+  transition:transform .34s var(--ease);
+  animation:fadeIn .45s var(--ease) both;
+}
+.vgrid.noanim .vcard{transition:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.vin{
+  position:relative;display:block;overflow:hidden;
+  border-radius:16px;background:var(--surf);border:1px solid var(--line);
+  transition:transform .2s var(--spring);
+}
+.vgrid:not(.varr) .vcard{cursor:zoom-in}
+.vgrid:not(.varr) .vcard:active .vin{transform:scale(.975)}
+.vcard img{width:100%;display:block}
+.vcap{
+  position:absolute;left:0;right:0;bottom:0;padding:28px 13px 12px;
+  font-size:12.5px;font-weight:500;line-height:1.35;color:#fff;
+  background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0));
+}
+/* quotes: an editorial card, never clipped, sized to its own words */
+.vq{
+  position:relative;padding:20px 18px 19px;overflow:hidden;
+  background:
+    radial-gradient(105% 78% at 8% 0%,color-mix(in srgb,var(--c) 34%,transparent),transparent 68%),
+    linear-gradient(165deg,color-mix(in srgb,var(--c) 15%,var(--surf)),var(--surf) 88%);
+}
+.vq .t{
+  font-family:var(--display);font-weight:600;letter-spacing:-.03em;
+  line-height:1.26;color:var(--ink);
+}
+.vq .a{
+  font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--c) 55%,var(--ink-3));margin-top:13px;
+}
+.vgrip{
+  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:16px;z-index:3;
+  background:rgba(10,10,10,.76);color:#fff;display:none;place-items:center;padding:0;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none;
+}
+.vgrip svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.varr .vgrip{display:grid}
+.vdel{
+  position:absolute;top:8px;left:8px;height:26px;min-width:26px;border-radius:13px;z-index:3;
+  background:rgba(10,10,10,.74);color:#fff;display:none;place-items:center;padding:0;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+}
+.vdel svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.vdel.armed{background:#E5483F;padding:0 11px}
+.varr .vdel{display:grid}
+.vin.q{border-color:color-mix(in srgb,var(--c) 22%,var(--line))}
+.varr .vin{animation:jiggle .58s ease-in-out infinite}
+.vgrid.dnd .vin{animation:none}
+.vcard.dragging{z-index:30;transition:none}
+.vcard.dragging .vin{animation:none;box-shadow:0 22px 44px -18px rgba(0,0,0,.75)}
+@keyframes jiggle{0%,100%{transform:rotate(-.5deg)}50%{transform:rotate(.5deg)}}
+.vprev{width:100%;border-radius:14px;display:block;margin-bottom:18px;max-height:38vh;object-fit:cover}
+.input.area{height:auto;min-height:104px;padding:13px 15px;line-height:1.5;resize:none;font-family:inherit}
+#vQuoteWrap .colors{margin-top:16px}
+.seg-ctrl.solid{display:flex;width:100%;padding:3px}
+.seg-ctrl.solid button{flex:1;padding:10px 0;font-size:11.5px;letter-spacing:.04em}
+
+/* ---------- lock ---------- */
+.vlock{padding:70px 0 40px;text-align:center}
+.vlock svg{width:32px;height:32px;stroke:var(--ink-3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.vlock h3{font-family:var(--display);font-size:23px;font-weight:700;letter-spacing:-.04em;margin:16px 0 24px}
+.vlock .input,.vlock .btn{max-width:230px;margin-left:auto;margin-right:auto}
+.vlock .input{margin-bottom:10px}
+.vlock-err{min-height:17px;margin-top:12px;font-size:12.5px;color:#F2705E}
+.pin{text-align:center;font-family:var(--mono);font-size:17px;letter-spacing:.35em;text-indent:.35em}
+.pin::placeholder{letter-spacing:.1em;text-indent:0}
+
+/* ---------- viewer ---------- */
+.lightbox{
+  position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+  background:rgba(0,0,0,.96);opacity:0;pointer-events:none;touch-action:none;
+  transition:opacity .28s var(--ease);
+}
+.lightbox.on{opacity:1;pointer-events:auto}
+.lbstage{
+  width:100%;max-width:560px;max-height:100%;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;touch-action:none;
+}
+.lbimg{
+  max-width:100%;max-height:82vh;display:block;border-radius:8px;
+  transform-origin:center center;will-change:transform;
+}
+.lbimg.ease{transition:transform .28s var(--ease)}
+.lbq{
+  position:relative;overflow:hidden;width:100%;padding:36px 30px;border-radius:22px;
+  background:
+    radial-gradient(88% 72% at 8% 0%,color-mix(in srgb,var(--c) 46%,transparent),transparent 70%),
+    linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#0C0C0C),#0C0C0C 88%);
+  border:1px solid color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.08));
+}
+.lbq .t{
+  font-family:var(--display);font-size:27px;font-weight:500;letter-spacing:-.035em;
+  line-height:1.28;color:#fff;
+}
+.lbq .a{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--c) 55%,#FFFFFF);opacity:.8;margin-top:20px;
+}
+.lbx{
+  position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.12);color:#fff;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:transform .2s var(--spring);
+}
+.lbx:active{transform:scale(.9)}
+.lbx svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.lbhint{
+  position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);pointer-events:none;
+}
+
+/* a circle of the new theme opens out of the tab you pressed */
+.sweep{
+  position:fixed;z-index:70;width:18px;height:18px;border-radius:50%;
+  transform:translate(-50%,-50%) scale(0);
+  transition:transform .44s cubic-bezier(.3,.86,.32,1),opacity .32s var(--ease);
+  pointer-events:none;
+}
+
 /* ---------- toast + boot ---------- */
 .toast{
   position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));z-index:80;
@@ -566,7 +711,6 @@ button{background:none;border:0;padding:0;cursor:pointer}
   .tabbar{max-width:540px;left:50%;transform:translateX(-50%)}
   .sheet{max-width:540px;left:50%;transform:translate(-50%,101%)}
   .sheet.on{transform:translate(-50%,0)}
-  .fab{right:calc(50% - 250px)}
 }
 </style>
 </head>
@@ -635,15 +779,28 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <div id="planWrap"></div>
     </section>
 
-    <!-- ===== HABITS ===== -->
-    <section class="view" id="v-habits">
-      <div class="ptitle">
-        <span class="eyebrow">Habits</span>
-        <h2>Your threads</h2>
+    <!-- ===== VISION ===== -->
+    <section class="view" id="v-vision">
+      <div class="vlock" id="vLock" hidden>
+        <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
+        <h3>Vision is locked</h3>
+        <input class="input pin" id="vPin" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off">
+        <button class="btn" id="vUnlock">Unlock</button>
+        <div class="vlock-err" id="vPinErr"></div>
       </div>
-      <div class="setstrip" id="setStrip"></div>
-      <div class="hlist" id="hlist"></div>
-      <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
+      <div id="vBody">
+      <div class="vhead">
+        <span class="eyebrow">Vision</span>
+        <input class="northstar" id="vNorth" placeholder="What are you building?" maxlength="70" autocomplete="off">
+      </div>
+      <div class="vgrid" id="vGrid"></div>
+      <div class="vbar">
+        <button class="vchip" id="vAddPhoto">Photo</button>
+        <button class="vchip" id="vAddQuote">Quote</button>
+        <button class="vchip" id="vEdit">Edit</button>
+      </div>
+      </div>
+      <input type="file" id="vFile" accept="image/*" multiple hidden>
     </section>
 
     <!-- ===== SETTINGS ===== -->
@@ -651,6 +808,27 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <div class="ptitle">
         <span class="eyebrow">Settings</span>
         <h2>Preferences</h2>
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Habits</span>
+        <div class="setstrip" id="setStrip"></div>
+        <div class="hlist" id="hlist"></div>
+        <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Privacy</span>
+        <div class="panel">
+          <div class="srow">
+            <div class="t"><div class="n">Lock the Vision page</div>
+              <div class="d">Asks for a PIN before the board is shown.</div></div>
+            <button class="switch" id="lockSw" role="switch"></button>
+          </div>
+          <div class="btnrow" id="lockRow" hidden>
+            <button class="btn ghost" id="lockChange">Change PIN</button>
+          </div>
+        </div>
       </div>
 
       <div class="group" id="installGroup" hidden>
@@ -707,12 +885,10 @@ button{background:none;border:0;padding:0;cursor:pointer}
     </section>
   </main>
 
-  <button class="fab" id="fab" aria-label="Add habit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Today</span></button>
     <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Plan</span></button>
-    <button class="tab" data-v="habits"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg><span>Habits</span></button>
+    <button class="tab" data-v="vision"><svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg><span>Vision</span></button>
     <button class="tab" data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-3-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.2-3l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 3 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.1a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1.1z"/></svg><span>Settings</span></button>
   </nav>
 </div>
@@ -771,6 +947,46 @@ button{background:none;border:0;padding:0;cursor:pointer}
     <button class="btn danger" id="sDelete" style="margin-top:9px">Delete set</button>
   </div>
 </div>
+<div class="sheet" id="vSheet">
+  <div class="grabber"></div>
+  <h3 id="vTitle">Photo</h3>
+  <div id="vPreview"></div>
+  <div class="field" id="vQuoteWrap" hidden>
+    <textarea class="input area" id="vText" placeholder="The line you need to hear" maxlength="220"></textarea>
+    <input class="input" id="vAuthor" placeholder="Who said it — optional" maxlength="40" style="margin-top:9px">
+    <div class="colors" id="vColors"></div>
+  </div>
+  <div class="field" id="vCapWrap" hidden>
+    <input class="input" id="vCaption" placeholder="Caption — optional" maxlength="60" autocomplete="off">
+  </div>
+  <div class="field">
+    <span class="eyebrow">Size</span>
+    <div class="seg-ctrl solid" id="vWide">
+      <button data-w="0">Half width</button><button data-w="1">Full width</button>
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="vCancel">Close</button>
+    <button class="btn" id="vSave">Save</button>
+  </div>
+  <div style="margin-top:9px"><button class="btn danger" id="vDelete">Delete</button></div>
+</div>
+<div class="sheet" id="pinSheet">
+  <div class="grabber"></div>
+  <h3 id="pinTitle">Set a PIN</h3>
+  <p class="hint" id="pinHint" style="margin:0 0 18px">Four digits or more. It guards this page on this device only.</p>
+  <div class="field"><input class="input pin" id="pinA" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off"></div>
+  <div class="field" id="pinBWrap"><input class="input pin" id="pinB" type="password" inputmode="numeric" placeholder="Repeat" maxlength="12" autocomplete="off"></div>
+  <div class="vlock-err" id="pinErr" style="text-align:center;margin-bottom:4px"></div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="pinCancel">Cancel</button>
+    <button class="btn" id="pinSave">Save</button>
+  </div>
+</div>
+<div class="lightbox" id="vBox">
+  <button class="lbx" id="vBoxClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="lbstage" id="vBoxStage"></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -781,11 +997,11 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,4);
+    const r=indexedDB.open(DB_NAME,5);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
       if(!d.objectStoreNames.contains('habits')) d.createObjectStore('habits',{keyPath:'id'});
@@ -795,6 +1011,7 @@ function openDB(){
       if(!d.objectStoreNames.contains('plans')) d.createObjectStore('plans',{keyPath:'key'});
       if(!d.objectStoreNames.contains('sets')) d.createObjectStore('sets',{keyPath:'id'});
       if(!d.objectStoreNames.contains('dnotes')) d.createObjectStore('dnotes',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('vision')) d.createObjectStore('vision',{keyPath:'id'});
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -806,8 +1023,10 @@ const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
 const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
-let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), dayNotes=[], plans=new Map();
-let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false,activeSet:null};
+let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), dayNotes=[], plans=new Map(), visionItems=[];
+let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false,activeSet:null,northStar:''};
+let visionDark=false;   /* the board reads best on black, so that page forces it */
+let visionUnlocked=false;
 
 /* habits live in sets; only the active set is shown and counted */
 function applySet(){
@@ -1337,9 +1556,8 @@ function closeSheet(){
   $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
 }
-$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); });
+$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); closeVSheet(); closePin(); });
 $('#fCancel').addEventListener('click',closeSheet);
-$('#fab').addEventListener('click',()=>openSheet(null));
 $('#addBtn').addEventListener('click',()=>openSheet(null));
 $('#fSave').addEventListener('click',async()=>{
   const name=$('#fName').value.trim();
@@ -1568,6 +1786,532 @@ $('#planWrap').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
+   Vision lock — a PIN in front of the board. The PIN itself is
+   never stored, only a salted hash of it.
+   =========================================================== */
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function pinHash(pin,salt){
+  const data=new TextEncoder().encode(salt+'|'+pin);
+  try{ return hex(await crypto.subtle.digest('SHA-256',data)); }
+  catch(err){                       /* older or non-secure contexts */
+    let h=2166136261;
+    for(const b of data){ h^=b; h=Math.imul(h,16777619); }
+    return 'f'+(h>>>0).toString(16);
+  }
+}
+const visionLocked=()=>!!(S.visionLock&&S.visionLock.hash)&&!visionUnlocked;
+async function pinMatches(pin){
+  if(!S.visionLock) return false;
+  return (await pinHash(pin,S.visionLock.salt))===S.visionLock.hash;
+}
+function syncVisionLock(){
+  const locked=visionLocked();
+  $('#vLock').hidden=!locked;
+  $('#vBody').hidden=locked;
+  if(locked){ $('#vGrid').innerHTML=''; $('#vPin').value=''; $('#vPinErr').textContent=''; }
+}
+async function tryUnlock(){
+  const el=$('#vPin'), pin=el.value.trim();
+  if(!pin) return;
+  if(await pinMatches(pin)){
+    visionUnlocked=true; el.value=''; $('#vPinErr').textContent='';
+    renderVision(); buzz(10);
+  }else{
+    $('#vPinErr').textContent='That PIN does not match';
+    el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+    el.select(); buzz(20);
+  }
+}
+$('#vUnlock').addEventListener('click',tryUnlock);
+$('#vPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* the sheet does three jobs: set a PIN, or check it before changing or removing one */
+let pinMode='set';
+function openPin(mode){
+  pinMode=mode;
+  const setting=mode==='set';
+  $('#pinTitle').textContent=setting?'Set a PIN':(mode==='off'?'Remove the lock':'Change PIN');
+  $('#pinHint').textContent=setting
+    ? 'Four characters or more. It guards this page on this device only.'
+    : 'Enter your current PIN to continue.';
+  $('#pinBWrap').hidden=!setting;
+  $('#pinA').value=''; $('#pinB').value=''; $('#pinErr').textContent='';
+  $('#pinA').placeholder=setting?'New PIN':'Current PIN';
+  $('#pinSave').textContent=setting?'Save':'Continue';
+  $('#scrim').classList.add('on'); $('#pinSheet').classList.add('on'); $('#pinSheet').scrollTop=0;
+  setTimeout(()=>$('#pinA').focus(),380);
+}
+function closePin(){
+  $('#scrim').classList.remove('on'); $('#pinSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  $('#pinA').value=''; $('#pinB').value='';
+  renderSettings();
+}
+$('#pinCancel').addEventListener('click',closePin);
+$('#pinSave').addEventListener('click',async()=>{
+  const a=$('#pinA').value.trim();
+  if(pinMode==='set'){
+    if(a.length<4){ $('#pinErr').textContent='Use at least four characters'; return; }
+    if(a!==$('#pinB').value.trim()){ $('#pinErr').textContent='The two do not match'; return; }
+    const salt=uid()+uid();
+    S.visionLock={salt,hash:await pinHash(a,salt)};
+    visionUnlocked=true; await saveSettings();
+    closePin(); toast('Vision is locked'); buzz(10); return;
+  }
+  if(!await pinMatches(a)){ $('#pinErr').textContent='That PIN does not match'; buzz(20); return; }
+  if(pinMode==='off'){
+    S.visionLock=null; visionUnlocked=false; await saveSettings();
+    closePin(); renderVision(); toast('Lock removed'); buzz(10);
+  }else{
+    openPin('set');
+  }
+});
+$('#lockSw').addEventListener('click',()=>{
+  if(S.visionLock&&S.visionLock.hash) openPin('off'); else openPin('set');
+  buzz(8);
+});
+$('#lockChange').addEventListener('click',()=>openPin('change'));
+
+/* ===========================================================
+   Vision — the board: photos and lines worth keeping in sight
+   =========================================================== */
+let vMode=false, vEditing=null, vIsNew=false, vColor=THREADS[0], vWide=false;
+const X_ICON='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const vSorted=()=>visionItems.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+
+/* photos are scaled down before they are stored, so the board stays light */
+function readImage(file){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=fr.result; };
+    fr.onerror=rej; fr.readAsDataURL(file);
+  });
+}
+async function shrinkImage(file,max=1600,q=.84){
+  const im=await readImage(file);
+  const sc=Math.min(1,max/Math.max(im.width,im.height));
+  const w=Math.max(1,Math.round(im.width*sc)), h=Math.max(1,Math.round(im.height*sc));
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  c.getContext('2d').drawImage(im,0,0,w,h);
+  return {src:c.toDataURL('image/jpeg',q),ar:w/h};
+}
+
+function renderVision(){
+  syncVisionLock();
+  if(visionLocked()) return;
+  const nd=$('#vNorth');
+  if(nd && document.activeElement!==nd) nd.value=S.northStar||'';
+
+  const g=$('#vGrid'); g.innerHTML='';
+  g.classList.toggle('varr',vMode);
+  const items=vSorted();
+  if(!items.length){
+    g.style.height='';
+    const e=document.createElement('div');
+    e.className='empty'; e.style.marginBottom='0';
+    e.innerHTML='<h3>Nothing in sight yet</h3><p>Add a photo or a line you want put in front of you every day.</p>';
+    g.appendChild(e);
+    return;
+  }
+  items.forEach((it,i)=>g.appendChild(visionCard(it,i)));
+  layoutVision(true);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>layoutVision(true));
+}
+
+function visionCard(it,i){
+  const el=document.createElement('div');
+  el.className='vcard'; el.dataset.id=it.id; el.dataset.wide=it.wide?'1':'0';
+  el.style.animationDelay=Math.min(i,9)*32+'ms';
+  const inner=document.createElement('div'); inner.className='vin';
+  if(it.type==='image'){
+    /* the stored ratio gives the card its height before the file has even decoded */
+    inner.innerHTML='<img src="'+it.src+'" alt="'+esc(it.caption||'Vision photo')+'"'+
+      (it.ar?' style="aspect-ratio:'+it.ar.toFixed(4)+'"':'')+'>'+
+      (it.caption?'<div class="vcap">'+esc(it.caption)+'</div>':'');
+    if(!it.ar){
+      const img=inner.querySelector('img');
+      img.addEventListener('load',()=>{
+        it.ar=img.naturalWidth/Math.max(1,img.naturalHeight);
+        img.style.aspectRatio=it.ar.toFixed(4);
+        dbPut('vision',it); layoutVision(true);
+      },{once:true});
+    }
+  }else{
+    inner.classList.add('q');
+    inner.style.setProperty('--c',it.color||THREADS[0]);
+    const n=(it.text||'').length;
+    const fs=it.wide ? (n<=55?25:n<=130?20:17) : (n<=30?20:n<=72?17.5:n<=125?15.5:14);
+    inner.innerHTML='<div class="vq"><div class="t" style="font-size:'+fs+'px">'+esc(it.text||'')+'</div>'+
+                    (it.author?'<div class="a">'+esc(it.author)+'</div>':'')+'</div>';
+  }
+  el.appendChild(inner);
+  el.insertAdjacentHTML('beforeend',
+    '<button class="vdel" aria-label="Remove">'+X_ICON+'</button>'+
+    '<button class="vgrip" aria-label="Move"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></button>');
+  return el;
+}
+
+/* two columns, shortest column first; full-width cards clear both */
+function layoutVision(instant,cached){
+  const g=$('#vGrid'); if(!g) return;
+  const cards=$$('.vcard',g);
+  if(!cards.length || g.clientWidth<40) return;
+  if(instant){ g.classList.add('noanim'); }
+  const W=g.clientWidth, gap=12, colW=Math.floor((W-gap)/2);
+  if(!cached) cards.forEach(c=>{ c.style.width=(c.dataset.wide==='1'?W:colW)+'px'; });
+  let y=[0,0];
+  cards.forEach(c=>{
+    const wide=c.dataset.wide==='1', h=cached?(+c.dataset.h||0):c.offsetHeight;
+    let x,top;
+    if(wide){ top=Math.max(y[0],y[1]); x=0; y[0]=y[1]=top+h+gap; }
+    else{ const col=y[0]<=y[1]?0:1; top=y[col]; x=col*(colW+gap); y[col]=top+h+gap; }
+    c.dataset.x=x; c.dataset.y=top; c.dataset.h=h;
+    if(!c.classList.contains('dragging')) c.style.transform='translate('+x+'px,'+top+'px)';
+  });
+  g.style.height=(Math.max(y[0],y[1])-gap)+'px';
+  if(instant) requestAnimationFrame(()=>g.classList.remove('noanim'));
+}
+addEventListener('resize',()=>{ if($('#v-vision').classList.contains('active')) layoutVision(true); });
+
+let northT;
+$('#vNorth').addEventListener('input',()=>{
+  clearTimeout(northT);
+  northT=setTimeout(()=>{ S.northStar=$('#vNorth').value; saveSettings(); },500);
+});
+
+$('#vAddPhoto').addEventListener('click',()=>$('#vFile').click());
+$('#vFile').addEventListener('change',async e=>{
+  const files=[...e.target.files]; e.target.value='';
+  if(!files.length) return;
+  toast(files.length>1?'Adding '+files.length+' photos':'Adding photo');
+  let n=visionItems.length, bad=0;
+  for(const f of files){
+    try{
+      const {src,ar}=await shrinkImage(f);
+      const it={id:uid(),type:'image',src,ar,caption:'',wide:false,order:n++,created:Date.now()};
+      visionItems.push(it); await dbPut('vision',it);
+    }catch(err){ bad++; }
+  }
+  renderVision(); buzz(10);
+  if(bad) toast(bad+' image'+(bad>1?'s':'')+' could not be added');
+});
+
+$('#vAddQuote').addEventListener('click',()=>{
+  openVSheet({id:uid(),type:'quote',text:'',author:'',wide:false,
+              color:THREADS[visionItems.length%THREADS.length],
+              order:visionItems.length,created:Date.now()},true);
+});
+
+$('#vEdit').addEventListener('click',()=>{
+  vMode=!vMode;
+  const b=$('#vEdit');
+  b.textContent=vMode?'Done':'Edit';
+  b.classList.toggle('on',vMode);
+  renderVision(); buzz(8);
+  if(vMode) toast('Tap to edit · drag the grip to move');
+});
+
+$('#vGrid').addEventListener('click',e=>{
+  if(vDragBusy || e.target.closest('.vgrip')) return;
+  const card=e.target.closest('.vcard'); if(!card) return;
+  const it=visionItems.find(x=>x.id===card.dataset.id); if(!it) return;
+  const del=e.target.closest('.vdel');
+  if(del){
+    if(del.dataset.armed!=='1'){
+      del.dataset.armed='1'; del.classList.add('armed'); del.textContent='Remove?'; buzz(14);
+      setTimeout(()=>{ if(del.isConnected){ del.dataset.armed=''; del.classList.remove('armed'); del.innerHTML=X_ICON; } },3000);
+      return;
+    }
+    removeVision(it.id); return;
+  }
+  if(vMode) openVSheet(it); else openLightbox(it);
+});
+
+async function removeVision(id){
+  visionItems=visionItems.filter(x=>x.id!==id);
+  await dbDel('vision',id);
+  renderVision(); toast('Removed'); buzz(12);
+}
+async function persistVisionOrder(){
+  const ids=$$('.vcard',$('#vGrid')).map(c=>c.dataset.id);
+  for(let i=0;i<ids.length;i++){
+    const it=visionItems.find(x=>x.id===ids[i]);
+    if(it && it.order!==i){ it.order=i; await dbPut('vision',it); }
+  }
+}
+
+/* rearranging happens from the grip, so the page scrolls exactly as usual */
+let vDragBusy=false;
+(function visionDrag(){
+  const g=$('#vGrid');
+  let d=null;
+
+  function begin(el,cx,cy,pid){
+    const r=g.getBoundingClientRect();
+    d={el,pid,last:0,
+       gx:(cx-r.left)-(+el.dataset.x),
+       gy:(cy-r.top)-(+el.dataset.y),
+       cards:$$('.vcard',g)};
+    d.geo=new Map(d.cards.map(c=>[c,{w:c.offsetWidth,h:+c.dataset.h||0}]));
+    try{ g.setPointerCapture(pid); }catch(err){}
+    g.classList.add('dnd'); el.classList.add('dragging');
+    vDragBusy=true; buzz([12,28,18]);
+    move(cx,cy);
+  }
+
+  /* geometry is cached at pick-up: a move costs one transform, no measuring */
+  function move(cx,cy){
+    if(!d) return;
+    const r=g.getBoundingClientRect();
+    const px=cx-r.left, py=cy-r.top;
+    d.el.style.transform='translate('+(px-d.gx)+'px,'+(py-d.gy)+'px) scale(1.04)';
+
+    const edge=120;
+    if(cy<edge) scrollBy(0,-11);
+    else if(cy>innerHeight-edge) scrollBy(0,11);
+
+    /* one swap at a time, and only well inside a neighbour, so nothing flickers */
+    const now=performance.now();
+    if(now-d.last<170) return;
+    let hit=null;
+    for(const c of d.cards){
+      if(c===d.el) continue;
+      const gm=d.geo.get(c), x=+c.dataset.x, y=+c.dataset.y;
+      const ix=gm.w*0.18, iy=gm.h*0.18;
+      if(px>=x+ix && px<=x+gm.w-ix && py>=y+iy && py<=y+gm.h-iy){ hit=c; break; }
+    }
+    if(!hit) return;
+    const from=d.cards.indexOf(d.el), to=d.cards.indexOf(hit);
+    if(from<0||to<0||from===to) return;
+    d.cards.splice(from,1); d.cards.splice(to,0,d.el);
+    g.insertBefore(d.el,d.cards[to+1]||null);
+    layoutVision(false,true);
+    d.last=now; buzz(6);
+  }
+
+  g.addEventListener('pointerdown',e=>{
+    if(!vMode) return;
+    const grip=e.target.closest('.vgrip'); if(!grip) return;
+    const el=grip.closest('.vcard'); if(!el) return;
+    e.preventDefault(); e.stopPropagation();
+    begin(el,e.clientX,e.clientY,e.pointerId);
+  });
+  g.addEventListener('pointermove',e=>{ if(d) move(e.clientX,e.clientY); });
+  /* while a card is in hand the page must not slide under it */
+  g.addEventListener('touchmove',e=>{ if(d) e.preventDefault(); },{passive:false});
+
+  const end=async()=>{
+    if(!d) return;
+    const el=d.el; d=null;
+    el.classList.remove('dragging');
+    g.classList.remove('dnd');
+    el.style.transform='translate('+el.dataset.x+'px,'+el.dataset.y+'px)';
+    setTimeout(()=>{ vDragBusy=false; },80);
+    await persistVisionOrder();
+  };
+  g.addEventListener('pointerup',end);
+  g.addEventListener('pointercancel',end);
+})();
+
+/* ===========================================================
+   Viewer — pinch or double tap to zoom, anchored on the point
+   you actually touched
+   =========================================================== */
+const LB={img:null,sc:1,x:0,y:0,cx:0,cy:0,w:0,h:0,
+          pts:new Map(),pd:0,pmx:0,pmy:0,sx:0,sy:0,moved:false,pinched:false,tap:0};
+
+function lbApply(ease){
+  if(!LB.img) return;
+  LB.img.classList.toggle('ease',!!ease);
+  LB.img.style.transform='translate('+LB.x+'px,'+LB.y+'px) scale('+LB.sc+')';
+}
+/* the untransformed box gives the fixed origin every calculation hangs off */
+function lbMeasure(){
+  const img=LB.img; if(!img) return;
+  const keep=img.style.transform;
+  img.style.transform='none';
+  const r=img.getBoundingClientRect();
+  LB.w=r.width; LB.h=r.height; LB.cx=r.left+r.width/2; LB.cy=r.top+r.height/2;
+  img.style.transform=keep;
+}
+function lbClamp(){
+  const st=$('#vBoxStage').getBoundingClientRect();
+  const mx=Math.max(0,(LB.w*LB.sc-st.width)/2), my=Math.max(0,(LB.h*LB.sc-st.height)/2);
+  LB.x=Math.max(-mx,Math.min(mx,LB.x));
+  LB.y=Math.max(-my,Math.min(my,LB.y));
+}
+/* keep the screen point you touched pinned to the same pixel of the photo */
+function lbAnchor(sc,ax,ay,mx,my,ease){
+  sc=Math.max(1,Math.min(5,sc));
+  const k=sc/LB.sc;
+  LB.x=(mx-LB.cx)-k*((ax-LB.cx)-LB.x);
+  LB.y=(my-LB.cy)-k*((ay-LB.cy)-LB.y);
+  LB.sc=sc; lbClamp(); lbApply(!!ease);
+}
+function lbReset(ease){ LB.sc=1; LB.x=0; LB.y=0; lbApply(ease); }
+
+function openLightbox(it){
+  const stage=$('#vBoxStage'), box=$('#vBox');
+  stage.innerHTML=''; LB.img=null; LB.pts.clear();
+  LB.pinched=false; LB.pd=0; LB.tap=0;
+  LB.sc=1; LB.x=0; LB.y=0;
+  $$('#vBox [data-tmp]').forEach(n=>n.remove());
+  if(it.type==='image'){
+    const img=document.createElement('img');
+    img.className='lbimg'; img.alt=it.caption||'';
+    img.addEventListener('load',lbMeasure,{once:true});
+    img.src=it.src;
+    stage.appendChild(img); LB.img=img;
+    if(it.caption){
+      const cap=document.createElement('div');
+      cap.className='lbhint'; cap.textContent=it.caption; cap.dataset.tmp='1';
+      box.appendChild(cap);
+    }
+  }else{
+    const q=document.createElement('div');
+    q.className='lbq'; q.style.setProperty('--c',it.color||THREADS[0]);
+    q.innerHTML='<div class="t">'+esc(it.text||'')+'</div>'+
+                (it.author?'<div class="a">'+esc(it.author)+'</div>':'');
+    stage.appendChild(q);
+  }
+  box.classList.add('on');
+  requestAnimationFrame(lbMeasure);
+  buzz(6);
+}
+function closeLightbox(){
+  $('#vBox').classList.remove('on');
+  $$('#vBox [data-tmp]').forEach(n=>n.remove());
+  LB.pts.clear();
+  setTimeout(()=>{ $('#vBoxStage').innerHTML=''; LB.img=null; },320);
+}
+$('#vBoxClose').addEventListener('click',closeLightbox);
+
+$('#vBox').addEventListener('pointerdown',e=>{
+  if(e.target.closest('.lbx')) return;
+  LB.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(LB.pts.size===1){ LB.sx=e.clientX; LB.sy=e.clientY; LB.moved=false; }
+  if(LB.pts.size===2){
+    LB.pinched=true;
+    const [a,b]=[...LB.pts.values()];
+    LB.pd=Math.hypot(a.x-b.x,a.y-b.y);
+    LB.pmx=(a.x+b.x)/2; LB.pmy=(a.y+b.y)/2;
+  }
+});
+$('#vBox').addEventListener('pointermove',e=>{
+  if(!LB.pts.has(e.pointerId)) return;
+  const prev=LB.pts.get(e.pointerId);
+  LB.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(Math.abs(e.clientX-LB.sx)+Math.abs(e.clientY-LB.sy)>8) LB.moved=true;
+
+  if(LB.pts.size>=2 && LB.img){
+    const [a,b]=[...LB.pts.values()];
+    const dist=Math.hypot(a.x-b.x,a.y-b.y), mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    if(LB.pd>0) lbAnchor(LB.sc*(dist/LB.pd),LB.pmx,LB.pmy,mx,my,false);
+    LB.pd=dist; LB.pmx=mx; LB.pmy=my; LB.moved=true;
+  }else if(LB.pts.size===1 && LB.img && LB.sc>1){
+    LB.x+=e.clientX-prev.x; LB.y+=e.clientY-prev.y;
+    lbClamp(); lbApply(false);
+  }
+});
+const lbEnd=e=>{
+  if(!LB.pts.has(e.pointerId)) return;
+  const alone=LB.pts.size===1;
+  LB.pts.delete(e.pointerId);
+  if(LB.pts.size===1){                 /* one finger left after a pinch */
+    const p=[...LB.pts.values()][0];
+    LB.sx=p.x; LB.sy=p.y; LB.pd=0;
+  }
+  if(LB.pts.size) return;
+
+  const pinched=LB.pinched, moved=LB.moved;
+  LB.pinched=false; LB.pd=0; LB.pmx=0; LB.pmy=0;
+  if(LB.sc<=1.02) lbReset(true);
+  if(!alone||pinched||moved) return;
+
+  /* a clean tap: on the photo it zooms, on the backdrop it closes */
+  if(LB.img && e.target===LB.img){
+    const now=Date.now();
+    if(now-LB.tap<300){
+      LB.tap=0;
+      lbAnchor(LB.sc>1.15?1:2.6,e.clientX,e.clientY,e.clientX,e.clientY,true);
+      if(LB.sc===1){ LB.x=0; LB.y=0; lbApply(true); }
+      buzz(6);
+    }else LB.tap=now;
+    return;
+  }
+  if(e.target.closest('.lbq')) return;
+  closeLightbox();
+};
+$('#vBox').addEventListener('pointerup',lbEnd);
+$('#vBox').addEventListener('pointercancel',lbEnd);
+addEventListener('resize',()=>{
+  if($('#vBox').classList.contains('on')){ lbMeasure(); lbClamp(); lbApply(false); }
+});
+
+/* ---------- vision sheet ---------- */
+(function vBuild(){
+  const cc=$('#vColors');
+  THREADS.forEach(c=>{
+    const b=document.createElement('button'); b.className='co'; b.dataset.c=c;
+    b.style.setProperty('--c',c); b.setAttribute('aria-label','Colour '+c);
+    cc.appendChild(b);
+  });
+  cc.addEventListener('click',e=>{
+    const b=e.target.closest('.co'); if(!b) return;
+    vColor=b.dataset.c; syncVSheet(); buzz(6);
+  });
+  $('#vWide').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    vWide=b.dataset.w==='1'; syncVSheet(); buzz(6);
+  });
+})();
+function syncVSheet(){
+  $$('#vColors .co').forEach(b=>b.classList.toggle('on',b.dataset.c===vColor));
+  $$('#vWide button').forEach(b=>b.classList.toggle('on',(b.dataset.w==='1')===vWide));
+}
+
+function openVSheet(it,isNew){
+  vEditing=it; vIsNew=!!isNew; vColor=it.color||THREADS[0]; vWide=!!it.wide;
+  const isQ=it.type==='quote';
+  $('#vTitle').textContent=isQ?(isNew?'New quote':'Edit quote'):'Edit photo';
+  $('#vPreview').innerHTML=isQ?'':'<img class="vprev" src="'+it.src+'" alt="">';
+  $('#vQuoteWrap').hidden=!isQ; $('#vCapWrap').hidden=isQ;
+  if(isQ){ $('#vText').value=it.text||''; $('#vAuthor').value=it.author||''; }
+  else $('#vCaption').value=it.caption||'';
+  syncVSheet();
+  $('#vDelete').textContent='Delete'; $('#vDelete').dataset.armed='';
+  $('#vDelete').parentElement.hidden=!!isNew;
+  $('#scrim').classList.add('on'); $('#vSheet').classList.add('on'); $('#vSheet').scrollTop=0;
+  if(isQ&&isNew) setTimeout(()=>$('#vText').focus(),380);
+}
+function closeVSheet(){
+  $('#scrim').classList.remove('on'); $('#vSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  vEditing=null; vIsNew=false;
+}
+$('#vCancel').addEventListener('click',closeVSheet);
+$('#vSave').addEventListener('click',async()=>{
+  if(!vEditing) return;
+  if(vEditing.type==='quote'){
+    const t=$('#vText').value.trim();
+    if(!t){ $('#vText').focus(); toast('Write the line first'); return; }
+    vEditing.text=t; vEditing.author=$('#vAuthor').value.trim(); vEditing.color=vColor;
+  }else vEditing.caption=$('#vCaption').value.trim();
+  vEditing.wide=vWide;
+  const added=vIsNew;
+  if(vIsNew){ visionItems.push(vEditing); vMode=false; $('#vEdit').textContent='Edit'; $('#vEdit').classList.remove('on'); }
+  await dbPut('vision',vEditing);
+  closeVSheet(); renderVision(); buzz(10);
+  toast(added?'Added to your board':'Saved');
+});
+$('#vDelete').addEventListener('click',async e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; buzz(14); return; }
+  const id=vEditing&&vEditing.id; closeVSheet();
+  if(id) await removeVision(id);
+});
+
+/* ===========================================================
    Sets — several habit line-ups, one active at a time
    =========================================================== */
 function renderSets(){
@@ -1663,15 +2407,29 @@ $('#sDelete').addEventListener('click',async e=>{
 /* ===========================================================
    Navigation + settings
    =========================================================== */
-$$('.tab').forEach(t=>t.addEventListener('click',()=>{
-  const v=t.dataset.v;
-  $$('.tab').forEach(x=>x.classList.toggle('on',x===t));
+function showView(v){
+  if(v!=='vision') visionUnlocked=false;   /* the board asks again every time */
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));
-  $('#fab').classList.toggle('show',v==='habits');
   scrollTo(0,0);
   if(v==='today') requestAnimationFrame(()=>{const g=$('#grid');g.scrollLeft=g.scrollWidth;});
   if(v==='plan'){ planDay=TSTR; renderPlan(); }
-  if(v==='settings') renderSettings();
+  if(v==='vision') renderVision();
+  if(v==='settings'){ renderSets(); renderHabits(); renderSettings(); }
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>{
+  const v=t.dataset.v;
+  $$('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  const wasTheme=visionDark?'dark':resolvedTheme();
+  const wantDark=(v==='vision');
+  const nowTheme=wantDark?'dark':resolvedTheme();
+  /* nothing of the new page is shown until the colour has already changed */
+  const swap=()=>{
+    visionDark=wantDark;
+    $('#themeBtn').hidden=wantDark;
+    applySettings();
+    showView(v);
+  };
+  if(wasTheme!==nowTheme) themeSweep(nowTheme,t,swap); else swap();
   buzz(6);
 }));
 addEventListener('scroll',()=>{$('#topbar').classList.toggle('stuck',scrollY>6);},{passive:true});
@@ -1689,6 +2447,7 @@ $('#themeCtrl').addEventListener('click',e=>{
   S.theme=b.dataset.t; applySettings(); saveSettings(); renderSettings();
 });
 $('#themeBtn').addEventListener('click',()=>{
+  visionDark=false;   /* a deliberate choice beats the page default */
   S.theme = resolvedTheme()==='dark'?'light':'dark';
   applySettings(); saveSettings(); renderSettings(); buzz(8);
 });
@@ -1696,7 +2455,7 @@ $('#mirrorSw').addEventListener('click',()=>{S.mirror=!S.mirror;saveSettings();r
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
 const resolvedTheme=()=>S.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S.theme;
 function applySettings(){
-  const t=resolvedTheme();
+  const t=visionDark?'dark':resolvedTheme();
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
   const m=document.querySelector('meta[name=theme-color]');
@@ -1705,19 +2464,35 @@ function applySettings(){
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
 }
+const THEME_BG={dark:'#000000',light:'#F4F4F3'};
+function themeSweep(to,origin,atCover){
+  const o=document.createElement('div');
+  o.className='sweep'; o.style.background=THEME_BG[to];
+  const r=origin.getBoundingClientRect();
+  const x=r.left+r.width/2, y=r.top+r.height/2;
+  o.style.left=x+'px'; o.style.top=y+'px';
+  document.body.appendChild(o);
+  const far=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+  requestAnimationFrame(()=>{ o.style.transform='translate(-50%,-50%) scale('+Math.ceil(far*1.15/9)+')'; });
+  setTimeout(()=>{ if(atCover) atCover(); },330);      /* the screen is fully covered by now */
+  setTimeout(()=>{ o.style.opacity='0'; setTimeout(()=>o.remove(),340); },400);
+}
 function renderSettings(){
   $$('#themeCtrl button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.theme));
   $$('#accents .sw').forEach(b=>b.classList.toggle('on',b.dataset.c===S.accent));
+  const locked=!!(S.visionLock&&S.visionLock.hash);
+  $('#lockSw').classList.toggle('on',locked);
+  $('#lockRow').hidden=!locked;
   $('#mirrorSw').classList.toggle('on',S.mirror);
   $('#hapticSw').classList.toggle('on',S.haptics);
-  $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+dayNotes.length+' notes';
+  $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+dayNotes.length+' notes · '+visionItems.length+' vision cards';
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
 $('#exportBtn').addEventListener('click',()=>{
   const data={app:'dayflow',version:3,exported:new Date().toISOString(),
-    habits:allHabits,sets,records:[...recs],dnotes:dayNotes,notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
+    habits:allHabits,sets,records:[...recs],dnotes:dayNotes,notes:[...notes.entries()],plans:[...plans.entries()],vision:visionItems,settings:S};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   const a=document.createElement('a'); a.href=url; a.download='dayflow-'+TSTR+'.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000); toast('Exported');
@@ -1732,13 +2507,14 @@ $('#importFile').addEventListener('change',async e=>{
     allHabits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
     sets=d.sets||[];
     recs=new Set(d.records||[]); notes=new Map(d.notes||[]); dayNotes=d.dnotes||[];
-    plans=new Map(d.plans||[]);
+    plans=new Map(d.plans||[]); visionItems=d.vision||[];
     S=Object.assign(S,d.settings||{},{seeded:true});
     for(const st of sets) await dbPut('sets',st);
     for(const h of allHabits) await dbPut('habits',h);
     for(const k of recs){const [hid,date]=k.split('|');await dbPut('records',{key:k,habitId:hid,date,done:1});}
     for(const [date,text] of notes) await dbPut('notes',{date,text});
     for(const n of dayNotes) await dbPut('dnotes',n);
+    for(const v of visionItems) await dbPut('vision',v);
     await migrateNotes();
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
     await ensureSets(); await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
@@ -1752,7 +2528,8 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); dayNotes=[]; plans=new Map(); S.seeded=false; S.activeSet=null;
+  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); dayNotes=[]; plans=new Map(); visionItems=[];
+  S.seeded=false; S.activeSet=null; S.northStar=''; S.visionLock=null; visionUnlocked=false;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   renderAll(); renderNote(); toast('Everything reset');
@@ -1843,6 +2620,7 @@ async function loadAll(){
   recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
   notes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
   dayNotes=await dbAll('dnotes');
+  visionItems=(await dbAll('vision')).sort((a,b)=>(a.order||0)-(b.order||0));
   await migrateNotes();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
@@ -1887,7 +2665,7 @@ async function seed(){
   applySet();
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderHead(); renderGrid(); renderSets(); renderHabits(); renderPlan(); renderSettings(); }
+function renderAll(){ renderHead(); renderGrid(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
 
 /* planning notes are working memory, not a record: anything older than today goes */
 async function purgePlans(){
@@ -1900,7 +2678,10 @@ function checkRollover(){
     purgePlans(); renderAll(); renderNote();
   }
 }
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRollover();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){ visionUnlocked=false; }      /* the board locks itself when you leave the app */
+  else{ checkRollover(); syncVisionLock(); }
+});
 setInterval(checkRollover,60000);
 
 (async function boot(){
