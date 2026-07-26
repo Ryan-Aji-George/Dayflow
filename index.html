@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#0B0E16">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dayflow">
 <meta name="description" content="Dayflow — track the threads of your day.">
 <title>Dayflow</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230B0E16'/%3E%3Crect x='12' y='18' width='40' height='7' rx='3.5' fill='%23F2A93B'/%3E%3Crect x='12' y='29' width='26' height='7' rx='3.5' fill='%233FC7B4'/%3E%3Crect x='12' y='40' width='14' height='7' rx='3.5' fill='%23E86BA0'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23000000'/%3E%3Crect x='12' y='18' width='40' height='7' rx='3.5' fill='%23F2A93B'/%3E%3Crect x='12' y='29' width='26' height='7' rx='3.5' fill='%233FC7B4'/%3E%3Crect x='12' y='40' width='14' height='7' rx='3.5' fill='%23E86BA0'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAAAP1BMVEULDhbyqTsro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgRfA4AAAAEHRSTlP/////AAAAAAAAAAAAAAAADW2LcQAAAK1JREFUeNrt18FxAkAMBEEk5Z+zI/DHVWAGuiOY12nv8QAAAAAAAAAAAKiZpwomPyd7plc906ueCVYXo2eC1aJFi/6m58NxSZ7x5mBqTtPmJwAA4LX2z4LJ/5e926ve7VXvBquL0bvBatGiPy3ak+cift72aK685p4GAHit+10w+W2z73rVd73qu2B1MfouWC1atGhP3jdFJ894czA1p2nzEwAAAAAAAAAAALylHxtPF2NlUyyQAAAAAElFTkSuQmCC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,26 +28,26 @@
   --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
   --cw:32px; --ch:34px; --gap:2px; --nw:150px;
   --cx:4px; --cy:5px; --r-cell:8px;   /* inset of the mark inside its column */
-  --r-lg:20px; --r-md:15px;
+  --r-lg:18px; --r-md:14px;
   --ease:cubic-bezier(.22,.9,.28,1);
   --spring:cubic-bezier(.34,1.4,.64,1);
 }
 html[data-theme="dark"]{
-  --bg:#0B0E16; --bg-2:#10141F; --surf:#131828; --surf-2:#1A2032;
-  --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.15);
-  --ink:#E9EDF6; --ink-2:#9AA4B8; --ink-3:#616B82;
-  --tint:rgba(255,255,255,.035); --cell:rgba(255,255,255,.05); --well:inset 0 1px 2px rgba(0,0,0,.3);
-  --sun:#F0625C;
-  --shadow:0 1px 0 rgba(255,255,255,.03);
+  --bg:#000000; --bg-2:#090909; --surf:#111111; --surf-2:#1A1A1A;
+  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
+  --ink:#F5F5F5; --ink-2:#A1A1A1; --ink-3:#6E6E6E;
+  --tint:rgba(255,255,255,.045); --cell:rgba(255,255,255,.06); --well:inset 0 1px 2px rgba(0,0,0,.5);
+  --sun:#FF6B61;
+  --shadow:none;
   color-scheme:dark;
 }
 html[data-theme="light"]{
-  --bg:#EFF0EC; --bg-2:#E7E9E3; --surf:#F9FAF7; --surf-2:#FFFFFF;
-  --line:rgba(18,24,20,.10); --line-2:rgba(18,24,20,.2);
-  --ink:#12171A; --ink-2:#5A636E; --ink-3:#8B949F;
-  --tint:rgba(18,24,20,.035); --cell:rgba(18,24,20,.055); --well:inset 0 1px 2px rgba(18,24,20,.075);
+  --bg:#F4F4F3; --bg-2:#ECECEA; --surf:#FFFFFF; --surf-2:#FFFFFF;
+  --line:rgba(0,0,0,.08); --line-2:rgba(0,0,0,.18);
+  --ink:#121212; --ink-2:#5E5E5E; --ink-3:#8E8E8E;
+  --tint:rgba(0,0,0,.035); --cell:rgba(0,0,0,.055); --well:inset 0 1px 2px rgba(0,0,0,.06);
   --sun:#D8443F;
-  --shadow:0 1px 2px rgba(20,30,20,.05);
+  --shadow:0 1px 2px rgba(0,0,0,.04);
   color-scheme:light;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -62,7 +62,7 @@ body{
 input,textarea,button{font:inherit;color:inherit}
 input,textarea{user-select:text;-webkit-user-select:text}
 button{background:none;border:0;padding:0;cursor:pointer}
-.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 ::-webkit-scrollbar{width:0;height:0}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
 
@@ -124,7 +124,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dnlist{display:flex;flex-direction:column;gap:8px}
 .dn{
   border:1px solid var(--line);border-radius:13px;background:var(--surf);
-  transition:border-color .25s var(--ease),box-shadow .25s var(--ease);
+  transition:border-color .25s var(--ease),background .25s var(--ease);
 }
 .dn.editing{border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:var(--surf-2)}
 .dn-head{width:100%;display:flex;align-items:center;gap:10px;padding:11px 13px 8px;text-align:left}
@@ -135,18 +135,13 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dn-title.untitled{color:var(--ink-3);font-weight:500}
 .dn .chev{width:14px;height:14px;flex:0 0 auto}
 .dn.open .chev{transform:rotate(180deg)}
-.dn-read{padding:0 13px 11px;cursor:text}
+.dn-read{padding:0 13px 12px;cursor:text}
 .dn-text{
   font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--ink-2);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
 }
 .dn.open .dn-text{display:block;overflow:visible}
 .dn-text.empty{color:var(--ink-3)}
-.dn-hint{
-  display:none;font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--ink-3);margin-top:9px;
-}
-.dn.open .dn-hint{display:block}
 .dn-edit{padding:11px 13px 12px}
 .dn-tin{
   width:100%;border:0;outline:0;background:transparent;color:inherit;
@@ -293,7 +288,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .btn.danger{background:transparent;color:#F2705E;border:1px solid color-mix(in srgb,#F2705E 32%,transparent)}
 .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-.setstrip{display:flex;gap:7px;overflow-x:auto;margin:0 -20px 12px;padding:2px 20px 4px}
+.setstrip{display:flex;gap:7px;overflow-x:auto;margin:0 -20px 18px;padding:2px 20px 4px}
 .schip{
   flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;
   background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
@@ -304,7 +299,6 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .schip .c{font-family:var(--mono);font-size:9.5px;opacity:.55}
 .schip.on{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
 .schip.add{color:var(--acc);border-style:dashed;border-color:color-mix(in srgb,var(--acc) 38%,transparent)}
-.phint{margin:0 2px 16px;font-size:12.5px;color:var(--ink-3);line-height:1.5}
 
 /* ---------- settings ---------- */
 .group{margin-bottom:26px}
@@ -381,14 +375,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
   padding:0 15px;font-size:15.5px;outline:0;transition:border-color .25s,box-shadow .25s;
 }
 .input:focus{border-color:color-mix(in srgb,var(--acc) 50%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 12%,transparent)}
-.colors{display:flex;gap:12px;flex-wrap:wrap}
+.input.big{height:54px;font-size:17px;font-weight:500}
+.colors{display:flex;gap:12px;flex-wrap:wrap;padding:16px 4px 2px}
 .co{width:30px;height:30px;border-radius:50%;background:var(--c);position:relative;transition:transform .2s var(--spring)}
 .co:active{transform:scale(.86)}
 .co.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--c)}
-.presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
 .preset{font-size:12.5px;padding:7px 12px;border-radius:10px;background:var(--surf);border:1px solid var(--line);color:var(--ink-2);transition:all .22s var(--ease)}
 .preset.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.durrow{display:flex;align-items:center;gap:9px}
+.durrow{display:flex;align-items:center;gap:9px;margin-top:14px}
 .numbox{
   display:flex;align-items:center;gap:7px;height:50px;padding:0 14px;border-radius:13px;
   background:var(--surf);border:1px solid var(--line);
@@ -422,15 +417,16 @@ button{background:none;border:0;padding:0;cursor:pointer}
   padding:8px var(--lnx);margin:0 calc(-1 * var(--lnx));
   transition:background .25s var(--ease),box-shadow .25s var(--ease);
 }
-.block .lnote{--lnx:6px}
-.lnote.editing{background:var(--tint);box-shadow:inset 0 0 0 1px var(--line)}
+.block .lnote{--lnx:6px;margin-top:8px}
 .lnote-text{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;cursor:text}
 /* an empty note collapses to a single prompt row instead of a blank slab */
 .lnote.blank .lnote-text{display:none}
 .lnote.blank .lnote-foot{margin-top:0}
 .lnote.blank .lnote-hint{color:var(--ink-2)}
+/* a written note needs no footer at all — tap the text to edit it */
+.lnote.quiet .lnote-foot{display:none}
 .lnote-ta{
-  width:100%;min-height:58px;border:0;outline:0;background:transparent;resize:none;
+  width:100%;min-height:40px;border:0;outline:0;background:transparent;resize:none;
   font-family:inherit;font-size:14px;line-height:1.6;padding:0;color:inherit;
 }
 .lnote-ta::placeholder{color:var(--ink-3)}
@@ -441,19 +437,20 @@ button{background:none;border:0;padding:0;cursor:pointer}
 }
 .lnote.editing .lnote-hint{color:var(--acc)}
 .lnote-done{
-  font-size:12.5px;font-weight:600;color:var(--acc);padding:5px 12px;border-radius:9px;
+  font-size:12.5px;font-weight:600;color:var(--acc);padding:6px 14px;border-radius:9px;
   background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring);
 }
 .lnote-done:active{transform:scale(.92)}
 
 /* ---------- plan ---------- */
+.plan-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:10px}
+.plan-head .eyebrow{display:block}
+.plan-head .todaybtn{margin-bottom:7px;flex:0 0 auto}
 .stripwrap{
   position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:30;
-  margin:0 -20px 20px;padding:0 20px 11px;background:var(--bg);
+  margin:0 -20px 22px;padding:14px 20px 13px;background:var(--bg);
 }
 .stripwrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
-.striphead{display:flex;align-items:center;gap:12px;padding:0 0 10px}
-.striphead .eyebrow{flex:1}
 .todaybtn{
   font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);
   padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--acc) 12%,transparent);
@@ -470,16 +467,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dchip .w{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);transition:color .24s}
 .dchip .d{font-size:14.5px;font-weight:600;letter-spacing:-.02em;margin-top:2px;line-height:1.15}
 .dchip .dot{display:block;width:4px;height:4px;border-radius:50%;background:transparent;margin:3px auto 0}
+/* a dot marks a day that already has something on it, so you can see it without tapping */
+.dchip.has .dot{background:var(--ink-3)}
 .dchip.today{border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
 .dchip.today .dot{background:var(--acc)}
 .dchip.sun .w,.dchip.sun .d{color:var(--sun)}
 .dchip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .dchip.on .w{color:var(--bg);opacity:.62}
 .dchip.on .dot{background:var(--bg);opacity:.7}
-.dchip.sun.on{background:var(--sun);border-color:var(--sun);color:#fff}
-.dchip.sun.on .w,.dchip.sun.on .d{color:#fff}
-.dchip.sun.on .w{opacity:.75}
-.dchip.sun.on .dot{background:#fff}
+.dchip.on .d{color:var(--bg)}
 .msep{flex:0 0 auto;width:1px;background:var(--line-2);margin:9px 5px;border-radius:1px}
 .psec{display:block;margin:0 2px 10px}
 .psec.gap{margin-top:26px}
@@ -487,16 +483,20 @@ button{background:none;border:0;padding:0;cursor:pointer}
   background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
   padding:14px;margin-bottom:10px;
 }
-.pcard{margin-bottom:0}
+.pcard{margin-bottom:0;transition:background .3s var(--ease),border-color .3s var(--ease)}
 .block{transition:background .3s var(--ease),border-color .3s var(--ease)}
 .block.done{
   border-color:color-mix(in srgb,var(--c) 32%,transparent);
   background:color-mix(in srgb,var(--c) 7%,var(--surf));
 }
-.block-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.pcard.editing,.block.editing{
+  border-color:color-mix(in srgb,var(--acc) 55%,transparent);
+  background:var(--surf-2);
+}
+.block-head{display:flex;align-items:center;gap:12px}
 .bcheck{
   width:26px;height:26px;border-radius:8px;flex:0 0 auto;position:relative;
-  background:var(--cell);box-shadow:var(--well);display:grid;place-items:center;
+  background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);display:grid;place-items:center;
   transition:background .28s var(--ease),box-shadow .28s var(--ease),transform .2s var(--spring);
 }
 .bcheck:active{transform:scale(.88)}
@@ -519,6 +519,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 }
 .block.done .bmeta{color:color-mix(in srgb,var(--c) 78%,var(--ink-3))}
 .btag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);flex:0 0 auto}
+.btag:empty{display:none}
 .btag.on{color:var(--c)}
 .btag.sun{color:var(--sun)}
 .psec .sun{color:var(--sun)}
@@ -548,6 +549,14 @@ button{background:none;border:0;padding:0;cursor:pointer}
 #boot .mark i:nth-child(2){animation-delay:.15s}
 #boot .mark i:nth-child(3){animation-delay:.3s}
 @keyframes markLoop{0%,100%{transform:scaleX(.25);opacity:.3}50%{transform:scaleX(1);opacity:1}}
+
+/* ---------- edit-mode transitions ---------- */
+@keyframes rvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes rvFade{from{opacity:0}to{opacity:1}}
+@keyframes rvPop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+.rv{animation:rvIn .26s var(--ease) both}
+.rvf{animation:rvFade .24s var(--ease) both}
+.rvp{animation:rvPop .3s var(--spring) both}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.06s!important}
@@ -613,15 +622,14 @@ button{background:none;border:0;padding:0;cursor:pointer}
 
     <!-- ===== PLAN ===== -->
     <section class="view" id="v-plan">
-      <div class="ptitle">
-        <span class="eyebrow">Plan</span>
-        <h2>Study blocks</h2>
+      <div class="ptitle plan-head">
+        <div>
+          <span class="eyebrow" id="planMonth">—</span>
+          <h2 id="planTitle">Today</h2>
+        </div>
+        <button class="todaybtn" id="planToday" hidden>Today</button>
       </div>
       <div class="stripwrap">
-        <div class="striphead">
-          <span class="eyebrow" id="planMonth">—</span>
-          <button class="todaybtn" id="planToday" hidden>Today</button>
-        </div>
         <div class="daystrip" id="dayStrip"></div>
       </div>
       <div id="planWrap"></div>
@@ -634,7 +642,6 @@ button{background:none;border:0;padding:0;cursor:pointer}
         <h2>Your threads</h2>
       </div>
       <div class="setstrip" id="setStrip"></div>
-      <p class="phint">Drag to reorder · tap a habit to edit · tap the active set to rename it</p>
       <div class="hlist" id="hlist"></div>
       <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
     </section>
@@ -695,7 +702,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
           <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
         </div>
       </div>
-      <p class="foot">Dayflow 1.2 · one file, nothing to install alongside it<br>Your habits stay on this device</p>
+      <p class="foot">Dayflow 1.2 · everything stays on this device</p>
       <input type="file" id="importFile" accept="application/json" hidden>
     </section>
   </main>
@@ -715,31 +722,11 @@ button{background:none;border:0;padding:0;cursor:pointer}
   <div class="grabber"></div>
   <h3 id="sheetTitle">New habit</h3>
   <div class="field">
-    <span class="eyebrow">Name</span>
-    <input class="input" id="fName" placeholder="Read 20 pages" maxlength="40" autocomplete="off">
-  </div>
-  <div class="field">
-    <span class="eyebrow">Thread colour</span>
+    <input class="input big" id="fName" placeholder="Habit name" maxlength="40" autocomplete="off">
     <div class="colors" id="fColors"></div>
   </div>
   <div class="field">
-    <div class="toggle-row">
-      <div class="t"><div class="n">Study block</div>
-        <div class="d">Adds it to the Plan page with room for session goals.</div></div>
-      <button class="switch" id="fStudy" role="switch"></button>
-    </div>
-  </div>
-  <div class="field" id="fDurWrap" hidden>
-    <span class="eyebrow">Session length</span>
-    <div class="durrow">
-      <label class="numbox"><input class="numin" id="fHrs" type="number" min="0" max="23" step="1" inputmode="numeric" placeholder="0"><span class="u">h</span></label>
-      <label class="numbox"><input class="numin" id="fMins" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0"><span class="u">min</span></label>
-      <span class="durtotal" id="fDurTotal">Not set</span>
-    </div>
-    <p class="hint">Any length you like. Leave both at zero and no length is shown.</p>
-  </div>
-  <div class="field">
-    <span class="eyebrow">Active days</span>
+    <span class="eyebrow">Days</span>
     <div class="presets" id="fPresets">
       <button class="preset" data-p="all">Every day</button>
       <button class="preset" data-p="wd">Weekdays</button>
@@ -747,7 +734,19 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <button class="preset" data-p="sun">Sundays</button>
     </div>
     <div class="days" id="fDays"></div>
-    <p class="hint">Days you switch off are checked for you automatically. Settings lets you unlock them; one you then untick counts towards the day again.</p>
+    <p class="hint">Days you turn off get ticked for you.</p>
+  </div>
+  <div class="field">
+    <div class="toggle-row">
+      <div class="t"><div class="n">Study block</div>
+        <div class="d">Adds it to Plan with session goals.</div></div>
+      <button class="switch" id="fStudy" role="switch"></button>
+    </div>
+    <div class="durrow" id="fDurWrap" hidden>
+      <label class="numbox"><input class="numin" id="fHrs" type="number" min="0" max="23" step="1" inputmode="numeric" placeholder="0"><span class="u">h</span></label>
+      <label class="numbox"><input class="numin" id="fMins" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0"><span class="u">min</span></label>
+      <span class="durtotal" id="fDurTotal">Not set</span>
+    </div>
   </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="fCancel">Cancel</button>
@@ -831,12 +830,6 @@ const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 const startOfDay=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
 let TODAY=startOfDay(new Date()), TSTR=ymd(TODAY);
-function isoWeek(d){
-  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
-  const dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3);
-  const f=new Date(Date.UTC(t.getUTCFullYear(),0,4));
-  return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7);
-}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- logic ---------- */
@@ -920,13 +913,38 @@ const HAPTIC={
   medium:16, light:7
 };
 const buzz=v=>{ if(S.haptics&&navigator.vibrate){ try{ navigator.vibrate(v); }catch(e){} } };
+/* animate a card across a layout swap so its height never jumps */
+function morph(el,fn){
+  if(!el){ fn(); return; }
+  const h0=el.offsetHeight;
+  fn();
+  const h1=el.offsetHeight;
+  if(Math.abs(h1-h0)<1) return;
+  el.style.overflow='hidden'; el.style.height=h0+'px';
+  void el.offsetHeight;
+  el.style.transition='height .32s cubic-bezier(.22,.9,.28,1)';
+  el.style.height=h1+'px';
+  const clear=e=>{
+    if(e && e.propertyName!=='height') return;
+    el.style.height=''; el.style.overflow=''; el.style.transition='';
+    el.removeEventListener('transitionend',clear);
+  };
+  el.addEventListener('transitionend',clear);
+  setTimeout(clear,440);
+}
+/* replay a one-shot animation on an element that has just been revealed */
+function anim(el,cls){
+  if(!el) return;
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  el.addEventListener('animationend',()=>el.classList.remove(cls),{once:true});
+}
 
 /* ===========================================================
    Today
    =========================================================== */
 function renderHead(){
   const t=dayTally(TODAY);
-  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+' · WEEK '+isoWeek(TODAY)+
+  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
     (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
   $('#heroDate').textContent=FULLDAY[TODAY.getDay()];
 
@@ -1093,7 +1111,7 @@ function noteCard(n){
   el.innerHTML=
     '<button class="dn-head"><span class="dn-title"></span>'+
       '<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'+
-    '<div class="dn-read"><div class="dn-text"></div><div class="dn-hint">Double-tap to edit</div></div>'+
+    '<div class="dn-read"><div class="dn-text"></div></div>'+
     '<div class="dn-edit" hidden>'+
       '<input class="dn-tin" placeholder="Title" maxlength="60" autocomplete="off">'+
       '<textarea class="dn-ta" placeholder="Write it down"></textarea>'+
@@ -1101,9 +1119,9 @@ function noteCard(n){
     '</div>';
 
   const head=$('.dn-head',el), read=$('.dn-read',el), edit=$('.dn-edit',el),
-        title=$('.dn-title',el), text=$('.dn-text',el), hint=$('.dn-hint',el),
+        title=$('.dn-title',el), text=$('.dn-text',el),
         tin=$('.dn-tin',el), ta=$('.dn-ta',el), del=$('.dn-del',el), done=$('.dn-done',el);
-  let editing=false, saveT=null, lastTap=0;
+  let editing=false, saveT=null;
 
   function paint(){
     const t=(n.title||'').trim(), b=(n.text||'').trim();
@@ -1118,30 +1136,32 @@ function noteCard(n){
     if(n.title===tin.value && n.text===ta.value) return;
     n.title=tin.value; n.text=ta.value;
     await dbPut('dnotes',n);
-    hint.textContent='Saved';
-    setTimeout(()=>{ hint.textContent='Double-tap to edit'; },1400);
   }
   function openEdit(){
     if(editing) return; editing=true;
-    el.classList.add('open','editing');
     tin.value=n.title||''; ta.value=n.text||'';
-    head.hidden=true; read.hidden=true; edit.hidden=false;
-    grow(); ((n.title||'').trim()?ta:tin).focus();
+    morph(el,()=>{
+      el.classList.add('open','editing');
+      head.hidden=true; read.hidden=true; edit.hidden=false;
+      grow();
+    });
+    anim(edit,'rv');
+    ((n.title||'').trim()?ta:tin).focus();
   }
   async function closeEdit(){
     if(!editing) return; editing=false;
     await save();
-    head.hidden=false; read.hidden=false; edit.hidden=true;
-    el.classList.remove('editing');
-    paint(); refreshNoteLabel();
+    morph(el,()=>{
+      head.hidden=false; read.hidden=false; edit.hidden=true;
+      el.classList.remove('editing');
+      paint();
+    });
+    refreshNoteLabel();
+    anim(head,'rvf'); anim(read,'rvf');
   }
 
   head.addEventListener('click',()=>{ el.classList.toggle('open'); buzz(5); });
-  read.addEventListener('click',()=>{
-    const t=Date.now();
-    if(t-lastTap<400){ lastTap=0; openEdit(); buzz(9); }
-    else{ lastTap=t; el.classList.add('open'); }
-  });
+  read.addEventListener('click',()=>{ openEdit(); buzz(9); });
   ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
   tin.addEventListener('input',()=>{ clearTimeout(saveT); saveT=setTimeout(save,650); });
   done.addEventListener('mousedown',e=>e.preventDefault());
@@ -1345,8 +1365,8 @@ $('#fDelete').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
-   Locked note — read by default, two taps to edit. Used by the
-   plan page so it behaves exactly like the day note on Today.
+   Quiet inline note — reads as plain text, one tap to edit.
+   Used by the plan page for the day plan and session goals.
    =========================================================== */
 function buildNote(host,o){
   host.className='lnote';
@@ -1356,21 +1376,24 @@ function buildNote(host,o){
     '<div class="lnote-foot"><span class="lnote-hint"></span><button class="lnote-done" hidden>Done</button></div>';
   const view=$('.lnote-text',host), ta=$('.lnote-ta',host),
         hint=$('.lnote-hint',host), done=$('.lnote-done',host);
-  let editing=false, saveT=null, hintT=null, lastTap=0;
+  let editing=false, saveT=null, hintT=null;
+  const frame=host.closest('.pcard,.block');   /* the card is what lights up */
   ta.placeholder=o.placeholder||'';
 
   const val=()=>o.get()||'';
-  const idle=()=>val().trim() ? 'Double-tap to edit' : '+ '+(o.empty||'Add a note');
+  /* written notes say nothing extra; an empty one is its own invitation */
+  const idle=()=>val().trim() ? '' : '+ '+(o.empty||'Add a note');
   function status(txt,revert){
     clearTimeout(hintT); hint.textContent=txt;
-    if(revert) hintT=setTimeout(()=>{ hint.textContent=editing?'Editing':idle(); },1500);
+    if(revert) hintT=setTimeout(()=>{ hint.textContent=editing?'':idle(); },1500);
   }
   function paint(){
-    const v=val();
-    host.classList.toggle('blank',!v.trim() && !editing);
+    const v=val(), has=!!v.trim();
+    host.classList.toggle('blank',!has && !editing);
+    host.classList.toggle('quiet',has && !editing);
     view.textContent=v;
   }
-  function grow(){ ta.style.height='auto'; ta.style.height=Math.max(56,ta.scrollHeight)+'px'; }
+  function grow(){ ta.style.height='auto'; ta.style.height=Math.max(40,ta.scrollHeight)+'px'; }
   async function save(){
     clearTimeout(saveT);
     if(val()===ta.value) return;
@@ -1379,23 +1402,28 @@ function buildNote(host,o){
   function open(){
     if(editing) return;
     editing=true; ta.value=val();
-    host.classList.remove('blank');
-    view.hidden=true; ta.hidden=false; done.hidden=false;
-    host.classList.add('editing'); status('Editing');
-    grow(); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+    morph(frame||host,()=>{
+      host.classList.remove('blank','quiet');
+      view.hidden=true; ta.hidden=false; done.hidden=false;
+      host.classList.add('editing'); if(frame) frame.classList.add('editing');
+      grow();
+    });
+    status(''); anim(ta,'rvf'); anim(done,'rvp');
+    ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
   }
   async function close(){
     if(!editing) return;
     editing=false; await save();
-    ta.hidden=true; done.hidden=true; view.hidden=false;
-    host.classList.remove('editing'); paint(); status(idle());
+    morph(frame||host,()=>{
+      ta.hidden=true; done.hidden=true; view.hidden=false;
+      host.classList.remove('editing'); if(frame) frame.classList.remove('editing');
+      paint();
+    });
+    status(idle()); anim(view,'rvf');
   }
   host.addEventListener('click',e=>{
     if(editing || e.target.closest('.lnote-done')) return;
-    e.stopPropagation();
-    const t=Date.now();
-    if(t-lastTap<400){ lastTap=0; open(); buzz(9); }
-    else{ lastTap=t; status('Tap again to edit',true); }
+    e.stopPropagation(); open(); buzz(9);
   });
   ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
   done.addEventListener('mousedown',e=>e.preventDefault());
@@ -1414,11 +1442,18 @@ async function savePlan(k,v){
   if(v.trim()){ plans.set(k,v); await dbPut('plans',{key:k,date:k.slice(-10),text:v}); }
   else{ plans.delete(k); await dbDel('plans',k); }
 }
+/* does a day already carry something? used for the dot on the day strip */
+function dayHasSomething(d,ds){
+  if(plans.has(planKeyDay(ds))) return true;
+  return habits.some(h=>h.study && h.days.includes(d.getDay()) && (!h.start||ds>=h.start));
+}
 
 function renderPlan(){
   if(planDay<TSTR) planDay=TSTR;
   const sel=new Date(planDay+'T00:00:00'), dow=sel.getDay(), isToday=planDay===TSTR;
+  /* the heading names the day, so nothing below has to repeat the date */
   $('#planMonth').textContent=FULLMON[sel.getMonth()]+' '+sel.getFullYear();
+  $('#planTitle').textContent=isToday?'Today':FULLDAY[dow]+' '+sel.getDate();
   $('#planToday').hidden=isToday;
 
   /* 30 days ahead, split by month */
@@ -1431,7 +1466,8 @@ function renderPlan(){
       month=d.getMonth();
     }
     const b=document.createElement('button');
-    b.className='dchip'+(ds===planDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'');
+    b.className='dchip'+(ds===planDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'')+
+               (dayHasSomething(d,ds)?' has':'');
     b.dataset.d=ds;
     b.innerHTML='<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
                 '<div class="d">'+d.getDate()+'</div><i class="dot"></i>';
@@ -1443,12 +1479,8 @@ function renderPlan(){
   });
 
   const wrap=$('#planWrap'); wrap.innerHTML='';
-  const dayName=FULLDAY[dow], red=dow===0?' class="sun"':'';
 
-  /* the day's own note */
-  const l1=document.createElement('span'); l1.className='eyebrow psec';
-  l1.innerHTML=isToday?'Plan for today':'Plan for <span'+red+'>'+dayName+' '+sel.getDate()+'</span>';
-  wrap.appendChild(l1);
+  /* the day's own note, unlabelled — the heading above already says which day */
   const card=document.createElement('div'); card.className='pcard'; wrap.appendChild(card);
   const dn=document.createElement('div'); card.appendChild(dn);
   buildNote(dn,{
@@ -1467,8 +1499,7 @@ function renderPlan(){
 
   if(!blocks.length){
     const e=document.createElement('div'); e.className='empty';
-    e.innerHTML='<h3>Nothing scheduled</h3><p>No study block falls on '+(isToday?'today':dayName)+
-                '. Tag a habit as a study block on the Habits page.</p>';
+    e.innerHTML='<h3>Nothing scheduled</h3><p>Tag a habit as a study block on the Habits page and it shows up here.</p>';
     wrap.appendChild(e);
     updatePlanCounts(); return;
   }
@@ -1478,14 +1509,14 @@ function renderPlan(){
     const b=document.createElement('div');
     b.className='block'+(on?' done':''); b.dataset.sec='study'; b.dataset.mins=h.mins||0;
     b.style.setProperty('--c',h.color);
+    /* name, length, tick — and a tag only once it is done */
     b.innerHTML=
       '<div class="block-head">'+
         '<button class="bcheck'+(on?' on':'')+(isToday?'':' locked')+'" data-h="'+h.id+'" aria-label="Mark '+esc(h.name)+'">'+
           '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
         '<div class="btxt"><div class="bname">'+esc(h.name)+'</div>'+
-          (h.mins?'<div class="bmeta">'+fmtMins(h.mins)+' session</div>':'')+'</div>'+
-        '<span class="btag'+(on?' on':(dow===0?' sun':''))+'">'+
-          (on?'Done':(isToday?'Today':DN[dow].toUpperCase()+' '+sel.getDate()))+'</span>'+
+          (h.mins?'<div class="bmeta">'+fmtMins(h.mins)+'</div>':'')+'</div>'+
+        '<span class="btag'+(on?' on':'')+'">'+(on?'Done':'')+'</span>'+
       '</div>';
     wrap.appendChild(b);
     const sn=document.createElement('div'); b.appendChild(sn);
@@ -1499,7 +1530,7 @@ function renderPlan(){
   updatePlanCounts();
 }
 
-/* section headers carry a live count for today, a plain total for later days */
+/* section headers carry a short count for today and the time planned, nothing more */
 function updatePlanCounts(){
   const wrap=$('#planWrap'); if(!wrap) return;
   $$('.psec[data-sec]',wrap).forEach(l=>{
@@ -1507,8 +1538,8 @@ function updatePlanCounts(){
     const done=cards.filter(c=>c.classList.contains('done')).length;
     const mins=cards.reduce((n,c)=>n+(+c.dataset.mins||0),0);
     let txt=l.dataset.label;
-    if(cards.length) txt+= planDay===TSTR ? ' · '+done+' of '+cards.length+' done' : ' · '+cards.length;
-    if(mins) txt+=' · '+fmtMins(mins)+' planned';
+    if(cards.length && planDay===TSTR) txt+=' · '+done+'/'+cards.length;
+    if(mins) txt+=' · '+fmtMins(mins);
     l.textContent=txt;
   });
 }
@@ -1528,7 +1559,7 @@ $('#planWrap').addEventListener('click',async e=>{
   b.classList.toggle('on',marking);
   const card=b.closest('.block'); if(card) card.classList.toggle('done',marking);
   const tag=b.parentElement.querySelector('.btag');
-  if(tag){ tag.textContent=marking?'Done':'Today'; tag.classList.toggle('on',marking); }
+  if(tag){ tag.textContent=marking?'Done':''; tag.classList.toggle('on',marking); }
   updatePlanCounts();
   buzz(marking?HAPTIC.tick:HAPTIC.untick);
   renderHead(); renderGrid();
@@ -1669,7 +1700,7 @@ function applySettings(){
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
   const m=document.querySelector('meta[name=theme-color]');
-  if(m) m.setAttribute('content',t==='dark'?'#0B0E16':'#EFF0EC');
+  if(m) m.setAttribute('content',t==='dark'?'#000000':'#F4F4F3');
   $('#themeIcon').innerHTML = t==='dark'
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
@@ -1753,7 +1784,7 @@ if(location.protocol.startsWith('http')){
     start_url:href, scope:href.replace(/[^/]*$/,''),
     display:'standalone', display_override:['standalone','minimal-ui'],
     orientation:'portrait',
-    background_color:'#0B0E16', theme_color:'#0B0E16',
+    background_color:'#000000', theme_color:'#000000',
     categories:['productivity','lifestyle'],
     icons:[
       {src:ICON_192, sizes:'192x192', type:'image/png', purpose:'any'},
