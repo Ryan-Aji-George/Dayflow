@@ -51,6 +51,7 @@ html[data-theme="light"]{
   color-scheme:light;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}   /* author display rules must not beat the hidden attribute */
 html,body{height:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
@@ -115,11 +116,61 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .note-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);opacity:0;transition:opacity .3s}
 .note.has .note-dot{opacity:1}
 .chev{width:15px;height:15px;stroke:var(--ink-3);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
-.note.open .chev{transform:rotate(180deg)}
+.note.open .note-head .chev{transform:rotate(180deg)}
 .note-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease)}
 .note.open .note-body{grid-template-rows:1fr}
 .note-inner{overflow:hidden}
 .note-pad{padding:0 0 16px}
+.dnlist{display:flex;flex-direction:column;gap:8px}
+.dn{
+  border:1px solid var(--line);border-radius:13px;background:var(--surf);
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease);
+}
+.dn.editing{border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:var(--surf-2)}
+.dn-head{width:100%;display:flex;align-items:center;gap:10px;padding:11px 13px 8px;text-align:left}
+.dn-title{
+  flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dn-title.untitled{color:var(--ink-3);font-weight:500}
+.dn .chev{width:14px;height:14px;flex:0 0 auto}
+.dn.open .chev{transform:rotate(180deg)}
+.dn-read{padding:0 13px 11px;cursor:text}
+.dn-text{
+  font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--ink-2);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.dn.open .dn-text{display:block;overflow:visible}
+.dn-text.empty{color:var(--ink-3)}
+.dn-hint{
+  display:none;font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:9px;
+}
+.dn.open .dn-hint{display:block}
+.dn-edit{padding:11px 13px 12px}
+.dn-tin{
+  width:100%;border:0;outline:0;background:transparent;color:inherit;
+  font-size:14px;font-weight:600;letter-spacing:-.01em;padding:0 0 9px;
+}
+.dn-ta{
+  width:100%;min-height:78px;border:0;outline:0;background:transparent;resize:none;color:inherit;
+  font-family:inherit;font-size:13.5px;line-height:1.55;padding:0;
+}
+.dn-tin::placeholder,.dn-ta::placeholder{color:var(--ink-3)}
+.dn-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
+.dn-del{font-size:12px;font-weight:600;color:#F2705E;padding:5px 10px;border-radius:8px;margin-left:-10px}
+.dn-done{
+  font-size:12.5px;font-weight:600;color:var(--acc);padding:5px 13px;border-radius:9px;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring);
+}
+.dn-done:active{transform:scale(.93)}
+.addnote{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:7px;height:42px;
+  border-radius:12px;border:1px dashed var(--line-2);color:var(--ink-2);
+  font-size:13.5px;font-weight:500;margin-top:8px;
+  transition:color .2s,border-color .2s,transform .2s var(--spring);
+}
+.addnote:active{transform:scale(.98)}
 
 /* ---------- the weave ---------- */
 .weave{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 0 12px;box-shadow:var(--shadow)}
@@ -529,11 +580,14 @@ button{background:none;border:0;padding:0;cursor:pointer}
 
       <section class="note" id="note">
         <button class="note-head" id="noteToggle" aria-expanded="false">
-          <span class="eyebrow">Note</span><span class="note-dot"></span>
+          <span class="eyebrow" id="noteLabel">Notes</span><span class="note-dot"></span>
           <svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="note-body"><div class="note-inner">
-          <div class="note-pad"><div id="dayNote"></div></div>
+          <div class="note-pad">
+            <div class="dnlist" id="dnList"></div>
+            <button class="addnote" id="addNote">+ Add note</button>
+          </div>
         </div></div>
       </section>
 
@@ -721,11 +775,11 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,3);
+    const r=indexedDB.open(DB_NAME,4);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
       if(!d.objectStoreNames.contains('habits')) d.createObjectStore('habits',{keyPath:'id'});
@@ -734,6 +788,7 @@ function openDB(){
       if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'key'});
       if(!d.objectStoreNames.contains('plans')) d.createObjectStore('plans',{keyPath:'key'});
       if(!d.objectStoreNames.contains('sets')) d.createObjectStore('sets',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('dnotes')) d.createObjectStore('dnotes',{keyPath:'id'});
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -745,7 +800,7 @@ const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
 const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
-let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), plans=new Map();
+let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), dayNotes=[], plans=new Map();
 let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false,activeSet:null};
 
 /* habits live in sets; only the active set is shown and counted */
@@ -989,19 +1044,100 @@ $('#rangeCtrl').addEventListener('click',e=>{
 /* ===========================================================
    Note
    =========================================================== */
-function renderNote(){
-  buildNote($('#dayNote'),{
-    get:()=>notes.get(TSTR)||'',
-    set:async v=>{
-      if(v.trim()){ notes.set(TSTR,v); await dbPut('notes',{date:TSTR,text:v}); }
-      else{ notes.delete(TSTR); await dbDel('notes',TSTR); }
-      $('#note').classList.toggle('has',!!v.trim());
-    },
-    empty:'Add a note for today',
-    placeholder:'Anything worth remembering about today.'
-  });
-  $('#note').classList.toggle('has',!!(notes.get(TSTR)||'').trim());
+const todayNotes=()=>dayNotes.filter(n=>n.date===TSTR).sort((a,b)=>(a.order||0)-(b.order||0));
+
+function refreshNoteLabel(){
+  const arr=todayNotes();
+  $('#noteLabel').textContent=arr.length?'Notes · '+arr.length:'Notes';
+  $('#note').classList.toggle('has',arr.some(n=>(n.title||'').trim()||(n.text||'').trim()));
 }
+
+function renderNote(){
+  const list=$('#dnList'); list.innerHTML='';
+  todayNotes().forEach(n=>list.appendChild(noteCard(n)));
+  refreshNoteLabel();
+}
+
+/* one card per note: title plus the first few lines, opened on tap, edited on two taps */
+function noteCard(n){
+  const el=document.createElement('article');
+  el.className='dn'; el.dataset.id=n.id;
+  el.innerHTML=
+    '<button class="dn-head"><span class="dn-title"></span>'+
+      '<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'+
+    '<div class="dn-read"><div class="dn-text"></div><div class="dn-hint">Double-tap to edit</div></div>'+
+    '<div class="dn-edit" hidden>'+
+      '<input class="dn-tin" placeholder="Title" maxlength="60" autocomplete="off">'+
+      '<textarea class="dn-ta" placeholder="Write it down"></textarea>'+
+      '<div class="dn-foot"><button class="dn-del">Delete</button><button class="dn-done">Done</button></div>'+
+    '</div>';
+
+  const head=$('.dn-head',el), read=$('.dn-read',el), edit=$('.dn-edit',el),
+        title=$('.dn-title',el), text=$('.dn-text',el), hint=$('.dn-hint',el),
+        tin=$('.dn-tin',el), ta=$('.dn-ta',el), del=$('.dn-del',el), done=$('.dn-done',el);
+  let editing=false, saveT=null, lastTap=0;
+
+  function paint(){
+    const t=(n.title||'').trim(), b=(n.text||'').trim();
+    title.textContent=t||'Untitled';
+    title.classList.toggle('untitled',!t);
+    text.textContent=b||'Empty note';
+    text.classList.toggle('empty',!b);
+  }
+  function grow(){ ta.style.height='auto'; ta.style.height=Math.max(78,ta.scrollHeight)+'px'; }
+  async function save(){
+    clearTimeout(saveT);
+    if(n.title===tin.value && n.text===ta.value) return;
+    n.title=tin.value; n.text=ta.value;
+    await dbPut('dnotes',n);
+    hint.textContent='Saved';
+    setTimeout(()=>{ hint.textContent='Double-tap to edit'; },1400);
+  }
+  function openEdit(){
+    if(editing) return; editing=true;
+    el.classList.add('open','editing');
+    tin.value=n.title||''; ta.value=n.text||'';
+    head.hidden=true; read.hidden=true; edit.hidden=false;
+    grow(); ((n.title||'').trim()?ta:tin).focus();
+  }
+  async function closeEdit(){
+    if(!editing) return; editing=false;
+    await save();
+    head.hidden=false; read.hidden=false; edit.hidden=true;
+    el.classList.remove('editing');
+    paint(); refreshNoteLabel();
+  }
+
+  head.addEventListener('click',()=>{ el.classList.toggle('open'); buzz(5); });
+  read.addEventListener('click',()=>{
+    const t=Date.now();
+    if(t-lastTap<400){ lastTap=0; openEdit(); buzz(9); }
+    else{ lastTap=t; el.classList.add('open'); }
+  });
+  ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
+  tin.addEventListener('input',()=>{ clearTimeout(saveT); saveT=setTimeout(save,650); });
+  done.addEventListener('mousedown',e=>e.preventDefault());
+  done.addEventListener('click',()=>{ closeEdit(); buzz(6); });
+  del.addEventListener('click',async()=>{
+    if(del.dataset.armed!=='1'){ del.dataset.armed='1'; del.textContent='Tap again to delete'; buzz(14); return; }
+    dayNotes=dayNotes.filter(x=>x.id!==n.id);
+    await dbDel('dnotes',n.id);
+    renderNote(); toast('Note deleted');
+  });
+  el.addEventListener('editnow',openEdit);
+
+  paint();
+  return el;
+}
+
+$('#addNote').addEventListener('click',async()=>{
+  const n={id:uid(),date:TSTR,title:'',text:'',order:todayNotes().length,created:Date.now()};
+  dayNotes.push(n); await dbPut('dnotes',n);
+  renderNote();
+  const card=$('.dn[data-id="'+n.id+'"]');
+  if(card) card.dispatchEvent(new CustomEvent('editnow'));
+  buzz(8);
+});
 $('#noteToggle').addEventListener('click',()=>{
   const n=$('#note'), open=n.classList.toggle('open');
   $('#noteToggle').setAttribute('aria-expanded',open);
@@ -1513,14 +1649,14 @@ function renderSettings(){
   $$('#accents .sw').forEach(b=>b.classList.toggle('on',b.dataset.c===S.accent));
   $('#mirrorSw').classList.toggle('on',S.mirror);
   $('#hapticSw').classList.toggle('on',S.haptics);
-  $('#dataStat').textContent=habits.length+' habits · '+recs.size+' marks · '+notes.size+' notes';
+  $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+dayNotes.length+' notes';
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
 $('#exportBtn').addEventListener('click',()=>{
   const data={app:'dayflow',version:3,exported:new Date().toISOString(),
-    habits:allHabits,sets,records:[...recs],notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
+    habits:allHabits,sets,records:[...recs],dnotes:dayNotes,notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   const a=document.createElement('a'); a.href=url; a.download='dayflow-'+TSTR+'.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000); toast('Exported');
@@ -1534,13 +1670,15 @@ $('#importFile').addEventListener('change',async e=>{
     await Promise.all(STORES.map(n=>dbClear(n)));
     allHabits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
     sets=d.sets||[];
-    recs=new Set(d.records||[]); notes=new Map(d.notes||[]);
+    recs=new Set(d.records||[]); notes=new Map(d.notes||[]); dayNotes=d.dnotes||[];
     plans=new Map(d.plans||[]);
     S=Object.assign(S,d.settings||{},{seeded:true});
     for(const st of sets) await dbPut('sets',st);
     for(const h of allHabits) await dbPut('habits',h);
     for(const k of recs){const [hid,date]=k.split('|');await dbPut('records',{key:k,habitId:hid,date,done:1});}
     for(const [date,text] of notes) await dbPut('notes',{date,text});
+    for(const n of dayNotes) await dbPut('dnotes',n);
+    await migrateNotes();
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
     await ensureSets(); await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
   }catch(err){ toast('That is not a Dayflow export'); }
@@ -1553,7 +1691,7 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); plans=new Map(); S.seeded=false; S.activeSet=null;
+  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); dayNotes=[]; plans=new Map(); S.seeded=false; S.activeSet=null;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   renderAll(); renderNote(); toast('Everything reset');
@@ -1643,9 +1781,24 @@ async function loadAll(){
   const rows=await dbAll('records');
   recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
   notes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
+  dayNotes=await dbAll('dnotes');
+  await migrateNotes();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
   await ensureSets();
+}
+
+/* single day notes written before this became a list are moved across, text intact */
+async function migrateNotes(){
+  if(!notes.size) return;
+  for(const [date,text] of notes){
+    if(text && text.trim()){
+      const n={id:uid()+date.replace(/-/g,''),date,title:'Note',text,order:0,created:Date.now()};
+      dayNotes.push(n); await dbPut('dnotes',n);
+    }
+    await dbDel('notes',date);
+  }
+  notes=new Map();
 }
 
 /* anything made before sets existed is folded into a first set, untouched */
