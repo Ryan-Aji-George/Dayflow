@@ -211,7 +211,8 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dcol.today .dw{color:var(--ink-2)}
 .dcol.today .dd{color:var(--ink);font-weight:500}
 .dcol.sun .dw,.dcol.sun .dd{color:color-mix(in srgb,var(--sun) 80%,transparent)}
-.dcol.today::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--acc)}
+.dcol .dot{display:block;width:4px;height:4px;border-radius:50%;background:transparent}
+.dcol.today .dot{background:var(--acc)}
 .hthread{width:3px;height:16px;border-radius:2px;background:var(--c);flex:0 0 auto}
 .hlabel{
   font-size:13px;font-weight:500;line-height:1.22;flex:1;min-width:0;
@@ -239,18 +240,21 @@ button{background:none;border:0;padding:0;cursor:pointer}
   box-shadow:0 2px 6px -4px color-mix(in srgb,var(--c) 85%,transparent),
              inset 0 1px 0 rgba(255,255,255,.2);
   transform:scaleX(0);transform-origin:left center;opacity:0;
-  transition:transform .34s var(--spring),opacity .16s var(--ease),
-             left .3s var(--ease),right .3s var(--ease),border-radius .3s var(--ease);
+  transition:transform .32s var(--spring),opacity .16s var(--ease),
+             left .22s var(--ease),right .22s var(--ease),border-radius .22s var(--ease);
 }
 .cell.done .th,.cell.auto .th{transform:scaleX(1);opacity:1}
 .cell.jl .th{left:calc(-1 * (var(--gap) + var(--cx)));border-top-left-radius:0;border-bottom-left-radius:0}
 .cell.jr .th{right:calc(-1 * (var(--gap) + var(--cx)));border-top-right-radius:0;border-bottom-right-radius:0}
 .cell.today:active{transform:scale(.9)}
-.cell.pop .th{animation:bloom .55s var(--ease)}
+.cell::after{
+  content:'';position:absolute;inset:var(--cy) var(--cx);border-radius:var(--r-cell);
+  opacity:0;pointer-events:none;
+}
+.cell.pop::after{animation:bloom .5s var(--ease)}
 @keyframes bloom{
-  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 40%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
-  65%{box-shadow:0 0 0 9px rgba(0,0,0,0),inset 0 1px 0 rgba(255,255,255,.2)}
-  100%{box-shadow:0 2px 7px -4px color-mix(in srgb,var(--c) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
+  0%{opacity:1;box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 45%,transparent)}
+  100%{opacity:0;box-shadow:0 0 0 10px rgba(0,0,0,0)}
 }
 .cell.nope{animation:nope .34s ease}
 @keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
@@ -961,7 +965,7 @@ function renderGrid(){
   dates.forEach(d=>{
     const dow=d.getDay(), c=document.createElement('div');
     c.className='dcol'+(dow===0||dow===6?' wk':'')+(dow===0?' sun':'')+(ymd(d)===TSTR?' today':'');
-    c.innerHTML='<span class="dw">'+DL[dow]+'</span><span class="dd">'+d.getDate()+'</span>';
+    c.innerHTML='<span class="dw">'+DL[dow]+'</span><span class="dd">'+d.getDate()+'</span><i class="dot"></i>';
     hc.appendChild(c);
   });
   head.appendChild(hc); inner.appendChild(head);
@@ -980,7 +984,7 @@ function renderGrid(){
     });
     row.appendChild(cells);
     row.style.animation='rise .45s var(--ease) both';
-    row.style.animationDelay=(ri*32)+'ms';
+    row.style.animationDelay=Math.min(ri,10)*28+'ms';
     inner.appendChild(row);
     paintRow(h,row);
   });
@@ -1024,15 +1028,20 @@ $('#grid').addEventListener('click',e=>{
 async function toggleCell(h,c){
   const k=key(h,TSTR), was=dayTally(TODAY);
   const marking=!recs.has(k);
-  if(marking){ recs.add(k); await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()}); }
-  else{ recs.delete(k); await dbDel('records',k); }
-  paintRow(h,c.closest('.grow'));   /* rewrites classes, so the bloom goes on after */
-  if(marking){ void c.offsetWidth; c.classList.add('pop'); }
+  if(marking) recs.add(k); else recs.delete(k);
+  /* paint first: the mark has to answer the tap, not the database */
+  paintRow(h,c.closest('.grow'));
+  if(marking){
+    void c.offsetWidth; c.classList.add('pop');
+    c.addEventListener('animationend',()=>c.classList.remove('pop'),{once:true});
+  }
   buzz(marking?12:6); renderHead();
   const now=dayTally(TODAY);
   if(now.complete && !was.complete && now.req>0){
     toast('Day complete · '+currentStreak()+'-day streak'); buzz([12,50,18]);
   }
+  if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
+  else await dbDel('records',k);
 }
 
 $('#rangeCtrl').addEventListener('click',e=>{
@@ -1495,8 +1504,7 @@ $('#planWrap').addEventListener('click',async e=>{
   if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
   const h=habits.find(x=>x.id===b.dataset.h); if(!h) return;
   const k=key(h,TSTR), marking=!recs.has(k);
-  if(marking){ recs.add(k); await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()}); }
-  else{ recs.delete(k); await dbDel('records',k); }
+  if(marking) recs.add(k); else recs.delete(k);
   b.classList.toggle('on',marking);
   const card=b.closest('.block'); if(card) card.classList.toggle('done',marking);
   const tag=b.parentElement.querySelector('.btag');
@@ -1504,6 +1512,8 @@ $('#planWrap').addEventListener('click',async e=>{
   updatePlanCounts();
   buzz(marking?12:6);
   renderHead(); renderGrid();
+  if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
+  else await dbDel('records',k);
 });
 
 /* ===========================================================
