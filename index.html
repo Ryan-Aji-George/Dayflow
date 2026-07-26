@@ -236,6 +236,19 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .btn.danger{background:transparent;color:#F2705E;border:1px solid color-mix(in srgb,#F2705E 32%,transparent)}
 .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+.setstrip{display:flex;gap:7px;overflow-x:auto;margin:0 -20px 12px;padding:2px 20px 4px}
+.schip{
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
+  font-size:13.5px;font-weight:500;white-space:nowrap;
+  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring);
+}
+.schip:active{transform:scale(.95)}
+.schip .c{font-family:var(--mono);font-size:9.5px;opacity:.55}
+.schip.on{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
+.schip.add{color:var(--acc);border-style:dashed;border-color:color-mix(in srgb,var(--acc) 38%,transparent)}
+.phint{margin:0 2px 16px;font-size:12.5px;color:var(--ink-3);line-height:1.5}
+
 /* ---------- settings ---------- */
 .group{margin-bottom:26px}
 .group>.eyebrow{display:block;padding:0 2px 10px}
@@ -531,8 +544,9 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <div class="ptitle">
         <span class="eyebrow">Habits</span>
         <h2>Your threads</h2>
-        <p>Drag to reorder. Tap one to edit it.</p>
       </div>
+      <div class="setstrip" id="setStrip"></div>
+      <p class="phint">Drag to reorder · tap a habit to edit · tap the active set to rename it</p>
       <div class="hlist" id="hlist"></div>
       <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
     </section>
@@ -644,6 +658,23 @@ button{background:none;border:0;padding:0;cursor:pointer}
   </div>
   <div style="margin-top:9px" id="fDeleteWrap" hidden><button class="btn danger" id="fDelete">Delete habit</button></div>
 </div>
+<div class="sheet" id="setSheet">
+  <div class="grabber"></div>
+  <h3 id="setTitle">New set</h3>
+  <div class="field">
+    <span class="eyebrow">Name</span>
+    <input class="input" id="sName" placeholder="Exam mode" maxlength="28" autocomplete="off">
+  </div>
+  <p class="hint" id="setInfo">Each set keeps its own habits. Switching sets never touches what you have already ticked off.</p>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="sCancel">Cancel</button>
+    <button class="btn" id="sSave">Save</button>
+  </div>
+  <div id="sExtra" hidden>
+    <button class="btn ghost" id="sDup" style="margin-top:9px">Duplicate this set</button>
+    <button class="btn danger" id="sDelete" style="margin-top:9px">Delete set</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -654,11 +685,11 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,2);
+    const r=indexedDB.open(DB_NAME,3);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
       if(!d.objectStoreNames.contains('habits')) d.createObjectStore('habits',{keyPath:'id'});
@@ -666,6 +697,7 @@ function openDB(){
       if(!d.objectStoreNames.contains('notes')) d.createObjectStore('notes',{keyPath:'date'});
       if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'key'});
       if(!d.objectStoreNames.contains('plans')) d.createObjectStore('plans',{keyPath:'key'});
+      if(!d.objectStoreNames.contains('sets')) d.createObjectStore('sets',{keyPath:'id'});
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -677,8 +709,14 @@ const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
 const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
-let habits=[], recs=new Set(), notes=new Map(), plans=new Map();
-let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false};
+let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), plans=new Map();
+let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false,activeSet:null};
+
+/* habits live in sets; only the active set is shown and counted */
+function applySet(){
+  habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order);
+}
+const activeSet=()=>sets.find(x=>x.id===S.activeSet)||sets[0];
 
 /* habit threads — a tuned data palette, deliberately separate from the UI accent */
 const THREADS=['#DE8C42','#D4605A','#C25E93','#8A6FD6','#4C86D4','#2BA396','#6BA342','#7C8BA1'];
@@ -779,7 +817,8 @@ const buzz=v=>{ if(S.haptics&&navigator.vibrate) navigator.vibrate(v); };
    =========================================================== */
 function renderHead(){
   const t=dayTally(TODAY);
-  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+' · WEEK '+isoWeek(TODAY);
+  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+' · WEEK '+isoWeek(TODAY)+
+    (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
   $('#heroDate').textContent=FULLDAY[TODAY.getDay()];
 
   const tape=$('#tape'); tape.innerHTML='';
@@ -928,7 +967,7 @@ $('#noteToggle').addEventListener('click',()=>{
 function renderHabits(){
   const list=$('#hlist'); list.innerHTML='';
   if(!habits.length){
-    list.innerHTML='<div class="empty"><h3>No habits yet</h3><p>Start with two or three you actually want to keep.</p></div>';
+    list.innerHTML='<div class="empty"><h3>No habits in this set</h3><p>Add two or three you actually want to keep. Other sets are untouched.</p></div>';
     return;
   }
   habits.forEach(h=>{
@@ -1041,7 +1080,7 @@ function closeSheet(){
   $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
 }
-$('#scrim').addEventListener('click',closeSheet);
+$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); });
 $('#fCancel').addEventListener('click',closeSheet);
 $('#fab').addEventListener('click',()=>openSheet(null));
 $('#addBtn').addEventListener('click',()=>openSheet(null));
@@ -1053,8 +1092,8 @@ $('#fSave').addEventListener('click',async()=>{
     Object.assign(editing,{name,color:form.color,days:form.days,study:form.study});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),name,color:form.color,days:form.days,study:form.study,order:habits.length,start:TSTR,created:Date.now()};
-    habits.push(h); await dbPut('habits',h); toast('Habit added');
+    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,study:form.study,order:habits.length,start:TSTR,created:Date.now()};
+    allHabits.push(h); applySet(); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
 });
@@ -1062,7 +1101,7 @@ $('#fDelete').addEventListener('click',async e=>{
   const b=e.currentTarget;
   if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; buzz(14); return; }
   const id=editing.id;
-  habits=habits.filter(x=>x.id!==id);
+  allHabits=allHabits.filter(x=>x.id!==id); applySet();
   await dbDel('habits',id);
   for(const k of [...recs]) if(k.startsWith(id+'|')){ recs.delete(k); await dbDel('records',k); }
   await persistOrder(); closeSheet(); renderAll(); toast('Habit deleted');
@@ -1257,6 +1296,99 @@ $('#planWrap').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
+   Sets — several habit line-ups, one active at a time
+   =========================================================== */
+function renderSets(){
+  const strip=$('#setStrip'); if(!strip) return;
+  strip.innerHTML='';
+  sets.forEach(st=>{
+    const n=allHabits.filter(h=>h.setId===st.id).length;
+    const b=document.createElement('button');
+    b.className='schip'+(st.id===S.activeSet?' on':''); b.dataset.s=st.id;
+    b.innerHTML='<span>'+esc(st.name)+'</span><span class="c">'+n+'</span>';
+    strip.appendChild(b);
+  });
+  const add=document.createElement('button');
+  add.className='schip add'; add.dataset.new='1'; add.textContent='+ New set';
+  strip.appendChild(add);
+}
+$('#setStrip').addEventListener('click',e=>{
+  const b=e.target.closest('.schip'); if(!b) return;
+  if(b.dataset.new){ openSetSheet(null); return; }
+  if(b.dataset.s===S.activeSet){ openSetSheet(activeSet()); return; }
+  S.activeSet=b.dataset.s; saveSettings(); applySet();
+  planDay=TSTR; renderAll(); buzz(8);
+  toast('Switched to '+activeSet().name);
+});
+
+let editingSet=null;
+function openSetSheet(st){
+  editingSet=st||null;
+  $('#setTitle').textContent=st?'Edit set':'New set';
+  $('#sName').value=st?st.name:'';
+  $('#sExtra').hidden=!st;
+  $('#sDelete').textContent='Delete set'; $('#sDelete').dataset.armed='';
+  $('#sDelete').hidden=sets.length<2;
+  $('#setInfo').textContent=st
+    ? allHabits.filter(h=>h.setId===st.id).length+' habits in this set. Duplicating copies them into a fresh set with a clean history.'
+    : 'A new set starts empty. Your current habits and everything ticked off stay exactly as they are.';
+  $('#scrim').classList.add('on'); $('#setSheet').classList.add('on'); $('#setSheet').scrollTop=0;
+  setTimeout(()=>$('#sName').focus(),380);
+}
+function closeSetSheet(){
+  $('#scrim').classList.remove('on'); $('#setSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+}
+$('#sCancel').addEventListener('click',closeSetSheet);
+$('#sSave').addEventListener('click',async()=>{
+  const name=$('#sName').value.trim();
+  if(!name){ $('#sName').focus(); toast('Give the set a name'); return; }
+  if(editingSet){
+    editingSet.name=name; await dbPut('sets',editingSet); toast('Set renamed');
+  }else{
+    const st={id:uid(),name,order:sets.length,created:Date.now()};
+    sets.push(st); await dbPut('sets',st);
+    S.activeSet=st.id; await saveSettings(); applySet();
+    toast('Set created — add its habits');
+  }
+  closeSetSheet(); planDay=TSTR; renderAll(); buzz(10);
+});
+$('#sDup').addEventListener('click',async()=>{
+  if(!editingSet) return;
+  const st={id:uid(),name:editingSet.name+' copy',order:sets.length,created:Date.now()};
+  sets.push(st); await dbPut('sets',st);
+  const src=allHabits.filter(h=>h.setId===editingSet.id).sort((a,b)=>a.order-b.order);
+  for(let i=0;i<src.length;i++){
+    const h={...src[i],id:uid()+i,setId:st.id,order:i,start:TSTR,created:Date.now()};
+    allHabits.push(h); await dbPut('habits',h);
+  }
+  S.activeSet=st.id; await saveSettings(); applySet();
+  closeSetSheet(); planDay=TSTR; renderAll(); buzz([10,40,14]);
+  toast('Duplicated as "'+st.name+'"');
+});
+$('#sDelete').addEventListener('click',async e=>{
+  if(!editingSet || sets.length<2) return;
+  const b=e.currentTarget;
+  const n=allHabits.filter(h=>h.setId===editingSet.id).length;
+  if(b.dataset.armed!=='1'){
+    b.dataset.armed='1';
+    b.textContent='Tap again — deletes '+n+' habit'+(n===1?'':'s');
+    buzz(14); return;
+  }
+  const id=editingSet.id;
+  for(const h of allHabits.filter(x=>x.setId===id)){
+    await dbDel('habits',h.id);
+    for(const k of [...recs]) if(k.startsWith(h.id+'|')){ recs.delete(k); await dbDel('records',k); }
+    for(const k of [...plans.keys()]) if(k.startsWith('s:'+h.id+':')){ plans.delete(k); await dbDel('plans',k); }
+  }
+  allHabits=allHabits.filter(x=>x.setId!==id);
+  sets=sets.filter(x=>x.id!==id);
+  await dbDel('sets',id);
+  S.activeSet=sets[0].id; await saveSettings(); applySet();
+  closeSetSheet(); planDay=TSTR; renderAll(); toast('Set deleted');
+});
+
+/* ===========================================================
    Navigation + settings
    =========================================================== */
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -1313,7 +1445,7 @@ matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.
 
 $('#exportBtn').addEventListener('click',()=>{
   const data={app:'dayflow',version:3,exported:new Date().toISOString(),
-    habits,records:[...recs],notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
+    habits:allHabits,sets,records:[...recs],notes:[...notes.entries()],plans:[...plans.entries()],settings:S};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
   const a=document.createElement('a'); a.href=url; a.download='dayflow-'+TSTR+'.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000); toast('Exported');
@@ -1325,15 +1457,17 @@ $('#importFile').addEventListener('change',async e=>{
     const d=JSON.parse(await f.text());
     if(d.app!=='dayflow') throw 0;
     await Promise.all(STORES.map(n=>dbClear(n)));
-    habits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
+    allHabits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
+    sets=d.sets||[];
     recs=new Set(d.records||[]); notes=new Map(d.notes||[]);
     plans=new Map(d.plans||[]);
     S=Object.assign(S,d.settings||{},{seeded:true});
-    for(const h of habits) await dbPut('habits',h);
+    for(const st of sets) await dbPut('sets',st);
+    for(const h of allHabits) await dbPut('habits',h);
     for(const k of recs){const [hid,date]=k.split('|');await dbPut('records',{key:k,habitId:hid,date,done:1});}
     for(const [date,text] of notes) await dbPut('notes',{date,text});
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
-    await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
+    await ensureSets(); await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
   }catch(err){ toast('That is not a Dayflow export'); }
   e.target.value='';
 });
@@ -1344,7 +1478,7 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  habits=[]; recs=new Set(); notes=new Map(); plans=new Map(); S.seeded=false;
+  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); plans=new Map(); S.seeded=false; S.activeSet=null;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   renderAll(); renderNote(); toast('Everything reset');
@@ -1428,13 +1562,26 @@ $('#installBtn').addEventListener('click',async()=>{
    =========================================================== */
 const saveSettings=()=>dbPut('meta',{key:'settings',value:S});
 async function loadAll(){
-  habits=(await dbAll('habits')).sort((a,b)=>a.order-b.order);
+  allHabits=(await dbAll('habits')).sort((a,b)=>a.order-b.order);
+  sets=(await dbAll('sets')).sort((a,b)=>a.order-b.order);
   plans=new Map((await dbAll('plans')).map(r=>[r.key,r.text]));
   const rows=await dbAll('records');
   recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
   notes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
+  await ensureSets();
+}
+
+/* anything made before sets existed is folded into a first set, untouched */
+async function ensureSets(){
+  if(!sets.length){
+    const st={id:uid(),name:'My habits',order:0,created:Date.now()};
+    sets=[st]; await dbPut('sets',st);
+  }
+  for(const h of allHabits) if(!h.setId){ h.setId=sets[0].id; await dbPut('habits',h); }
+  if(!S.activeSet || !sets.some(x=>x.id===S.activeSet)){ S.activeSet=sets[0].id; await saveSettings(); }
+  applySet();
 }
 async function seed(){
   const demo=[
@@ -1444,11 +1591,14 @@ async function seed(){
     {name:'Lights out by 11',color:THREADS[3],days:[0,1,2,3,4,5,6]},
     {name:'Weekly reset',    color:THREADS[2],days:[0]}
   ];
-  habits=demo.map((d,i)=>({id:uid()+i,...d,order:i,start:TSTR,created:Date.now()}));
-  for(const h of habits) await dbPut('habits',h);
+  const st={id:uid(),name:'My habits',order:0,created:Date.now()};
+  sets=[st]; await dbPut('sets',st); S.activeSet=st.id;
+  allHabits=demo.map((d,i)=>({id:uid()+i,...d,setId:st.id,order:i,start:TSTR,created:Date.now()}));
+  for(const h of allHabits) await dbPut('habits',h);
+  applySet();
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderHead(); renderGrid(); renderHabits(); renderPlan(); renderSettings(); }
+function renderAll(){ renderHead(); renderGrid(); renderSets(); renderHabits(); renderPlan(); renderSettings(); }
 
 /* planning notes are working memory, not a record: anything older than today goes */
 async function purgePlans(){
@@ -1468,7 +1618,7 @@ setInterval(checkRollover,60000);
   try{
     db=await openDB();
     await loadAll();
-    if(!S.seeded && !habits.length) await seed();
+    if(!S.seeded && !allHabits.length) await seed();
     await purgePlans();
     applySettings();
     $$('#rangeCtrl button').forEach(b=>b.classList.toggle('on',+b.dataset.r===S.range));
