@@ -220,7 +220,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .hbar{width:3px;height:26px;border-radius:2px;background:var(--c);flex:0 0 auto}
 .hinfo{flex:1;min-width:0}
 .hinfo .n{font-size:15px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hinfo .s{font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.hinfo .s{font-size:12.5px;color:var(--ink-3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hgo{color:var(--ink-3);display:grid;place-items:center;width:20px}
 .hgo svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .empty{text-align:center;padding:44px 24px;border:1px dashed var(--line-2);border-radius:var(--r-lg);color:var(--ink-2);margin-bottom:12px}
@@ -331,6 +331,27 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
 .preset{font-size:12.5px;padding:7px 12px;border-radius:10px;background:var(--surf);border:1px solid var(--line);color:var(--ink-2);transition:all .22s var(--ease)}
 .preset.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.durrow{display:flex;align-items:center;gap:9px}
+.numbox{
+  display:flex;align-items:center;gap:7px;height:50px;padding:0 14px;border-radius:13px;
+  background:var(--surf);border:1px solid var(--line);
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease);
+}
+.numbox:focus-within{
+  border-color:color-mix(in srgb,var(--acc) 50%,transparent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 12%,transparent);
+}
+.numin{
+  width:42px;border:0;outline:0;background:transparent;color:inherit;
+  font-family:var(--mono);font-size:16px;font-weight:500;text-align:right;-moz-appearance:textfield;
+}
+.numin::-webkit-outer-spin-button,.numin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.numin::placeholder{color:var(--ink-3)}
+.numbox .u{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.durtotal{
+  margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-2);text-align:right;
+}
 .days{display:flex;gap:6px}
 .day{flex:1;height:42px;border-radius:12px;background:var(--surf);border:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3);transition:all .22s var(--spring)}
 .day.on{background:color-mix(in srgb,var(--acc) 14%,transparent);border-color:color-mix(in srgb,var(--acc) 50%,transparent);color:var(--acc)}
@@ -433,7 +454,13 @@ button{background:none;border:0;padding:0;cursor:pointer}
 }
 .bcheck.on svg{stroke-dashoffset:0;opacity:1}
 .bcheck.locked{opacity:.45}
-.bname{flex:1;min-width:0;font-size:15px;font-weight:600;letter-spacing:-.015em}
+.btxt{flex:1;min-width:0}
+.bname{font-size:15px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmeta{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:3px;
+}
+.block.done .bmeta{color:color-mix(in srgb,var(--c) 78%,var(--ink-3))}
 .btag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);flex:0 0 auto}
 .btag.on{color:var(--c)}
 .btag.sun{color:var(--sun)}
@@ -641,6 +668,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <button class="switch" id="fStudy" role="switch"></button>
     </div>
   </div>
+  <div class="field" id="fDurWrap" hidden>
+    <span class="eyebrow">Session length</span>
+    <div class="durrow">
+      <label class="numbox"><input class="numin" id="fHrs" type="number" min="0" max="23" step="1" inputmode="numeric" placeholder="0"><span class="u">h</span></label>
+      <label class="numbox"><input class="numin" id="fMins" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0"><span class="u">min</span></label>
+      <span class="durtotal" id="fDurTotal">Not set</span>
+    </div>
+    <p class="hint">Any length you like. Leave both at zero and no length is shown.</p>
+  </div>
   <div class="field">
     <span class="eyebrow">Active days</span>
     <div class="presets" id="fPresets">
@@ -795,6 +831,16 @@ function habitStreak(h){
     d=addDays(d,-1);
   }
   return n;
+}
+function fmtMins(m){
+  if(!m) return '';
+  const h=Math.floor(m/60), r=m%60;
+  return h ? (r? h+'h '+r+'m' : h+'h') : m+' min';
+}
+function fmtShort(m){
+  if(!m) return '';
+  const h=Math.floor(m/60), r=m%60;
+  return h ? (r? h+'h'+r : h+'h') : m+'m';
 }
 function scheduleLabel(days){
   const s=[...days].sort().join(',');
@@ -976,7 +1022,7 @@ function renderHabits(){
     row.innerHTML=
       '<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>'+
       '<i class="hbar"></i>'+
-      '<div class="hinfo"><div class="n">'+esc(h.name)+(h.study?'<span class="stag">Study</span>':'')+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
+      '<div class="hinfo"><div class="n">'+esc(h.name)+(h.study?'<span class="stag">Study'+(h.mins?' '+fmtShort(h.mins):'')+'</span>':'')+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
       '<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
     list.appendChild(row);
   });
@@ -1032,7 +1078,7 @@ async function persistOrder(){
 }
 
 /* ---------- sheet ---------- */
-let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false};
+let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false,mins:45};
 (function build(){
   const cc=$('#fColors');
   THREADS.forEach(c=>{
@@ -1041,6 +1087,10 @@ let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false};
     cc.appendChild(b);
   });
   cc.addEventListener('click',e=>{const b=e.target.closest('.co');if(!b)return;form.color=b.dataset.c;syncForm();});
+  ['#fHrs','#fMins'].forEach(sel=>{
+    $(sel).addEventListener('input',readDur);
+    $(sel).addEventListener('blur',()=>writeDur(form.mins));   /* 1h 90m tidies to 2h 30m */
+  });
   const dd=$('#fDays');
   DL.forEach((d,i)=>{const b=document.createElement('button');b.className='day';b.textContent=d;b.dataset.d=i;dd.appendChild(b);});
   dd.addEventListener('click',e=>{
@@ -1062,14 +1112,36 @@ function syncForm(){
   const lbl=scheduleLabel(form.days), map={all:'Every day',wd:'Weekdays',we:'Weekends',sun:'Sundays'};
   $$('#fPresets .preset').forEach(b=>b.classList.toggle('on',map[b.dataset.p]===lbl));
   $('#fStudy').classList.toggle('on',!!form.study);
+  $('#fDurWrap').hidden=!form.study;
+  $('#fDurTotal').textContent=form.mins?fmtMins(form.mins):'Not set';
 }
-$('#fStudy').addEventListener('click',()=>{ form.study=!form.study; syncForm(); buzz(8); });
+$('#fStudy').addEventListener('click',()=>{
+  form.study=!form.study;
+  if(form.study && !form.mins) form.mins=45;
+  writeDur(form.mins); syncForm(); buzz(8);
+});
+
+/* session length is typed, not picked */
+function readDur(){
+  const h=Math.max(0,Math.min(23,parseInt($('#fHrs').value,10)||0));
+  const m=Math.max(0,parseInt($('#fMins').value,10)||0);
+  form.mins=Math.min(1440,h*60+m);
+  $('#fDurTotal').textContent=form.mins?fmtMins(form.mins):'Not set';
+}
+function writeDur(mins){
+  mins=Math.max(0,Math.min(1440,mins||0));
+  form.mins=mins;
+  $('#fHrs').value=Math.floor(mins/60)||'';
+  $('#fMins').value=(mins%60)||'';
+  $('#fDurTotal').textContent=mins?fmtMins(mins):'Not set';
+}
 function openSheet(h){
   editing=h||null;
   $('#sheetTitle').textContent=h?'Edit habit':'New habit';
   $('#fName').value=h?h.name:'';
-  form = h ? {color:h.color,days:[...h.days],study:!!h.study}
-           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6],study:false};
+  form = h ? {color:h.color,days:[...h.days],study:!!h.study,mins:h.mins||0}
+           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6],study:false,mins:45};
+  writeDur(form.mins);
   syncForm();
   $('#fDeleteWrap').hidden=!h;
   $('#fDelete').textContent='Delete habit'; $('#fDelete').dataset.armed='';
@@ -1089,10 +1161,10 @@ $('#fSave').addEventListener('click',async()=>{
   if(!name){ $('#fName').focus(); toast('Give the habit a name'); return; }
   if(!form.days.length){ toast('Pick at least one active day'); return; }
   if(editing){
-    Object.assign(editing,{name,color:form.color,days:form.days,study:form.study});
+    Object.assign(editing,{name,color:form.color,days:form.days,study:form.study,mins:form.study?form.mins:0});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,study:form.study,order:habits.length,start:TSTR,created:Date.now()};
+    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,study:form.study,mins:form.study?form.mins:0,order:habits.length,start:TSTR,created:Date.now()};
     allHabits.push(h); applySet(); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
@@ -1239,13 +1311,14 @@ function renderPlan(){
   blocks.forEach(h=>{
     const on=recs.has(key(h,planDay));
     const b=document.createElement('div');
-    b.className='block'+(on?' done':''); b.dataset.sec='study';
+    b.className='block'+(on?' done':''); b.dataset.sec='study'; b.dataset.mins=h.mins||0;
     b.style.setProperty('--c',h.color);
     b.innerHTML=
       '<div class="block-head">'+
         '<button class="bcheck'+(on?' on':'')+(isToday?'':' locked')+'" data-h="'+h.id+'" aria-label="Mark '+esc(h.name)+'">'+
           '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
-        '<div class="bname">'+esc(h.name)+'</div>'+
+        '<div class="btxt"><div class="bname">'+esc(h.name)+'</div>'+
+          (h.mins?'<div class="bmeta">'+fmtMins(h.mins)+' session</div>':'')+'</div>'+
         '<span class="btag'+(on?' on':(dow===0?' sun':''))+'">'+
           (on?'Done':(isToday?'Today':DN[dow].toUpperCase()+' '+sel.getDate()))+'</span>'+
       '</div>';
@@ -1267,9 +1340,11 @@ function updatePlanCounts(){
   $$('.psec[data-sec]',wrap).forEach(l=>{
     const cards=$$('.block[data-sec="'+l.dataset.sec+'"]',wrap);
     const done=cards.filter(c=>c.classList.contains('done')).length;
-    l.textContent=l.dataset.label+(cards.length
-      ? (planDay===TSTR ? ' · '+done+' of '+cards.length+' done' : ' · '+cards.length)
-      : '');
+    const mins=cards.reduce((n,c)=>n+(+c.dataset.mins||0),0);
+    let txt=l.dataset.label;
+    if(cards.length) txt+= planDay===TSTR ? ' · '+done+' of '+cards.length+' done' : ' · '+cards.length;
+    if(mins) txt+=' · '+fmtMins(mins)+' planned';
+    l.textContent=txt;
   });
 }
 
