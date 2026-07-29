@@ -324,6 +324,8 @@ button.tphead:active{background:var(--tint)}
 /* ---------- sheet ---------- */
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
 .scrim.on{opacity:1;pointer-events:auto}
+.scrim.high{z-index:96}
+#pauseSheet,#replanSheet{z-index:97}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92vh;overflow-y:auto;
   background:var(--bg-2);border-top:1px solid var(--line);
   border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
@@ -622,6 +624,108 @@ button.tphead:active{background:var(--tint)}
 .bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
   font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
+/* ---------- the run: a window of days you set in settings ---------- */
+.run{display:block;width:100%;text-align:left;margin:14px 0 0;padding:13px 15px;border-radius:var(--r-md);
+  background:var(--surf);border:1px solid var(--line)}
+.runtop{display:flex;align-items:baseline;gap:8px}
+.runtop .n{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.03em}
+.runtop .r{margin-left:auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3)}
+.runbar{height:5px;border-radius:3px;background:var(--cell);margin-top:10px;overflow:hidden}
+.runbar i{display:block;height:100%;border-radius:3px;background:var(--acc);width:0;
+  transition:width .7s var(--ease)}
+
+/* ---------- study: two clear actions, then the day ---------- */
+.actrow{display:flex;gap:9px;margin-bottom:14px}
+.act{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:13px 14px;text-align:left;
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
+  transition:transform .2s var(--spring),border-color .25s var(--ease)}
+.act:active{transform:scale(.97)}
+.act svg{width:17px;height:17px;flex:0 0 auto;fill:none;stroke:var(--ink-3);stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.act .l{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--ink-3);flex:0 0 auto}
+.act.lit{border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.act.lit svg{stroke:var(--acc)}
+.act.lit .tag{color:var(--acc)}
+
+/* ---------- pre-focus checklist ---------- */
+.flist{display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+.fask{padding:13px 14px;border-radius:13px;background:var(--surf-2);border:1px solid var(--line);margin-bottom:14px}
+.fask p{margin:0 0 11px;font-size:13.5px;color:var(--ink-2);line-height:1.45}
+.fask .row{display:flex;gap:8px}
+.fask button{flex:1;height:40px;border-radius:12px;font-size:13.5px;font-weight:600;
+  background:var(--acc);color:#14100A;transition:transform .2s var(--spring)}
+.fask button.alt{background:var(--surf);color:var(--ink);border:1px solid var(--line)}
+.fask button:active{transform:scale(.97)}
+.stripflat{margin:0 -20px 20px;padding:0 20px 2px}
+.fitem{width:100%;display:flex;align-items:center;gap:12px;padding:13px 14px;text-align:left;
+  background:var(--surf);border:1px solid var(--line);border-radius:12px;
+  transition:background .2s var(--ease),border-color .25s var(--ease)}
+.fitem:active{background:var(--tint)}
+.fitem.on{border-color:color-mix(in srgb,var(--acc) 32%,transparent)}
+.fbox{width:22px;height:22px;border-radius:7px;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);
+  transition:background .25s var(--ease),box-shadow .25s var(--ease)}
+.fbox svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;transition:stroke-dashoffset .3s var(--ease),opacity .12s}
+.fitem.on .fbox{background:var(--acc);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.fitem.on .fbox svg{stroke-dashoffset:0;opacity:1}
+.fitem .l{flex:1;min-width:0;font-size:14px}
+.fitem.on .l{color:var(--ink-3)}
+
+/* ---------- block play button ---------- */
+.bplay{width:32px;height:32px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc);
+  transition:transform .2s var(--spring)}
+.bplay:active{transform:scale(.88)}
+.bplay svg{width:14px;height:14px;fill:currentColor;stroke:none;margin-left:1px}
+
+/* ---------- the full screen session ---------- */
+.timer{position:fixed;inset:0;z-index:95;background:#000;color:#F5F5F5;display:none;
+  align-items:center;justify-content:center;padding:28px;opacity:0;transition:opacity .35s var(--ease)}
+.timer.on{display:flex}
+.timer.show{opacity:1}
+.tinner{width:100%;max-width:420px;text-align:center}
+.tname{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:26px;line-height:1.5}
+.tclock{font-family:var(--display);font-size:clamp(62px,22vw,96px);font-weight:800;letter-spacing:-.055em;
+  line-height:.95;font-variant-numeric:tabular-nums}
+.tbar{height:4px;border-radius:3px;background:rgba(255,255,255,.12);margin:30px 0 14px;overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--acc);width:0;transition:width .95s linear}
+.tstate{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);min-height:15px}
+.tacts{display:flex;flex-direction:column;gap:9px;margin-top:38px}
+.tacts .btn.ghost{background:transparent;color:#F5F5F5;border-color:rgba(255,255,255,.2)}
+.tnote{margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.42);line-height:1.5;min-height:18px}
+
+/* ---------- day record ---------- */
+.rlist{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.ritem{display:flex;align-items:flex-start;gap:11px;padding:12px 13px;border-radius:12px;
+  background:var(--surf);border:1px solid var(--line)}
+.ritem .rt{flex:1;min-width:0;font-size:13.5px;line-height:1.45;word-break:break-word}
+.ritem .rm{font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:5px}
+.ritem.timed{border-color:color-mix(in srgb,var(--acc) 26%,transparent)}
+.ritem .x{width:26px;height:26px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink-3)}
+.ritem .x svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.addrow{display:flex;gap:8px}
+.addrow .input{flex:1;height:46px;font-size:14.5px}
+.addbtn{width:46px;height:46px;flex:0 0 auto;border-radius:13px;display:grid;place-items:center;
+  background:var(--acc);color:#14100A;transition:transform .2s var(--spring)}
+.addbtn:active{transform:scale(.93)}
+.addbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.rempty{font-size:13px;color:var(--ink-3);padding:4px 2px 12px;line-height:1.5}
+.fbitem{padding:14px;border-radius:13px;background:var(--surf);border:1px solid var(--line);margin-bottom:9px}
+.fbitem .when{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.fbitem .when .eyebrow{flex:1}
+.fbitem .when button{color:#F2705E;font-size:11.5px;font-weight:600;padding:4px 8px;border-radius:8px}
+.fbitem p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+.digest{width:100%;min-height:280px;border-radius:13px;background:var(--surf);border:1px solid var(--line);
+  padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ink-2);
+  resize:none;outline:0;white-space:pre;overflow:auto}
+
 /* ---------- edit-mode transitions ---------- */
 @keyframes rvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @keyframes rvFade{from{opacity:0}to{opacity:1}}
@@ -656,13 +760,32 @@ button.tphead:active{background:var(--tint)}
 <body>
 <div id="boot">
   <div class="bootstage">
-    <div class="boottitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
+    <div class="boottitle" id="bootTitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
     <i class="bootrule"></i>
     <div class="bootname">Dayflow</div>
   </div>
   <div class="bootskip">Tap to begin</div>
 </div>
-<script>requestAnimationFrame(()=>document.getElementById('boot').classList.add('in'));</script>
+<script>
+/* the words are cached alongside the accent so the first frame is already yours */
+(function(){
+  try{
+    var raw=localStorage.getItem('dayflow.intro');
+    if(raw){
+      var L=JSON.parse(raw);
+      if(Array.isArray(L)&&L.length){
+        var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){
+          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+        var last=L.length-1;
+        document.getElementById('bootTitle').innerHTML=L.map(function(t,i){
+          return i===last?'<span class="go">'+esc(t)+'</span>':esc(t);
+        }).join('<br>');
+      }
+    }
+  }catch(e){}
+  requestAnimationFrame(function(){document.getElementById('boot').classList.add('in');});
+})();
+</script>
 
 <div class="app">
   <header class="topbar" id="topbar">
@@ -681,6 +804,10 @@ button.tphead:active{background:var(--tint)}
       <div class="head">
         <span class="eyebrow" id="heroEyebrow">—</span>
         <h2 class="day-name" id="heroDate">—</h2>
+        <div class="run" id="runCard" hidden>
+          <div class="runtop"><span class="n" id="runN">—</span><span class="r" id="runR">—</span></div>
+          <div class="runbar"><i id="runFill"></i></div>
+        </div>
         <div class="prog">
           <div class="ringwrap">
             <svg class="ring" viewBox="0 0 120 120">
@@ -827,6 +954,31 @@ button.tphead:active{background:var(--tint)}
       </div>
 
       <div class="group">
+        <span class="eyebrow">The run</span>
+        <div class="panel">
+          <div class="srow">
+            <div class="t"><div class="n">Starts</div><div class="d">Day one of the stretch you are counting.</div></div>
+            <input class="input" id="runStart" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+          </div>
+          <div class="srow">
+            <div class="t"><div class="n">Ends</div><div class="d">The last day of it.</div></div>
+            <input class="input" id="runEnd" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+          </div>
+          <div class="btnrow" style="border-bottom:0"><button class="btn ghost" id="runClear">Clear the run</button></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Opening words</span>
+        <div class="panel">
+          <div style="padding:14px 16px">
+            <textarea class="input area" id="introText" placeholder="Reset.&#10;Rebuild.&#10;Dominate" maxlength="90" style="min-height:96px"></textarea>
+            <p class="hint">One line each, three at most. The last line takes your accent colour.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
         <span class="eyebrow">Move one part</span>
         <div class="panel" id="partPanel">
           <div class="partrow" data-part="habits">
@@ -843,6 +995,11 @@ button.tphead:active{background:var(--tint)}
             <div class="t"><div class="n">Plan</div><div class="d" id="cntPlan">—</div></div>
             <button class="pbtn" data-do="out" aria-label="Export plan"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
             <button class="pbtn" data-do="in" aria-label="Import plan"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+          <div class="partrow" data-part="record">
+            <div class="t"><div class="n">Day records</div><div class="d" id="cntRecord">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export records"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import records"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
           </div>
           <div class="partrow" data-part="vision">
             <div class="t"><div class="n">Vision</div><div class="d" id="cntVision">—</div></div>
@@ -872,7 +1029,7 @@ button.tphead:active{background:var(--tint)}
 
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Today</span></button>
-    <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Plan</span></button>
+    <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Study</span></button>
     <button class="tab" data-v="vision"><svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg><span>Vision</span></button>
     <button class="tab" data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-3-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.2-3l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 3 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.1a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1.1z"/></svg><span>Settings</span></button>
   </nav>
@@ -1012,6 +1169,118 @@ button.tphead:active{background:var(--tint)}
   <button class="lbx" id="vBoxClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <div class="lbstage" id="vBoxStage"></div>
 </div>
+<div class="timer" id="timerWrap">
+  <div class="tinner">
+    <div class="tname" id="tName">—</div>
+    <div class="tclock" id="tClock">00:00</div>
+    <div class="tbar"><i id="tFill"></i></div>
+    <div class="tstate" id="tState">Focus</div>
+    <div class="tacts">
+      <button class="btn" id="tPause">Pause</button>
+      <button class="btn ghost" id="tEnd" hidden>End session</button>
+    </div>
+    <div class="tnote" id="tNote"></div>
+  </div>
+</div>
+
+<div class="sheet" id="focusSheet">
+  <div class="grabber"></div>
+  <h3>Pre-focus</h3>
+  <div class="fask" id="focusAsk" hidden>
+    <p id="focusAskTxt">—</p>
+    <div class="row">
+      <button class="alt" id="focusClear">Clear them</button>
+      <button id="focusKeep">Continue</button>
+    </div>
+  </div>
+  <div class="flist" id="focusList"></div>
+  <p class="hint">None of this is saved. It clears itself when you close the app.</p>
+  <div class="sheet-actions"><button class="btn" id="focusDone">Done</button></div>
+</div>
+
+<div class="sheet" id="pauseSheet">
+  <div class="grabber"></div>
+  <h3>Why the break?</h3>
+  <p class="hint" id="pauseHint" style="margin:0 0 18px">It goes on today's record with everything else.</p>
+  <div class="field">
+    <div class="presets" id="pauseQuick">
+      <button class="preset" data-r="Brush teeth">Brush teeth</button>
+      <button class="preset" data-r="Drink tea">Drink tea</button>
+      <button class="preset" data-r="Food or water">Food or water</button>
+    </div>
+    <input class="input" id="pauseReason" placeholder="Or write it yourself" maxlength="90" autocomplete="off" style="margin-top:9px">
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="pauseSkip">Skip</button>
+    <button class="btn" id="pauseSave">Save and hold</button>
+  </div>
+</div>
+
+<div class="sheet" id="replanSheet">
+  <div class="grabber"></div>
+  <h3>The break ran long</h3>
+  <p class="hint" id="replanHint" style="margin:0 0 20px">That session passed five minutes paused, so the timer stopped and reset. Nothing was lost — the break is on today's record.</p>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="replanClose">Leave it</button>
+    <button class="btn" id="replanEdit">Replan the block</button>
+  </div>
+</div>
+
+<div class="sheet" id="recSheet">
+  <div class="grabber"></div>
+  <h3 id="recDate">Today</h3>
+  <div class="stripflat"><div class="daystrip" id="recStrip"></div></div>
+  <div class="field">
+    <span class="eyebrow">Completed</span>
+    <div class="rlist" id="recDone"></div>
+    <div class="addrow">
+      <input class="input" id="recAdd" placeholder="What you finished" maxlength="90" autocomplete="off">
+      <button class="addbtn" id="recAddBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+  </div>
+  <div class="field">
+    <span class="eyebrow">Unplanned</span>
+    <div class="rlist" id="recExtra"></div>
+    <div class="addrow">
+      <input class="input" id="recAddX" placeholder="Something you did that was not planned" maxlength="90" autocomplete="off">
+      <button class="addbtn" id="recAddXBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+  </div>
+  <div class="field" id="recPauseWrap">
+    <span class="eyebrow">Breaks</span>
+    <div class="rlist" id="recPauses"></div>
+  </div>
+  <div class="field">
+    <span class="eyebrow">What went wrong</span>
+    <textarea class="input area" id="recFeedback" placeholder="What slipped, and what to change tomorrow." maxlength="1200"></textarea>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="recFeedbackAll">All feedback</button>
+    <button class="btn" id="recClose">Done</button>
+  </div>
+</div>
+
+<div class="sheet" id="fbSheet">
+  <div class="grabber"></div>
+  <h3 id="fbTitle">All feedback</h3>
+  <div id="fbBody"></div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="fbSummary">Summarise</button>
+    <button class="btn" id="fbClose">Close</button>
+  </div>
+</div>
+
+<div class="sheet" id="digestSheet">
+  <div class="grabber"></div>
+  <h3>Everything you wrote</h3>
+  <textarea class="digest" id="digestText" readonly></textarea>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="digestCopy">Copy</button>
+    <button class="btn" id="digestSave">Save as file</button>
+  </div>
+  <div style="margin-top:9px"><button class="btn ghost" id="digestClose">Close</button></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1022,16 +1291,17 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision','blocks'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision','blocks','days'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,6);
+    const r=indexedDB.open(DB_NAME,7);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
       const mk=(n,k)=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:k}); };
       mk('habits','id'); mk('records','key'); mk('notes','date'); mk('meta','key');
       mk('plans','key'); mk('sets','id'); mk('dnotes','id'); mk('vision','id'); mk('blocks','id');
+      mk('days','date');
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -1044,8 +1314,9 @@ const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
-    myNotes=[], plans=new Map(), blocks=[], visionItems=[];
-let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',visionLock:null};
+    myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map();
+let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
+       visionLock:null,runStart:'',runEnd:'',introText:null};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
@@ -1121,6 +1392,37 @@ function scheduleLabel(days){
   if(!days.length) return 'No active days';
   return days.slice().sort().map(d=>DN[d]).join(', ');
 }
+/* one record per day: what got finished, every break, and what you made of it */
+const DEFAULT_INTRO=['Reset.','Rebuild.','Dominate'];
+const introLines=()=>{
+  const L=Array.isArray(S.introText)?S.introText.filter(x=>String(x).trim()):[];
+  return L.length?L.slice(0,3):DEFAULT_INTRO;
+};
+function normDay(r){
+  const done=(Array.isArray(r.done)?r.done:[]).map(x=>({
+    id:x.id||uid(), text:x.text||'Study', timed:!!x.timed,
+    kind:x.kind==='unplanned'?'unplanned':'planned', at:x.at||Date.now()}));
+  return {date:r.date, done, pauses:Array.isArray(r.pauses)?r.pauses:[],
+          feedback:r.feedback||'', updated:r.updated||Date.now()};
+}
+function dayRec(ds){
+  let r=days.get(ds);
+  if(!r){ r={date:ds,done:[],pauses:[],feedback:'',updated:Date.now()}; days.set(ds,r); }
+  return r;
+}
+const dayEmpty=r=>!r || (!r.done.length && !r.pauses.length && !(r.feedback||'').trim());
+async function saveDay(ds){
+  const r=days.get(ds); if(!r) return;
+  if(dayEmpty(r)){ days.delete(ds); await dbDel('days',ds); }
+  else{ r.updated=Date.now(); await dbPut('days',r); }
+}
+async function addCompletion(ds,text,timed,kind){
+  const r=dayRec(ds);
+  r.done.push({id:uid(),text:text||'Study',timed:!!timed,kind:kind||'planned',at:Date.now()});
+  await saveDay(ds);
+}
+const recordedDays=()=>[...days.values()].filter(r=>!dayEmpty(r)).sort((a,b)=>b.date.localeCompare(a.date));
+
 let toastT;
 function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('on');
@@ -1202,8 +1504,29 @@ function renderStreak(){
   $('#streakCard').classList.toggle('clean',lvl===4);
 }
 
+/* the stretch of days you set in settings, counted off at the top */
+function renderRun(){
+  const c=$('#runCard');
+  if(!S.runStart || !S.runEnd || S.runEnd<S.runStart){ c.hidden=true; return; }
+  c.hidden=false;
+  const a=parseDay(S.runStart), b=parseDay(S.runEnd);
+  const total=Math.round((b-a)/86400000)+1;
+  const raw=Math.round((TODAY-a)/86400000)+1;
+  const n=Math.max(0,Math.min(total,raw));
+  if(raw<1){
+    $('#runN').textContent='Starts in '+(1-raw)+' day'+(raw===0?'':'s');
+    $('#runR').textContent=total+' days';
+  }else{
+    $('#runN').textContent='Day '+n+' of '+total;
+    const leftD=total-n;
+    $('#runR').textContent = leftD>0 ? leftD+' to go' : (raw>total?'Finished':'Last day');
+  }
+  $('#runFill').style.width=(100*Math.max(0,Math.min(1,n/total)))+'%';
+}
+
 function renderToday(){
   const t=dayTally(TODAY), dow=TODAY.getDay();
+  renderRun();
   $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
     (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
   $('#heroDate').textContent=FULLDAY[dow];
@@ -1587,7 +1910,12 @@ function closeSheet(){
   $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
 }
-$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet(); });
+$('#scrim').addEventListener('click',()=>{
+  if($('#pauseSheet').classList.contains('on')||$('#replanSheet').classList.contains('on')) return;
+  closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet();
+  closeRecord(); closeFeedback(); closeFocus();
+  $('#digestSheet').classList.remove('on');
+});
 $('#fCancel').addEventListener('click',closeSheet);
 $('#addBtn').addEventListener('click',()=>openSheet(null));
 $('#fSave').addEventListener('click',async()=>{
@@ -1681,6 +2009,45 @@ function buildNote(host,o){
 /* ===========================================================
    Plan — a day note and as many study blocks as you add
    =========================================================== */
+const FOCUS_ITEMS=['Phone out of reach','Water within reach','Desk and screen clear',
+  'Tabs and notifications closed','Materials open and ready','One target for this session'];
+/* the ticks live in memory for the session only — nothing about them is stored */
+let focusChecks=new Set(), focusAsk=false;
+function openFocus(){
+  focusAsk=focusChecks.size>0;
+  renderFocus();
+  $('#scrim').classList.add('on'); $('#focusSheet').classList.add('on'); $('#focusSheet').scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeFocus(){
+  $('#scrim').classList.remove('on'); $('#focusSheet').classList.remove('on');
+  renderPlan();
+}
+function renderFocus(){
+  $('#focusAsk').hidden=!focusAsk;
+  if(focusAsk) $('#focusAskTxt').textContent='You left '+focusChecks.size+' of these ticked from before.';
+  const l=$('#focusList'); l.innerHTML='';
+  FOCUS_ITEMS.forEach((txt,i)=>{
+    const b=document.createElement('button');
+    b.className='fitem'+(focusChecks.has(i)?' on':'');
+    b.dataset.i=i;
+    b.innerHTML='<span class="fbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
+      '<span class="l">'+esc(txt)+'</span>';
+    l.appendChild(b);
+  });
+}
+$('#focusList').addEventListener('click',e=>{
+  const b=e.target.closest('.fitem'); if(!b) return;
+  const i=+b.dataset.i;
+  if(focusChecks.has(i)) focusChecks.delete(i); else focusChecks.add(i);
+  b.classList.toggle('on',focusChecks.has(i));
+  focusAsk=false; $('#focusAsk').hidden=true;
+  buzz(HAPTIC.light);
+});
+$('#focusKeep').addEventListener('click',()=>{ focusAsk=false; $('#focusAsk').hidden=true; buzz(6); });
+$('#focusClear').addEventListener('click',()=>{ focusChecks.clear(); focusAsk=false; renderFocus(); buzz(10); });
+$('#focusDone').addEventListener('click',closeFocus);
+
 let planDay=TSTR;
 const planKeyDay=d=>'d:'+d;
 async function savePlan(k,v){
@@ -1721,6 +2088,18 @@ function renderPlan(){
 
   const wrap=$('#planWrap'); wrap.innerHTML='';
 
+  const acts=document.createElement('div');
+  acts.className='actrow';
+  acts.innerHTML=
+    '<button class="act'+(focusChecks.size?' lit':'')+'" id="btnFocus">'+
+      '<svg viewBox="0 0 24 24"><path d="m4 12.5 4 4 8-9"/><path d="M20 7v10a3 3 0 0 1-3 3H7"/></svg>'+
+      '<span class="l">Pre-focus</span>'+
+      (focusChecks.size?'<span class="tag">'+focusChecks.size+'/'+FOCUS_ITEMS.length+'</span>':'')+'</button>'+
+    '<button class="act" id="btnRecord">'+
+      '<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>'+
+      '<span class="l">Record</span></button>';
+  wrap.appendChild(acts);
+
   const card=document.createElement('div'); card.className='pcard'; wrap.appendChild(card);
   const dn=document.createElement('div'); card.appendChild(dn);
   buildNote(dn,{
@@ -1747,9 +2126,7 @@ function renderPlan(){
     const e=document.createElement('div'); e.className='empty';
     e.innerHTML='<h3>Nothing planned</h3><p>Tap + to set a time, how long, and what you are working on.</p>';
     wrap.appendChild(e);
-    return;
-  }
-  list.forEach(b=>wrap.appendChild(blockCard(b,isToday)));
+  }else list.forEach(b=>wrap.appendChild(blockCard(b,isToday)));
 }
 function blockCard(b,isToday){
   const t=fmtTime(b.time||'09:00');
@@ -1765,6 +2142,7 @@ function blockCard(b,isToday){
     '<button class="btxt"><div class="bname">'+esc(first)+'</div>'+
       (rest?'<div class="bnote">'+esc(rest)+'</div>':'')+
       (meta?'<div class="bmeta">'+meta+'</div>':'')+'</button>'+
+    (isToday&&!b.done?'<button class="bplay" aria-label="Start the timer"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></button>':'')+
     '<button class="bcheck'+(b.done?' on':'')+(isToday?'':' locked')+'" aria-label="Mark done">'+
       '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>';
   return el;
@@ -1775,7 +2153,14 @@ $('#dayStrip').addEventListener('click',e=>{
   planDay=b.dataset.d; renderPlan(); buzz(5);
 });
 $('#planWrap').addEventListener('click',async e=>{
+  if(e.target.closest('#btnRecord')){ openRecord(planDay<=TSTR?planDay:TSTR); return; }
+  if(e.target.closest('#btnFocus')){ openFocus(); return; }
   const el=e.target.closest('.pblock'); if(!el) return;
+  if(e.target.closest('.bplay')){
+    const b=blocks.find(x=>x.id===el.dataset.id);
+    if(b) startTimer(b);
+    return;
+  }
   const b=blocks.find(x=>x.id===el.dataset.id); if(!b) return;
   if(e.target.closest('.bcheck')){
     if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
@@ -1785,6 +2170,132 @@ $('#planWrap').addEventListener('click',async e=>{
     return;
   }
   if(e.target.closest('.btxt')) openBlockSheet(b);
+});
+
+/* ===========================================================
+   The session — one block, full screen, one button
+   =========================================================== */
+let T=null, tTick=null, replanId=null;
+const timerSave=()=>{ if(db&&T) dbPut('meta',{key:'timer',value:T}).catch(()=>{}); };
+const remaining=()=>T ? Math.max(0,T.endsAt-(T.pausedAt||Date.now())) : 0;
+
+function startTimer(b){
+  const mins=b.mins||45;
+  if(!mins){ toast('Give the block a length first'); return; }
+  T={id:b.id,date:b.date,total:mins*60000,endsAt:Date.now()+mins*60000,pausedAt:0,
+     name:(b.text||'').trim().split('\n')[0]||'Study block'};
+  timerSave(); showTimer(); buzz(HAPTIC.tick);
+}
+function showTimer(){
+  const w=$('#timerWrap');
+  w.classList.add('on');
+  requestAnimationFrame(()=>w.classList.add('show'));
+  $('#tName').textContent=T.name;
+  paintTimer(); tickOn();
+}
+function tickOn(){
+  clearInterval(tTick);
+  tTick=setInterval(()=>{
+    if(!T) return;
+    paintTimer();
+    if(T.pausedAt){ if(Date.now()-T.pausedAt>=300000) timerBlew(); return; }
+    if(remaining()<=0) timerDone();
+  },500);
+}
+function paintTimer(){
+  if(!T) return;
+  const ms=remaining(), sec=Math.ceil(ms/1000);
+  $('#tClock').textContent=Math.floor(sec/60)+':'+pad(sec%60);
+  $('#tFill').style.width=(100*Math.max(0,Math.min(1,1-ms/T.total)))+'%';
+  const paused=!!T.pausedAt;
+  $('#tPause').textContent=paused?'Resume':'Pause';
+  $('#tEnd').hidden=!paused;
+  $('#tState').textContent=paused?'Paused':'Focus';
+  if(paused){
+    const held=Math.floor((Date.now()-T.pausedAt)/1000);
+    $('#tNote').textContent='Held '+Math.floor(held/60)+':'+pad(held%60)+' · the session resets at 5:00';
+  }else $('#tNote').textContent='';
+}
+function closeTimer(){
+  const w=$('#timerWrap');
+  w.classList.remove('show');
+  setTimeout(()=>w.classList.remove('on'),360);
+  clearInterval(tTick); tTick=null; T=null;
+  if(db) dbDel('meta','timer').catch(()=>{});
+}
+async function timerDone(){
+  const b=blocks.find(x=>x.id===T.id), name=T.name, date=T.date||TSTR;
+  clearInterval(tTick); tTick=null;
+  if(b && !b.done){ b.done=1; await dbPut('blocks',b); }
+  await addCompletion(date,name,true,'planned');
+  closeTimer(); buzz(HAPTIC.done);
+  toast('Session done · on the record');
+  renderPlan(); renderSettings();
+}
+/* a break past five minutes is not a break, so the session goes back to zero */
+async function timerBlew(){
+  replanId=T.id;
+  clearInterval(tTick); tTick=null;
+  closeTimer(); buzz([30,70,30]);
+  closePauseSheet();
+  $('#scrim').classList.add('on','high'); $('#replanSheet').classList.add('on');
+}
+$('#tPause').addEventListener('click',()=>{
+  if(!T) return;
+  if(T.pausedAt){
+    T.endsAt+=Date.now()-T.pausedAt; T.pausedAt=0;
+    timerSave(); paintTimer(); buzz(8); return;
+  }
+  T.pausedAt=Date.now(); timerSave(); paintTimer(); buzz(12);
+  openPauseSheet();
+});
+$('#tEnd').addEventListener('click',async()=>{
+  if(!T) return;
+  const started=remaining()<T.total;
+  const name=T.name, date=T.date||TSTR;
+  closeTimer(); buzz(10);
+  if(started){ await addCompletion(date,name,true,'planned'); toast('Logged on the record'); }
+  renderPlan(); renderSettings();
+});
+
+/* ---------- why the break ---------- */
+function openPauseSheet(){
+  $('#pauseReason').value='';
+  $$('#pauseQuick .preset').forEach(b=>b.classList.remove('on'));
+  $('#scrim').classList.add('on','high'); $('#pauseSheet').classList.add('on'); $('#pauseSheet').scrollTop=0;
+}
+function closePauseSheet(){
+  $('#scrim').classList.remove('on','high'); $('#pauseSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+}
+$('#pauseQuick').addEventListener('click',e=>{
+  const b=e.target.closest('.preset'); if(!b) return;
+  $$('#pauseQuick .preset').forEach(x=>x.classList.toggle('on',x===b));
+  $('#pauseReason').value=b.dataset.r; buzz(6);
+});
+async function logPause(reason){
+  const ds=(T&&T.date)||TSTR;
+  const r=dayRec(ds);
+  r.pauses.push({id:uid(),at:Date.now(),reason:reason||'No reason given',block:(T&&T.name)||''});
+  await saveDay(ds);
+  renderSettings();
+}
+$('#pauseSave').addEventListener('click',async()=>{
+  const reason=$('#pauseReason').value.trim();
+  closePauseSheet();
+  await logPause(reason);
+  toast('Break noted'); buzz(8);
+});
+$('#pauseSkip').addEventListener('click',async()=>{ closePauseSheet(); await logPause(''); });
+$('#replanClose').addEventListener('click',()=>{
+  $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
+  replanId=null; renderPlan();
+});
+$('#replanEdit').addEventListener('click',()=>{
+  $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
+  const b=blocks.find(x=>x.id===replanId); replanId=null;
+  renderPlan();
+  if(b){ planDay=b.date; renderPlan(); setTimeout(()=>openBlockSheet(b),260); }
 });
 
 /* ---------- study block sheet: set the start on the clock, then the end ---------- */
@@ -1922,6 +2433,204 @@ $('#bDelete').addEventListener('click',async e=>{
   closeBlockSheet();
   if(id){ blocks=blocks.filter(x=>x.id!==id); await dbDel('blocks',id); }
   renderPlan(); renderSettings(); toast('Block deleted');
+});
+
+/* ===========================================================
+   The record — what got done, what broke, what you made of it
+   =========================================================== */
+let recDay=TSTR, recFbT=null;
+function openRecord(ds){
+  recDay=ds||TSTR;
+  renderRecord();
+  $('#scrim').classList.add('on'); $('#recSheet').classList.add('on'); $('#recSheet').scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeRecord(){
+  $('#scrim').classList.remove('on'); $('#recSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+}
+function recLabel(ds){
+  if(ds===TSTR) return 'Today';
+  if(ds===ymd(addDays(TODAY,-1))) return 'Yesterday';
+  const d=parseDay(ds);
+  return FULLDAY[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()];
+}
+function renderRecord(){
+  const r=days.get(recDay);
+  $('#recDate').textContent=recLabel(recDay);
+
+  /* the same strip as the study page, running backwards from today */
+  const strip=$('#recStrip'); strip.innerHTML='';
+  let month=null;
+  for(let i=29;i>=0;i--){
+    const d=addDays(TODAY,-i), ds=ymd(d);
+    if(month!==null && d.getMonth()!==month){
+      const sep=document.createElement('div'); sep.className='msep'; strip.appendChild(sep);
+    }
+    month=d.getMonth();
+    const rec=days.get(ds);
+    const btn=document.createElement('button');
+    btn.className='dchip'+(ds===recDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'')+
+      (rec&&!dayEmpty(rec)?' has':'');
+    btn.dataset.d=ds;
+    btn.innerHTML='<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
+                  '<div class="d">'+d.getDate()+'</div><i class="dot"></i>';
+    strip.appendChild(btn);
+  }
+  requestAnimationFrame(()=>{
+    const on=$('.dchip.on',strip);
+    if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
+  });
+
+  const all=(r&&r.done)||[];
+  fillList($('#recDone'),all.filter(x=>x.kind!=='unplanned'),
+    'Nothing yet. Finish a session, or write in what you got through.');
+  fillList($('#recExtra'),all.filter(x=>x.kind==='unplanned'),
+    'Anything you got done that was not on the plan goes here.');
+
+  const pauses=(r&&r.pauses)||[];
+  $('#recPauseWrap').hidden=!pauses.length;
+  const pl=$('#recPauses'); pl.innerHTML='';
+  pauses.forEach(x=>{
+    const t=new Date(x.at);
+    const el=document.createElement('div');
+    el.className='ritem';
+    el.innerHTML='<div class="rt">'+esc(x.reason||'No reason given')+
+      '<div class="rm">'+pad(t.getHours())+':'+pad(t.getMinutes())+(x.block?' · '+esc(x.block):'')+'</div></div>'+
+      '<button class="x" data-pdel="'+x.id+'" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+    pl.appendChild(el);
+  });
+
+  const fb=$('#recFeedback');
+  if(document.activeElement!==fb) fb.value=(r&&r.feedback)||'';
+}
+function fillList(host,items,emptyMsg){
+  host.innerHTML='';
+  if(!items.length){ host.innerHTML='<div class="rempty">'+esc(emptyMsg)+'</div>'; return; }
+  items.forEach(x=>{
+    const el=document.createElement('div');
+    el.className='ritem'+(x.timed?' timed':'');
+    el.innerHTML='<div class="rt">'+esc(x.text)+(x.timed?'<div class="rm">Timed session</div>':'')+'</div>'+
+      '<button class="x" data-del="'+x.id+'" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+    host.appendChild(el);
+  });
+}
+$('#recStrip').addEventListener('click',e=>{
+  const b=e.target.closest('.dchip'); if(!b) return;
+  recDay=b.dataset.d; renderRecord(); buzz(5);
+});
+$('#recClose').addEventListener('click',closeRecord);
+async function addFromField(inputId,kind){
+  const el=$(inputId), text=el.value.trim();
+  if(!text){ el.focus(); toast('Write what you finished'); return; }
+  await addCompletion(recDay,text,false,kind);
+  el.value=''; renderRecord(); renderSettings(); buzz(10);
+}
+$('#recAddBtn').addEventListener('click',()=>addFromField('#recAdd','planned'));
+$('#recAddXBtn').addEventListener('click',()=>addFromField('#recAddX','unplanned'));
+$('#recAdd').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#recAddBtn').click(); });
+$('#recAddX').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#recAddXBtn').click(); });
+$('#recSheet').addEventListener('click',async e=>{
+  const d=e.target.closest('[data-del]');
+  if(d){
+    const r=dayRec(recDay);
+    r.done=r.done.filter(x=>x.id!==d.dataset.del);
+    await saveDay(recDay); renderRecord(); renderSettings(); buzz(12); return;
+  }
+  const pd=e.target.closest('[data-pdel]');
+  if(pd){
+    const r=dayRec(recDay);
+    r.pauses=r.pauses.filter(x=>x.id!==pd.dataset.pdel);
+    await saveDay(recDay); renderRecord(); renderSettings(); buzz(12);
+  }
+});
+$('#recFeedback').addEventListener('input',()=>{
+  clearTimeout(recFbT);
+  recFbT=setTimeout(async()=>{
+    const r=dayRec(recDay);
+    r.feedback=$('#recFeedback').value;
+    await saveDay(recDay); renderSettings();
+  },600);
+});
+
+/* every note you have written about a day, in one place */
+function openFeedback(){
+  renderFeedback();
+  $('#scrim').classList.add('on'); $('#fbSheet').classList.add('on'); $('#fbSheet').scrollTop=0;
+}
+function closeFeedback(){ $('#scrim').classList.remove('on'); $('#fbSheet').classList.remove('on'); }
+function feedbackDays(){ return recordedDays().filter(r=>(r.feedback||'').trim()); }
+function renderFeedback(){
+  const list=feedbackDays(), body=$('#fbBody');
+  $('#fbTitle').textContent=list.length?'All feedback · '+list.length:'All feedback';
+  if(!list.length){
+    body.innerHTML='<div class="rempty">Nothing written yet. What you put on a day shows up here.</div>';
+    return;
+  }
+  body.innerHTML=list.map(r=>
+    '<div class="fbitem"><div class="when"><span class="eyebrow">'+esc(recLabel(r.date))+'</span>'+
+    '<button data-fbdel="'+r.date+'">Delete</button></div><p>'+esc(r.feedback)+'</p></div>').join('');
+}
+$('#fbBody').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-fbdel]'); if(!b) return;
+  if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again'; buzz(14); return; }
+  const ds=b.dataset.fbdel;
+  const r=days.get(ds);
+  if(r){ r.feedback=''; await saveDay(ds); }
+  renderFeedback(); renderRecord(); renderSettings(); toast('Deleted');
+});
+$('#recFeedbackAll').addEventListener('click',openFeedback);
+$('#fbClose').addEventListener('click',closeFeedback);
+
+/* the whole lot gathered into one piece of text you can keep or hand on */
+function buildDigest(){
+  const list=recordedDays().slice().reverse();
+  if(!list.length) return 'Nothing recorded yet.';
+  const first=list[0].date, last=list[list.length-1].date;
+  let totalDone=0, totalExtra=0, totalPauses=0, withNotes=0;
+  list.forEach(r=>{
+    r.done.forEach(x=>{ if(x.kind==='unplanned') totalExtra++; else totalDone++; });
+    totalPauses+=r.pauses.length;
+    if((r.feedback||'').trim()) withNotes++;
+  });
+  const head=[
+    'DAYFLOW · RECORD',
+    recLabel(first).toUpperCase()+'  to  '+recLabel(last).toUpperCase(),
+    list.length+' days recorded · '+totalDone+' planned · '+totalExtra+' unplanned · '+
+      totalPauses+' breaks · '+withNotes+' days written up',
+    ''.padEnd(46,'-'),''
+  ].join('\n');
+  const body=list.map(r=>{
+    const out=[recLabel(r.date).toUpperCase()+'  ('+r.date+')'];
+    r.done.filter(x=>x.kind!=='unplanned').forEach(x=>out.push('  + '+x.text+(x.timed?'  [timed]':'')));
+    r.done.filter(x=>x.kind==='unplanned').forEach(x=>out.push('  * '+x.text+'  [unplanned]'));
+    r.pauses.forEach(x=>out.push('  ~ break: '+(x.reason||'no reason given')));
+    if((r.feedback||'').trim()) out.push('  > '+r.feedback.replace(/\n/g,'\n    '));
+    return out.join('\n');
+  }).join('\n\n');
+  return head+body+'\n';
+}
+$('#fbSummary').addEventListener('click',()=>{
+  $('#digestText').value=buildDigest();
+  $('#fbSheet').classList.remove('on');
+  $('#scrim').classList.add('on'); $('#digestSheet').classList.add('on'); $('#digestSheet').scrollTop=0;
+  buzz(8);
+});
+$('#digestClose').addEventListener('click',()=>{
+  $('#scrim').classList.remove('on'); $('#digestSheet').classList.remove('on');
+});
+$('#digestCopy').addEventListener('click',async()=>{
+  const t=$('#digestText');
+  try{ await navigator.clipboard.writeText(t.value); toast('Copied'); }
+  catch(err){ t.removeAttribute('readonly'); t.select(); document.execCommand&&document.execCommand('copy'); t.setAttribute('readonly',''); toast('Copied'); }
+  buzz(8);
+});
+$('#digestSave').addEventListener('click',()=>{
+  const url=URL.createObjectURL(new Blob([$('#digestText').value],{type:'text/plain'}));
+  const a=document.createElement('a'); a.href=url; a.download='dayflow-record-'+TSTR+'.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('Saved');
 });
 
 /* ===========================================================
@@ -2543,21 +3252,40 @@ $('#themeBtn').addEventListener('click',()=>{
 });
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
 $('#introSw').addEventListener('click',()=>{S.intro=!S.intro;saveSettings();renderSettings();buzz(8);});
+$('#runStart').addEventListener('change',()=>{ S.runStart=$('#runStart').value||''; saveSettings(); renderToday(); });
+$('#runEnd').addEventListener('change',()=>{ S.runEnd=$('#runEnd').value||''; saveSettings(); renderToday(); });
+$('#runClear').addEventListener('click',()=>{
+  S.runStart=''; S.runEnd=''; saveSettings(); renderSettings(); renderToday(); toast('Run cleared'); buzz(8);
+});
+let introT;
+$('#introText').addEventListener('input',()=>{
+  clearTimeout(introT);
+  introT=setTimeout(()=>{
+    const lines=$('#introText').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,3);
+    S.introText=lines.length?lines:null;
+    saveSettings(); cacheLook();
+  },500);
+});
 const resolvedTheme=()=>S.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S.theme;
 function applySettings(){
   const t=visionDark?'dark':resolvedTheme();
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
-  /* remembered for the next cold start, so the title screen opens in your colour */
-  try{
-    localStorage.setItem('dayflow.accent',S.accent);
-    if(!visionDark) localStorage.setItem('dayflow.theme',resolvedTheme());
-  }catch(e){}
+  cacheLook();
   const m=document.querySelector('meta[name=theme-color]');
   if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000' : (t==='dark'?'#000000':'#F4F4F3'));
   $('#themeIcon').innerHTML = t==='dark'
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+}
+/* the title screen paints before the database answers, so what it needs to look
+   right is mirrored into localStorage, which is there immediately */
+function cacheLook(){
+  try{
+    localStorage.setItem('dayflow.accent',S.accent);
+    if(!visionDark) localStorage.setItem('dayflow.theme',resolvedTheme());
+    localStorage.setItem('dayflow.intro',JSON.stringify(introLines()));
+  }catch(e){}
 }
 const THEME_BG={dark:'#000000',light:'#F4F4F3'};
 function themeSweep(to,origin,atCover){
@@ -2586,6 +3314,10 @@ function renderSettings(){
   $('#cntNotes').textContent=partCount('notes');
   $('#cntPlan').textContent=partCount('plan');
   $('#cntVision').textContent=partCount('vision');
+  $('#cntRecord').textContent=partCount('record');
+  if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
+  if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
+  if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
@@ -2605,7 +3337,8 @@ $('#exportBtn').addEventListener('click',()=>{
     downloadJSON({
       app:'dayflow', version:4, exported:new Date().toISOString(),
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
-      plans:[...plans.entries()], blocks, vision:visionItems, settings:S
+      plans:[...plans.entries()], blocks, vision:visionItems,
+      days:[...days.values()], settings:S
     },'dayflow-'+TSTR+'.json');
     toast('Exported');
   }catch(err){ console.error(err); toast('Export failed'); }
@@ -2615,12 +3348,13 @@ $('#exportBtn').addEventListener('click',()=>{
    A part file is an ordinary Dayflow file carrying only its own slice, so a full
    backup works in these buttons too: it just takes the one part you asked for.
    Importing a part merges, it never clears — nothing else in the app is touched. */
-const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision'};
+const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision',record:'Day records'};
 function partPayload(kind){
   if(kind==='habits') return {habits:allHabits,sets,records:[...recs]};
   if(kind==='notes')  return {dnotes:myNotes};
   if(kind==='plan')   return {plans:[...plans.entries()],blocks};
   if(kind==='vision') return {vision:visionItems,northStar:S.northStar||''};
+  if(kind==='record') return {days:[...days.values()]};
   return {};
 }
 function partCount(kind){
@@ -2628,6 +3362,10 @@ function partCount(kind){
   if(kind==='notes')  return myNotes.length+' note'+(myNotes.length===1?'':'s');
   if(kind==='plan')   return plans.size+' day plans · '+blocks.length+' blocks';
   if(kind==='vision') return visionItems.length+' card'+(visionItems.length===1?'':'s');
+  if(kind==='record'){
+    const r=recordedDays();
+    return r.length+' day'+(r.length===1?'':'s')+' · '+r.reduce((n,x)=>n+x.done.length,0)+' logged';
+  }
   return '';
 }
 function exportPart(kind){
@@ -2691,6 +3429,22 @@ async function mergePart(kind,d){
     visionItems.sort((a,b)=>(a.order||0)-(b.order||0));
     if(d.northStar && !(S.northStar||'').trim()){ S.northStar=d.northStar; await saveSettings(); }
   }
+  if(kind==='record'){
+    for(const x of (d.days||[])){
+      if(!x||!x.date) continue;
+      const inc=normDay(x), cur=days.get(inc.date);
+      if(!cur){ days.set(inc.date,inc); }
+      else{
+        const seen=new Set(cur.done.map(y=>y.id));
+        inc.done.forEach(y=>{ if(!seen.has(y.id)) cur.done.push(y); });
+        const ps=new Set(cur.pauses.map(y=>y.id));
+        inc.pauses.forEach(y=>{ if(!ps.has(y.id)) cur.pauses.push(y); });
+        const a=(cur.feedback||'').trim(), b=(inc.feedback||'').trim();
+        cur.feedback = !a ? b : (b && b!==a ? a+'\n\n'+b : a);
+      }
+      await saveDay(inc.date); n++;
+    }
+  }
   return n;
 }
 let partKind=null;
@@ -2747,6 +3501,7 @@ $('#importFile').addEventListener('change',async e=>{
         mins:b.mins||blockMins(time,end), text:b.text||'', done:b.done?1:0, created:b.created||Date.now()};
     });
     visionItems=d.vision||[];
+    days=new Map((d.days||[]).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
     const keepIntro=S.intro;
     S=Object.assign({},S,d.settings||{},{seeded:true});
     if(S.intro===undefined) S.intro=keepIntro;
@@ -2758,8 +3513,9 @@ $('#importFile').addEventListener('change',async e=>{
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
     for(const b of blocks) await dbPut('blocks',b);
     for(const v of visionItems) await dbPut('vision',v);
+    for(const r of days.values()) await dbPut('days',r);
 
-    await ensureSets(); await saveSettings();
+    await ensureSets(); await saveSettings(); cacheLook();
     applySettings(); planDay=TSTR; renderAll(); renderNotes();
     toast('Data imported');
   }catch(err){
@@ -2774,7 +3530,8 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[]; visionItems=[];
+  allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[];
+  visionItems=[]; days=new Map();
   S.seeded=false; S.activeSet=null; S.northStar=''; S.visionLock=null; visionUnlocked=false;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
@@ -2867,6 +3624,7 @@ async function loadAll(){
   legacyNotes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
   myNotes=await dbAll('dnotes');
   visionItems=(await dbAll('vision')).sort((a,b)=>(a.order||0)-(b.order||0));
+  days=new Map((await dbAll('days')).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
   await migrateNotes();
   await migrateStudyHabits();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
@@ -2970,7 +3728,13 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
     if(loaded && !S.seeded && !allHabits.length) await seed();
   }catch(err){ console.error('Dayflow · seed',err); }
   try{
-    applySettings(); renderAll(); renderNotes();
+    applySettings(); cacheLook(); renderAll(); renderNotes();
+    const saved=(await dbAll('meta')).find(m=>m.key==='timer');
+    if(saved && saved.value && saved.value.id){
+      const v=saved.value;
+      if(v.pausedAt || v.endsAt>Date.now()){ T=v; showTimer(); }
+      else{ await dbDel('meta','timer'); toast('A session finished while you were away'); }
+    }
   }catch(err){
     console.error('Dayflow · render',err);
     toast('Something failed to draw — your data is safe');
