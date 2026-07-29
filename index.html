@@ -286,6 +286,16 @@ button.tphead:active{background:var(--tint)}
 .sw:active{transform:scale(.86)}
 .sw.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--c)}
 .btnrow{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.partrow{display:flex;align-items:center;gap:9px;padding:13px 14px 13px 16px;border-bottom:1px solid var(--line)}
+.partrow:last-child{border-bottom:0}
+.partrow .t{flex:1;min-width:0}
+.partrow .t .n{font-size:14.5px;font-weight:500}
+.partrow .t .d{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
+.pbtn{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--bg-2);border:1px solid var(--line);color:var(--ink-2);
+  transition:transform .2s var(--spring),color .2s var(--ease),border-color .2s var(--ease)}
+.pbtn:active{transform:scale(.9);color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.pbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .foot{text-align:center;color:var(--ink-3);font-size:12px;padding:6px 0 10px;line-height:1.6}
 .seg-ctrl{display:flex;gap:2px;background:var(--bg-2);border-radius:9px;padding:2px}
 .seg-ctrl button{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);
@@ -604,7 +614,8 @@ button.tphead:active{background:var(--tint)}
 .bootstage{text-align:center;padding:0 24px}
 .boottitle{font-family:var(--display);font-weight:800;text-transform:uppercase;
   font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:#F5F5F5}
-.boottitle .go{color:var(--acc)}
+.boottitle .go{color:var(--acc);transition:color .45s var(--ease)}
+.bootrule{transition:background .45s var(--ease)}
 .bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;background:var(--acc)}
 .bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
   text-transform:uppercase;color:rgba(255,255,255,.36)}
@@ -629,6 +640,18 @@ button.tphead:active{background:var(--tint)}
   .sheet.on{transform:translate(-50%,0)}
 }
 </style>
+<script>
+/* the accent and theme are kept outside the database as well, because the title
+   screen paints long before IndexedDB has answered. without this the first frame
+   falls back to the shipped default and then corrects itself in front of you. */
+(function(){try{
+  var d=document.documentElement;
+  var a=localStorage.getItem('dayflow.accent');
+  if(a && /^#[0-9A-Fa-f]{6}$/.test(a)) d.style.setProperty('--acc',a);
+  var t=localStorage.getItem('dayflow.theme');
+  if(t==='dark'||t==='light') d.dataset.theme=t;
+}catch(e){}})();
+</script>
 </head>
 <body>
 <div id="boot">
@@ -804,7 +827,35 @@ button.tphead:active{background:var(--tint)}
       </div>
 
       <div class="group">
-        <span class="eyebrow">Data</span>
+        <span class="eyebrow">Move one part</span>
+        <div class="panel" id="partPanel">
+          <div class="partrow" data-part="habits">
+            <div class="t"><div class="n">Habits and marks</div><div class="d" id="cntHabits">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export habits"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import habits"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+          <div class="partrow" data-part="notes">
+            <div class="t"><div class="n">Notes</div><div class="d" id="cntNotes">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export notes"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import notes"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+          <div class="partrow" data-part="plan">
+            <div class="t"><div class="n">Plan</div><div class="d" id="cntPlan">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export plan"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import plan"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+          <div class="partrow" data-part="vision">
+            <div class="t"><div class="n">Vision</div><div class="d" id="cntVision">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export vision"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import vision"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+        </div>
+        <p class="hint">Up sends that part to a file. Down merges a file back in — anything already here stays, and the rest of your data is never touched.</p>
+        <input type="file" id="partFile" accept="application/json,.json" hidden>
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Everything</span>
         <div class="panel">
           <div class="srow"><div class="t"><div class="n" id="dataStat">—</div><div class="d">Stored in this browser only. Nothing is uploaded.</div></div></div>
           <div class="btnrow">
@@ -2497,6 +2548,11 @@ function applySettings(){
   const t=visionDark?'dark':resolvedTheme();
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
+  /* remembered for the next cold start, so the title screen opens in your colour */
+  try{
+    localStorage.setItem('dayflow.accent',S.accent);
+    if(!visionDark) localStorage.setItem('dayflow.theme',resolvedTheme());
+  }catch(e){}
   const m=document.querySelector('meta[name=theme-color]');
   if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000' : (t==='dark'?'#000000':'#F4F4F3'));
   $('#themeIcon').innerHTML = t==='dark'
@@ -2526,6 +2582,10 @@ function renderSettings(){
   $('#introSw').classList.toggle('on',S.intro!==false);
   $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+myNotes.length+' notes · '+
     blocks.length+' study blocks · '+visionItems.length+' vision cards';
+  $('#cntHabits').textContent=partCount('habits');
+  $('#cntNotes').textContent=partCount('notes');
+  $('#cntPlan').textContent=partCount('plan');
+  $('#cntVision').textContent=partCount('vision');
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
@@ -2533,20 +2593,129 @@ matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.
 /* ===========================================================
    Export / import — one file, everything in it
    =========================================================== */
+function downloadJSON(data,name){
+  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  const a=document.createElement('a');
+  a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
 $('#exportBtn').addEventListener('click',()=>{
   try{
-    const data={
+    downloadJSON({
       app:'dayflow', version:4, exported:new Date().toISOString(),
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
       plans:[...plans.entries()], blocks, vision:visionItems, settings:S
-    };
-    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-    const a=document.createElement('a');
-    a.href=url; a.download='dayflow-'+TSTR+'.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),2000);
+    },'dayflow-'+TSTR+'.json');
     toast('Exported');
   }catch(err){ console.error(err); toast('Export failed'); }
+});
+
+/* ---------- one part at a time ----------
+   A part file is an ordinary Dayflow file carrying only its own slice, so a full
+   backup works in these buttons too: it just takes the one part you asked for.
+   Importing a part merges, it never clears — nothing else in the app is touched. */
+const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision'};
+function partPayload(kind){
+  if(kind==='habits') return {habits:allHabits,sets,records:[...recs]};
+  if(kind==='notes')  return {dnotes:myNotes};
+  if(kind==='plan')   return {plans:[...plans.entries()],blocks};
+  if(kind==='vision') return {vision:visionItems,northStar:S.northStar||''};
+  return {};
+}
+function partCount(kind){
+  if(kind==='habits') return allHabits.length+' habits · '+recs.size+' marks';
+  if(kind==='notes')  return myNotes.length+' note'+(myNotes.length===1?'':'s');
+  if(kind==='plan')   return plans.size+' day plans · '+blocks.length+' blocks';
+  if(kind==='vision') return visionItems.length+' card'+(visionItems.length===1?'':'s');
+  return '';
+}
+function exportPart(kind){
+  try{
+    downloadJSON(Object.assign(
+      {app:'dayflow',version:4,part:kind,exported:new Date().toISOString()},
+      partPayload(kind)),'dayflow-'+kind+'-'+TSTR+'.json');
+    toast(PART_NAME[kind]+' exported');
+  }catch(err){ console.error(err); toast('Export failed'); }
+}
+async function mergePart(kind,d){
+  let n=0;
+  if(kind==='habits'){
+    for(const st of (d.sets||[])) if(!sets.some(x=>x.id===st.id)){ sets.push(st); await dbPut('sets',st); }
+    for(const h of (d.habits||[])){
+      if(!h||!h.id) continue;
+      const hb={id:h.id,setId:h.setId,name:h.name||'Habit',color:h.color||THREADS[0],
+        days:Array.isArray(h.days)?h.days:[0,1,2,3,4,5,6],order:h.order||0,
+        start:h.start||TSTR,created:h.created||Date.now()};
+      const i=allHabits.findIndex(x=>x.id===hb.id);
+      if(i>=0) allHabits[i]=hb; else allHabits.push(hb);
+      await dbPut('habits',hb); n++;
+    }
+    for(const k of (d.records||[])){
+      if(recs.has(k)) continue;
+      recs.add(k);
+      const [hid,date]=String(k).split('|');
+      await dbPut('records',{key:k,habitId:hid,date,done:1});
+    }
+    await ensureSets();
+  }
+  if(kind==='notes'){
+    for(const x of (d.dnotes||[])){
+      const nt={id:x.id||uid(),date:x.date||TSTR,title:x.title||'',text:x.text||'',created:x.created||Date.now()};
+      const i=myNotes.findIndex(y=>y.id===nt.id);
+      if(i>=0) myNotes[i]=nt; else myNotes.push(nt);
+      await dbPut('dnotes',nt); n++;
+    }
+  }
+  if(kind==='plan'){
+    for(const pair of (d.plans||[])){
+      const [k,text]=pair; if(!k) continue;
+      plans.set(k,text); await dbPut('plans',{key:k,date:String(k).slice(-10),text}); n++;
+    }
+    for(const x of (d.blocks||[])){
+      const time=x.time||'09:00', end=x.end||str24(mins24(time)+(x.mins||45));
+      const bk={id:x.id||uid(),date:x.date||TSTR,time,end,mins:x.mins||blockMins(time,end),
+        text:x.text||'',done:x.done?1:0,created:x.created||Date.now()};
+      const i=blocks.findIndex(y=>y.id===bk.id);
+      if(i>=0) blocks[i]=bk; else blocks.push(bk);
+      await dbPut('blocks',bk); n++;
+    }
+  }
+  if(kind==='vision'){
+    for(const v of (d.vision||[])){
+      if(!v||!v.id) continue;
+      const i=visionItems.findIndex(y=>y.id===v.id);
+      if(i>=0) visionItems[i]=v; else visionItems.push(v);
+      await dbPut('vision',v); n++;
+    }
+    visionItems.sort((a,b)=>(a.order||0)-(b.order||0));
+    if(d.northStar && !(S.northStar||'').trim()){ S.northStar=d.northStar; await saveSettings(); }
+  }
+  return n;
+}
+let partKind=null;
+$('#partPanel').addEventListener('click',e=>{
+  const btn=e.target.closest('.pbtn'); if(!btn) return;
+  const kind=btn.closest('.partrow').dataset.part;
+  if(btn.dataset.do==='out'){ exportPart(kind); buzz(8); return; }
+  partKind=kind; $('#partFile').click();
+});
+$('#partFile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value='';
+  if(!f||!partKind) return;
+  const kind=partKind; partKind=null;
+  try{
+    const d=JSON.parse(await f.text());
+    if(d.app!=='dayflow') throw new Error('not dayflow');
+    if(d.part && d.part!==kind){ toast('That file holds '+(PART_NAME[d.part]||d.part)); return; }
+    const n=await mergePart(kind,d);
+    if(!n && kind!=='vision'){ toast('Nothing in that file for '+PART_NAME[kind]); return; }
+    applySet(); planDay=TSTR; renderAll(); renderNotes();
+    toast(PART_NAME[kind]+' merged in'); buzz(10);
+  }catch(err){
+    console.error('Dayflow · part import',err);
+    toast('That is not a Dayflow export');
+  }
 });
 $('#importBtn').addEventListener('click',()=>$('#importFile').click());
 $('#importFile').addEventListener('change',async e=>{
