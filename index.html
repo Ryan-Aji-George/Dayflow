@@ -88,11 +88,11 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .view.active>*:nth-child(3){animation-delay:.12s}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ---------- today: the hero is the day itself ---------- */
-.head{padding:16px 0 4px}
+/* ---------- today ---------- */
+.head{padding:16px 0 20px}
 .head .eyebrow{display:block}
 .day-name{font-family:var(--display);font-size:38px;font-weight:700;letter-spacing:-.05em;line-height:1;margin:9px 0 0}
-.prog{display:flex;align-items:center;gap:18px;margin:22px 0 6px}
+.prog{display:flex;align-items:center;gap:18px;margin:22px 0 0}
 .ringwrap{position:relative;flex:0 0 auto;width:104px;height:104px}
 .ring{width:104px;height:104px;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:9;stroke-linecap:round}
@@ -105,65 +105,74 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .progside{flex:1;min-width:0}
 .pline{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-.035em;line-height:1.1}
 .psub{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.4}
-.pdays{
-  display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 12px;border-radius:11px;
-  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
-  font-size:12.5px;font-weight:500;transition:transform .2s var(--spring),border-color .2s;
-}
-.pdays:active{transform:scale(.95)}
-.pdays b{color:var(--ink);font-weight:600}
-.pdays svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
-/* today's list */
-.tsec{display:flex;align-items:center;gap:10px;margin:26px 2px 10px}
-.tsec .eyebrow{flex:1}
-.hcard{
-  position:relative;width:100%;display:flex;align-items:center;gap:13px;text-align:left;
-  padding:15px 15px 15px 4px;margin-bottom:9px;
-  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
-  transition:transform .2s var(--spring),background .3s var(--ease),border-color .3s var(--ease),opacity .3s;
-}
-.hcard:active{transform:scale(.985)}
-.hcard .bar{width:3px;height:30px;border-radius:2px;background:var(--c);flex:0 0 auto;margin-left:12px;
-  transition:height .3s var(--ease)}
-.hcard .hb{flex:1;min-width:0}
-.hcard .hn{font-size:15.5px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hcard .hs{font-size:12px;color:var(--ink-3);margin-top:2px}
-.tick{
-  width:30px;height:30px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;position:relative;
+/* the record: one square a day, and today's is the empty one */
+.streak{width:100%;display:block;text-align:left;margin:4px 0 18px;padding:16px 16px 13px;
+  border-radius:var(--r-lg);background:var(--surf);border:1px solid var(--line);
+  transition:transform .2s var(--spring),border-color .4s var(--ease),background .4s var(--ease)}
+.streak:active{transform:scale(.99)}
+.streak.clean{border-color:color-mix(in srgb,var(--acc) 34%,transparent);
+  background:color-mix(in srgb,var(--acc) 6%,var(--surf))}
+.sgrid{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;
+  grid-template-columns:repeat(var(--w,18),1fr);gap:3px}
+.sq{aspect-ratio:1;border-radius:2.5px;background:color-mix(in srgb,var(--ink) 10%,transparent);
+  transition:background .45s var(--ease),box-shadow .45s var(--ease)}
+.sq.none{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.sq.future{background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.sq.l1{background:color-mix(in srgb,var(--acc) 30%,transparent)}
+.sq.l2{background:color-mix(in srgb,var(--acc) 55%,transparent)}
+.sq.l3{background:color-mix(in srgb,var(--acc) 78%,transparent)}
+.sq.l4{background:var(--acc)}
+.sq.today{box-shadow:0 0 0 1.5px var(--ink-2)}
+.sq.today.l4{box-shadow:0 0 0 1.5px var(--acc),0 0 12px -2px var(--acc)}
+.sq.bump{animation:sqBump .5s var(--spring)}
+@keyframes sqBump{0%{transform:scale(1)}38%{transform:scale(1.55)}100%{transform:scale(1)}}
+.sfoot{display:flex;align-items:center;gap:10px;margin-top:13px;font-size:12.5px;color:var(--ink-3)}
+.sfoot b{color:var(--ink);font-weight:600}
+.sfoot .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.sfoot svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* one card per state, habits are rows inside it */
+.tpanel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;margin-bottom:12px;transition:border-color .4s var(--ease),background .4s var(--ease)}
+.tpanel.todo-set{border-color:color-mix(in srgb,var(--acc) 24%,transparent)}
+.tpanel.done-set{background:var(--bg-2)}
+.tphead{width:100%;display:flex;align-items:center;gap:10px;padding:15px 16px 13px;text-align:left}
+.tphead .eyebrow{flex:1}
+.tpanel.todo-set .tphead .eyebrow{color:var(--acc)}
+.tphead .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.tphead .chev{width:14px;height:14px;flex:0 0 auto;transition:transform .4s var(--ease)}
+.tpanel.shut .tphead .chev{transform:rotate(-90deg)}
+button.tphead{transition:background .25s var(--ease)}
+button.tphead:active{background:var(--tint)}
+.tpbody{display:grid;grid-template-rows:1fr;transition:grid-template-rows .42s var(--ease)}
+.tpanel.shut .tpbody{grid-template-rows:0fr}
+.tpinner{overflow:hidden;opacity:1;transition:opacity .32s var(--ease) .06s}
+.tpanel.shut .tpinner{opacity:0;transition-delay:0s}
+.hrowc{width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;text-align:left;
+  border-top:1px solid var(--line);transition:background .25s var(--ease),opacity .3s var(--ease)}
+.hrowc:active{background:var(--tint)}
+.hrowc .bar{width:3px;height:26px;border-radius:2px;background:var(--c);flex:0 0 auto}
+.hrowc .hn{flex:1;min-width:0;font-size:15px;font-weight:600;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tick{width:28px;height:28px;border-radius:9px;flex:0 0 auto;display:grid;place-items:center;position:relative;
   background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);
-  transition:background .3s var(--ease),box-shadow .3s var(--ease);
-}
-.tick svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  transition:background .3s var(--ease),box-shadow .3s var(--ease)}
+.tick svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:24;stroke-dashoffset:24;opacity:0;transition:stroke-dashoffset .34s var(--ease) .04s,opacity .12s}
-.hcard.on{background:color-mix(in srgb,var(--c) 8%,var(--surf));border-color:color-mix(in srgb,var(--c) 26%,transparent)}
-.hcard.on .hn{color:var(--ink-2)}
-.hcard.on .tick{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
+.hrowc.on{opacity:.6}
+.hrowc.on .hn{color:var(--ink-2)}
+.hrowc.on .tick{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
   box-shadow:0 2px 10px -5px color-mix(in srgb,var(--c) 90%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
-.hcard.on .tick svg{stroke-dashoffset:0;opacity:1}
-.hcard.rest{opacity:.55}
-.hcard.rest .tick{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
-.hcard.rest .tick svg{stroke:var(--ink-3);stroke-dashoffset:0;opacity:.7}
-.hcard.pop{animation:bump .45s var(--spring)}
-@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.022)}100%{transform:scale(1)}}
+.hrowc.on .tick svg{stroke-dashoffset:0;opacity:1}
+.hrowc.rest{opacity:.46}
+.hrowc.rest .tick{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.hrowc.rest .tick svg{stroke:var(--ink-3);stroke-dashoffset:0;opacity:.7}
 /* the open ones ask to be closed */
-.hcard.todo .tick::after{
-  content:'';position:absolute;inset:-4px;border-radius:13px;
+.hrowc.todo .tick::after{content:'';position:absolute;inset:-4px;border-radius:12px;
   border:1.5px solid color-mix(in srgb,var(--c) 45%,transparent);
-  opacity:0;animation:breathe 2.8s var(--ease) infinite;
-}
+  opacity:0;animation:breathe 2.8s var(--ease) infinite}
 @keyframes breathe{0%,100%{opacity:0;transform:scale(.86)}50%{opacity:1;transform:scale(1)}}
-
-.clean{
-  position:relative;overflow:hidden;margin:22px 0 4px;padding:22px 20px;border-radius:var(--r-lg);
-  border:1px solid color-mix(in srgb,var(--acc) 32%,transparent);
-  background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 17%,var(--surf)),var(--surf) 78%);
-  animation:rise .5s var(--ease) both;
-}
-.clean h3{font-family:var(--display);font-size:23px;font-weight:700;letter-spacing:-.04em;margin:0}
-.clean p{margin:7px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
-.clean .spark{position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;
-  background:radial-gradient(circle,color-mix(in srgb,var(--acc) 30%,transparent),transparent 70%)}
 
 /* ---------- notes ---------- */
 .note{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:26px 0 4px}
@@ -581,19 +590,26 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- the opening: it appears, it holds, it goes ---------- */
-#boot{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;
-  opacity:0;transition:opacity .55s var(--ease)}
+#boot{position:fixed;inset:0;z-index:99;background:#000;display:grid;place-items:center;color-scheme:dark;
+  opacity:0;clip-path:circle(150% at 0% 0%);
+  transition:opacity .4s var(--ease),clip-path .55s cubic-bezier(.45,0,.15,1)}
 #boot.in{opacity:1}
+/* the circle is pinned to the very corner, so only its quarter falls on screen */
+#boot.out{clip-path:circle(0% at 0% 0%)}
+#boot.out .bootstage{opacity:0;transform:scale(.88) translate(-9%,-11%)}
+.bootstage{transition:opacity .28s var(--ease),transform .5s cubic-bezier(.45,0,.15,1)}
 #boot.gone{opacity:0;pointer-events:none}
+.bootskip{animation:skipPulse 2.6s var(--ease) infinite}
+@keyframes skipPulse{0%,100%{opacity:.34}50%{opacity:.85}}
 .bootstage{text-align:center;padding:0 24px}
 .boottitle{font-family:var(--display);font-weight:800;text-transform:uppercase;
-  font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:var(--ink)}
+  font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:#F5F5F5}
 .boottitle .go{color:var(--acc)}
 .bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;background:var(--acc)}
 .bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
-  text-transform:uppercase;color:var(--ink-3)}
-.bootskip{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
-  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);opacity:.55}
+  text-transform:uppercase;color:rgba(255,255,255,.36)}
+.bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
 /* ---------- edit-mode transitions ---------- */
 @keyframes rvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -621,7 +637,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
     <i class="bootrule"></i>
     <div class="bootname">Dayflow</div>
   </div>
-  <div class="bootskip">Tap to skip</div>
+  <div class="bootskip">Tap to begin</div>
 </div>
 <script>requestAnimationFrame(()=>document.getElementById('boot').classList.add('in'));</script>
 
@@ -653,13 +669,18 @@ button{background:none;border:0;padding:0;cursor:pointer}
           <div class="progside">
             <div class="pline" id="pLine">—</div>
             <div class="psub" id="pSub"></div>
-            <button class="pdays" id="perfectBtn">
-              <svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg>
-              <span>Perfect days · <b id="pdCount">0</b></span>
-            </button>
           </div>
         </div>
       </div>
+
+      <button class="streak" id="streakCard">
+        <div class="sgrid" id="sGrid"></div>
+        <div class="sfoot">
+          <span><b id="sPerfect">0</b> perfect days</span>
+          <span class="right"><b id="sRun">0</b> in a row
+            <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </div>
+      </button>
 
       <div id="todayWrap"></div>
 
@@ -776,7 +797,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
             <button class="switch" id="hapticSw" role="switch"></button>
           </div>
           <div class="srow">
-            <div class="t"><div class="n">Opening animation</div><div class="d">Play the intro every time Dayflow starts.</div></div>
+            <div class="t"><div class="n">Opening animation</div><div class="d">Show the title screen and wait for a tap on every start.</div></div>
             <button class="switch" id="introSw" role="switch"></button>
           </div>
         </div>
@@ -1081,7 +1102,55 @@ function anim(el,cls){
 /* ===========================================================
    Today — only today, nothing else to scroll through
    =========================================================== */
-const RING_C=326.7;
+const RING_C=326.7;              /* 2 * PI * r, with r = 52 */
+const WEEKS=18;
+let restOpen=false, lastLevel=null;
+
+/* how full a day was: 0 nothing, 4 everything that was due */
+function levelOf(date){
+  const t=dayTally(date);
+  if(!t.live) return -1;
+  const p=t.req ? t.done/t.req : 1;          /* a rest day counts as kept */
+  return p===0?0 : p<.34?1 : p<.67?2 : p<1?3 : 4;
+}
+function perfectRun(){
+  let n=0, d=TODAY;
+  const t0=dayTally(d);
+  if(!(t0.live>0 && (t0.perfect||t0.req===0))) d=addDays(d,-1);
+  for(let i=0;i<400;i++){
+    const t=dayTally(d);
+    if(t.live>0 && (t.perfect||t.req===0)) n++; else break;
+    d=addDays(d,-1);
+  }
+  return n;
+}
+/* one square a day. today's sits at the end, empty, waiting */
+function renderStreak(){
+  const g=$('#sGrid');
+  g.style.setProperty('--w',WEEKS);
+  const end=addDays(TODAY,6-TODAY.getDay());          /* saturday of this week */
+  const start=addDays(end,-(WEEKS*7-1));              /* lands on a sunday */
+  let html='';
+  for(let i=0;i<WEEKS*7;i++){
+    const d=addDays(start,i), ds=ymd(d);
+    let cls='sq';
+    if(ds>TSTR) cls+=' future';                       /* not here yet, so it sits back */
+    else{ const l=levelOf(d); cls += l<0 ? ' none' : ' l'+l; }
+    if(ds===TSTR) cls+=' today';
+    html+='<i class="'+cls+'" data-d="'+ds+'"></i>';
+  }
+  g.innerHTML=html;
+  const lvl=levelOf(TODAY);
+  if(lastLevel!==null && lvl!==lastLevel){
+    const sq=$('.sq.today',g);
+    if(sq) anim(sq,'bump');
+  }
+  lastLevel=lvl;
+  $('#sPerfect').textContent=perfectDays().length;
+  $('#sRun').textContent=perfectRun();
+  $('#streakCard').classList.toggle('clean',lvl===4);
+}
+
 function renderToday(){
   const t=dayTally(TODAY), dow=TODAY.getDay();
   $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
@@ -1096,54 +1165,63 @@ function renderToday(){
   const left=t.req-t.done;
   let line,sub;
   if(!t.live){ line='Start here'; sub='Add a habit and today becomes something you can close out.'; }
-  else if(!t.req){ line='Rest day'; sub='Nothing is due today. Everything is already accounted for.'; }
-  else if(left===0){ line='Day closed'; sub='Every habit due today is ticked off.'; }
-  else{ line=left+(left===1?' left':' left'); sub='Finish these and today counts as a perfect day.'; }
+  else if(!t.req){ line='Rest day'; sub='Nothing is due. Today still counts on the board.'; }
+  else if(left===0){ line='Day closed'; sub='Everything due today is ticked off.'; }
+  else{ line=left+' left'; sub='Clear them and today fills in below.'; }
   $('#pLine').textContent=line;
   $('#pSub').textContent=sub;
-  $('#pdCount').textContent=perfectDays().length;
+  renderStreak();
 
   const wrap=$('#todayWrap'); wrap.innerHTML='';
   if(!habits.length){
-    wrap.innerHTML='<div class="empty" style="margin-top:22px"><h3>No habits yet</h3>'+
+    wrap.innerHTML='<div class="empty"><h3>No habits yet</h3>'+
       '<p>Add two or three you actually want to keep. Today\'s list is built from them.</p></div>';
     return;
   }
-
   const live=habits.filter(h=>stateOf(h,TSTR,dow)!=='na');
   const todo=live.filter(h=>stateOf(h,TSTR,dow)==='todo');
   const done=live.filter(h=>stateOf(h,TSTR,dow)==='done');
   const rest=live.filter(h=>stateOf(h,TSTR,dow)==='auto');
 
-  if(t.req>0 && left===0){
-    const c=document.createElement('div');
-    c.className='clean';
-    c.innerHTML='<div class="spark"></div><h3>Today is clean.</h3>'+
-      '<p>'+t.done+' of '+t.req+' done. Come back tomorrow and do it again.</p>';
-    wrap.appendChild(c);
-  }
-  if(todo.length) wrap.appendChild(section('Still open · '+todo.length));
-  todo.forEach(h=>wrap.appendChild(habitCard(h,'todo')));
-  if(done.length) wrap.appendChild(section('Done · '+done.length));
-  done.forEach(h=>wrap.appendChild(habitCard(h,'on')));
-  if(rest.length) wrap.appendChild(section('Not due today · '+rest.length));
-  rest.forEach(h=>wrap.appendChild(habitCard(h,'rest')));
+  if(todo.length) wrap.appendChild(panel('To do',todo,'todo-set','todo'));
+  if(done.length) wrap.appendChild(panel('Done',done,'done-set','on'));
+  if(rest.length) wrap.appendChild(panel('Not due today',rest,'rest-set','rest',true));
 }
-function section(label){
-  const s=document.createElement('div');
-  s.className='tsec'; s.innerHTML='<span class="eyebrow">'+esc(label)+'</span>';
-  return s;
+/* one card holds a whole state; the habits are rows inside it */
+function panel(label,list,cls,mode,collapsible){
+  const el=document.createElement('section');
+  const shut=collapsible&&!restOpen;
+  el.className='tpanel '+cls+(shut?' shut':'');
+  const head=document.createElement(collapsible?'button':'div');
+  head.className='tphead';
+  head.innerHTML='<span class="eyebrow">'+esc(label)+'</span><span class="cnt">'+list.length+'</span>'+
+    (collapsible?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'');
+  el.appendChild(head);
+  /* the rows stay in the page so opening and shutting can actually animate */
+  const body=document.createElement('div'); body.className='tpbody';
+  const inner=document.createElement('div'); inner.className='tpinner';
+  list.forEach(h=>inner.appendChild(habitRow(h,mode)));
+  body.appendChild(inner); el.appendChild(body);
+  return el;
 }
-function habitCard(h,mode){
+function habitRow(h,mode){
   const b=document.createElement('button');
-  b.className='hcard '+mode; b.dataset.h=h.id; b.style.setProperty('--c',h.color);
-  b.innerHTML='<i class="bar"></i><div class="hb"><div class="hn">'+esc(h.name)+'</div>'+
-    '<div class="hs">'+(mode==='rest'?'Rest day · '+scheduleLabel(h.days):scheduleLabel(h.days))+'</div></div>'+
+  b.className='hrowc '+mode; b.dataset.h=h.id; b.style.setProperty('--c',h.color);
+  b.innerHTML='<i class="bar"></i><div class="hn">'+esc(h.name)+'</div>'+
     '<span class="tick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>';
   return b;
 }
 $('#todayWrap').addEventListener('click',e=>{
-  const card=e.target.closest('.hcard'); if(!card) return;
+  const head=e.target.closest('.tphead');
+  if(head){
+    const pan=head.closest('.tpanel');
+    if(!pan || !pan.classList.contains('rest-set')) return;   /* To do and Done never fold */
+    restOpen=!restOpen;
+    pan.classList.toggle('shut',!restOpen);
+    buzz(5);
+    return;
+  }
+  const card=e.target.closest('.hrowc'); if(!card) return;
   const h=habits.find(x=>x.id===card.dataset.h); if(!h) return;
   if(!h.days.includes(TODAY.getDay())){
     toast('Not due on '+DN[TODAY.getDay()]+'s'); buzz(HAPTIC.light); return;
@@ -1169,7 +1247,7 @@ async function toggleHabit(h,card){
 function reflowToday(movedId){
   const wrap=$('#todayWrap');
   const before=new Map();
-  $$('.hcard',wrap).forEach(c=>before.set(c.dataset.h,c.getBoundingClientRect().top));
+  $$('.hrowc',wrap).forEach(c=>before.set(c.dataset.h,c.getBoundingClientRect().top));
   const h0=wrap.offsetHeight;
   renderToday();
   const h1=wrap.offsetHeight;
@@ -1180,7 +1258,7 @@ function reflowToday(movedId){
     wrap.style.height=h1+'px';
     setTimeout(()=>{ wrap.style.height=''; wrap.style.overflow=''; wrap.style.transition=''; },580);
   }
-  $$('.hcard',wrap).forEach(c=>{
+  $$('.hrowc',wrap).forEach(c=>{
     const b=before.get(c.dataset.h); if(b==null) return;
     const d=b-c.getBoundingClientRect().top;
     if(Math.abs(d)<1) return;
@@ -1238,7 +1316,7 @@ function openPerfect(){
   buzz(HAPTIC.light);
 }
 function closePerfect(){ $('#scrim').classList.remove('on'); $('#pdSheet').classList.remove('on'); }
-$('#perfectBtn').addEventListener('click',openPerfect);
+$('#streakCard').addEventListener('click',openPerfect);
 $('#pdClose').addEventListener('click',closePerfect);
 
 /* ===========================================================
@@ -2420,7 +2498,7 @@ function applySettings(){
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
   const m=document.querySelector('meta[name=theme-color]');
-  if(m) m.setAttribute('content',t==='dark'?'#000000':'#F4F4F3');
+  if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000' : (t==='dark'?'#000000':'#F4F4F3'));
   $('#themeIcon').innerHTML = t==='dark'
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
@@ -2696,28 +2774,40 @@ document.addEventListener('visibilitychange',()=>{
 setInterval(checkRollover,60000);
 
 /* the opening */
-function endBoot(fast){
+/* the screen opens out from the middle, the way the Vision board swaps over */
+function endBoot(){
   const b=$('#boot'); if(!b || b.dataset.done) return;
   b.dataset.done='1';
-  b.classList.remove('in'); b.classList.add('gone');
-  setTimeout(()=>b.remove(),fast?250:600);
+  b.classList.add('out');
+  buzz(8);
+  setTimeout(()=>{ b.remove(); applySettings(); },600);
 }
-$('#boot').addEventListener('click',()=>endBoot(true));
+$('#boot').addEventListener('click',()=>endBoot());
+addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) endBoot(); });
 
 (async function boot(){
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let loaded=false;
   try{
     db=await openDB();
     await loadAll();
-    if(!S.seeded && !allHabits.length) await seed();
-    applySettings();
-    renderAll(); renderNotes();
+    loaded=true;
   }catch(err){
-    console.error(err);
+    console.error('Dayflow · storage',err);
     document.body.insertAdjacentHTML('beforeend','<div class="toast on">Storage is blocked in this browser</div>');
   }
-  const hold = (S.intro===false || reduced) ? 420 : 1850;
-  setTimeout(()=>endBoot(),hold);
+  /* seeding only ever runs on a database that opened and read cleanly */
+  try{
+    if(loaded && !S.seeded && !allHabits.length) await seed();
+  }catch(err){ console.error('Dayflow · seed',err); }
+  try{
+    applySettings(); renderAll(); renderNotes();
+  }catch(err){
+    console.error('Dayflow · render',err);
+    toast('Something failed to draw — your data is safe');
+  }
+  /* the title screen holds until you tap it — nothing runs on a timer */
+  if(S.intro===false || reduced) setTimeout(endBoot,320);
 })();
 </script>
 </body>
