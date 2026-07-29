@@ -446,6 +446,10 @@ button.tphead:active{background:var(--tint)}
 .dchip.on .dot{background:var(--bg);opacity:.7}
 .dchip.on .d{color:var(--bg)}
 .msep{flex:0 0 auto;width:1px;background:var(--line-2);margin:9px 5px;border-radius:1px}
+.mlabel{flex:0 0 auto;display:grid;place-items:center;padding:0 9px;line-height:1.25;text-align:center;
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  border-left:1px solid var(--line-2);margin:9px 3px 9px 5px}
+.mlabel small{display:block;font-size:8px;opacity:.7;letter-spacing:.08em}
 .psec{display:flex;align-items:center;gap:10px;margin:26px 2px 10px}
 .psec .eyebrow{flex:1;min-width:0}
 .addblock{width:32px;height:32px;flex:0 0 auto;border-radius:11px;display:grid;place-items:center;
@@ -2459,24 +2463,26 @@ function renderRecord(){
   const r=days.get(recDay);
   $('#recDate').textContent=recLabel(recDay);
 
-  /* the same strip as the study page, running backwards from today */
-  const strip=$('#recStrip'); strip.innerHTML='';
-  let month=null;
-  for(let i=29;i>=0;i--){
-    const d=addDays(TODAY,-i), ds=ymd(d);
-    if(month!==null && d.getMonth()!==month){
-      const sep=document.createElement('div'); sep.className='msep'; strip.appendChild(sep);
+  /* the same strip as the study page, but running back as far as you have records */
+  const strip=$('#recStrip');
+  const start=recordStripStart();
+  const span=Math.max(1,Math.round((TODAY-start)/86400000)+1);
+  const out=[];
+  let month=null, year=null;
+  for(let i=0;i<span;i++){
+    const d=addDays(start,i), ds=ymd(d), m=d.getMonth();
+    if(month!==null && m!==month){
+      out.push('<div class="mlabel">'+MN[m].toUpperCase()+
+        (d.getFullYear()!==year?"<small>'"+String(d.getFullYear()).slice(2)+'</small>':'')+'</div>');
     }
-    month=d.getMonth();
+    month=m; year=d.getFullYear();
     const rec=days.get(ds);
-    const btn=document.createElement('button');
-    btn.className='dchip'+(ds===recDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'')+
-      (rec&&!dayEmpty(rec)?' has':'');
-    btn.dataset.d=ds;
-    btn.innerHTML='<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
-                  '<div class="d">'+d.getDate()+'</div><i class="dot"></i>';
-    strip.appendChild(btn);
+    out.push('<button class="dchip'+(ds===recDay?' on':'')+(d.getDay()===0?' sun':'')+
+      (ds===TSTR?' today':'')+(rec&&!dayEmpty(rec)?' has':'')+'" data-d="'+ds+'">'+
+      '<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
+      '<div class="d">'+d.getDate()+'</div><i class="dot"></i></button>');
   }
+  strip.innerHTML=out.join('');
   requestAnimationFrame(()=>{
     const on=$('.dchip.on',strip);
     if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
@@ -2514,6 +2520,16 @@ function fillList(host,items,emptyMsg){
       '<button class="x" data-del="'+x.id+'" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
     host.appendChild(el);
   });
+}
+/* the strip reaches back to your first record and never further, with a fortnight
+   always available so a fresh install still has somewhere to write */
+function recordStripStart(){
+  const rec=recordedDays();
+  let first=rec.length ? rec[rec.length-1].date : TSTR;
+  const floor=ymd(addDays(TODAY,-13));
+  if(first>floor) first=floor;
+  if(recDay<first) first=recDay;
+  return parseDay(first);
 }
 $('#recStrip').addEventListener('click',e=>{
   const b=e.target.closest('.dchip'); if(!b) return;
