@@ -8,17 +8,15 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dayflow">
-<meta name="description" content="Dayflow — track the threads of your day.">
+<meta name="description" content="Dayflow — reset, rebuild, dominate.">
 <title>Dayflow</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23000000'/%3E%3Crect x='12' y='18' width='40' height='7' rx='3.5' fill='%23F2A93B'/%3E%3Crect x='12' y='29' width='26' height='7' rx='3.5' fill='%233FC7B4'/%3E%3Crect x='12' y='40' width='14' height='7' rx='3.5' fill='%23E86BA0'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAAAP1BMVEULDhbyqTsro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgRfA4AAAAEHRSTlP/////AAAAAAAAAAAAAAAADW2LcQAAAK1JREFUeNrt18FxAkAMBEEk5Z+zI/DHVWAGuiOY12nv8QAAAAAAAAAAAKiZpwomPyd7plc906ueCVYXo2eC1aJFi/6m58NxSZ7x5mBqTtPmJwAA4LX2z4LJ/5e926ve7VXvBquL0bvBatGiPy3ak+cift72aK685p4GAHit+10w+W2z73rVd73qu2B1MfouWC1atGhP3jdFJ894czA1p2nzEwAAAAAAAAAAALylHxtPF2NlUyyQAAAAAElFTkSuQmCC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ===========================================================
-   DAYFLOW
-   One idea: a thread. Days you keep join into an unbroken line.
+   DAYFLOW — today is the only day you can change
    Type — Bricolage Grotesque / Schibsted Grotesk / DM Mono
    =========================================================== */
 :root{
@@ -26,8 +24,6 @@
   --display:'Bricolage Grotesque','Schibsted Grotesk',system-ui,sans-serif;
   --ui:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  --cw:32px; --ch:34px; --gap:2px; --nw:150px;
-  --cx:4px; --cy:5px; --r-cell:8px;   /* inset of the mark inside its column */
   --r-lg:18px; --r-md:14px;
   --ease:cubic-bezier(.22,.9,.28,1);
   --spring:cubic-bezier(.34,1.4,.64,1);
@@ -37,8 +33,7 @@ html[data-theme="dark"]{
   --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
   --ink:#F5F5F5; --ink-2:#A1A1A1; --ink-3:#6E6E6E;
   --tint:rgba(255,255,255,.045); --cell:rgba(255,255,255,.06); --well:inset 0 1px 2px rgba(0,0,0,.5);
-  --sun:#FF6B61;
-  --shadow:none;
+  --sun:#FF6B61; --shadow:none;
   color-scheme:dark;
 }
 html[data-theme="light"]{
@@ -46,12 +41,11 @@ html[data-theme="light"]{
   --line:rgba(0,0,0,.08); --line-2:rgba(0,0,0,.18);
   --ink:#121212; --ink-2:#5E5E5E; --ink-3:#8E8E8E;
   --tint:rgba(0,0,0,.035); --cell:rgba(0,0,0,.055); --well:inset 0 1px 2px rgba(0,0,0,.06);
-  --sun:#D8443F;
-  --shadow:0 1px 2px rgba(0,0,0,.04);
+  --sun:#D8443F; --shadow:0 1px 2px rgba(0,0,0,.04);
   color-scheme:light;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-[hidden]{display:none!important}   /* author display rules must not beat the hidden attribute */
+[hidden]{display:none!important}
 html,body{height:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
@@ -78,15 +72,12 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .topbar.stuck{border-bottom-color:var(--line)}
 .brand{display:flex;align-items:center;gap:10px;margin-right:auto}
 .mark{display:flex;flex-direction:column;gap:2.5px;width:15px}
-.mark i{height:3px;border-radius:2px;background:var(--acc);display:block;transform-origin:left;animation:markIn .8s var(--ease) both}
-.mark i:nth-child(2){width:66%;background:#3FC7B4;animation-delay:.08s}
-.mark i:nth-child(3){width:36%;background:#E86BA0;animation-delay:.16s}
-@keyframes markIn{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+.mark i{height:3px;border-radius:2px;background:var(--acc);display:block;transform-origin:left}
+.mark i:nth-child(2){width:66%;background:#3FC7B4}
+.mark i:nth-child(3){width:36%;background:#E86BA0}
 .brand h1{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:-.035em;margin:0}
-.iconbtn{
-  width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--ink-2);
-  transition:transform .2s var(--spring),color .2s,background .2s;
-}
+.iconbtn{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--ink-2);
+  transition:transform .2s var(--spring),color .2s,background .2s}
 .iconbtn:active{transform:scale(.88);background:var(--tint)}
 .iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
@@ -97,20 +88,85 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .view.active>*:nth-child(3){animation-delay:.12s}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ---------- today ---------- */
-.head{padding:16px 0 20px}
+/* ---------- today: the hero is the day itself ---------- */
+.head{padding:16px 0 4px}
 .head .eyebrow{display:block}
 .day-name{font-family:var(--display);font-size:38px;font-weight:700;letter-spacing:-.05em;line-height:1;margin:9px 0 0}
-.tape{display:flex;gap:3px;height:5px;margin:20px 0 12px}
-.seg{flex:1;border-radius:3px;background:var(--line);transition:background .5s var(--ease)}
-.seg.on{background:var(--c)}
-.summary{font-size:14px;color:var(--ink-2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.summary b{color:var(--ink);font-weight:600}
-.summary .sep{color:var(--ink-3)}
-.summary .hot{color:var(--acc);font-weight:600}
+.prog{display:flex;align-items:center;gap:18px;margin:22px 0 6px}
+.ringwrap{position:relative;flex:0 0 auto;width:104px;height:104px}
+.ring{width:104px;height:104px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .rbg{stroke:var(--cell)}
+.ring .rfg{stroke:var(--acc);stroke-dasharray:326.7;stroke-dashoffset:326.7;
+  transition:stroke-dashoffset .6s var(--ease),stroke .4s}
+.ringtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.ringtxt b{font-family:var(--display);font-size:27px;font-weight:700;letter-spacing:-.045em;line-height:1}
+.ringtxt span{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.progside{flex:1;min-width:0}
+.pline{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-.035em;line-height:1.1}
+.psub{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.4}
+.pdays{
+  display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 12px;border-radius:11px;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
+  font-size:12.5px;font-weight:500;transition:transform .2s var(--spring),border-color .2s;
+}
+.pdays:active{transform:scale(.95)}
+.pdays b{color:var(--ink);font-weight:600}
+.pdays svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- note ---------- */
-.note{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:22px}
+/* today's list */
+.tsec{display:flex;align-items:center;gap:10px;margin:26px 2px 10px}
+.tsec .eyebrow{flex:1}
+.hcard{
+  position:relative;width:100%;display:flex;align-items:center;gap:13px;text-align:left;
+  padding:15px 15px 15px 4px;margin-bottom:9px;
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
+  transition:transform .2s var(--spring),background .3s var(--ease),border-color .3s var(--ease),opacity .3s;
+}
+.hcard:active{transform:scale(.985)}
+.hcard .bar{width:3px;height:30px;border-radius:2px;background:var(--c);flex:0 0 auto;margin-left:12px;
+  transition:height .3s var(--ease)}
+.hcard .hb{flex:1;min-width:0}
+.hcard .hn{font-size:15.5px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hcard .hs{font-size:12px;color:var(--ink-3);margin-top:2px}
+.tick{
+  width:30px;height:30px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;position:relative;
+  background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);
+  transition:background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.tick svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;transition:stroke-dashoffset .34s var(--ease) .04s,opacity .12s}
+.hcard.on{background:color-mix(in srgb,var(--c) 8%,var(--surf));border-color:color-mix(in srgb,var(--c) 26%,transparent)}
+.hcard.on .hn{color:var(--ink-2)}
+.hcard.on .tick{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
+  box-shadow:0 2px 10px -5px color-mix(in srgb,var(--c) 90%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
+.hcard.on .tick svg{stroke-dashoffset:0;opacity:1}
+.hcard.rest{opacity:.55}
+.hcard.rest .tick{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.hcard.rest .tick svg{stroke:var(--ink-3);stroke-dashoffset:0;opacity:.7}
+.hcard.pop{animation:bump .45s var(--spring)}
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.022)}100%{transform:scale(1)}}
+/* the open ones ask to be closed */
+.hcard.todo .tick::after{
+  content:'';position:absolute;inset:-4px;border-radius:13px;
+  border:1.5px solid color-mix(in srgb,var(--c) 45%,transparent);
+  opacity:0;animation:breathe 2.8s var(--ease) infinite;
+}
+@keyframes breathe{0%,100%{opacity:0;transform:scale(.86)}50%{opacity:1;transform:scale(1)}}
+
+.clean{
+  position:relative;overflow:hidden;margin:22px 0 4px;padding:22px 20px;border-radius:var(--r-lg);
+  border:1px solid color-mix(in srgb,var(--acc) 32%,transparent);
+  background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 17%,var(--surf)),var(--surf) 78%);
+  animation:rise .5s var(--ease) both;
+}
+.clean h3{font-family:var(--display);font-size:23px;font-weight:700;letter-spacing:-.04em;margin:0}
+.clean p{margin:7px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.clean .spark{position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--acc) 30%,transparent),transparent 70%)}
+
+/* ---------- notes ---------- */
+.note{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:26px 0 4px}
 .note-head{width:100%;display:flex;align-items:center;gap:10px;padding:14px 0;text-align:left}
 .note-head .eyebrow{flex:1}
 .note-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);opacity:0;transition:opacity .3s}
@@ -122,150 +178,57 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .note-inner{overflow:hidden}
 .note-pad{padding:0 0 16px}
 .dnlist{display:flex;flex-direction:column;gap:8px}
-.dn{
-  border:1px solid var(--line);border-radius:13px;background:var(--surf);
-  transition:border-color .25s var(--ease),background .25s var(--ease);
-}
+.dn{border:1px solid var(--line);border-radius:13px;background:var(--surf);
+  transition:border-color .25s var(--ease),background .25s var(--ease)}
 .dn.editing{border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:var(--surf-2)}
 .dn-head{width:100%;display:flex;align-items:center;gap:10px;padding:11px 13px 8px;text-align:left}
-.dn-title{
-  flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.01em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.dn-title{flex:1;min-width:0;font-size:14px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dn-title.untitled{color:var(--ink-3);font-weight:500}
+.dn-when{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);flex:0 0 auto}
 .dn .chev{width:14px;height:14px;flex:0 0 auto}
 .dn.open .chev{transform:rotate(180deg)}
 .dn-read{padding:0 13px 12px;cursor:text}
-.dn-text{
-  font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--ink-2);
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
-}
+.dn-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--ink-2);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .dn.open .dn-text{display:block;overflow:visible}
 .dn-text.empty{color:var(--ink-3)}
 .dn-edit{padding:11px 13px 12px}
-.dn-tin{
-  width:100%;border:0;outline:0;background:transparent;color:inherit;
-  font-size:14px;font-weight:600;letter-spacing:-.01em;padding:0 0 9px;
-}
-.dn-ta{
-  width:100%;min-height:78px;border:0;outline:0;background:transparent;resize:none;color:inherit;
-  font-family:inherit;font-size:13.5px;line-height:1.55;padding:0;
-}
+.dn-tin{width:100%;border:0;outline:0;background:transparent;color:inherit;font-size:14px;font-weight:600;letter-spacing:-.01em;padding:0 0 9px}
+.dn-ta{width:100%;min-height:78px;border:0;outline:0;background:transparent;resize:none;color:inherit;
+  font-family:inherit;font-size:13.5px;line-height:1.55;padding:0}
 .dn-tin::placeholder,.dn-ta::placeholder{color:var(--ink-3)}
 .dn-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
 .dn-del{font-size:12px;font-weight:600;color:#F2705E;padding:5px 10px;border-radius:8px;margin-left:-10px}
-.dn-done{
-  font-size:12.5px;font-weight:600;color:var(--acc);padding:5px 13px;border-radius:9px;
-  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring);
-}
+.dn-done{font-size:12.5px;font-weight:600;color:var(--acc);padding:5px 13px;border-radius:9px;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring)}
 .dn-done:active{transform:scale(.93)}
-.addnote{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:7px;height:42px;
+.addnote{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;height:42px;
   border-radius:12px;border:1px dashed var(--line-2);color:var(--ink-2);
-  font-size:13.5px;font-weight:500;margin-top:8px;
-  transition:color .2s,border-color .2s,transform .2s var(--spring);
-}
+  font-size:13.5px;font-weight:500;margin-top:8px;transition:color .2s,border-color .2s,transform .2s var(--spring)}
 .addnote:active{transform:scale(.98)}
 
-/* ---------- the weave ---------- */
-.weave{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 0 12px;box-shadow:var(--shadow)}
-.weave-head{display:flex;align-items:center;gap:12px;padding:0 18px 14px}
-.weave-head .eyebrow{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.seg-ctrl{display:flex;gap:2px;background:var(--bg-2);border-radius:9px;padding:2px}
-.seg-ctrl button{
-  font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);
-  padding:4px 8px;border-radius:7px;transition:color .2s,background .25s var(--ease);
-}
-.seg-ctrl button.on{background:var(--surf-2);color:var(--ink)}
-.grid{overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
-.grid-inner{position:relative;width:max-content;min-width:100%;padding-right:18px}
-.grid-inner::before{
-  content:'';position:absolute;z-index:0;right:18px;width:var(--cw);top:0;bottom:3px;
-  border-radius:11px;background:color-mix(in srgb,var(--ink) 6%,transparent);
-}
-.grid-inner.mirror::before{right:calc(var(--nw) + 18px)}
-.grow{display:flex;align-items:stretch}
-.grid-inner.mirror .grow{flex-direction:row-reverse}
-.gname{
-  position:sticky;left:0;z-index:3;flex:0 0 var(--nw);width:var(--nw);
-  padding:0 14px 0 18px;background:var(--surf);
-  display:flex;align-items:center;gap:10px;min-height:var(--ch);
-  border-right:1px solid var(--line);
-}
-.grid-inner.mirror .gname{left:auto;right:0;padding:0 18px 0 14px;border-right:0;border-left:1px solid var(--line)}
-.grow:not(.ghead) .gname{cursor:pointer;transition:background .18s var(--ease)}
-.grow:not(.ghead) .gname:active{background:color-mix(in srgb,var(--ink) 6%,var(--surf))}
-.gcells{display:flex;align-items:center;gap:var(--gap)}
-.ghead{margin-bottom:2px}
-.ghead .gname{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.dcol{
-  position:relative;z-index:1;flex:0 0 var(--cw);width:var(--cw);font-family:var(--mono);line-height:1.1;
-  display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 9px;
-}
-.dcol .dw{font-size:9px;letter-spacing:.04em;color:var(--ink-3);text-transform:uppercase}
-.dcol .dd{font-size:12.5px;color:var(--ink-2)}
-.dcol.wk .dw,.dcol.wk .dd{color:var(--ink-3)}
-.dcol.today .dw{color:var(--ink-2)}
-.dcol.today .dd{color:var(--ink);font-weight:500}
-.dcol.sun .dw,.dcol.sun .dd{color:color-mix(in srgb,var(--sun) 80%,transparent)}
-.dcol .dot{display:block;width:4px;height:4px;border-radius:50%;background:transparent}
-.dcol.today .dot{background:var(--acc)}
-.hthread{width:3px;height:16px;border-radius:2px;background:var(--c);flex:0 0 auto}
-.hlabel{
-  font-size:13px;font-weight:500;line-height:1.22;flex:1;min-width:0;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
+/* ---------- perfect days ---------- */
+.pdhead{display:flex;align-items:flex-end;gap:14px;margin-bottom:20px}
+.pdbig{font-family:var(--display);font-size:44px;font-weight:800;letter-spacing:-.05em;line-height:.9;color:var(--acc)}
+.pdsub{font-size:13px;color:var(--ink-2);line-height:1.45;padding-bottom:4px}
+.mon{margin-bottom:22px}
+.mon h4{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:-.025em;margin:0 0 10px}
+.dow,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dow span{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:center;padding-bottom:5px}
+.cell{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);background:var(--tint)}
+.cell.blank{background:transparent}
+.cell.part{background:var(--cell);color:var(--ink-2)}
+.cell.perf{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 88%,#fff),var(--acc));color:#14100A;font-weight:500}
+.cell.today{box-shadow:inset 0 0 0 1.5px var(--ink-2)}
 
-/* cells — the button is the column; the mark sits inset inside it */
-.cell{
-  position:relative;z-index:1;overflow:visible;
-  flex:0 0 var(--cw);width:var(--cw);height:var(--ch);
-  transition:transform .18s var(--ease);
-}
-.cell::before{   /* open day: a recessed slot */
-  content:'';position:absolute;inset:var(--cy) var(--cx);border-radius:var(--r-cell);
-  background:var(--cell);box-shadow:var(--well);
-  transition:opacity .2s var(--ease),box-shadow .25s var(--ease);
-}
-.cell.done::before,.cell.auto::before,.cell.na::before{opacity:0}
-.cell.today:not(.done):not(.auto)::before{
-  box-shadow:var(--well),inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 32%,transparent);
-}
-.cell .th{   /* kept day: a raised mark that merges with its neighbours */
-  position:absolute;inset:var(--cy) var(--cx);border-radius:var(--r-cell);
-  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
-  box-shadow:0 2px 6px -4px color-mix(in srgb,var(--c) 85%,transparent),
-             inset 0 1px 0 rgba(255,255,255,.2);
-  transform:scaleX(0);transform-origin:left center;opacity:0;
-  transition:transform .32s var(--spring),opacity .16s var(--ease),
-             left .22s var(--ease),right .22s var(--ease),border-radius .22s var(--ease);
-}
-.cell.done .th,.cell.auto .th{transform:scaleX(1);opacity:1}
-.cell.jl .th{left:calc(-1 * (var(--gap) + var(--cx)));border-top-left-radius:0;border-bottom-left-radius:0}
-.cell.jr .th{right:calc(-1 * (var(--gap) + var(--cx)));border-top-right-radius:0;border-bottom-right-radius:0}
-.cell.today:active{transform:scale(.9)}
-.cell::after{
-  content:'';position:absolute;inset:var(--cy) var(--cx);border-radius:var(--r-cell);
-  opacity:0;pointer-events:none;
-}
-.cell.pop::after{animation:bloom .5s var(--ease)}
-@keyframes bloom{
-  0%{opacity:1;box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 45%,transparent)}
-  100%{opacity:0;box-shadow:0 0 0 10px rgba(0,0,0,0)}
-}
-.cell.nope,.shake{animation:nope .34s ease}
-@keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
-
-/* ---------- habits ---------- */
+/* ---------- habits (settings) ---------- */
 .ptitle{padding:16px 0 20px}
 .ptitle h2{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:-.045em;margin:8px 0 0}
-.ptitle p{margin:8px 0 0;color:var(--ink-2);font-size:13.5px;line-height:1.5;max-width:34ch}
 .hlist{margin-bottom:12px}
-.hrow{
-  display:flex;align-items:center;gap:12px;height:62px;padding:0 16px 0 4px;margin-bottom:8px;
+.hrow{display:flex;align-items:center;gap:12px;height:62px;padding:0 16px 0 4px;margin-bottom:8px;
   background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);position:relative;
-  transition:transform .26s var(--ease),border-color .2s;will-change:transform;
-}
+  transition:transform .26s var(--ease),border-color .2s;will-change:transform}
 .hrow.dragging{z-index:20;transition:none;border-color:var(--line-2);box-shadow:0 20px 36px -20px rgba(0,0,0,.6)}
 .handle{width:36px;height:62px;display:grid;place-items:center;touch-action:none;flex:0 0 auto;color:var(--ink-3)}
 .handle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
@@ -278,23 +241,19 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .empty{text-align:center;padding:44px 24px;border:1px dashed var(--line-2);border-radius:var(--r-lg);color:var(--ink-2);margin-bottom:12px}
 .empty h3{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px;color:var(--ink)}
 .empty p{margin:0;font-size:13.5px;line-height:1.5}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
   height:50px;padding:0 20px;border-radius:14px;font-size:15px;font-weight:600;letter-spacing:-.01em;
-  background:var(--acc);color:#14100A;transition:transform .2s var(--spring),opacity .2s;
-}
+  background:var(--acc);color:#14100A;transition:transform .2s var(--spring),opacity .2s}
 .btn:active{transform:scale(.975)}
 .btn.ghost{background:var(--surf);color:var(--ink);border:1px solid var(--line)}
 .btn.danger{background:transparent;color:#F2705E;border:1px solid color-mix(in srgb,#F2705E 32%,transparent)}
 .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .setstrip{display:flex;gap:7px;overflow-x:auto;margin:0 -20px 18px;padding:2px 20px 4px}
-.schip{
-  flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;
+.schip{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;
   background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
   font-size:13.5px;font-weight:500;white-space:nowrap;
-  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring);
-}
+  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring)}
 .schip:active{transform:scale(.95)}
 .schip .c{font-family:var(--mono);font-size:9.5px;opacity:.55}
 .schip.on{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
@@ -319,29 +278,25 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .sw.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--c)}
 .btnrow{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
 .foot{text-align:center;color:var(--ink-3);font-size:12px;padding:6px 0 10px;line-height:1.6}
+.seg-ctrl{display:flex;gap:2px;background:var(--bg-2);border-radius:9px;padding:2px}
+.seg-ctrl button{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);
+  padding:4px 8px;border-radius:7px;transition:color .2s,background .25s var(--ease)}
+.seg-ctrl button.on{background:var(--surf-2);color:var(--ink)}
 
 /* ---------- nav ---------- */
-.tabbar{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
   padding:6px 16px calc(6px + env(safe-area-inset-bottom));
   background:color-mix(in srgb,var(--bg) 84%,transparent);
   backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
-  border-top:1px solid var(--line);
-}
-.tab{
-  position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
-  padding:8px 0 7px;color:var(--ink-3);transition:color .25s var(--ease);
-}
-.tab::before{
-  content:'';position:absolute;top:4px;width:52px;height:28px;border-radius:14px;
+  border-top:1px solid var(--line)}
+.tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 0 7px;color:var(--ink-3);transition:color .25s var(--ease)}
+.tab::before{content:'';position:absolute;top:4px;width:52px;height:28px;border-radius:14px;
   background:color-mix(in srgb,var(--acc) 15%,transparent);
-  opacity:0;transform:scale(.75);transition:opacity .28s var(--ease),transform .32s var(--spring);
-}
+  opacity:0;transform:scale(.75);transition:opacity .28s var(--ease),transform .32s var(--spring)}
 .tab[data-v="vision"] svg{fill:currentColor;stroke:none}
-.tab svg{
-  position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
-  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring);
-}
+.tab svg{position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring)}
 .tab span{font-size:9.5px;letter-spacing:.01em;font-weight:500;transition:font-weight .2s}
 .tab.on{color:var(--acc)}
 .tab.on::before{opacity:1;transform:none}
@@ -350,21 +305,17 @@ button{background:none;border:0;padding:0;cursor:pointer}
 /* ---------- sheet ---------- */
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{
-  position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92vh;overflow-y:auto;
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92vh;overflow-y:auto;
   background:var(--bg-2);border-top:1px solid var(--line);
   border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
-  transform:translateY(101%);transition:transform .42s var(--ease);
-}
+  transform:translateY(101%);transition:transform .42s var(--ease)}
 .sheet.on{transform:none}
 .grabber{width:36px;height:4px;border-radius:3px;background:var(--line-2);margin:4px auto 18px}
 .sheet h3{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.035em;margin:0 0 20px}
 .field{margin-bottom:22px}
 .field>.eyebrow{display:block;margin-bottom:10px}
-.input{
-  width:100%;height:50px;border-radius:13px;background:var(--surf);border:1px solid var(--line);
-  padding:0 15px;font-size:15.5px;outline:0;transition:border-color .25s,box-shadow .25s;
-}
+.input{width:100%;height:50px;border-radius:13px;background:var(--surf);border:1px solid var(--line);
+  padding:0 15px;font-size:15.5px;outline:0;transition:border-color .25s,box-shadow .25s}
 .input:focus{border-color:color-mix(in srgb,var(--acc) 50%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 12%,transparent)}
 .input.big{height:54px;font-size:17px;font-weight:500}
 .colors{display:flex;gap:12px;flex-wrap:wrap;padding:16px 4px 2px}
@@ -374,91 +325,97 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
 .preset{font-size:12.5px;padding:7px 12px;border-radius:10px;background:var(--surf);border:1px solid var(--line);color:var(--ink-2);transition:all .22s var(--ease)}
 .preset.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.durrow{display:flex;align-items:center;gap:9px;margin-top:14px}
-.numbox{
-  display:flex;align-items:center;gap:7px;height:50px;padding:0 14px;border-radius:13px;
+.durrow{display:flex;align-items:center;gap:9px}
+.numbox{display:flex;align-items:center;gap:7px;height:50px;padding:0 14px;border-radius:13px;
   background:var(--surf);border:1px solid var(--line);
-  transition:border-color .25s var(--ease),box-shadow .25s var(--ease);
-}
-.numbox:focus-within{
-  border-color:color-mix(in srgb,var(--acc) 50%,transparent);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 12%,transparent);
-}
-.numin{
-  width:42px;border:0;outline:0;background:transparent;color:inherit;
-  font-family:var(--mono);font-size:16px;font-weight:500;text-align:right;-moz-appearance:textfield;
-}
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.numbox:focus-within{border-color:color-mix(in srgb,var(--acc) 50%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 12%,transparent)}
+.numin{width:42px;border:0;outline:0;background:transparent;color:inherit;
+  font-family:var(--mono);font-size:16px;font-weight:500;text-align:right;-moz-appearance:textfield}
 .numin::-webkit-outer-spin-button,.numin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .numin::placeholder{color:var(--ink-3)}
 .numbox .u{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
-.durtotal{
-  margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--ink-2);text-align:right;
-}
+.durtotal{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);text-align:right}
 .days{display:flex;gap:6px}
 .day{flex:1;height:42px;border-radius:12px;background:var(--surf);border:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3);transition:all .22s var(--spring)}
 .day.on{background:color-mix(in srgb,var(--acc) 14%,transparent);border-color:color-mix(in srgb,var(--acc) 50%,transparent);color:var(--acc)}
 .hint{font-size:12.5px;color:var(--ink-3);margin:10px 0 0;line-height:1.5}
 .sheet-actions{display:flex;gap:9px;margin-top:24px}
 
-/* ---------- reusable locked note (plan page) ---------- */
-.lnote{
-  --lnx:10px;
-  border-radius:12px;background:transparent;box-shadow:inset 0 0 0 1px transparent;
-  padding:8px var(--lnx);margin:0 calc(-1 * var(--lnx));
-  transition:background .25s var(--ease),box-shadow .25s var(--ease);
-}
-.block .lnote{--lnx:6px;margin-top:8px}
-.lnote-text{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;cursor:text}
-/* an empty note collapses to a single prompt row instead of a blank slab */
-.lnote.blank .lnote-text{display:none}
-.lnote.blank .lnote-foot{margin-top:0}
-.lnote.blank .lnote-hint{color:var(--ink-2)}
-/* a written note needs no footer at all — tap the text to edit it */
-.lnote.quiet .lnote-foot{display:none}
-.lnote-ta{
-  width:100%;min-height:40px;border:0;outline:0;background:transparent;resize:none;
-  font-family:inherit;font-size:14px;line-height:1.6;padding:0;color:inherit;
-}
-.lnote-ta::placeholder{color:var(--ink-3)}
-.lnote-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;min-height:22px}
-.lnote-hint{
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--ink-3);transition:color .3s;
-}
-.lnote.editing .lnote-hint{color:var(--acc)}
-.lnote-done{
-  font-size:12.5px;font-weight:600;color:var(--acc);padding:6px 14px;border-radius:9px;
-  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring);
-}
-.lnote-done:active{transform:scale(.92)}
+/* ---------- time picker ---------- */
+.steps{display:flex;align-items:stretch;gap:9px;margin-bottom:20px}
+.step{flex:1;min-width:0;padding:11px 14px;border-radius:14px;text-align:left;
+  background:var(--surf);border:1px solid var(--line);
+  transition:border-color .25s var(--ease),background .25s var(--ease)}
+.step.on{border-color:color-mix(in srgb,var(--acc) 55%,transparent);
+  background:color-mix(in srgb,var(--acc) 8%,var(--surf))}
+.step .lbl{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.step .val{display:block;font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.03em;margin-top:4px;white-space:nowrap}
+.step.on .val{color:var(--acc)}
+.step .val.none{color:var(--ink-3);font-weight:500;font-size:16px}
+.steparrow{flex:0 0 auto;align-self:center;color:var(--ink-3);font-size:15px;line-height:1}
+
+.tdisplay{display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:20px}
+.tnum{position:relative;font-family:var(--display);font-size:clamp(38px,12vw,46px);font-weight:700;
+  letter-spacing:-.05em;line-height:1;color:var(--ink-3);padding:4px 10px 9px;
+  transition:color .25s var(--ease)}
+.tnum.on{color:var(--ink)}
+.tnum::after{content:'';position:absolute;left:10px;right:10px;bottom:0;height:2.5px;border-radius:3px;
+  background:var(--acc);transform:scaleX(0);transition:transform .32s var(--spring)}
+.tnum.on::after{transform:scaleX(1)}
+.tcolon{font-family:var(--display);font-size:clamp(28px,9vw,34px);font-weight:700;color:var(--ink-3);
+  line-height:1;padding-bottom:8px}
+.ampm{display:flex;flex-direction:column;margin-left:16px;border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;background:var(--surf)}
+.ampm button{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;padding:9px 12px;
+  color:var(--ink-3);transition:background .24s var(--ease),color .24s var(--ease)}
+.ampm button+button{border-top:1px solid var(--line)}
+.ampm button.on{background:var(--acc);color:#14100A}
+
+.clock{position:relative;width:262px;height:262px;margin:0 auto;border-radius:50%;touch-action:manipulation;
+  background:radial-gradient(circle at 50% 38%,color-mix(in srgb,var(--acc) 7%,var(--surf)),var(--surf) 70%);
+  border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 20px 46px -30px rgba(0,0,0,.9)}
+.clock::before{content:'';position:absolute;inset:6px;border-radius:50%;
+  border:1px solid color-mix(in srgb,var(--ink) 6%,transparent)}
+.hub{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
+  background:var(--acc);z-index:2;box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 14%,transparent)}
+/* the hand reaches exactly as far as the numbers, and its head is the selection */
+.hand{position:absolute;left:calc(50% - 1.5px);bottom:50%;width:3px;height:98px;border-radius:3px;z-index:1;
+  background:linear-gradient(to top,color-mix(in srgb,var(--acc) 40%,transparent),var(--acc));
+  transform-origin:50% 100%;transition:transform .36s var(--spring)}
+.hand::after{content:'';position:absolute;left:50%;top:-20px;width:40px;height:40px;margin-left:-20px;
+  border-radius:50%;background:var(--acc);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--acc) 13%,transparent),
+             0 8px 20px -8px color-mix(in srgb,var(--acc) 85%,transparent)}
+.cnum{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;z-index:3;
+  display:grid;place-items:center;font-family:var(--mono);font-size:13.5px;color:var(--ink-2);
+  transition:color .22s var(--ease),transform .2s var(--spring)}
+.cnum:active{transform:scale(.86)}
+.cnum.on{color:#14100A;font-weight:500}
+.blockdur{width:fit-content;margin:22px auto 0;padding:7px 14px;border-radius:10px;
+  background:color-mix(in srgb,var(--acc) 12%,transparent);color:var(--acc);
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
 
 /* ---------- plan ---------- */
 .plan-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:10px}
 .plan-head .eyebrow{display:block}
 .plan-head .todaybtn{margin-bottom:7px;flex:0 0 auto}
-.stripwrap{
-  position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:30;
-  margin:0 -20px 22px;padding:14px 20px 13px;background:var(--bg);
-}
+.stripwrap{position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:30;
+  margin:0 -20px 22px;padding:14px 20px 13px;background:var(--bg)}
 .stripwrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
-.todaybtn{
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);
+.todaybtn{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);
   padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--acc) 12%,transparent);
-  transition:transform .2s var(--spring);
-}
+  transition:transform .2s var(--spring)}
 .todaybtn:active{transform:scale(.93)}
 .daystrip{display:flex;gap:6px;overflow-x:auto;padding:1px 0 2px;scroll-behavior:smooth}
-.dchip{
-  flex:0 0 auto;width:48px;padding:8px 0 7px;border-radius:13px;text-align:center;
+.dchip{flex:0 0 auto;width:48px;padding:8px 0 7px;border-radius:13px;text-align:center;
   background:var(--surf);border:1px solid var(--line);color:var(--ink);
-  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring);
-}
+  transition:background .24s var(--ease),border-color .24s var(--ease),color .24s var(--ease),transform .2s var(--spring)}
 .dchip:active{transform:scale(.94)}
 .dchip .w{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);transition:color .24s}
 .dchip .d{font-size:14.5px;font-weight:600;letter-spacing:-.02em;margin-top:2px;line-height:1.15}
 .dchip .dot{display:block;width:4px;height:4px;border-radius:50%;background:transparent;margin:3px auto 0}
-/* a dot marks a day that already has something on it, so you can see it without tapping */
 .dchip.has .dot{background:var(--ink-3)}
 .dchip.today{border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
 .dchip.today .dot{background:var(--acc)}
@@ -468,136 +425,98 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .dchip.on .dot{background:var(--bg);opacity:.7}
 .dchip.on .d{color:var(--bg)}
 .msep{flex:0 0 auto;width:1px;background:var(--line-2);margin:9px 5px;border-radius:1px}
-.psec{display:block;margin:0 2px 10px}
-.psec.gap{margin-top:26px}
-.pcard,.block{
+.psec{display:flex;align-items:center;gap:10px;margin:26px 2px 10px}
+.psec .eyebrow{flex:1;min-width:0}
+.addblock{width:32px;height:32px;flex:0 0 auto;border-radius:11px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--acc) 14%,transparent);color:var(--acc);
+  transition:transform .2s var(--spring)}
+.addblock:active{transform:scale(.88)}
+.addblock svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.pcard{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;
+  transition:background .3s var(--ease),border-color .3s var(--ease)}
+.pcard.editing{border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:var(--surf-2)}
+.pblock{display:flex;align-items:flex-start;gap:13px;padding:14px 15px 14px 14px;margin-bottom:9px;
   background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
-  padding:14px;margin-bottom:10px;
-}
-.pcard{margin-bottom:0;transition:background .3s var(--ease),border-color .3s var(--ease)}
-.block{transition:background .3s var(--ease),border-color .3s var(--ease)}
-.block.done{
-  border-color:color-mix(in srgb,var(--c) 32%,transparent);
-  background:color-mix(in srgb,var(--c) 7%,var(--surf));
-}
-.pcard.editing,.block.editing{
-  border-color:color-mix(in srgb,var(--acc) 55%,transparent);
-  background:var(--surf-2);
-}
-.block-head{display:flex;align-items:center;gap:12px}
-.bcheck{
-  width:26px;height:26px;border-radius:8px;flex:0 0 auto;position:relative;
+  transition:background .3s var(--ease),border-color .3s var(--ease)}
+.pblock.done{border-color:color-mix(in srgb,var(--acc) 30%,transparent);background:color-mix(in srgb,var(--acc) 7%,var(--surf))}
+.btime{flex:0 0 auto;width:56px;text-align:left;padding-top:1px}
+.btime .hm{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.035em;line-height:1}
+.btime .ap{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;color:var(--ink-3);margin-top:3px}
+.bsep{width:1px;align-self:stretch;background:var(--line);flex:0 0 auto}
+.btxt{flex:1;min-width:0;text-align:left;padding-top:1px}
+.bname{font-size:14.5px;font-weight:600;letter-spacing:-.015em;line-height:1.35;word-break:break-word}
+.bnote{font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:4px;white-space:pre-wrap;word-break:break-word}
+.bmeta{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
+.pblock.done .bname{color:var(--ink-2)}
+.bcheck{width:26px;height:26px;border-radius:8px;flex:0 0 auto;position:relative;margin-top:1px;
   background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);display:grid;place-items:center;
-  transition:background .28s var(--ease),box-shadow .28s var(--ease),transform .2s var(--spring);
-}
+  transition:background .28s var(--ease),box-shadow .28s var(--ease),transform .2s var(--spring)}
 .bcheck:active{transform:scale(.88)}
-.bcheck.on{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));
-  box-shadow:0 2px 8px -4px color-mix(in srgb,var(--c) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.2);
-}
-.bcheck svg{
-  width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;
-  transition:stroke-dashoffset .34s var(--ease) .05s,opacity .12s;
-}
+.bcheck.on{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 86%,#fff),var(--acc));
+  box-shadow:0 2px 8px -4px color-mix(in srgb,var(--acc) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.2)}
+.bcheck svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;transition:stroke-dashoffset .34s var(--ease) .05s,opacity .12s}
 .bcheck.on svg{stroke-dashoffset:0;opacity:1}
-.bcheck.locked{opacity:.45}
-.btxt{flex:1;min-width:0}
-.bname{font-size:15px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bmeta{
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--ink-3);margin-top:3px;
-}
-.block.done .bmeta{color:color-mix(in srgb,var(--c) 78%,var(--ink-3))}
-.btag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);flex:0 0 auto}
-.btag:empty{display:none}
-.btag.on{color:var(--c)}
-.btag.sun{color:var(--sun)}
-.psec .sun{color:var(--sun)}
-.sbadge{
-  width:21px;height:21px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
-  font-family:var(--mono);font-size:10px;color:var(--ink-2);
-  border:1px solid var(--line-2);
-}
-.toggle-row{display:flex;align-items:center;gap:14px}
-.toggle-row .t{flex:1;min-width:0}
-.toggle-row .t .n{font-size:14.5px;font-weight:500}
-.toggle-row .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+.bcheck.locked{opacity:.4}
+
+/* quiet inline note */
+.lnote{--lnx:6px;border-radius:12px;padding:8px var(--lnx);margin:0 calc(-1 * var(--lnx));
+  transition:background .25s var(--ease)}
+.lnote-text{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;cursor:text}
+.lnote.blank .lnote-text{display:none}
+.lnote.blank .lnote-foot{margin-top:0}
+.lnote.blank .lnote-hint{color:var(--ink-2)}
+.lnote.quiet .lnote-foot{display:none}
+.lnote-ta{width:100%;min-height:40px;border:0;outline:0;background:transparent;resize:none;
+  font-family:inherit;font-size:14px;line-height:1.6;padding:0;color:inherit}
+.lnote-ta::placeholder{color:var(--ink-3)}
+.lnote-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;min-height:22px}
+.lnote-hint{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);transition:color .3s}
+.lnote.editing .lnote-hint{color:var(--acc)}
+.lnote-done{font-size:12.5px;font-weight:600;color:var(--acc);padding:6px 14px;border-radius:9px;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);transition:transform .2s var(--spring)}
+.lnote-done:active{transform:scale(.92)}
 
 /* ---------- vision ---------- */
-/* a wash of the accent behind the header */
 .vhead{position:relative;z-index:0;padding:18px 0 22px}
-.vhead::before{
-  content:'';position:absolute;z-index:-1;left:-20px;right:-20px;top:-70px;height:330px;
+.vhead::before{content:'';position:absolute;z-index:-1;left:-20px;right:-20px;top:-70px;height:330px;
   background:radial-gradient(78% 100% at 50% 0%,color-mix(in srgb,var(--acc) 15%,transparent),transparent 70%);
-  pointer-events:none;
-}
-.northstar{
-  display:block;width:100%;border:0;outline:0;background:transparent;padding:0;margin:10px 0 0;
-  font-family:var(--display);font-size:35px;font-weight:700;letter-spacing:-.05em;
-  line-height:1.06;color:var(--ink);
-}
+  pointer-events:none}
+.northstar{display:block;width:100%;border:0;outline:0;background:transparent;padding:0;margin:10px 0 0;
+  font-family:var(--display);font-size:35px;font-weight:700;letter-spacing:-.05em;line-height:1.06;color:var(--ink)}
 .northstar::placeholder{color:var(--ink-3)}
-/* the tools sit at the end, out of the way of the board */
 .vbar{display:flex;gap:8px;margin:4px 0 8px}
-.vchip{
-  flex:1;height:40px;border-radius:12px;background:transparent;border:1px solid var(--line);
+.vchip{flex:1;height:40px;border-radius:12px;background:transparent;border:1px solid var(--line);
   color:var(--ink-2);font-size:13px;font-weight:500;letter-spacing:-.005em;
-  transition:transform .2s var(--spring),background .24s var(--ease),color .24s var(--ease),border-color .24s var(--ease);
-}
+  transition:transform .2s var(--spring),background .24s var(--ease),color .24s var(--ease),border-color .24s var(--ease)}
 .vchip:active{transform:scale(.96)}
 .vchip.on{background:var(--acc);border-color:var(--acc);color:#14100A;font-weight:600}
-
-/* the board itself is placed by script: every card is absolutely positioned */
 .vgrid{position:relative;margin-bottom:22px}
-.vcard{
-  position:absolute;left:0;top:0;
-  transition:transform .34s var(--ease);
-  animation:fadeIn .45s var(--ease) both;
-}
+.vcard{position:absolute;left:0;top:0;transition:transform .34s var(--ease);animation:fadeIn .45s var(--ease) both}
 .vgrid.noanim .vcard{transition:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.vin{
-  position:relative;display:block;overflow:hidden;
-  border-radius:16px;background:var(--surf);border:1px solid var(--line);
-  transition:transform .2s var(--spring);
-}
+.vin{position:relative;display:block;overflow:hidden;border-radius:16px;background:var(--surf);border:1px solid var(--line);
+  transition:transform .2s var(--spring)}
 .vgrid:not(.varr) .vcard{cursor:zoom-in}
 .vgrid:not(.varr) .vcard:active .vin{transform:scale(.975)}
 .vcard img{width:100%;display:block}
-.vcap{
-  position:absolute;left:0;right:0;bottom:0;padding:28px 13px 12px;
-  font-size:12.5px;font-weight:500;line-height:1.35;color:#fff;
-  background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0));
-}
-/* quotes: an editorial card, never clipped, sized to its own words */
-.vq{
-  position:relative;padding:20px 18px 19px;overflow:hidden;
-  background:
-    radial-gradient(105% 78% at 8% 0%,color-mix(in srgb,var(--c) 34%,transparent),transparent 68%),
-    linear-gradient(165deg,color-mix(in srgb,var(--c) 15%,var(--surf)),var(--surf) 88%);
-}
-.vq .t{
-  font-family:var(--display);font-weight:600;letter-spacing:-.03em;
-  line-height:1.26;color:var(--ink);
-}
-.vq .a{
-  font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
-  color:color-mix(in srgb,var(--c) 55%,var(--ink-3));margin-top:13px;
-}
-.vgrip{
-  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:16px;z-index:3;
+.vcap{position:absolute;left:0;right:0;bottom:0;padding:28px 13px 12px;font-size:12.5px;font-weight:500;line-height:1.35;color:#fff;
+  background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,0))}
+.vq{position:relative;padding:20px 18px 19px;overflow:hidden;
+  background:radial-gradient(105% 78% at 8% 0%,color-mix(in srgb,var(--c) 34%,transparent),transparent 68%),
+             linear-gradient(165deg,color-mix(in srgb,var(--c) 15%,var(--surf)),var(--surf) 88%)}
+.vq .t{font-family:var(--display);font-weight:600;letter-spacing:-.03em;line-height:1.26;color:var(--ink)}
+.vq .a{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--c) 55%,var(--ink-3));margin-top:13px}
+.vgrip{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:16px;z-index:3;
   background:rgba(10,10,10,.76);color:#fff;display:none;place-items:center;padding:0;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none;
-}
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none}
 .vgrip svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .varr .vgrip{display:grid}
-.vdel{
-  position:absolute;top:8px;left:8px;height:26px;min-width:26px;border-radius:13px;z-index:3;
+.vdel{position:absolute;top:8px;left:8px;height:26px;min-width:26px;border-radius:13px;z-index:3;
   background:rgba(10,10,10,.74);color:#fff;display:none;place-items:center;padding:0;
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
-}
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase}
 .vdel svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
 .vdel.armed{background:#E5483F;padding:0 11px}
 .varr .vdel{display:grid}
@@ -622,78 +541,59 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .vlock-err{min-height:17px;margin-top:12px;font-size:12.5px;color:#F2705E}
 .pin{text-align:center;font-family:var(--mono);font-size:17px;letter-spacing:.35em;text-indent:.35em}
 .pin::placeholder{letter-spacing:.1em;text-indent:0}
+.shake{animation:nope .34s ease}
+@keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
 
 /* ---------- viewer ---------- */
-.lightbox{
-  position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+.lightbox{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
   padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
-  background:rgba(0,0,0,.96);opacity:0;pointer-events:none;touch-action:none;
-  transition:opacity .28s var(--ease);
-}
+  background:rgba(0,0,0,.96);opacity:0;pointer-events:none;touch-action:none;transition:opacity .28s var(--ease)}
 .lightbox.on{opacity:1;pointer-events:auto}
-.lbstage{
-  width:100%;max-width:560px;max-height:100%;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;touch-action:none;
-}
-.lbimg{
-  max-width:100%;max-height:82vh;display:block;border-radius:8px;
-  transform-origin:center center;will-change:transform;
-}
+.lbstage{width:100%;max-width:560px;max-height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+.lbimg{max-width:100%;max-height:82vh;display:block;border-radius:8px;transform-origin:center center;will-change:transform}
 .lbimg.ease{transition:transform .28s var(--ease)}
-.lbq{
-  position:relative;overflow:hidden;width:100%;padding:36px 30px;border-radius:22px;
-  background:
-    radial-gradient(88% 72% at 8% 0%,color-mix(in srgb,var(--c) 46%,transparent),transparent 70%),
-    linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#0C0C0C),#0C0C0C 88%);
-  border:1px solid color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.08));
-}
-.lbq .t{
-  font-family:var(--display);font-size:27px;font-weight:500;letter-spacing:-.035em;
-  line-height:1.28;color:#fff;
-}
-.lbq .a{
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:color-mix(in srgb,var(--c) 55%,#FFFFFF);opacity:.8;margin-top:20px;
-}
-.lbx{
-  position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;
+.lbq{position:relative;overflow:hidden;width:100%;padding:36px 30px;border-radius:22px;
+  background:radial-gradient(88% 72% at 8% 0%,color-mix(in srgb,var(--c) 46%,transparent),transparent 70%),
+             linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#0C0C0C),#0C0C0C 88%);
+  border:1px solid color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.08))}
+.lbq .t{font-family:var(--display);font-size:27px;font-weight:500;letter-spacing:-.035em;line-height:1.28;color:#fff}
+.lbq .a{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--c) 55%,#FFFFFF);opacity:.8;margin-top:20px}
+.lbx{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;
   width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
-  background:rgba(255,255,255,.12);color:#fff;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  transition:transform .2s var(--spring);
-}
+  background:rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:transform .2s var(--spring)}
 .lbx:active{transform:scale(.9)}
 .lbx svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.lbhint{
-  position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
-  color:rgba(255,255,255,.45);pointer-events:none;
-}
+.lbhint{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.45);pointer-events:none}
 
-/* a circle of the new theme opens out of the tab you pressed */
-.sweep{
-  position:fixed;z-index:70;width:18px;height:18px;border-radius:50%;
+.sweep{position:fixed;z-index:70;width:18px;height:18px;border-radius:50%;
   transform:translate(-50%,-50%) scale(0);
-  transition:transform .44s cubic-bezier(.3,.86,.32,1),opacity .32s var(--ease);
-  pointer-events:none;
-}
+  transition:transform .44s cubic-bezier(.3,.86,.32,1),opacity .32s var(--ease);pointer-events:none}
 
-/* ---------- toast + boot ---------- */
-.toast{
-  position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));z-index:80;
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));z-index:80;
   transform:translate(-50%,16px);opacity:0;pointer-events:none;
   background:var(--surf-2);border:1px solid var(--line-2);padding:10px 16px;border-radius:13px;
   font-size:13.5px;font-weight:500;white-space:nowrap;box-shadow:0 14px 30px -16px rgba(0,0,0,.7);
-  transition:all .34s var(--ease);
-}
+  transition:all .34s var(--ease)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-#boot{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;transition:opacity .5s var(--ease)}
+
+/* ---------- the opening: it appears, it holds, it goes ---------- */
+#boot{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;
+  opacity:0;transition:opacity .55s var(--ease)}
+#boot.in{opacity:1}
 #boot.gone{opacity:0;pointer-events:none}
-#boot .mark{width:32px;gap:5px}
-#boot .mark i{height:5px;animation:markLoop 1.5s var(--ease) infinite}
-#boot .mark i:nth-child(2){animation-delay:.15s}
-#boot .mark i:nth-child(3){animation-delay:.3s}
-@keyframes markLoop{0%,100%{transform:scaleX(.25);opacity:.3}50%{transform:scaleX(1);opacity:1}}
+.bootstage{text-align:center;padding:0 24px}
+.boottitle{font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:var(--ink)}
+.boottitle .go{color:var(--acc)}
+.bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;background:var(--acc)}
+.bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
+  text-transform:uppercase;color:var(--ink-3)}
+.bootskip{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);opacity:.55}
 
 /* ---------- edit-mode transitions ---------- */
 @keyframes rvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -715,7 +615,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="boot"><div class="mark"><i></i><i></i><i></i></div></div>
+<div id="boot">
+  <div class="bootstage">
+    <div class="boottitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
+    <i class="bootrule"></i>
+    <div class="bootname">Dayflow</div>
+  </div>
+  <div class="bootskip">Tap to skip</div>
+</div>
+<script>requestAnimationFrame(()=>document.getElementById('boot').classList.add('in'));</script>
 
 <div class="app">
   <header class="topbar" id="topbar">
@@ -734,9 +642,26 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <div class="head">
         <span class="eyebrow" id="heroEyebrow">—</span>
         <h2 class="day-name" id="heroDate">—</h2>
-        <div class="tape" id="tape"></div>
-        <div class="summary" id="summary"></div>
+        <div class="prog">
+          <div class="ringwrap">
+            <svg class="ring" viewBox="0 0 120 120">
+              <circle class="rbg" cx="60" cy="60" r="52"></circle>
+              <circle class="rfg" cx="60" cy="60" r="52" id="ringFg"></circle>
+            </svg>
+            <div class="ringtxt"><b id="ringN">0</b><span id="ringD">of 0</span></div>
+          </div>
+          <div class="progside">
+            <div class="pline" id="pLine">—</div>
+            <div class="psub" id="pSub"></div>
+            <button class="pdays" id="perfectBtn">
+              <svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg>
+              <span>Perfect days · <b id="pdCount">0</b></span>
+            </button>
+          </div>
+        </div>
       </div>
+
+      <div id="todayWrap"></div>
 
       <section class="note" id="note">
         <button class="note-head" id="noteToggle" aria-expanded="false">
@@ -749,18 +674,6 @@ button{background:none;border:0;padding:0;cursor:pointer}
             <button class="addnote" id="addNote">+ Add note</button>
           </div>
         </div></div>
-      </section>
-
-      <section class="weave">
-        <div class="weave-head">
-          <span class="eyebrow" id="rangeLabel">—</span>
-          <div class="seg-ctrl" id="rangeCtrl">
-            <button data-r="14">14D</button>
-            <button data-r="30" class="on">30D</button>
-            <button data-r="90">90D</button>
-          </div>
-        </div>
-        <div class="grid" id="grid"><div class="grid-inner" id="gridInner"></div></div>
       </section>
     </section>
 
@@ -789,16 +702,16 @@ button{background:none;border:0;padding:0;cursor:pointer}
         <div class="vlock-err" id="vPinErr"></div>
       </div>
       <div id="vBody">
-      <div class="vhead">
-        <span class="eyebrow">Vision</span>
-        <input class="northstar" id="vNorth" placeholder="What are you building?" maxlength="70" autocomplete="off">
-      </div>
-      <div class="vgrid" id="vGrid"></div>
-      <div class="vbar">
-        <button class="vchip" id="vAddPhoto">Photo</button>
-        <button class="vchip" id="vAddQuote">Quote</button>
-        <button class="vchip" id="vEdit">Edit</button>
-      </div>
+        <div class="vhead">
+          <span class="eyebrow">Vision</span>
+          <input class="northstar" id="vNorth" placeholder="What are you building?" maxlength="70" autocomplete="off">
+        </div>
+        <div class="vgrid" id="vGrid"></div>
+        <div class="vbar">
+          <button class="vchip" id="vAddPhoto">Photo</button>
+          <button class="vchip" id="vAddQuote">Quote</button>
+          <button class="vchip" id="vEdit">Edit</button>
+        </div>
       </div>
       <input type="file" id="vFile" accept="image/*" multiple hidden>
     </section>
@@ -856,15 +769,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
       </div>
 
       <div class="group">
-        <span class="eyebrow">Grid</span>
+        <span class="eyebrow">Feedback</span>
         <div class="panel">
-          <div class="srow">
-            <div class="t"><div class="n">Names on the right</div><div class="d">Flips the grid so dates run down the left.</div></div>
-            <button class="switch" id="mirrorSw" role="switch"></button>
-          </div>
           <div class="srow">
             <div class="t"><div class="n">Haptics</div><div class="d">A firm buzz when you tick something off.</div></div>
             <button class="switch" id="hapticSw" role="switch"></button>
+          </div>
+          <div class="srow">
+            <div class="t"><div class="n">Opening animation</div><div class="d">Play the intro every time Dayflow starts.</div></div>
+            <button class="switch" id="introSw" role="switch"></button>
           </div>
         </div>
       </div>
@@ -880,8 +793,8 @@ button{background:none;border:0;padding:0;cursor:pointer}
           <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
         </div>
       </div>
-      <p class="foot">Dayflow 1.2 · everything stays on this device</p>
-      <input type="file" id="importFile" accept="application/json" hidden>
+      <p class="foot">Dayflow 2.0 · everything stays on this device</p>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
     </section>
   </main>
 
@@ -894,6 +807,8 @@ button{background:none;border:0;padding:0;cursor:pointer}
 </div>
 
 <div class="scrim" id="scrim"></div>
+
+<!-- habit sheet -->
 <div class="sheet" id="sheet">
   <div class="grabber"></div>
   <h3 id="sheetTitle">New habit</h3>
@@ -910,19 +825,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
       <button class="preset" data-p="sun">Sundays</button>
     </div>
     <div class="days" id="fDays"></div>
-    <p class="hint">Days you turn off get ticked for you.</p>
-  </div>
-  <div class="field">
-    <div class="toggle-row">
-      <div class="t"><div class="n">Study block</div>
-        <div class="d">Adds it to Plan with session goals.</div></div>
-      <button class="switch" id="fStudy" role="switch"></button>
-    </div>
-    <div class="durrow" id="fDurWrap" hidden>
-      <label class="numbox"><input class="numin" id="fHrs" type="number" min="0" max="23" step="1" inputmode="numeric" placeholder="0"><span class="u">h</span></label>
-      <label class="numbox"><input class="numin" id="fMins" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0"><span class="u">min</span></label>
-      <span class="durtotal" id="fDurTotal">Not set</span>
-    </div>
+    <p class="hint">Days you turn off are marked as rest days.</p>
   </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="fCancel">Cancel</button>
@@ -930,6 +833,51 @@ button{background:none;border:0;padding:0;cursor:pointer}
   </div>
   <div style="margin-top:9px" id="fDeleteWrap" hidden><button class="btn danger" id="fDelete">Delete habit</button></div>
 </div>
+
+<!-- study block sheet -->
+<div class="sheet" id="blockSheet">
+  <div class="grabber"></div>
+  <h3 id="blockTitle">New study block</h3>
+  <div class="field">
+    <span class="eyebrow" id="blockDay">—</span>
+    <div class="steps">
+      <button class="step on" id="stepFrom"><span class="lbl">From</span><span class="val" id="valFrom">—</span></button>
+      <i class="steparrow">→</i>
+      <button class="step" id="stepTo"><span class="lbl">Till</span><span class="val none" id="valTo">Set</span></button>
+    </div>
+    <div class="tdisplay">
+      <button class="tnum on" id="tHour">07</button>
+      <span class="tcolon">:</span>
+      <button class="tnum" id="tMin">30</button>
+      <div class="ampm">
+        <button data-a="AM" id="tAM">AM</button>
+        <button data-a="PM" id="tPM">PM</button>
+      </div>
+    </div>
+    <div class="clock" id="clock"><i class="hand" id="cHand"></i><i class="hub"></i></div>
+    <div class="blockdur" id="blockDur">—</div>
+    <p class="hint" id="stepHint" style="text-align:center">Tap the hour it starts.</p>
+  </div>
+  <div class="field">
+    <span class="eyebrow">What you are doing</span>
+    <textarea class="input area" id="bText" placeholder="Organic chemistry — reaction mechanisms, chapters 4 and 5." maxlength="400"></textarea>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="bCancel">Cancel</button>
+    <button class="btn" id="bSave">Save</button>
+  </div>
+  <div style="margin-top:9px" id="bDeleteWrap" hidden><button class="btn danger" id="bDelete">Delete block</button></div>
+</div>
+
+<!-- perfect days sheet -->
+<div class="sheet" id="pdSheet">
+  <div class="grabber"></div>
+  <h3>Perfect days</h3>
+  <div id="pdBody"></div>
+  <div class="sheet-actions"><button class="btn ghost" id="pdClose">Close</button></div>
+</div>
+
+<!-- set sheet -->
 <div class="sheet" id="setSheet">
   <div class="grabber"></div>
   <h3 id="setTitle">New set</h3>
@@ -947,6 +895,8 @@ button{background:none;border:0;padding:0;cursor:pointer}
     <button class="btn danger" id="sDelete" style="margin-top:9px">Delete set</button>
   </div>
 </div>
+
+<!-- vision sheet -->
 <div class="sheet" id="vSheet">
   <div class="grabber"></div>
   <h3 id="vTitle">Photo</h3>
@@ -971,10 +921,12 @@ button{background:none;border:0;padding:0;cursor:pointer}
   </div>
   <div style="margin-top:9px"><button class="btn danger" id="vDelete">Delete</button></div>
 </div>
+
+<!-- pin sheet -->
 <div class="sheet" id="pinSheet">
   <div class="grabber"></div>
   <h3 id="pinTitle">Set a PIN</h3>
-  <p class="hint" id="pinHint" style="margin:0 0 18px">Four digits or more. It guards this page on this device only.</p>
+  <p class="hint" id="pinHint" style="margin:0 0 18px">Four characters or more. It guards this page on this device only.</p>
   <div class="field"><input class="input pin" id="pinA" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off"></div>
   <div class="field" id="pinBWrap"><input class="input pin" id="pinB" type="password" inputmode="numeric" placeholder="Repeat" maxlength="12" autocomplete="off"></div>
   <div class="vlock-err" id="pinErr" style="text-align:center;margin-bottom:4px"></div>
@@ -983,6 +935,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
     <button class="btn" id="pinSave">Save</button>
   </div>
 </div>
+
 <div class="lightbox" id="vBox">
   <button class="lbx" id="vBoxClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <div class="lbstage" id="vBoxStage"></div>
@@ -997,21 +950,16 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision'];
+const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision','blocks'];
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,5);
+    const r=indexedDB.open(DB_NAME,6);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
-      if(!d.objectStoreNames.contains('habits')) d.createObjectStore('habits',{keyPath:'id'});
-      if(!d.objectStoreNames.contains('records')) d.createObjectStore('records',{keyPath:'key'});
-      if(!d.objectStoreNames.contains('notes')) d.createObjectStore('notes',{keyPath:'date'});
-      if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'key'});
-      if(!d.objectStoreNames.contains('plans')) d.createObjectStore('plans',{keyPath:'key'});
-      if(!d.objectStoreNames.contains('sets')) d.createObjectStore('sets',{keyPath:'id'});
-      if(!d.objectStoreNames.contains('dnotes')) d.createObjectStore('dnotes',{keyPath:'id'});
-      if(!d.objectStoreNames.contains('vision')) d.createObjectStore('vision',{keyPath:'id'});
+      const mk=(n,k)=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:k}); };
+      mk('habits','id'); mk('records','key'); mk('notes','date'); mk('meta','key');
+      mk('plans','key'); mk('sets','id'); mk('dnotes','id'); mk('vision','id'); mk('blocks','id');
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
@@ -1023,20 +971,15 @@ const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
 const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
 const dbClear=n=>wrap(store(n,'readwrite').clear());
 
-let allHabits=[], habits=[], sets=[], recs=new Set(), notes=new Map(), dayNotes=[], plans=new Map(), visionItems=[];
-let S={theme:'dark',accent:'#F2A93B',mirror:false,haptics:true,range:30,seeded:false,activeSet:null,northStar:''};
-let visionDark=false;   /* the board reads best on black, so that page forces it */
-let visionUnlocked=false;
+let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
+    myNotes=[], plans=new Map(), blocks=[], visionItems=[];
+let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',visionLock:null};
+let visionDark=false, visionUnlocked=false;
 
-/* habits live in sets; only the active set is shown and counted */
-function applySet(){
-  habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order);
-}
+function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
 const activeSet=()=>sets.find(x=>x.id===S.activeSet)||sets[0];
 
-/* habit threads — a tuned data palette, deliberately separate from the UI accent */
 const THREADS=['#DE8C42','#D4605A','#C25E93','#8A6FD6','#4C86D4','#2BA396','#6BA342','#7C8BA1'];
-/* UI accent — brand + interactive only, never used inside the grid */
 const ACCENTS=['#F2A93B','#4EA8F5','#8B7CF7','#29B98E','#F0587F','#8D98AB'];
 const DL=['S','M','T','W','T','F','S'];
 const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1050,14 +993,14 @@ const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 const startOfDay=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
 let TODAY=startOfDay(new Date()), TSTR=ymd(TODAY);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const parseDay=ds=>new Date(ds+'T00:00:00');
 
 /* ---------- logic ---------- */
 const key=(h,ds)=>h.id+'|'+ds;
 function stateOf(h,ds,dow){
-  const k=key(h,ds);
   if(h.start && ds<h.start) return 'na';
-  if(!h.days.includes(dow)) return 'auto';   /* rest day: always checked for you */
-  if(recs.has(k)) return 'done';
+  if(!h.days.includes(dow)) return 'auto';      /* rest day */
+  if(recs.has(key(h,ds))) return 'done';
   return ds===TSTR ? 'todo' : 'miss';
 }
 function dayTally(date){
@@ -1065,51 +1008,37 @@ function dayTally(date){
   let req=0,done=0,live=0;
   for(const h of habits){
     const st=stateOf(h,ds,dow);
-    if(st==='na') continue;               /* habit did not exist yet */
+    if(st==='na') continue;
     live++;
-    if(st==='auto') continue;             /* filled for you, nothing to do */
-    req++;                                /* due today, or a rest day you switched off */
+    if(st==='auto') continue;
+    req++;
     if(st==='done') done++;
   }
-  return {req,done,live,complete:live>0&&done===req};
+  return {req,done,live,perfect:req>0&&done===req};
 }
-function currentStreak(){
-  let n=0,d=TODAY;
-  const t=dayTally(d);
-  if(!t.complete){ if(t.live===0) return 0; d=addDays(d,-1); }
-  for(let i=0;i<3650;i++){
-    const x=dayTally(d);
-    if(x.live===0||!x.complete) break;
-    n++; d=addDays(d,-1);
-  }
-  return n;
+function firstTrackedDate(){
+  let min=TSTR;
+  habits.forEach(h=>{ if(h.start && h.start<min) min=h.start; });
+  return parseDay(min);
 }
-function bestStreak(){
-  let best=0,run=0,d=TODAY;
-  for(let i=0;i<400;i++){
-    const x=dayTally(d);
-    if(x.live>0&&x.complete){run++;best=Math.max(best,run);}
-    else if(x.live>0) run=0;
-    d=addDays(d,-1);
+/* every day on which everything due was ticked off */
+function perfectDays(){
+  const out=[]; let d=firstTrackedDate();
+  for(let i=0;i<1500 && ymd(d)<=TSTR;i++){
+    if(dayTally(d).perfect) out.push(ymd(d));
+    d=addDays(d,1);
   }
-  return best;
-}
-function habitStreak(h){
-  let n=0,d=TODAY;
-  const st0=stateOf(h,ymd(d),d.getDay());
-  if(st0!=='done'&&st0!=='auto') d=addDays(d,-1);
-  for(let i=0;i<3650;i++){
-    const st=stateOf(h,ymd(d),d.getDay());
-    if(st==='done') n++;
-    else if(st!=='auto') break;
-    d=addDays(d,-1);
-  }
-  return n;
+  return out;
 }
 function fmtMins(m){
   if(!m) return '';
   const h=Math.floor(m/60), r=m%60;
   return h ? (r? h+'h '+r+'m' : h+'h') : m+' min';
+}
+function fmtTime(t){
+  const [H,M]=t.split(':').map(Number);
+  const ap=H>=12?'PM':'AM', h=H%12===0?12:H%12;
+  return {hm:h+':'+pad(M), ap};
 }
 function scheduleLabel(days){
   const s=[...days].sort().join(',');
@@ -1125,19 +1054,11 @@ function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('on');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1900);
 }
-const HAPTIC={
-  tick:[26,28,55],          /* firm double thump, ending strong */
-  untick:38,
-  done:[22,45,26,45,90],    /* the whole day landing */
-  medium:16, light:7
-};
+const HAPTIC={tick:[26,28,55],untick:38,done:[22,45,26,45,90],medium:16,light:7};
 const buzz=v=>{ if(S.haptics&&navigator.vibrate){ try{ navigator.vibrate(v); }catch(e){} } };
-/* animate a card across a layout swap so its height never jumps */
 function morph(el,fn){
   if(!el){ fn(); return; }
-  const h0=el.offsetHeight;
-  fn();
-  const h1=el.offsetHeight;
+  const h0=el.offsetHeight; fn(); const h1=el.offsetHeight;
   if(Math.abs(h1-h0)<1) return;
   el.style.overflow='hidden'; el.style.height=h0+'px';
   void el.offsetHeight;
@@ -1151,7 +1072,6 @@ function morph(el,fn){
   el.addEventListener('transitionend',clear);
   setTimeout(clear,440);
 }
-/* replay a one-shot animation on an element that has just been revealed */
 function anim(el,cls){
   if(!el) return;
   el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
@@ -1159,176 +1079,193 @@ function anim(el,cls){
 }
 
 /* ===========================================================
-   Today
+   Today — only today, nothing else to scroll through
    =========================================================== */
-function renderHead(){
-  const t=dayTally(TODAY);
+const RING_C=326.7;
+function renderToday(){
+  const t=dayTally(TODAY), dow=TODAY.getDay();
   $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
     (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
-  $('#heroDate').textContent=FULLDAY[TODAY.getDay()];
+  $('#heroDate').textContent=FULLDAY[dow];
 
-  const tape=$('#tape'); tape.innerHTML='';
-  const live=habits.filter(h=>!h.start||TSTR>=h.start);
-  const due=live.filter(h=>stateOf(h,TSTR,TODAY.getDay())!=='auto');
-  if(!due.length){ tape.innerHTML='<i class="seg"></i>'; }
-  else due.forEach((h,i)=>{
-    const s=document.createElement('i');
-    s.className='seg'+(stateOf(h,TSTR,TODAY.getDay())==='done'?' on':'');
-    s.style.setProperty('--c',h.color);
-    s.style.transitionDelay=(i*30)+'ms';
-    tape.appendChild(s);
-  });
+  const p=t.req? t.done/t.req : (t.live?1:0);
+  $('#ringFg').style.strokeDashoffset=RING_C*(1-p);
+  $('#ringN').textContent=t.req?t.done:'—';
+  $('#ringD').textContent=t.req?('of '+t.req):(t.live?'rest day':'no habits');
 
-  const cs=currentStreak(), sum=$('#summary');
-  let html;
-  if(!live.length) html='Add your first habit to start the weave.';
-  else if(t.req===0) html='<b>Rest day</b><span class="sep">·</span>nothing due';
-  else if(t.complete) html='<b class="hot">All done</b>';
-  else html='<b>'+t.done+'</b> of <b>'+t.req+'</b> done';
-  if(cs>0) html+='<span class="sep">·</span>'+cs+'-day streak';
-  sum.innerHTML=html;
-}
-const dateWindow=()=>{const a=[];for(let i=S.range-1;i>=0;i--)a.push(addDays(TODAY,-i));return a;};
+  const left=t.req-t.done;
+  let line,sub;
+  if(!t.live){ line='Start here'; sub='Add a habit and today becomes something you can close out.'; }
+  else if(!t.req){ line='Rest day'; sub='Nothing is due today. Everything is already accounted for.'; }
+  else if(left===0){ line='Day closed'; sub='Every habit due today is ticked off.'; }
+  else{ line=left+(left===1?' left':' left'); sub='Finish these and today counts as a perfect day.'; }
+  $('#pLine').textContent=line;
+  $('#pSub').textContent=sub;
+  $('#pdCount').textContent=perfectDays().length;
 
-function renderGrid(){
-  const inner=$('#gridInner');
-  inner.className='grid-inner'+(S.mirror?' mirror':'');
-  inner.innerHTML='';
-  const dates=dateWindow();
-  $('#rangeLabel').textContent=dates[0].getDate()+' '+MN[dates[0].getMonth()]+' – '+TODAY.getDate()+' '+MN[TODAY.getMonth()];
+  const wrap=$('#todayWrap'); wrap.innerHTML='';
   if(!habits.length){
-    inner.innerHTML='<div class="empty" style="margin:2px 18px 12px"><h3>Nothing to track yet</h3><p>Add a habit and today\'s column becomes tappable.</p></div>';
+    wrap.innerHTML='<div class="empty" style="margin-top:22px"><h3>No habits yet</h3>'+
+      '<p>Add two or three you actually want to keep. Today\'s list is built from them.</p></div>';
     return;
   }
-  const head=document.createElement('div'); head.className='grow ghead';
-  head.innerHTML='<div class="gname">'+habits.length+' habit'+(habits.length>1?'s':'')+'</div>';
-  const hc=document.createElement('div'); hc.className='gcells';
-  dates.forEach(d=>{
-    const dow=d.getDay(), c=document.createElement('div');
-    c.className='dcol'+(dow===0||dow===6?' wk':'')+(dow===0?' sun':'')+(ymd(d)===TSTR?' today':'');
-    c.innerHTML='<span class="dw">'+DL[dow]+'</span><span class="dd">'+d.getDate()+'</span><i class="dot"></i>';
-    hc.appendChild(c);
-  });
-  head.appendChild(hc); inner.appendChild(head);
 
-  habits.forEach((h,ri)=>{
-    const row=document.createElement('div'); row.className='grow';
-    row.style.setProperty('--c',h.color); row.dataset.h=h.id;
-    row.innerHTML='<div class="gname"><i class="hthread"></i><span class="hlabel">'+esc(h.name)+'</span></div>';
-    const cells=document.createElement('div'); cells.className='gcells';
-    dates.forEach(d=>{
-      const ds=ymd(d), b=document.createElement('button');
-      b.className='cell'; b.dataset.d=ds; b.dataset.h=h.id;
-      b.innerHTML='<i class="th"></i>';
-      if(ds===TSTR) b.setAttribute('aria-label','Mark '+h.name+' for today');
-      cells.appendChild(b);
-    });
-    row.appendChild(cells);
-    row.style.animation='rise .45s var(--ease) both';
-    row.style.animationDelay=Math.min(ri,10)*28+'ms';
-    inner.appendChild(row);
-    paintRow(h,row);
-  });
-  requestAnimationFrame(()=>{const g=$('#grid');g.scrollLeft=g.scrollWidth;});
-}
-function paintRow(h,row){
-  const cells=$$('.cell',row);
-  cells.forEach(c=>paintCell(h,c));
-  cells.forEach((c,i)=>joinCell(cells,i));
-}
-function paintCell(h,c){
-  const ds=c.dataset.d, d=new Date(ds+'T00:00:00');
-  const st=stateOf(h,ds,d.getDay());
-  c.className='cell'+(ds===TSTR?' today':'')+
-    (st==='done'?' done':st==='auto'?' auto':st==='na'?' na':'');
-  c.disabled = ds!==TSTR && st==='na';
-}
-const onThread=c=>!!c&&(c.classList.contains('done')||c.classList.contains('auto'));
-function joinCell(cells,i){
-  const c=cells[i]; if(!c) return;
-  c.classList.remove('jl','jr');
-  if(!onThread(c)) return;
-  if(onThread(cells[i-1])) c.classList.add('jl');
-  if(onThread(cells[i+1])) c.classList.add('jr');
-}
+  const live=habits.filter(h=>stateOf(h,TSTR,dow)!=='na');
+  const todo=live.filter(h=>stateOf(h,TSTR,dow)==='todo');
+  const done=live.filter(h=>stateOf(h,TSTR,dow)==='done');
+  const rest=live.filter(h=>stateOf(h,TSTR,dow)==='auto');
 
-$('#grid').addEventListener('click',e=>{
-  /* tapping the name ticks today for that habit */
-  const name=e.target.closest('.gname');
-  if(name){
-    const row=name.closest('.grow');
-    if(!row || row.classList.contains('ghead')) return;
-    const h=habits.find(x=>x.id===row.dataset.h); if(!h) return;
-    const cell=row.querySelector('.cell[data-d="'+TSTR+'"]');
-    if(!cell) return;
-    const g=$('#grid'); g.scrollLeft=g.scrollWidth;   /* bring today into view */
-    if(!h.days.includes(TODAY.getDay())){
-      cell.classList.remove('nope'); void cell.offsetWidth; cell.classList.add('nope');
-      toast('Not due on '+DN[TODAY.getDay()]+'s · checked for you'); return;
-    }
-    toggleCell(h,cell); return;
+  if(t.req>0 && left===0){
+    const c=document.createElement('div');
+    c.className='clean';
+    c.innerHTML='<div class="spark"></div><h3>Today is clean.</h3>'+
+      '<p>'+t.done+' of '+t.req+' done. Come back tomorrow and do it again.</p>';
+    wrap.appendChild(c);
   }
-  const c=e.target.closest('.cell'); if(!c) return;
-  const ds=c.dataset.d, h=habits.find(x=>x.id===c.dataset.h); if(!h) return;
-  if(ds!==TSTR){
-    c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope');
-    toast('Only today can be changed'); return;
-  }
+  if(todo.length) wrap.appendChild(section('Still open · '+todo.length));
+  todo.forEach(h=>wrap.appendChild(habitCard(h,'todo')));
+  if(done.length) wrap.appendChild(section('Done · '+done.length));
+  done.forEach(h=>wrap.appendChild(habitCard(h,'on')));
+  if(rest.length) wrap.appendChild(section('Not due today · '+rest.length));
+  rest.forEach(h=>wrap.appendChild(habitCard(h,'rest')));
+}
+function section(label){
+  const s=document.createElement('div');
+  s.className='tsec'; s.innerHTML='<span class="eyebrow">'+esc(label)+'</span>';
+  return s;
+}
+function habitCard(h,mode){
+  const b=document.createElement('button');
+  b.className='hcard '+mode; b.dataset.h=h.id; b.style.setProperty('--c',h.color);
+  b.innerHTML='<i class="bar"></i><div class="hb"><div class="hn">'+esc(h.name)+'</div>'+
+    '<div class="hs">'+(mode==='rest'?'Rest day · '+scheduleLabel(h.days):scheduleLabel(h.days))+'</div></div>'+
+    '<span class="tick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>';
+  return b;
+}
+$('#todayWrap').addEventListener('click',e=>{
+  const card=e.target.closest('.hcard'); if(!card) return;
+  const h=habits.find(x=>x.id===card.dataset.h); if(!h) return;
   if(!h.days.includes(TODAY.getDay())){
-    c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope');
-    toast('Not due on '+DN[TODAY.getDay()]+'s · checked for you'); return;
+    toast('Not due on '+DN[TODAY.getDay()]+'s'); buzz(HAPTIC.light); return;
   }
-  toggleCell(h,c);
+  toggleHabit(h,card);
 });
-
-async function toggleCell(h,c){
-  const k=key(h,TSTR), was=dayTally(TODAY);
-  const marking=!recs.has(k);
+let flipBusy=false;
+async function toggleHabit(h,card){
+  if(flipBusy) return;
+  const k=key(h,TSTR), was=dayTally(TODAY), marking=!recs.has(k);
   if(marking) recs.add(k); else recs.delete(k);
-  /* paint first: the mark has to answer the tap, not the database */
-  paintRow(h,c.closest('.grow'));
-  if(marking){
-    void c.offsetWidth; c.classList.add('pop');
-    c.addEventListener('animationend',()=>c.classList.remove('pop'),{once:true});
-  }
-  buzz(marking?HAPTIC.tick:HAPTIC.untick); renderHead();
+  card.classList.toggle('on',marking);
+  card.classList.toggle('todo',!marking);
+  buzz(marking?HAPTIC.tick:HAPTIC.untick);
   const now=dayTally(TODAY);
-  if(now.complete && !was.complete && now.req>0){
-    toast('Day complete · '+currentStreak()+'-day streak'); buzz(HAPTIC.done);
-  }
   if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
   else await dbDel('records',k);
+  if(now.perfect && !was.perfect){ toast('Perfect day · everything due is done'); buzz(HAPTIC.done); }
+  flipBusy=true;
+  setTimeout(()=>{ reflowToday(h.id); renderPlan(); },250);
+}
+/* the card slides down into Done, and climbs back up when you undo it */
+function reflowToday(movedId){
+  const wrap=$('#todayWrap');
+  const before=new Map();
+  $$('.hcard',wrap).forEach(c=>before.set(c.dataset.h,c.getBoundingClientRect().top));
+  const h0=wrap.offsetHeight;
+  renderToday();
+  const h1=wrap.offsetHeight;
+  if(Math.abs(h1-h0)>1){
+    wrap.style.overflow='hidden'; wrap.style.height=h0+'px';
+    void wrap.offsetHeight;
+    wrap.style.transition='height .52s cubic-bezier(.22,.9,.28,1)';
+    wrap.style.height=h1+'px';
+    setTimeout(()=>{ wrap.style.height=''; wrap.style.overflow=''; wrap.style.transition=''; },580);
+  }
+  $$('.hcard',wrap).forEach(c=>{
+    const b=before.get(c.dataset.h); if(b==null) return;
+    const d=b-c.getBoundingClientRect().top;
+    if(Math.abs(d)<1) return;
+    c.style.transition='none';
+    c.style.transform='translateY('+d+'px)';
+    if(c.dataset.h===movedId) c.style.zIndex='2';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      c.style.transition='transform .52s cubic-bezier(.22,.9,.28,1)';
+      c.style.transform='translateY(0)';
+    }));
+    setTimeout(()=>{ c.style.transition=''; c.style.transform=''; c.style.zIndex=''; },620);
+  });
+  setTimeout(()=>{ flipBusy=false; },440);
 }
 
-$('#rangeCtrl').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  $$('#rangeCtrl button').forEach(x=>x.classList.toggle('on',x===b));
-  S.range=+b.dataset.r; saveSettings(); renderGrid();
-});
+/* ===========================================================
+   Perfect days
+   =========================================================== */
+function openPerfect(){
+  const days=new Set(perfectDays());
+  const body=$('#pdBody');
+  const total=days.size;
+  let html='<div class="pdhead"><div class="pdbig">'+total+'</div>'+
+    '<div class="pdsub">'+(total?'day'+(total===1?'':'s')+' where every habit due was ticked off.':'No perfect days yet. Close out today and this fills up.')+'</div></div>';
+
+  /* month by month, newest first, back to the first day you tracked */
+  const start=firstTrackedDate();
+  const months=[];
+  let m=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
+  const stop=new Date(start.getFullYear(),start.getMonth(),1);
+  for(let i=0;i<24 && m>=stop;i++){ months.push(new Date(m)); m=new Date(m.getFullYear(),m.getMonth()-1,1); }
+
+  months.forEach(mo=>{
+    const y=mo.getFullYear(), mi=mo.getMonth();
+    const first=new Date(y,mi,1), n=new Date(y,mi+1,0).getDate();
+    let cells='';
+    for(let i=0;i<first.getDay();i++) cells+='<i class="cell blank"></i>';
+    for(let d=1;d<=n;d++){
+      const date=new Date(y,mi,d), ds=ymd(date);
+      let cls='cell';
+      if(ds>TSTR || ds<ymd(start)) cls+='';
+      else if(days.has(ds)) cls+=' perf';
+      else if(dayTally(date).live>0) cls+=' part';
+      if(ds===TSTR) cls+=' today';
+      cells+='<i class="'+cls+'">'+d+'</i>';
+    }
+    const count=[...days].filter(x=>x.slice(0,7)===y+'-'+pad(mi+1)).length;
+    html+='<div class="mon"><h4>'+FULLMON[mi]+' '+y+' <span class="eyebrow" style="margin-left:6px">'+count+' perfect</span></h4>'+
+      '<div class="dow">'+DL.map(x=>'<span>'+x+'</span>').join('')+'</div>'+
+      '<div class="cal">'+cells+'</div></div>';
+  });
+
+  body.innerHTML=html;
+  $('#scrim').classList.add('on'); $('#pdSheet').classList.add('on'); $('#pdSheet').scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closePerfect(){ $('#scrim').classList.remove('on'); $('#pdSheet').classList.remove('on'); }
+$('#perfectBtn').addEventListener('click',openPerfect);
+$('#pdClose').addEventListener('click',closePerfect);
 
 /* ===========================================================
-   Note
+   Notes — a running list that is never cleared
    =========================================================== */
-const todayNotes=()=>dayNotes.filter(n=>n.date===TSTR).sort((a,b)=>(a.order||0)-(b.order||0));
-
+const sortedNotes=()=>myNotes.slice().sort((a,b)=>(b.created||0)-(a.created||0));
 function refreshNoteLabel(){
-  const arr=todayNotes();
+  const arr=myNotes;
   $('#noteLabel').textContent=arr.length?'Notes · '+arr.length:'Notes';
   $('#note').classList.toggle('has',arr.some(n=>(n.title||'').trim()||(n.text||'').trim()));
 }
-
-function renderNote(){
+function renderNotes(){
   const list=$('#dnList'); list.innerHTML='';
-  todayNotes().forEach(n=>list.appendChild(noteCard(n)));
+  sortedNotes().forEach(n=>list.appendChild(noteCard(n)));
   refreshNoteLabel();
 }
-
-/* one card per note: title plus the first few lines, opened on tap, edited on two taps */
+function whenLabel(ds){
+  if(ds===TSTR) return 'Today';
+  if(ds===ymd(addDays(TODAY,-1))) return 'Yesterday';
+  const d=parseDay(ds);
+  return d.getDate()+' '+MN[d.getMonth()];
+}
 function noteCard(n){
   const el=document.createElement('article');
   el.className='dn'; el.dataset.id=n.id;
   el.innerHTML=
-    '<button class="dn-head"><span class="dn-title"></span>'+
+    '<button class="dn-head"><span class="dn-title"></span><span class="dn-when">'+esc(whenLabel(n.date||TSTR))+'</span>'+
       '<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>'+
     '<div class="dn-read"><div class="dn-text"></div></div>'+
     '<div class="dn-edit" hidden>'+
@@ -1336,7 +1273,6 @@ function noteCard(n){
       '<textarea class="dn-ta" placeholder="Write it down"></textarea>'+
       '<div class="dn-foot"><button class="dn-del">Delete</button><button class="dn-done">Done</button></div>'+
     '</div>';
-
   const head=$('.dn-head',el), read=$('.dn-read',el), edit=$('.dn-edit',el),
         title=$('.dn-title',el), text=$('.dn-text',el),
         tin=$('.dn-tin',el), ta=$('.dn-ta',el), del=$('.dn-del',el), done=$('.dn-done',el);
@@ -1353,7 +1289,7 @@ function noteCard(n){
   async function save(){
     clearTimeout(saveT);
     if(n.title===tin.value && n.text===ta.value) return;
-    n.title=tin.value; n.text=ta.value;
+    n.title=tin.value; n.text=ta.value; n.edited=Date.now();
     await dbPut('dnotes',n);
   }
   function openEdit(){
@@ -1361,8 +1297,7 @@ function noteCard(n){
     tin.value=n.title||''; ta.value=n.text||'';
     morph(el,()=>{
       el.classList.add('open','editing');
-      head.hidden=true; read.hidden=true; edit.hidden=false;
-      grow();
+      head.hidden=true; read.hidden=true; edit.hidden=false; grow();
     });
     anim(edit,'rv');
     ((n.title||'').trim()?ta:tin).focus();
@@ -1372,13 +1307,11 @@ function noteCard(n){
     await save();
     morph(el,()=>{
       head.hidden=false; read.hidden=false; edit.hidden=true;
-      el.classList.remove('editing');
-      paint();
+      el.classList.remove('editing'); paint();
     });
     refreshNoteLabel();
     anim(head,'rvf'); anim(read,'rvf');
   }
-
   head.addEventListener('click',()=>{ el.classList.toggle('open'); buzz(5); });
   read.addEventListener('click',()=>{ openEdit(); buzz(9); });
   ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
@@ -1387,20 +1320,18 @@ function noteCard(n){
   done.addEventListener('click',()=>{ closeEdit(); buzz(6); });
   del.addEventListener('click',async()=>{
     if(del.dataset.armed!=='1'){ del.dataset.armed='1'; del.textContent='Tap again to delete'; buzz(14); return; }
-    dayNotes=dayNotes.filter(x=>x.id!==n.id);
+    myNotes=myNotes.filter(x=>x.id!==n.id);
     await dbDel('dnotes',n.id);
-    renderNote(); toast('Note deleted');
+    renderNotes(); renderSettings(); toast('Note deleted');
   });
   el.addEventListener('editnow',openEdit);
-
   paint();
   return el;
 }
-
 $('#addNote').addEventListener('click',async()=>{
-  const n={id:uid(),date:TSTR,title:'',text:'',order:todayNotes().length,created:Date.now()};
-  dayNotes.push(n); await dbPut('dnotes',n);
-  renderNote();
+  const n={id:uid(),date:TSTR,title:'',text:'',created:Date.now()};
+  myNotes.push(n); await dbPut('dnotes',n);
+  renderNotes();
   const card=$('.dn[data-id="'+n.id+'"]');
   if(card) card.dispatchEvent(new CustomEvent('editnow'));
   buzz(8);
@@ -1425,8 +1356,7 @@ function renderHabits(){
     row.innerHTML=
       '<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>'+
       '<i class="hbar"></i>'+
-      '<div class="hinfo"><div class="n">'+esc(h.name)+'</div><div class="s">'+scheduleLabel(h.days)+(habitStreak(h)>1?' · '+habitStreak(h)+'-day streak':'')+'</div></div>'+
-      (h.study?'<span class="sbadge" title="Study block">S</span>':'')+
+      '<div class="hinfo"><div class="n">'+esc(h.name)+'</div><div class="s">'+scheduleLabel(h.days)+'</div></div>'+
       '<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
     list.appendChild(row);
   });
@@ -1471,7 +1401,7 @@ $('#hlist').addEventListener('click',e=>{
       const [moved]=habits.splice(idx,1);
       habits.splice(cur,0,moved);
       await persistOrder();
-      renderHabits(); renderGrid(); renderHead();
+      renderHabits(); renderToday();
     }
   };
   list.addEventListener('pointerup',end);
@@ -1481,9 +1411,9 @@ async function persistOrder(){
   for(let i=0;i<habits.length;i++){ habits[i].order=i; await dbPut('habits',habits[i]); }
 }
 
-/* ---------- sheet ---------- */
-let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false,mins:45};
-(function build(){
+/* ---------- habit sheet ---------- */
+let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6]};
+(function buildHabitForm(){
   const cc=$('#fColors');
   THREADS.forEach(c=>{
     const b=document.createElement('button'); b.className='co'; b.dataset.c=c;
@@ -1491,10 +1421,6 @@ let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false,mins:4
     cc.appendChild(b);
   });
   cc.addEventListener('click',e=>{const b=e.target.closest('.co');if(!b)return;form.color=b.dataset.c;syncForm();});
-  ['#fHrs','#fMins'].forEach(sel=>{
-    $(sel).addEventListener('input',readDur);
-    $(sel).addEventListener('blur',()=>writeDur(form.mins));   /* 1h 90m tidies to 2h 30m */
-  });
   const dd=$('#fDays');
   DL.forEach((d,i)=>{const b=document.createElement('button');b.className='day';b.textContent=d;b.dataset.d=i;dd.appendChild(b);});
   dd.addEventListener('click',e=>{
@@ -1515,37 +1441,13 @@ function syncForm(){
   $$('#fDays .day').forEach(b=>b.classList.toggle('on',form.days.includes(+b.dataset.d)));
   const lbl=scheduleLabel(form.days), map={all:'Every day',wd:'Weekdays',we:'Weekends',sun:'Sundays'};
   $$('#fPresets .preset').forEach(b=>b.classList.toggle('on',map[b.dataset.p]===lbl));
-  $('#fStudy').classList.toggle('on',!!form.study);
-  $('#fDurWrap').hidden=!form.study;
-  $('#fDurTotal').textContent=form.mins?fmtMins(form.mins):'Not set';
-}
-$('#fStudy').addEventListener('click',()=>{
-  form.study=!form.study;
-  if(form.study && !form.mins) form.mins=45;
-  writeDur(form.mins); syncForm(); buzz(8);
-});
-
-/* session length is typed, not picked */
-function readDur(){
-  const h=Math.max(0,Math.min(23,parseInt($('#fHrs').value,10)||0));
-  const m=Math.max(0,parseInt($('#fMins').value,10)||0);
-  form.mins=Math.min(1440,h*60+m);
-  $('#fDurTotal').textContent=form.mins?fmtMins(form.mins):'Not set';
-}
-function writeDur(mins){
-  mins=Math.max(0,Math.min(1440,mins||0));
-  form.mins=mins;
-  $('#fHrs').value=Math.floor(mins/60)||'';
-  $('#fMins').value=(mins%60)||'';
-  $('#fDurTotal').textContent=mins?fmtMins(mins):'Not set';
 }
 function openSheet(h){
   editing=h||null;
   $('#sheetTitle').textContent=h?'Edit habit':'New habit';
   $('#fName').value=h?h.name:'';
-  form = h ? {color:h.color,days:[...h.days],study:!!h.study,mins:h.mins||0}
-           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6],study:false,mins:45};
-  writeDur(form.mins);
+  form = h ? {color:h.color,days:[...h.days]}
+           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6]};
   syncForm();
   $('#fDeleteWrap').hidden=!h;
   $('#fDelete').textContent='Delete habit'; $('#fDelete').dataset.armed='';
@@ -1556,7 +1458,7 @@ function closeSheet(){
   $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
 }
-$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); closeVSheet(); closePin(); });
+$('#scrim').addEventListener('click',()=>{ closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet(); });
 $('#fCancel').addEventListener('click',closeSheet);
 $('#addBtn').addEventListener('click',()=>openSheet(null));
 $('#fSave').addEventListener('click',async()=>{
@@ -1564,10 +1466,10 @@ $('#fSave').addEventListener('click',async()=>{
   if(!name){ $('#fName').focus(); toast('Give the habit a name'); return; }
   if(!form.days.length){ toast('Pick at least one active day'); return; }
   if(editing){
-    Object.assign(editing,{name,color:form.color,days:form.days,study:form.study,mins:form.study?form.mins:0});
+    Object.assign(editing,{name,color:form.color,days:form.days});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,study:form.study,mins:form.study?form.mins:0,order:habits.length,start:TSTR,created:Date.now()};
+    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,order:habits.length,start:TSTR,created:Date.now()};
     allHabits.push(h); applySet(); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
@@ -1583,8 +1485,7 @@ $('#fDelete').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
-   Quiet inline note — reads as plain text, one tap to edit.
-   Used by the plan page for the day plan and session goals.
+   Quiet inline note (day plan)
    =========================================================== */
 function buildNote(host,o){
   host.className='lnote';
@@ -1595,11 +1496,9 @@ function buildNote(host,o){
   const view=$('.lnote-text',host), ta=$('.lnote-ta',host),
         hint=$('.lnote-hint',host), done=$('.lnote-done',host);
   let editing=false, saveT=null, hintT=null;
-  const frame=host.closest('.pcard,.block');   /* the card is what lights up */
+  const frame=host.closest('.pcard');
   ta.placeholder=o.placeholder||'';
-
   const val=()=>o.get()||'';
-  /* written notes say nothing extra; an empty one is its own invitation */
   const idle=()=>val().trim() ? '' : '+ '+(o.empty||'Add a note');
   function status(txt,revert){
     clearTimeout(hintT); hint.textContent=txt;
@@ -1651,30 +1550,25 @@ function buildNote(host,o){
 }
 
 /* ===========================================================
-   Plan — one tab per day, study blocks with session goals
+   Plan — a day note and as many study blocks as you add
    =========================================================== */
 let planDay=TSTR;
 const planKeyDay=d=>'d:'+d;
-const planKeySession=(h,d)=>'s:'+h.id+':'+d;
 async function savePlan(k,v){
   if(v.trim()){ plans.set(k,v); await dbPut('plans',{key:k,date:k.slice(-10),text:v}); }
   else{ plans.delete(k); await dbDel('plans',k); }
 }
-/* does a day already carry something? used for the dot on the day strip */
-function dayHasSomething(d,ds){
-  if(plans.has(planKeyDay(ds))) return true;
-  return habits.some(h=>h.study && h.days.includes(d.getDay()) && (!h.start||ds>=h.start));
-}
+const blocksOn=ds=>blocks.filter(b=>b.date===ds)
+  .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
+const dayHasSomething=ds=>plans.has(planKeyDay(ds))||blocks.some(b=>b.date===ds);
 
 function renderPlan(){
   if(planDay<TSTR) planDay=TSTR;
-  const sel=new Date(planDay+'T00:00:00'), dow=sel.getDay(), isToday=planDay===TSTR;
-  /* the heading names the day, so nothing below has to repeat the date */
+  const sel=parseDay(planDay), isToday=planDay===TSTR;
   $('#planMonth').textContent=FULLMON[sel.getMonth()]+' '+sel.getFullYear();
-  $('#planTitle').textContent=isToday?'Today':FULLDAY[dow]+' '+sel.getDate();
+  $('#planTitle').textContent=isToday?'Today':FULLDAY[sel.getDay()]+' '+sel.getDate();
   $('#planToday').hidden=isToday;
 
-  /* 30 days ahead, split by month */
   const strip=$('#dayStrip'); strip.innerHTML='';
   let month=TODAY.getMonth();
   for(let i=0;i<30;i++){
@@ -1685,7 +1579,7 @@ function renderPlan(){
     }
     const b=document.createElement('button');
     b.className='dchip'+(ds===planDay?' on':'')+(d.getDay()===0?' sun':'')+(ds===TSTR?' today':'')+
-               (dayHasSomething(d,ds)?' has':'');
+               (dayHasSomething(ds)?' has':'');
     b.dataset.d=ds;
     b.innerHTML='<div class="w">'+(ds===TSTR?'Today':DN[d.getDay()])+'</div>'+
                 '<div class="d">'+d.getDate()+'</div><i class="dot"></i>';
@@ -1698,7 +1592,6 @@ function renderPlan(){
 
   const wrap=$('#planWrap'); wrap.innerHTML='';
 
-  /* the day's own note, unlabelled — the heading above already says which day */
   const card=document.createElement('div'); card.className='pcard'; wrap.appendChild(card);
   const dn=document.createElement('div'); card.appendChild(dn);
   buildNote(dn,{
@@ -1708,92 +1601,208 @@ function renderPlan(){
     placeholder:'What does this day need to look like?'
   });
 
-  /* study blocks scheduled on this day */
-  const blocks=habits.filter(h=>h.study && h.days.includes(dow) && (!h.start||planDay>=h.start));
+  const list=blocksOn(planDay);
+  const mins=list.reduce((n,b)=>n+(b.mins||0),0);
+  const done=list.filter(b=>b.done).length;
+  let label='Study blocks';
+  if(list.length && isToday) label+=' · '+done+'/'+list.length;
+  if(mins) label+=' · '+fmtMins(mins);
 
-  const l2=document.createElement('span'); l2.className='eyebrow psec gap';
-  l2.dataset.sec='study'; l2.dataset.label='Study blocks';
-  wrap.appendChild(l2);
+  const sec=document.createElement('div'); sec.className='psec';
+  sec.innerHTML='<span class="eyebrow">'+esc(label)+'</span>'+
+    '<button class="addblock" id="addBlock" aria-label="Add study block"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>';
+  wrap.appendChild(sec);
+  $('#addBlock',sec).addEventListener('click',()=>openBlockSheet(null));
 
-  if(!blocks.length){
+  if(!list.length){
     const e=document.createElement('div'); e.className='empty';
-    e.innerHTML='<h3>Nothing scheduled</h3><p>Tag a habit as a study block on the Habits page and it shows up here.</p>';
+    e.innerHTML='<h3>Nothing planned</h3><p>Tap + to set a time, how long, and what you are working on.</p>';
     wrap.appendChild(e);
-    updatePlanCounts(); return;
+    return;
   }
-
-  blocks.forEach(h=>{
-    const on=recs.has(key(h,planDay));
-    const b=document.createElement('div');
-    b.className='block'+(on?' done':''); b.dataset.sec='study'; b.dataset.mins=h.mins||0;
-    b.style.setProperty('--c',h.color);
-    /* name, length, tick — and a tag only once it is done */
-    b.innerHTML=
-      '<div class="block-head">'+
-        '<button class="bcheck'+(on?' on':'')+(isToday?'':' locked')+'" data-h="'+h.id+'" aria-label="Mark '+esc(h.name)+'">'+
-          '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
-        '<div class="btxt"><div class="bname">'+esc(h.name)+'</div>'+
-          (h.mins?'<div class="bmeta">'+fmtMins(h.mins)+'</div>':'')+'</div>'+
-        '<span class="btag'+(on?' on':'')+'">'+(on?'Done':'')+'</span>'+
-      '</div>';
-    wrap.appendChild(b);
-    const sn=document.createElement('div'); b.appendChild(sn);
-    buildNote(sn,{
-      get:()=>plans.get(planKeySession(h,planDay))||'',
-      set:v=>savePlan(planKeySession(h,planDay),v),
-      empty:'Add session goals',
-      placeholder:'Goals for this session, what to cover, what to bring.'
-    });
-  });
-  updatePlanCounts();
+  list.forEach(b=>wrap.appendChild(blockCard(b,isToday)));
 }
-
-/* section headers carry a short count for today and the time planned, nothing more */
-function updatePlanCounts(){
-  const wrap=$('#planWrap'); if(!wrap) return;
-  $$('.psec[data-sec]',wrap).forEach(l=>{
-    const cards=$$('.block[data-sec="'+l.dataset.sec+'"]',wrap);
-    const done=cards.filter(c=>c.classList.contains('done')).length;
-    const mins=cards.reduce((n,c)=>n+(+c.dataset.mins||0),0);
-    let txt=l.dataset.label;
-    if(cards.length && planDay===TSTR) txt+=' · '+done+'/'+cards.length;
-    if(mins) txt+=' · '+fmtMins(mins);
-    l.textContent=txt;
-  });
+function blockCard(b,isToday){
+  const t=fmtTime(b.time||'09:00');
+  const e=b.end?fmtTime(b.end):null;
+  const el=document.createElement('div');
+  el.className='pblock'+(b.done?' done':''); el.dataset.id=b.id;
+  const first=(b.text||'').trim().split('\n')[0]||'Study block';
+  const rest=(b.text||'').trim().split('\n').slice(1).join('\n');
+  const meta=[b.mins?fmtMins(b.mins):'', e?'till '+e.hm+' '+e.ap:''].filter(Boolean).join(' · ');
+  el.innerHTML=
+    '<div class="btime"><div class="hm">'+t.hm+'</div><div class="ap">'+t.ap+'</div></div>'+
+    '<i class="bsep"></i>'+
+    '<button class="btxt"><div class="bname">'+esc(first)+'</div>'+
+      (rest?'<div class="bnote">'+esc(rest)+'</div>':'')+
+      (meta?'<div class="bmeta">'+meta+'</div>':'')+'</button>'+
+    '<button class="bcheck'+(b.done?' on':'')+(isToday?'':' locked')+'" aria-label="Mark done">'+
+      '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>';
+  return el;
 }
-
 $('#planToday').addEventListener('click',()=>{ planDay=TSTR; renderPlan(); buzz(6); });
-
 $('#dayStrip').addEventListener('click',e=>{
   const b=e.target.closest('.dchip'); if(!b) return;
   planDay=b.dataset.d; renderPlan(); buzz(5);
 });
 $('#planWrap').addEventListener('click',async e=>{
-  const b=e.target.closest('.bcheck'); if(!b) return;
-  if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
-  const h=habits.find(x=>x.id===b.dataset.h); if(!h) return;
-  const k=key(h,TSTR), marking=!recs.has(k);
-  if(marking) recs.add(k); else recs.delete(k);
-  b.classList.toggle('on',marking);
-  const card=b.closest('.block'); if(card) card.classList.toggle('done',marking);
-  const tag=b.parentElement.querySelector('.btag');
-  if(tag){ tag.textContent=marking?'Done':''; tag.classList.toggle('on',marking); }
-  updatePlanCounts();
-  buzz(marking?HAPTIC.tick:HAPTIC.untick);
-  renderHead(); renderGrid();
-  if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
-  else await dbDel('records',k);
+  const el=e.target.closest('.pblock'); if(!el) return;
+  const b=blocks.find(x=>x.id===el.dataset.id); if(!b) return;
+  if(e.target.closest('.bcheck')){
+    if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
+    b.done=b.done?0:1;
+    await dbPut('blocks',b);
+    renderPlan(); buzz(b.done?HAPTIC.tick:HAPTIC.untick);
+    return;
+  }
+  if(e.target.closest('.btxt')) openBlockSheet(b);
+});
+
+/* ---------- study block sheet: set the start on the clock, then the end ---------- */
+let bEditing=null, bStage='from', bStart='09:00', bEnd='10:00', bEndSet=false;
+let bH=9, bM=0, bAP='AM', bMode='h';
+const mins24=t=>{const[H,M]=String(t||'0:0').split(':').map(Number);return H*60+M;};
+const str24=m=>{m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60);};
+const blockMins=(a,b)=>(mins24(b)-mins24(a)+1440)%1440;
+function to24(){ let h=bH%12; if(bAP==='PM') h+=12; return pad(h)+':'+pad(bM); }
+function from24(t){
+  const [H,M]=String(t||'09:00').split(':').map(Number);
+  bAP=H>=12?'PM':'AM'; bH=H%12===0?12:H%12; bM=M||0;
+}
+function commitStage(){
+  const t=to24();
+  if(bStage==='from'){
+    bStart=t;
+    /* a start pushed past its own end just resets the hour that follows it */
+    if(bEndSet && blockMins(bStart,bEnd)>720) bEnd=str24(mins24(bStart)+60);
+  }else{ bEnd=t; bEndSet=true; }
+}
+function setHand(){
+  $('#cHand').style.transform='rotate('+(bMode==='h'?(bH%12)*30:bM*6)+'deg)';
+}
+function paintClock(){
+  const c=$('#clock');
+  $$('.cnum',c).forEach(n=>n.remove());
+  const R=98, C=131;
+  const vals = bMode==='h' ? [12,1,2,3,4,5,6,7,8,9,10,11] : [0,5,10,15,20,25,30,35,40,45,50,55];
+  vals.forEach((v,i)=>{
+    const ang=(i*30-90)*Math.PI/180;
+    const b=document.createElement('button');
+    b.className='cnum'; b.dataset.v=v;
+    b.textContent = bMode==='h' ? v : pad(v);
+    b.style.left=(C+R*Math.cos(ang))+'px';
+    b.style.top=(C+R*Math.sin(ang))+'px';
+    if(bMode==='h' ? v===bH : v===bM) b.classList.add('on');
+    c.appendChild(b);
+  });
+  setHand();
+  $('#tHour').textContent=pad(bH);
+  $('#tMin').textContent=pad(bM);
+  $('#tHour').classList.toggle('on',bMode==='h');
+  $('#tMin').classList.toggle('on',bMode==='m');
+  $('#tAM').classList.toggle('on',bAP==='AM');
+  $('#tPM').classList.toggle('on',bAP==='PM');
+  paintSteps();
+}
+function paintSteps(){
+  const f=fmtTime(bStart);
+  $('#valFrom').textContent=f.hm+' '+f.ap;
+  const vt=$('#valTo');
+  if(bEndSet){ const e=fmtTime(bEnd); vt.textContent=e.hm+' '+e.ap; vt.classList.remove('none'); }
+  else{ vt.textContent='Set'; vt.classList.add('none'); }
+  $('#stepFrom').classList.toggle('on',bStage==='from');
+  $('#stepTo').classList.toggle('on',bStage==='to');
+  const m=bEndSet?blockMins(bStart,bEnd):0;
+  $('#blockDur').textContent = !bEndSet ? 'Now set when it ends'
+    : m ? fmtMins(m)+(mins24(bEnd)<=mins24(bStart)?' · runs past midnight':'')
+        : 'Start and end are the same';
+  $('#stepHint').textContent = bMode==='h'
+    ? 'Tap the hour it '+(bStage==='from'?'starts':'ends')+'.'
+    : 'Now tap the minutes.';
+}
+function goStage(which){
+  bStage=which; bMode='h';
+  if(which==='to' && !bEndSet){ bEnd=str24(mins24(bStart)+60); bEndSet=true; }
+  from24(which==='from'?bStart:bEnd);
+  paintClock();
+}
+$('#clock').addEventListener('click',e=>{
+  const b=e.target.closest('.cnum'); if(!b) return;
+  const v=+b.dataset.v;
+  buzz(HAPTIC.light);
+  if(bMode==='h'){ bH=v; bMode='m'; commitStage(); paintClock(); return; }
+  bM=v; commitStage();
+  /* the start is done, so the sheet moves straight on to asking when it ends */
+  if(bStage==='from'){ setTimeout(()=>goStage('to'),160); paintClock(); }
+  else paintClock();
+});
+$('#stepFrom').addEventListener('click',()=>{ goStage('from'); buzz(6); });
+$('#stepTo').addEventListener('click',()=>{ goStage('to'); buzz(6); });
+$('#tHour').addEventListener('click',()=>{ bMode='h'; paintClock(); });
+$('#tMin').addEventListener('click',()=>{ bMode='m'; paintClock(); });
+$('#tAM').addEventListener('click',()=>{ bAP='AM'; commitStage(); paintClock(); buzz(6); });
+$('#tPM').addEventListener('click',()=>{ bAP='PM'; commitStage(); paintClock(); buzz(6); });
+
+function openBlockSheet(b){
+  bEditing=b||null; bStage='from'; bMode='h';
+  const sel=parseDay(planDay);
+  $('#blockTitle').textContent=b?'Edit study block':'New study block';
+  $('#blockDay').textContent=(planDay===TSTR?'Today':FULLDAY[sel.getDay()])+' · '+sel.getDate()+' '+MN[sel.getMonth()];
+  if(b){
+    bStart=b.time||'09:00';
+    bEnd=b.end||str24(mins24(bStart)+(b.mins||60));
+    bEndSet=true; $('#bText').value=b.text||'';
+  }else{
+    let h=planDay===TSTR ? new Date().getHours()+1 : 9;
+    if(h>22) h=21;
+    bStart=pad(h)+':00'; bEnd=str24(mins24(bStart)+60); bEndSet=false;
+    $('#bText').value='';
+  }
+  from24(bStart); paintClock();
+  $('#bDeleteWrap').hidden=!b;
+  $('#bDelete').textContent='Delete block'; $('#bDelete').dataset.armed='';
+  $('#scrim').classList.add('on'); $('#blockSheet').classList.add('on'); $('#blockSheet').scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeBlockSheet(){
+  $('#scrim').classList.remove('on'); $('#blockSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  bEditing=null;
+}
+$('#bCancel').addEventListener('click',closeBlockSheet);
+$('#bSave').addEventListener('click',async()=>{
+  const text=$('#bText').value.trim();
+  if(!bEndSet){ toast('Set when it ends'); goStage('to'); return; }
+  const mins=blockMins(bStart,bEnd);
+  if(!mins){ toast('The end time has to be after the start'); goStage('to'); return; }
+  if(bEditing){
+    Object.assign(bEditing,{time:bStart,end:bEnd,mins,text});
+    await dbPut('blocks',bEditing);
+    toast('Block updated');
+  }else{
+    const b={id:uid(),date:planDay,time:bStart,end:bEnd,mins,text,done:0,created:Date.now()};
+    blocks.push(b); await dbPut('blocks',b);
+    toast('Block added');
+  }
+  closeBlockSheet(); renderPlan(); renderSettings(); buzz(10);
+});
+$('#bDelete').addEventListener('click',async e=>{
+  const btn=e.currentTarget;
+  if(btn.dataset.armed!=='1'){ btn.dataset.armed='1'; btn.textContent='Tap again to delete'; buzz(14); return; }
+  const id=bEditing&&bEditing.id;
+  closeBlockSheet();
+  if(id){ blocks=blocks.filter(x=>x.id!==id); await dbDel('blocks',id); }
+  renderPlan(); renderSettings(); toast('Block deleted');
 });
 
 /* ===========================================================
-   Vision lock — a PIN in front of the board. The PIN itself is
-   never stored, only a salted hash of it.
+   Vision lock
    =========================================================== */
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 async function pinHash(pin,salt){
   const data=new TextEncoder().encode(salt+'|'+pin);
   try{ return hex(await crypto.subtle.digest('SHA-256',data)); }
-  catch(err){                       /* older or non-secure contexts */
+  catch(err){
     let h=2166136261;
     for(const b of data){ h^=b; h=Math.imul(h,16777619); }
     return 'f'+(h>>>0).toString(16);
@@ -1825,7 +1834,6 @@ async function tryUnlock(){
 $('#vUnlock').addEventListener('click',tryUnlock);
 $('#vPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
 
-/* the sheet does three jobs: set a PIN, or check it before changing or removing one */
 let pinMode='set';
 function openPin(mode){
   pinMode=mode;
@@ -1862,9 +1870,7 @@ $('#pinSave').addEventListener('click',async()=>{
   if(pinMode==='off'){
     S.visionLock=null; visionUnlocked=false; await saveSettings();
     closePin(); renderVision(); toast('Lock removed'); buzz(10);
-  }else{
-    openPin('set');
-  }
+  }else openPin('set');
 });
 $('#lockSw').addEventListener('click',()=>{
   if(S.visionLock&&S.visionLock.hash) openPin('off'); else openPin('set');
@@ -1873,13 +1879,12 @@ $('#lockSw').addEventListener('click',()=>{
 $('#lockChange').addEventListener('click',()=>openPin('change'));
 
 /* ===========================================================
-   Vision — the board: photos and lines worth keeping in sight
+   Vision board
    =========================================================== */
 let vMode=false, vEditing=null, vIsNew=false, vColor=THREADS[0], vWide=false;
 const X_ICON='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const vSorted=()=>visionItems.slice().sort((a,b)=>(a.order||0)-(b.order||0));
 
-/* photos are scaled down before they are stored, so the board stays light */
 function readImage(file){
   return new Promise((res,rej)=>{
     const fr=new FileReader();
@@ -1895,13 +1900,11 @@ async function shrinkImage(file,max=1600,q=.84){
   c.getContext('2d').drawImage(im,0,0,w,h);
   return {src:c.toDataURL('image/jpeg',q),ar:w/h};
 }
-
 function renderVision(){
   syncVisionLock();
   if(visionLocked()) return;
   const nd=$('#vNorth');
   if(nd && document.activeElement!==nd) nd.value=S.northStar||'';
-
   const g=$('#vGrid'); g.innerHTML='';
   g.classList.toggle('varr',vMode);
   const items=vSorted();
@@ -1917,14 +1920,12 @@ function renderVision(){
   layoutVision(true);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>layoutVision(true));
 }
-
 function visionCard(it,i){
   const el=document.createElement('div');
   el.className='vcard'; el.dataset.id=it.id; el.dataset.wide=it.wide?'1':'0';
   el.style.animationDelay=Math.min(i,9)*32+'ms';
   const inner=document.createElement('div'); inner.className='vin';
   if(it.type==='image'){
-    /* the stored ratio gives the card its height before the file has even decoded */
     inner.innerHTML='<img src="'+it.src+'" alt="'+esc(it.caption||'Vision photo')+'"'+
       (it.ar?' style="aspect-ratio:'+it.ar.toFixed(4)+'"':'')+'>'+
       (it.caption?'<div class="vcap">'+esc(it.caption)+'</div>':'');
@@ -1950,13 +1951,11 @@ function visionCard(it,i){
     '<button class="vgrip" aria-label="Move"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></button>');
   return el;
 }
-
-/* two columns, shortest column first; full-width cards clear both */
 function layoutVision(instant,cached){
   const g=$('#vGrid'); if(!g) return;
   const cards=$$('.vcard',g);
   if(!cards.length || g.clientWidth<40) return;
-  if(instant){ g.classList.add('noanim'); }
+  if(instant) g.classList.add('noanim');
   const W=g.clientWidth, gap=12, colW=Math.floor((W-gap)/2);
   if(!cached) cards.forEach(c=>{ c.style.width=(c.dataset.wide==='1'?W:colW)+'px'; });
   let y=[0,0];
@@ -1978,7 +1977,6 @@ $('#vNorth').addEventListener('input',()=>{
   clearTimeout(northT);
   northT=setTimeout(()=>{ S.northStar=$('#vNorth').value; saveSettings(); },500);
 });
-
 $('#vAddPhoto').addEventListener('click',()=>$('#vFile').click());
 $('#vFile').addEventListener('change',async e=>{
   const files=[...e.target.files]; e.target.value='';
@@ -1995,13 +1993,11 @@ $('#vFile').addEventListener('change',async e=>{
   renderVision(); buzz(10);
   if(bad) toast(bad+' image'+(bad>1?'s':'')+' could not be added');
 });
-
 $('#vAddQuote').addEventListener('click',()=>{
   openVSheet({id:uid(),type:'quote',text:'',author:'',wide:false,
               color:THREADS[visionItems.length%THREADS.length],
               order:visionItems.length,created:Date.now()},true);
 });
-
 $('#vEdit').addEventListener('click',()=>{
   vMode=!vMode;
   const b=$('#vEdit');
@@ -2010,7 +2006,6 @@ $('#vEdit').addEventListener('click',()=>{
   renderVision(); buzz(8);
   if(vMode) toast('Tap to edit · drag the grip to move');
 });
-
 $('#vGrid').addEventListener('click',e=>{
   if(vDragBusy || e.target.closest('.vgrip')) return;
   const card=e.target.closest('.vcard'); if(!card) return;
@@ -2026,11 +2021,10 @@ $('#vGrid').addEventListener('click',e=>{
   }
   if(vMode) openVSheet(it); else openLightbox(it);
 });
-
 async function removeVision(id){
   visionItems=visionItems.filter(x=>x.id!==id);
   await dbDel('vision',id);
-  renderVision(); toast('Removed'); buzz(12);
+  renderVision(); renderSettings(); toast('Removed'); buzz(12);
 }
 async function persistVisionOrder(){
   const ids=$$('.vcard',$('#vGrid')).map(c=>c.dataset.id);
@@ -2039,38 +2033,26 @@ async function persistVisionOrder(){
     if(it && it.order!==i){ it.order=i; await dbPut('vision',it); }
   }
 }
-
-/* rearranging happens from the grip, so the page scrolls exactly as usual */
 let vDragBusy=false;
 (function visionDrag(){
-  const g=$('#vGrid');
-  let d=null;
-
+  const g=$('#vGrid'); let d=null;
   function begin(el,cx,cy,pid){
     const r=g.getBoundingClientRect();
-    d={el,pid,last:0,
-       gx:(cx-r.left)-(+el.dataset.x),
-       gy:(cy-r.top)-(+el.dataset.y),
-       cards:$$('.vcard',g)};
+    d={el,pid,last:0,gx:(cx-r.left)-(+el.dataset.x),gy:(cy-r.top)-(+el.dataset.y),cards:$$('.vcard',g)};
     d.geo=new Map(d.cards.map(c=>[c,{w:c.offsetWidth,h:+c.dataset.h||0}]));
     try{ g.setPointerCapture(pid); }catch(err){}
     g.classList.add('dnd'); el.classList.add('dragging');
     vDragBusy=true; buzz([12,28,18]);
     move(cx,cy);
   }
-
-  /* geometry is cached at pick-up: a move costs one transform, no measuring */
   function move(cx,cy){
     if(!d) return;
     const r=g.getBoundingClientRect();
     const px=cx-r.left, py=cy-r.top;
     d.el.style.transform='translate('+(px-d.gx)+'px,'+(py-d.gy)+'px) scale(1.04)';
-
     const edge=120;
     if(cy<edge) scrollBy(0,-11);
     else if(cy>innerHeight-edge) scrollBy(0,11);
-
-    /* one swap at a time, and only well inside a neighbour, so nothing flickers */
     const now=performance.now();
     if(now-d.last<170) return;
     let hit=null;
@@ -2088,7 +2070,6 @@ let vDragBusy=false;
     layoutVision(false,true);
     d.last=now; buzz(6);
   }
-
   g.addEventListener('pointerdown',e=>{
     if(!vMode) return;
     const grip=e.target.closest('.vgrip'); if(!grip) return;
@@ -2097,9 +2078,7 @@ let vDragBusy=false;
     begin(el,e.clientX,e.clientY,e.pointerId);
   });
   g.addEventListener('pointermove',e=>{ if(d) move(e.clientX,e.clientY); });
-  /* while a card is in hand the page must not slide under it */
   g.addEventListener('touchmove',e=>{ if(d) e.preventDefault(); },{passive:false});
-
   const end=async()=>{
     if(!d) return;
     const el=d.el; d=null;
@@ -2113,19 +2092,13 @@ let vDragBusy=false;
   g.addEventListener('pointercancel',end);
 })();
 
-/* ===========================================================
-   Viewer — pinch or double tap to zoom, anchored on the point
-   you actually touched
-   =========================================================== */
-const LB={img:null,sc:1,x:0,y:0,cx:0,cy:0,w:0,h:0,
-          pts:new Map(),pd:0,pmx:0,pmy:0,sx:0,sy:0,moved:false,pinched:false,tap:0};
-
+/* ---------- viewer ---------- */
+const LB={img:null,sc:1,x:0,y:0,cx:0,cy:0,w:0,h:0,pts:new Map(),pd:0,pmx:0,pmy:0,sx:0,sy:0,moved:false,pinched:false,tap:0};
 function lbApply(ease){
   if(!LB.img) return;
   LB.img.classList.toggle('ease',!!ease);
   LB.img.style.transform='translate('+LB.x+'px,'+LB.y+'px) scale('+LB.sc+')';
 }
-/* the untransformed box gives the fixed origin every calculation hangs off */
 function lbMeasure(){
   const img=LB.img; if(!img) return;
   const keep=img.style.transform;
@@ -2140,7 +2113,6 @@ function lbClamp(){
   LB.x=Math.max(-mx,Math.min(mx,LB.x));
   LB.y=Math.max(-my,Math.min(my,LB.y));
 }
-/* keep the screen point you touched pinned to the same pixel of the photo */
 function lbAnchor(sc,ax,ay,mx,my,ease){
   sc=Math.max(1,Math.min(5,sc));
   const k=sc/LB.sc;
@@ -2149,12 +2121,10 @@ function lbAnchor(sc,ax,ay,mx,my,ease){
   LB.sc=sc; lbClamp(); lbApply(!!ease);
 }
 function lbReset(ease){ LB.sc=1; LB.x=0; LB.y=0; lbApply(ease); }
-
 function openLightbox(it){
   const stage=$('#vBoxStage'), box=$('#vBox');
   stage.innerHTML=''; LB.img=null; LB.pts.clear();
-  LB.pinched=false; LB.pd=0; LB.tap=0;
-  LB.sc=1; LB.x=0; LB.y=0;
+  LB.pinched=false; LB.pd=0; LB.tap=0; LB.sc=1; LB.x=0; LB.y=0;
   $$('#vBox [data-tmp]').forEach(n=>n.remove());
   if(it.type==='image'){
     const img=document.createElement('img');
@@ -2185,7 +2155,6 @@ function closeLightbox(){
   setTimeout(()=>{ $('#vBoxStage').innerHTML=''; LB.img=null; },320);
 }
 $('#vBoxClose').addEventListener('click',closeLightbox);
-
 $('#vBox').addEventListener('pointerdown',e=>{
   if(e.target.closest('.lbx')) return;
   LB.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -2202,7 +2171,6 @@ $('#vBox').addEventListener('pointermove',e=>{
   const prev=LB.pts.get(e.pointerId);
   LB.pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(Math.abs(e.clientX-LB.sx)+Math.abs(e.clientY-LB.sy)>8) LB.moved=true;
-
   if(LB.pts.size>=2 && LB.img){
     const [a,b]=[...LB.pts.values()];
     const dist=Math.hypot(a.x-b.x,a.y-b.y), mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
@@ -2217,18 +2185,15 @@ const lbEnd=e=>{
   if(!LB.pts.has(e.pointerId)) return;
   const alone=LB.pts.size===1;
   LB.pts.delete(e.pointerId);
-  if(LB.pts.size===1){                 /* one finger left after a pinch */
+  if(LB.pts.size===1){
     const p=[...LB.pts.values()][0];
     LB.sx=p.x; LB.sy=p.y; LB.pd=0;
   }
   if(LB.pts.size) return;
-
   const pinched=LB.pinched, moved=LB.moved;
   LB.pinched=false; LB.pd=0; LB.pmx=0; LB.pmy=0;
   if(LB.sc<=1.02) lbReset(true);
   if(!alone||pinched||moved) return;
-
-  /* a clean tap: on the photo it zooms, on the backdrop it closes */
   if(LB.img && e.target===LB.img){
     const now=Date.now();
     if(now-LB.tap<300){
@@ -2269,7 +2234,6 @@ function syncVSheet(){
   $$('#vColors .co').forEach(b=>b.classList.toggle('on',b.dataset.c===vColor));
   $$('#vWide button').forEach(b=>b.classList.toggle('on',(b.dataset.w==='1')===vWide));
 }
-
 function openVSheet(it,isNew){
   vEditing=it; vIsNew=!!isNew; vColor=it.color||THREADS[0]; vWide=!!it.wide;
   const isQ=it.type==='quote';
@@ -2301,7 +2265,7 @@ $('#vSave').addEventListener('click',async()=>{
   const added=vIsNew;
   if(vIsNew){ visionItems.push(vEditing); vMode=false; $('#vEdit').textContent='Edit'; $('#vEdit').classList.remove('on'); }
   await dbPut('vision',vEditing);
-  closeVSheet(); renderVision(); buzz(10);
+  closeVSheet(); renderVision(); renderSettings(); buzz(10);
   toast(added?'Added to your board':'Saved');
 });
 $('#vDelete').addEventListener('click',async e=>{
@@ -2312,7 +2276,7 @@ $('#vDelete').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
-   Sets — several habit line-ups, one active at a time
+   Sets
    =========================================================== */
 function renderSets(){
   const strip=$('#setStrip'); if(!strip) return;
@@ -2336,7 +2300,6 @@ $('#setStrip').addEventListener('click',e=>{
   planDay=TSTR; renderAll(); buzz(8);
   toast('Switched to '+activeSet().name);
 });
-
 let editingSet=null;
 function openSetSheet(st){
   editingSet=st||null;
@@ -2395,7 +2358,6 @@ $('#sDelete').addEventListener('click',async e=>{
   for(const h of allHabits.filter(x=>x.setId===id)){
     await dbDel('habits',h.id);
     for(const k of [...recs]) if(k.startsWith(h.id+'|')){ recs.delete(k); await dbDel('records',k); }
-    for(const k of [...plans.keys()]) if(k.startsWith('s:'+h.id+':')){ plans.delete(k); await dbDel('plans',k); }
   }
   allHabits=allHabits.filter(x=>x.setId!==id);
   sets=sets.filter(x=>x.id!==id);
@@ -2408,10 +2370,10 @@ $('#sDelete').addEventListener('click',async e=>{
    Navigation + settings
    =========================================================== */
 function showView(v){
-  if(v!=='vision') visionUnlocked=false;   /* the board asks again every time */
+  if(v!=='vision') visionUnlocked=false;
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));
   scrollTo(0,0);
-  if(v==='today') requestAnimationFrame(()=>{const g=$('#grid');g.scrollLeft=g.scrollWidth;});
+  if(v==='today') renderToday();
   if(v==='plan'){ planDay=TSTR; renderPlan(); }
   if(v==='vision') renderVision();
   if(v==='settings'){ renderSets(); renderHabits(); renderSettings(); }
@@ -2422,7 +2384,6 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   const wasTheme=visionDark?'dark':resolvedTheme();
   const wantDark=(v==='vision');
   const nowTheme=wantDark?'dark':resolvedTheme();
-  /* nothing of the new page is shown until the colour has already changed */
   const swap=()=>{
     visionDark=wantDark;
     $('#themeBtn').hidden=wantDark;
@@ -2447,12 +2408,12 @@ $('#themeCtrl').addEventListener('click',e=>{
   S.theme=b.dataset.t; applySettings(); saveSettings(); renderSettings();
 });
 $('#themeBtn').addEventListener('click',()=>{
-  visionDark=false;   /* a deliberate choice beats the page default */
+  visionDark=false;
   S.theme = resolvedTheme()==='dark'?'light':'dark';
   applySettings(); saveSettings(); renderSettings(); buzz(8);
 });
-$('#mirrorSw').addEventListener('click',()=>{S.mirror=!S.mirror;saveSettings();renderSettings();renderGrid();buzz(8);});
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
+$('#introSw').addEventListener('click',()=>{S.intro=!S.intro;saveSettings();renderSettings();buzz(8);});
 const resolvedTheme=()=>S.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S.theme;
 function applySettings(){
   const t=visionDark?'dark':resolvedTheme();
@@ -2474,7 +2435,7 @@ function themeSweep(to,origin,atCover){
   document.body.appendChild(o);
   const far=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
   requestAnimationFrame(()=>{ o.style.transform='translate(-50%,-50%) scale('+Math.ceil(far*1.15/9)+')'; });
-  setTimeout(()=>{ if(atCover) atCover(); },330);      /* the screen is fully covered by now */
+  setTimeout(()=>{ if(atCover) atCover(); },330);
   setTimeout(()=>{ o.style.opacity='0'; setTimeout(()=>o.remove(),340); },400);
 }
 function renderSettings(){
@@ -2483,43 +2444,81 @@ function renderSettings(){
   const locked=!!(S.visionLock&&S.visionLock.hash);
   $('#lockSw').classList.toggle('on',locked);
   $('#lockRow').hidden=!locked;
-  $('#mirrorSw').classList.toggle('on',S.mirror);
   $('#hapticSw').classList.toggle('on',S.haptics);
-  $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+dayNotes.length+' notes · '+visionItems.length+' vision cards';
+  $('#introSw').classList.toggle('on',S.intro!==false);
+  $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+myNotes.length+' notes · '+
+    blocks.length+' study blocks · '+visionItems.length+' vision cards';
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
+/* ===========================================================
+   Export / import — one file, everything in it
+   =========================================================== */
 $('#exportBtn').addEventListener('click',()=>{
-  const data={app:'dayflow',version:3,exported:new Date().toISOString(),
-    habits:allHabits,sets,records:[...recs],dnotes:dayNotes,notes:[...notes.entries()],plans:[...plans.entries()],vision:visionItems,settings:S};
-  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  const a=document.createElement('a'); a.href=url; a.download='dayflow-'+TSTR+'.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1000); toast('Exported');
+  try{
+    const data={
+      app:'dayflow', version:4, exported:new Date().toISOString(),
+      habits:allHabits, sets, records:[...recs], dnotes:myNotes,
+      plans:[...plans.entries()], blocks, vision:visionItems, settings:S
+    };
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const a=document.createElement('a');
+    a.href=url; a.download='dayflow-'+TSTR+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),2000);
+    toast('Exported');
+  }catch(err){ console.error(err); toast('Export failed'); }
 });
 $('#importBtn').addEventListener('click',()=>$('#importFile').click());
 $('#importFile').addEventListener('change',async e=>{
-  const f=e.target.files[0]; if(!f) return;
+  const f=e.target.files[0]; e.target.value='';
+  if(!f) return;
   try{
     const d=JSON.parse(await f.text());
-    if(d.app!=='dayflow') throw 0;
+    if(d.app!=='dayflow') throw new Error('not dayflow');
     await Promise.all(STORES.map(n=>dbClear(n)));
-    allHabits=(d.habits||[]).map(h=>({...h,color:h.color||THREADS[0]}));
+
+    allHabits=(d.habits||[]).map(h=>({
+      id:h.id||uid(), setId:h.setId, name:h.name||'Habit', color:h.color||THREADS[0],
+      days:Array.isArray(h.days)?h.days:[0,1,2,3,4,5,6], order:h.order||0,
+      start:h.start||TSTR, created:h.created||Date.now()
+    }));
     sets=d.sets||[];
-    recs=new Set(d.records||[]); notes=new Map(d.notes||[]); dayNotes=d.dnotes||[];
-    plans=new Map(d.plans||[]); visionItems=d.vision||[];
-    S=Object.assign(S,d.settings||{},{seeded:true});
+    recs=new Set(d.records||[]);
+    myNotes=(d.dnotes||[]).map(n=>({id:n.id||uid(),date:n.date||TSTR,title:n.title||'',text:n.text||'',created:n.created||Date.now()}));
+    /* older exports kept one note per day in `notes` */
+    (d.notes||[]).forEach(pair=>{
+      const [date,text]=pair;
+      if(text&&text.trim()) myNotes.push({id:uid(),date,title:'Note',text,created:Date.now()});
+    });
+    plans=new Map(d.plans||[]);
+    blocks=(d.blocks||[]).map(b=>{
+      const time=b.time||'09:00';
+      const end=b.end||str24(mins24(time)+(b.mins||45));
+      return {id:b.id||uid(), date:b.date||TSTR, time, end,
+        mins:b.mins||blockMins(time,end), text:b.text||'', done:b.done?1:0, created:b.created||Date.now()};
+    });
+    visionItems=d.vision||[];
+    const keepIntro=S.intro;
+    S=Object.assign({},S,d.settings||{},{seeded:true});
+    if(S.intro===undefined) S.intro=keepIntro;
+
     for(const st of sets) await dbPut('sets',st);
     for(const h of allHabits) await dbPut('habits',h);
-    for(const k of recs){const [hid,date]=k.split('|');await dbPut('records',{key:k,habitId:hid,date,done:1});}
-    for(const [date,text] of notes) await dbPut('notes',{date,text});
-    for(const n of dayNotes) await dbPut('dnotes',n);
-    for(const v of visionItems) await dbPut('vision',v);
-    await migrateNotes();
+    for(const k of recs){ const [hid,date]=k.split('|'); await dbPut('records',{key:k,habitId:hid,date,done:1}); }
+    for(const n of myNotes) await dbPut('dnotes',n);
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
-    await ensureSets(); await saveSettings(); applySettings(); renderAll(); renderNote(); toast('Data imported');
-  }catch(err){ toast('That is not a Dayflow export'); }
-  e.target.value='';
+    for(const b of blocks) await dbPut('blocks',b);
+    for(const v of visionItems) await dbPut('vision',v);
+
+    await ensureSets(); await saveSettings();
+    applySettings(); planDay=TSTR; renderAll(); renderNotes();
+    toast('Data imported');
+  }catch(err){
+    console.error(err);
+    toast('That is not a Dayflow export');
+  }
 });
 $('#resetBtn').addEventListener('click',async e=>{
   const b=e.currentTarget;
@@ -2528,23 +2527,20 @@ $('#resetBtn').addEventListener('click',async e=>{
     setTimeout(()=>{b.dataset.armed='';b.textContent='Erase all data';},4000); return;
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
-  allHabits=[]; habits=[]; sets=[]; recs=new Set(); notes=new Map(); dayNotes=[]; plans=new Map(); visionItems=[];
+  allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[]; visionItems=[];
   S.seeded=false; S.activeSet=null; S.northStar=''; S.visionLock=null; visionUnlocked=false;
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
-  renderAll(); renderNote(); toast('Everything reset');
+  planDay=TSTR; renderAll(); renderNotes(); toast('Everything reset');
 });
 
 /* ===========================================================
-   Install as an app — manifest and icons are built in the page,
-   so this file needs nothing beside it.
+   Install
    =========================================================== */
 const ICON_192='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAAP1BMVEULDhbyqTsAAAAro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCn/OSAAAAEHRSTlP//wD//wAAAAAAAAAAAAAABPwSRQAAAaBJREFUeNrt3Ut2wjAUBNHWs/a/5oxyAvgT55BELrlqBX0nICa81IkyqFPbLrr9NCKXXn/CkMvP/8YQwvwjQhjz9wmhzN8jBLR/UxDQ/E1CWPvXgsD2rwSh7X8VBLf/RRDe/mdBgPufBCHufxQEuf9BEOb+L8E0gAQqCHX/p2ASQIIVzAFIuIIpAAlYMAMgIQsEjAcEnQABAszMzMzMzMzsZ7X/CD7/DwmtsQWtsQWtwQV0QGtwgQABAvwY8nvg5k8J/mOO/5zm/6AxMzMzM3bLO8HnjycsvxF9/0gBHbAscAEdsCxwgQABdwf4MTrNN5lPifu+Rvm/Byb4RWZmZmZm5PpR8PkAQu9sQe9sQe9wAR3QO1wgQICAm3wM+T3gU2Lexxz/Oc3/QWNmZmZmZma3z3/+FiDAExYC3gZ4SEfAuwCvYQ0HeBFuOMCriMMB+MOa3mYdtX+i8778A8v8E9f8I+P8M+8MQR0BirZ/BSjY/jWgUPO3AFcm1DlAgfZvA65J2FlaxSDs7qwiEA5WVl2eUIcb67hrrz8BGKk4M60+AJhVLj7FhCgyAAAAAElFTkSuQmCC';
 const ICON_512='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAAAP1BMVEULDhbyqTsAAAAro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCn/OSAAAAEHRSTlP//wD//wAAAAAAAAAAAAAABPwSRQAABR1JREFUeNrt2MFum1AURdEb2v//5nYSKVKbGGxsmbfXHiGY3bNGzPaSRkfbXrSM5dsQxvRtBWP8NoKxfhvBGL9tYKzfNjDmbxsY67cNjPnbBMb8bQJj/TaBMX+bwNi/TWDM3yYw5m8TGPO3BYz92wTG/G0CY/+2gDF/m8DYvy1g7N8WMOZvExj7twWM/dsCxvxtAWP/NoGxf1vA2L8tYOzfFjD2bwsY+7cFjP3bAsb+bQFj/7aAsX9bwNi/LWDs3xYw9m8LGPsDAEBYwNi/LWDs3xYw9m8LAAAA+5cFjP3bAsb+bQEAAGD/soCxf1sAAADYvyxg7N8WAAAA9i8LAAAA+5cFAACA/csCxv4AABAWMPYHAICwAAAAsH9ZAAAA2L8sAAAA7F8WAAAAAABg/6wAAACwf1kAAAAAAIBrZAUAAAAAADhGG4BbdAUAAAAAdQAuERYAAAAAAKAyAHcoCwAAAGcAQAAIACUBuEJaAAAACAABIAAEgHIAJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEn62oc+jK8P8yNgfgTsT4D9CTA/AvYnAAAA7E+A/QmwPwEAAGB/AgAAwP4EAAAAAAAAAID9CQAAAAAAAAAAAAAAAAAAAAAAAAAAIMD+AAAAAAAAAECA/QEAgAD7AwAAAfYnwP4E2B8AAAiwPwLmJ8D+BNgfAfMjYH4IjC9JkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiT97dd7Z6Dw+BCYHwHzI2B/AuxPQHx+BOxPAABK709AfX8C6vsTAIDS+xMAgNL7EwCAABAAiu5PAAACQAAIAAEgAASAAJA/gQJAAAgALSzAhAAoLMCAACgswHxtAcZrCzAdAAoLMFyagNHaAkzWFmCwNAFjpQkYKozAQJIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSZIkSQr2+5TcMTw+BOZHwPwI2J8A+xMQnx8B+xMAgNL7E1Dfn4D6/gQAoPT+BACg9P4EACAABICi+xMAgAAQAAJAAAgAASAA5E+gABAAAkALC3BpABQW4M4AKCzAldsC3LgtwIUBUFiA+6YJuG1bgMu2BbhrmoCbpgm4ZxiBO0qSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJOmN25ygPT8AAAgAASAABIAAUAsAAeX9AQAAAAAEgLoACAjvDwAAAACgNgACuvsDAAAAADhFHAAB2f0BAAAAAAjI7g8AAAAAQEB2fwAAAAAAArL7AwAAAOX9ty9PAkBhAAQU9wcAAALK+wMAAAHl/QEAgIDy/gAAQEB5fwAAIKC8PwAAEFDe/18ABKT2BwAAAsr7AxDff/vvO7UBENDZH4D4/ts3b9UGQEBl/+8AEBDZH4D4/tv3H9QGQEBi/x8AEFDY/ycABAT2ByC+//bzR7UBELD8/jcAELD6/rcAELD4/jcBELD2/rcBELD0/jsAELDy/nsAELDw/rsAELDu/vsAELDs/jsBELDq/nsBELDm/PsBILDm/gcAELDi/kcAELDg/ocAELDc/AcBILDc/kcBELDY/ocBELDU/HcAQGCp/e8BQMA6898HAIF19r8TAAGLzH83AAQW2f9+AAisMP9DABC4/vwPAkDg6vM/DACBa89/AgAErjz/KQAQuO78JwFA4KLrnweAgWvOfyYABK63/skAGLja+ucDgOBS6z8HAANXGf95ACC4xPjPBYDBu2//EgAcvOnwn/0BZoQ5957fX2cAAAAASUVORK5CYII=';
 const ICON_MASK='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAAAP1BMVEULDhbyqTsro5bCXpMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgRfA4AAAAEHRSTlP/////AAAAAAAAAAAAAAAADW2LcQAAAgZJREFUeNrt2MEBQFAMBcGP/numBg7IzpSQt6esBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwcduv2a+8vgbMLwH7KyC/vwLq+yugvr8C6vsroL6/AgRAen8FCAAB0N1fAQJAAAgAASAABIAA8AhCAAiA8QVYVQCEC7BpuwCLtguwZ7sAa7YLsGW7AEumE7BiuQH7AQAAAAAAAAAAAAAAAEn7G5w9Pb8E8vNLID+/BOyvgPr+Cqjvr4D6/goQAOn9FSAA0vsrQACk91eAABAAAkAACAABIAAEgE8gAmB8AcYQAOECTCEAwgUYol2AGdoFGKFdgAnSCTh/OgGnTyfg7AAAAAAAAAAAAAAAAABPHDe4Wnl9DZhfAvZXQH5/BdT3V0B9fwXU91dAfX8FCID0/goQAAKgu78CBIAAEAACQAAIAAHgEYQAEADjC3BLARAuwCXbBbhjuwBXbBfghu0CXLBdgPulE3C7cgOuBgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXEygDXNcX9L8GAAAAAElFTkSuQmCC';
 
-/* if a sw.js is ever placed beside this file, use it for full offline caching;
-   when it is absent nothing is logged and the app runs from the browser cache */
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load',()=>{
     fetch('sw.js',{method:'HEAD'})
@@ -2552,12 +2548,11 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
       .catch(()=>{});
   });
 }
-
 if(location.protocol.startsWith('http')){
   const href=location.href.split('#')[0].split('?')[0];
   const manifest={
     name:'Dayflow', short_name:'Dayflow',
-    description:'Track the threads of your day.',
+    description:'Reset. Rebuild. Dominate.',
     start_url:href, scope:href.replace(/[^/]*$/,''),
     display:'standalone', display_override:['standalone','minimal-ui'],
     orientation:'portrait',
@@ -2579,7 +2574,6 @@ addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvent=e; 
 addEventListener('appinstalled',()=>{ installEvent=null; renderInstall(); toast('Dayflow installed'); });
 const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent);
-
 function renderInstall(){
   const g=$('#installGroup'), b=$('#installBtn'), t=$('#installTitle'), h=$('#installHint');
   if(isStandalone()){ g.hidden=true; return; }
@@ -2616,31 +2610,52 @@ async function loadAll(){
   allHabits=(await dbAll('habits')).sort((a,b)=>a.order-b.order);
   sets=(await dbAll('sets')).sort((a,b)=>a.order-b.order);
   plans=new Map((await dbAll('plans')).map(r=>[r.key,r.text]));
+  blocks=(await dbAll('blocks')).map(b=>{
+    if(!b.end) b.end=str24(mins24(b.time||'09:00')+(b.mins||45));
+    if(!b.mins) b.mins=blockMins(b.time||'09:00',b.end);
+    return b;
+  });
   const rows=await dbAll('records');
   recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
-  notes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
-  dayNotes=await dbAll('dnotes');
+  legacyNotes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
+  myNotes=await dbAll('dnotes');
   visionItems=(await dbAll('vision')).sort((a,b)=>(a.order||0)-(b.order||0));
   await migrateNotes();
+  await migrateStudyHabits();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
+  if(S.intro===undefined) S.intro=true;
   await ensureSets();
 }
-
-/* single day notes written before this became a list are moved across, text intact */
+/* single notes written before this became a list are moved across, text intact */
 async function migrateNotes(){
-  if(!notes.size) return;
-  for(const [date,text] of notes){
+  if(!legacyNotes.size) return;
+  for(const [date,text] of legacyNotes){
     if(text && text.trim()){
-      const n={id:uid()+date.replace(/-/g,''),date,title:'Note',text,order:0,created:Date.now()};
-      dayNotes.push(n); await dbPut('dnotes',n);
+      const n={id:uid()+date.replace(/-/g,''),date,title:'Note',text,created:Date.now()};
+      myNotes.push(n); await dbPut('dnotes',n);
     }
     await dbDel('notes',date);
   }
-  notes=new Map();
+  legacyNotes=new Map();
 }
-
-/* anything made before sets existed is folded into a first set, untouched */
+/* study habits are gone: their session notes become blocks on the plan page */
+async function migrateStudyHabits(){
+  const studies=allHabits.filter(h=>h.study);
+  if(!studies.length) return;
+  for(const [k,text] of [...plans.entries()]){
+    if(!k.startsWith('s:')) continue;
+    const [,hid,date]=k.split(':');
+    const h=allHabits.find(x=>x.id===hid);
+    if(h && date>=TSTR && text && text.trim()){
+      const mm=h.mins||45;
+      const b={id:uid(),date,time:'09:00',end:str24(540+mm),mins:mm,text:h.name+'\n'+text,done:0,created:Date.now()};
+      blocks.push(b); await dbPut('blocks',b);
+    }
+    plans.delete(k); await dbDel('plans',k);
+  }
+  for(const h of studies){ delete h.study; delete h.mins; await dbPut('habits',h); }
+}
 async function ensureSets(){
   if(!sets.length){
     const st={id:uid(),name:'My habits',order:0,created:Date.now()};
@@ -2665,39 +2680,44 @@ async function seed(){
   applySet();
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderHead(); renderGrid(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
+function renderAll(){ renderToday(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
 
-/* planning notes are working memory, not a record: anything older than today goes */
-async function purgePlans(){
-  for(const k of [...plans.keys()]) if(k.slice(-10) < TSTR){ plans.delete(k); await dbDel('plans',k); }
-}
 function checkRollover(){
   const t=ymd(startOfDay(new Date()));
   if(t!==TSTR){
     TODAY=startOfDay(new Date()); TSTR=t; planDay=t;
-    purgePlans(); renderAll(); renderNote();
+    renderAll(); renderNotes();
   }
 }
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){ visionUnlocked=false; }      /* the board locks itself when you leave the app */
+  if(document.hidden){ visionUnlocked=false; }
   else{ checkRollover(); syncVisionLock(); }
 });
 setInterval(checkRollover,60000);
 
+/* the opening */
+function endBoot(fast){
+  const b=$('#boot'); if(!b || b.dataset.done) return;
+  b.dataset.done='1';
+  b.classList.remove('in'); b.classList.add('gone');
+  setTimeout(()=>b.remove(),fast?250:600);
+}
+$('#boot').addEventListener('click',()=>endBoot(true));
+
 (async function boot(){
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   try{
     db=await openDB();
     await loadAll();
     if(!S.seeded && !allHabits.length) await seed();
-    await purgePlans();
     applySettings();
-    $$('#rangeCtrl button').forEach(b=>b.classList.toggle('on',+b.dataset.r===S.range));
-    renderAll(); renderNote();
+    renderAll(); renderNotes();
   }catch(err){
     console.error(err);
     document.body.insertAdjacentHTML('beforeend','<div class="toast on">Storage is blocked in this browser</div>');
   }
-  setTimeout(()=>{$('#boot').classList.add('gone');setTimeout(()=>{const b=$('#boot');if(b)b.remove();},600);},420);
+  const hold = (S.intro===false || reduced) ? 420 : 1850;
+  setTimeout(()=>endBoot(),hold);
 })();
 </script>
 </body>
