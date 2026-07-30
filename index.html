@@ -679,6 +679,32 @@ button.tphead:active{background:var(--tint)}
 .fitem .l{flex:1;min-width:0;font-size:14px}
 .fitem.on .l{color:var(--ink-3)}
 
+/* ---------- the break: one button, the count beside it ---------- */
+.brkrow{display:flex;gap:9px;margin-bottom:14px}
+.brkrow .act{flex:1;min-width:0}
+.brkbox{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:0 4px 0 13px;
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md)}
+.brkbox .n{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.brkbox .n b{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.03em}
+.brkbox .n span{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:3px}
+.brkbox.some .n b{color:var(--acc)}
+.brkreset{width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;
+  color:var(--ink-3);transition:transform .3s var(--spring),color .2s var(--ease)}
+.brkreset:active{transform:rotate(-150deg) scale(.9);color:var(--acc)}
+.brkreset svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* the same pre-focus list, editable in settings */
+.fxrow{display:flex;align-items:center;gap:6px;padding:7px 7px 7px 14px;border-bottom:1px solid var(--line)}
+.fxrow:last-child{border-bottom:0}
+.fxin{flex:1;min-width:0;height:34px;border:0;outline:0;background:transparent;color:inherit;font-size:14.5px;padding:0}
+.fxin::placeholder{color:var(--ink-3)}
+.fxdel{width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;color:var(--ink-3);
+  transition:transform .2s var(--spring),color .2s var(--ease)}
+.fxdel:active{transform:scale(.86);color:#F2705E}
+.fxdel svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
+.fxempty{padding:16px;font-size:13px;color:var(--ink-3);line-height:1.5}
+
 /* ---------- block play button ---------- */
 .bplay{width:32px;height:32px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
   background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc);
@@ -903,6 +929,16 @@ button.tphead:active{background:var(--tint)}
         <div class="setstrip" id="setStrip"></div>
         <div class="hlist" id="hlist"></div>
         <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
+      </div>
+
+      <div class="group">
+        <span class="eyebrow">Pre-focus checklist</span>
+        <div class="panel" id="fxPanel"></div>
+        <div style="display:flex;gap:8px;margin-top:9px">
+          <button class="btn ghost" id="fxAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+          <button class="btn ghost" id="fxReset">Defaults</button>
+        </div>
+        <p class="hint">The boxes you tick before a session. What you tick is never saved &mdash; it clears itself when the app closes.</p>
       </div>
 
       <div class="group">
@@ -1320,7 +1356,7 @@ const dbClear=n=>wrap(store(n,'readwrite').clear());
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map();
 let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
-       visionLock:null,runStart:'',runEnd:'',introText:null};
+       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
@@ -2013,10 +2049,59 @@ function buildNote(host,o){
 /* ===========================================================
    Plan — a day note and as many study blocks as you add
    =========================================================== */
-const FOCUS_ITEMS=['Phone out of reach','Water within reach','Desk and screen clear',
+/* the list is yours to change in Settings; these are only what a fresh install starts with */
+const DEFAULT_FOCUS=['Phone out of reach','Water within reach','Desk and screen clear',
   'Tabs and notifications closed','Materials open and ready','One target for this session'];
+const makeFocus=t=>({id:uid(),text:t});
 /* the ticks live in memory for the session only — nothing about them is stored */
 let focusChecks=new Set(), focusAsk=false;
+const focusItems=()=>Array.isArray(S.focusItems)?S.focusItems:[];
+const activeFocus=()=>focusItems().filter(x=>(x.text||'').trim());
+function pruneFocusChecks(){
+  const live=new Set(activeFocus().map(x=>x.id));
+  [...focusChecks].forEach(id=>{ if(!live.has(id)) focusChecks.delete(id); });
+}
+/* a checklist that was never touched takes the defaults; one you emptied stays empty */
+function normalizeExtras(){
+  let changed=false;
+  if(!Array.isArray(S.focusItems)){
+    S.focusItems=DEFAULT_FOCUS.map(makeFocus); changed=true;
+  }else{
+    const before=JSON.stringify(S.focusItems);
+    S.focusItems=S.focusItems.filter(x=>x&&typeof x==='object')
+      .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,70)}));
+    if(JSON.stringify(S.focusItems)!==before) changed=true;
+  }
+  if(typeof S.breakResetAt!=='number' || !isFinite(S.breakResetAt)){ S.breakResetAt=0; changed=true; }
+  return changed;
+}
+
+/* ---------- breaks: every one is recorded, the count is only a tally ----------
+   It spans both kinds — the ones taken inside a focus session and the standalone
+   five minute ones — and resetting only moves the line the tally counts from, so
+   nothing on any day record is touched. */
+const BREAK_MS=5*60000;
+function totalBreaks(){
+  const from=Number(S.breakResetAt)||0;
+  let n=0;
+  days.forEach(r=>{ (r.pauses||[]).forEach(p=>{ if((p.at||0)>=from) n++; }); });
+  return n;
+}
+function paintBreakCount(){
+  const el=$('#brkN'); if(!el) return;
+  const n=totalBreaks();
+  el.textContent=n;
+  const box=el.closest('.brkbox');
+  if(box) box.classList.toggle('some',n>0);
+}
+async function resetBreakCount(){
+  if(!totalBreaks()){ toast('The count is already at zero'); buzz(HAPTIC.light); return; }
+  S.breakResetAt=Date.now();
+  await saveSettings();
+  paintBreakCount(); buzz([14,40,14]);
+  toast('Count back to zero · the breaks stay on the record');
+}
+
 function openFocus(){
   focusAsk=focusChecks.size>0;
   renderFocus();
@@ -2028,29 +2113,88 @@ function closeFocus(){
   renderPlan();
 }
 function renderFocus(){
+  pruneFocusChecks();
   $('#focusAsk').hidden=!focusAsk;
   if(focusAsk) $('#focusAskTxt').textContent='You left '+focusChecks.size+' of these ticked from before.';
   const l=$('#focusList'); l.innerHTML='';
-  FOCUS_ITEMS.forEach((txt,i)=>{
+  const items=activeFocus();
+  if(!items.length){
+    l.innerHTML='<div class="rempty">Nothing on the list yet. Build it in Settings, under Pre-focus checklist.</div>';
+    return;
+  }
+  items.forEach(it=>{
     const b=document.createElement('button');
-    b.className='fitem'+(focusChecks.has(i)?' on':'');
-    b.dataset.i=i;
+    b.className='fitem'+(focusChecks.has(it.id)?' on':'');
+    b.dataset.i=it.id;
     b.innerHTML='<span class="fbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
-      '<span class="l">'+esc(txt)+'</span>';
+      '<span class="l">'+esc(it.text)+'</span>';
     l.appendChild(b);
   });
 }
 $('#focusList').addEventListener('click',e=>{
   const b=e.target.closest('.fitem'); if(!b) return;
-  const i=+b.dataset.i;
-  if(focusChecks.has(i)) focusChecks.delete(i); else focusChecks.add(i);
-  b.classList.toggle('on',focusChecks.has(i));
+  const id=b.dataset.i;
+  if(focusChecks.has(id)) focusChecks.delete(id); else focusChecks.add(id);
+  b.classList.toggle('on',focusChecks.has(id));
   focusAsk=false; $('#focusAsk').hidden=true;
   buzz(HAPTIC.light);
 });
 $('#focusKeep').addEventListener('click',()=>{ focusAsk=false; $('#focusAsk').hidden=true; buzz(6); });
 $('#focusClear').addEventListener('click',()=>{ focusChecks.clear(); focusAsk=false; renderFocus(); buzz(10); });
 $('#focusDone').addEventListener('click',closeFocus);
+
+/* the same list, built in settings */
+let fxT=null;
+function renderFocusSettings(){
+  const p=$('#fxPanel'); if(!p) return;
+  if(p.contains(document.activeElement)) return;   /* never yank the field being typed in */
+  const items=focusItems();
+  if(!items.length){
+    p.innerHTML='<div class="fxempty">Nothing on the list. Add the checks you want in front of you before a session.</div>';
+    return;
+  }
+  p.innerHTML=items.map(it=>
+    '<div class="fxrow" data-i="'+esc(it.id)+'">'+
+      '<input class="fxin" value="'+esc(it.text)+'" placeholder="What to check" maxlength="70" autocomplete="off">'+
+      '<button class="fxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('');
+}
+$('#fxPanel').addEventListener('input',e=>{
+  const inp=e.target.closest('.fxin'); if(!inp) return;
+  const row=inp.closest('.fxrow'); if(!row) return;
+  const it=focusItems().find(x=>x.id===row.dataset.i); if(!it) return;
+  it.text=inp.value;
+  clearTimeout(fxT); fxT=setTimeout(()=>{ saveSettings(); },550);
+});
+$('#fxPanel').addEventListener('click',async e=>{
+  const del=e.target.closest('.fxdel'); if(!del) return;
+  const row=del.closest('.fxrow'); if(!row) return;
+  const id=row.dataset.i;
+  S.focusItems=focusItems().filter(x=>x.id!==id);
+  focusChecks.delete(id);
+  await saveSettings();
+  renderFocusSettings(); buzz(12); toast('Item removed');
+});
+$('#fxAdd').addEventListener('click',async()=>{
+  S.focusItems=[...focusItems(),makeFocus('')];
+  await saveSettings();
+  renderFocusSettings();
+  const rows=$$('#fxPanel .fxrow'), last=rows[rows.length-1];
+  if(last) $('.fxin',last).focus();
+  buzz(8);
+});
+$('#fxReset').addEventListener('click',async e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed!=='1'){
+    b.dataset.armed='1'; b.textContent='Tap again to restore'; buzz(14);
+    setTimeout(()=>{ b.dataset.armed=''; b.textContent='Defaults'; },4000);
+    return;
+  }
+  b.dataset.armed=''; b.textContent='Defaults';
+  S.focusItems=DEFAULT_FOCUS.map(makeFocus); focusChecks.clear();
+  await saveSettings();
+  renderFocusSettings(); toast('Checklist restored'); buzz(10);
+});
 
 let planDay=TSTR;
 const planKeyDay=d=>'d:'+d;
@@ -2092,17 +2236,34 @@ function renderPlan(){
 
   const wrap=$('#planWrap'); wrap.innerHTML='';
 
+  pruneFocusChecks();
   const acts=document.createElement('div');
   acts.className='actrow';
   acts.innerHTML=
     '<button class="act'+(focusChecks.size?' lit':'')+'" id="btnFocus">'+
       '<svg viewBox="0 0 24 24"><path d="m4 12.5 4 4 8-9"/><path d="M20 7v10a3 3 0 0 1-3 3H7"/></svg>'+
       '<span class="l">Pre-focus</span>'+
-      (focusChecks.size?'<span class="tag">'+focusChecks.size+'/'+FOCUS_ITEMS.length+'</span>':'')+'</button>'+
+      (focusChecks.size?'<span class="tag">'+focusChecks.size+'/'+activeFocus().length+'</span>':'')+'</button>'+
     '<button class="act" id="btnRecord">'+
       '<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>'+
       '<span class="l">Record</span></button>';
   wrap.appendChild(acts);
+
+  /* the break gets its own line: the button, the tally, then the reset */
+  const brkN=totalBreaks();
+  const brk=document.createElement('div');
+  brk.className='brkrow';
+  brk.innerHTML=
+    '<button class="act" id="btnBreak">'+
+      '<svg viewBox="0 0 24 24"><path d="M4 8h11v5.5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/>'+
+      '<path d="M15 9.5h2.2a2.3 2.3 0 0 1 0 4.6H15"/><path d="M4.5 21h11"/></svg>'+
+      '<span class="l">Take a break</span><span class="tag">5 MIN</span></button>'+
+    '<div class="brkbox'+(brkN?' some':'')+'">'+
+      '<div class="n"><b id="brkN">'+brkN+'</b><span>breaks</span></div>'+
+      '<button class="brkreset" id="brkReset" aria-label="Reset the break count">'+
+        '<svg viewBox="0 0 24 24"><path d="M3.6 12a8.4 8.4 0 1 0 2.7-6.2"/><path d="M3.3 4.9v4.4h4.4"/></svg>'+
+      '</button></div>';
+  wrap.appendChild(brk);
 
   const card=document.createElement('div'); card.className='pcard'; wrap.appendChild(card);
   const dn=document.createElement('div'); card.appendChild(dn);
@@ -2159,6 +2320,11 @@ $('#dayStrip').addEventListener('click',e=>{
 $('#planWrap').addEventListener('click',async e=>{
   if(e.target.closest('#btnRecord')){ openRecord(planDay<=TSTR?planDay:TSTR); return; }
   if(e.target.closest('#btnFocus')){ openFocus(); return; }
+  if(e.target.closest('#brkReset')){ resetBreakCount(); return; }
+  if(e.target.closest('#btnBreak')){
+    if(T){ toast('A session is already running'); buzz(HAPTIC.light); return; }
+    openPauseSheet('break'); return;
+  }
   const el=e.target.closest('.pblock'); if(!el) return;
   if(e.target.closest('.bplay')){
     const b=blocks.find(x=>x.id===el.dataset.id);
@@ -2186,8 +2352,15 @@ const remaining=()=>T ? Math.max(0,T.endsAt-(T.pausedAt||Date.now())) : 0;
 function startTimer(b){
   const mins=b.mins||45;
   if(!mins){ toast('Give the block a length first'); return; }
-  T={id:b.id,date:b.date,total:mins*60000,endsAt:Date.now()+mins*60000,pausedAt:0,
+  T={kind:'block',id:b.id,date:b.date,total:mins*60000,endsAt:Date.now()+mins*60000,pausedAt:0,
      name:(b.text||'').trim().split('\n')[0]||'Study block'};
+  timerSave(); showTimer(); buzz(HAPTIC.tick);
+}
+/* a break stands on its own: five minutes, no pausing, nothing to tick off after.
+   It survives a reload the same way a study session does. */
+function startBreak(reason){
+  T={kind:'break',id:'break',date:TSTR,total:BREAK_MS,endsAt:Date.now()+BREAK_MS,pausedAt:0,
+     name:reason?'Break · '+reason:'Break',reason:reason||''};
   timerSave(); showTimer(); buzz(HAPTIC.tick);
 }
 function showTimer(){
@@ -2202,6 +2375,7 @@ function tickOn(){
   tTick=setInterval(()=>{
     if(!T) return;
     paintTimer();
+    if(T.kind==='break'){ if(remaining()<=0) breakOver(); return; }
     if(T.pausedAt){ if(Date.now()-T.pausedAt>=300000) timerBlew(); return; }
     if(remaining()<=0) timerDone();
   },500);
@@ -2211,6 +2385,13 @@ function paintTimer(){
   const ms=remaining(), sec=Math.ceil(ms/1000);
   $('#tClock').textContent=Math.floor(sec/60)+':'+pad(sec%60);
   $('#tFill').style.width=(100*Math.max(0,Math.min(1,1-ms/T.total)))+'%';
+  if(T.kind==='break'){
+    $('#tPause').textContent='End the break';
+    $('#tEnd').hidden=true;
+    $('#tState').textContent='Break';
+    $('#tNote').textContent='Five minutes, then back to it.';
+    return;
+  }
   const paused=!!T.pausedAt;
   $('#tPause').textContent=paused?'Resume':'Pause';
   $('#tEnd').hidden=!paused;
@@ -2244,8 +2425,23 @@ async function timerBlew(){
   closePauseSheet();
   $('#scrim').classList.add('on','high'); $('#replanSheet').classList.add('on');
 }
+/* a break either runs out or you end it early — nothing is logged either way,
+   because the reason went on the record before it started */
+function breakOver(){
+  clearInterval(tTick); tTick=null;
+  closeTimer(); buzz(HAPTIC.done);
+  toast('Break over · back to it');
+  renderPlan();
+}
+function endBreak(){
+  clearInterval(tTick); tTick=null;
+  closeTimer(); buzz(10);
+  toast('Break ended');
+  renderPlan();
+}
 $('#tPause').addEventListener('click',()=>{
   if(!T) return;
+  if(T.kind==='break'){ endBreak(); return; }
   if(T.pausedAt){
     T.endsAt+=Date.now()-T.pausedAt; T.pausedAt=0;
     timerSave(); paintTimer(); buzz(8); return;
@@ -2263,7 +2459,15 @@ $('#tEnd').addEventListener('click',async()=>{
 });
 
 /* ---------- why the break ---------- */
-function openPauseSheet(){
+let pauseMode='timer';
+function openPauseSheet(mode){
+  pauseMode = mode==='break' ? 'break' : 'timer';
+  const brk = pauseMode==='break';
+  $('#pauseHint').textContent = brk
+    ? 'It goes on today\'s record, then a five minute timer starts.'
+    : 'It goes on today\'s record with everything else.';
+  $('#pauseSkip').textContent = brk ? 'Cancel' : 'Skip';
+  $('#pauseSave').textContent = brk ? 'Start the break' : 'Save and hold';
   $('#pauseReason').value='';
   $$('#pauseQuick .preset').forEach(b=>b.classList.remove('on'));
   $('#scrim').classList.add('on','high'); $('#pauseSheet').classList.add('on'); $('#pauseSheet').scrollTop=0;
@@ -2277,20 +2481,32 @@ $('#pauseQuick').addEventListener('click',e=>{
   $$('#pauseQuick .preset').forEach(x=>x.classList.toggle('on',x===b));
   $('#pauseReason').value=b.dataset.r; buzz(6);
 });
-async function logPause(reason){
-  const ds=(T&&T.date)||TSTR;
+async function logPause(reason,opt){
+  const o=opt||{};
+  const ds=o.date||(T&&T.date)||TSTR;
   const r=dayRec(ds);
-  r.pauses.push({id:uid(),at:Date.now(),reason:reason||'No reason given',block:(T&&T.name)||''});
+  r.pauses.push({id:uid(),at:Date.now(),reason:reason||'No reason given',
+                 block:o.block!==undefined?o.block:((T&&T.name)||'')});
   await saveDay(ds);
-  renderSettings();
+  paintBreakCount(); renderSettings();
 }
 $('#pauseSave').addEventListener('click',async()=>{
   const reason=$('#pauseReason').value.trim();
+  const brk=pauseMode==='break';
   closePauseSheet();
+  if(brk){
+    /* the reason lands on today's record first, then the five minutes start */
+    await logPause(reason,{date:TSTR,block:'5 min break'});
+    startBreak(reason);
+    return;
+  }
   await logPause(reason);
   toast('Break noted'); buzz(8);
 });
-$('#pauseSkip').addEventListener('click',async()=>{ closePauseSheet(); await logPause(''); });
+$('#pauseSkip').addEventListener('click',async()=>{
+  if(pauseMode==='break'){ closePauseSheet(); buzz(6); return; }
+  closePauseSheet(); await logPause('');
+});
 $('#replanClose').addEventListener('click',()=>{
   $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
   replanId=null; renderPlan();
@@ -3334,6 +3550,7 @@ function renderSettings(){
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
   if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
+  renderFocusSettings();
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
@@ -3521,6 +3738,7 @@ $('#importFile').addEventListener('change',async e=>{
     const keepIntro=S.intro;
     S=Object.assign({},S,d.settings||{},{seeded:true});
     if(S.intro===undefined) S.intro=keepIntro;
+    normalizeExtras(); focusChecks.clear();
 
     for(const st of sets) await dbPut('sets',st);
     for(const h of allHabits) await dbPut('habits',h);
@@ -3549,6 +3767,7 @@ $('#resetBtn').addEventListener('click',async e=>{
   allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[];
   visionItems=[]; days=new Map();
   S.seeded=false; S.activeSet=null; S.northStar=''; S.visionLock=null; visionUnlocked=false;
+  S.focusItems=null; S.breakResetAt=0; normalizeExtras(); focusChecks.clear();
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   planDay=TSTR; renderAll(); renderNotes(); toast('Everything reset');
@@ -3646,6 +3865,7 @@ async function loadAll(){
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
   if(S.intro===undefined) S.intro=true;
+  if(normalizeExtras()) await saveSettings();
   await ensureSets();
 }
 /* single notes written before this became a list are moved across, text intact */
@@ -3749,7 +3969,8 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
     if(saved && saved.value && saved.value.id){
       const v=saved.value;
       if(v.pausedAt || v.endsAt>Date.now()){ T=v; showTimer(); }
-      else{ await dbDel('meta','timer'); toast('A session finished while you were away'); }
+      else{ await dbDel('meta','timer');
+        toast(v.kind==='break'?'Your break finished while you were away':'A session finished while you were away'); }
     }
   }catch(err){
     console.error('Dayflow · render',err);
