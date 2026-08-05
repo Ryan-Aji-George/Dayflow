@@ -91,7 +91,15 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .view.active>*:nth-child(3){animation-delay:.12s}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ---------- today ---------- */
+/* ---------- today ----------
+   The page is written as two halves so a wide screen can stand them side by
+   side. On a phone the halves are not boxes at all, so the order and the
+   spacing are exactly what they were before they existed. */
+.tcol{display:contents}
+.view.active>.tcol{animation:none}
+.view.active>.tcol>*{animation:rise .5s var(--ease) both}
+.view.active>.tcol>*:nth-child(2){animation-delay:.06s}
+.view.active>.tcol>*:nth-child(3){animation-delay:.12s}
 .head{padding:16px 0 20px}
 .head .eyebrow{display:block}
 .day-name{font-family:var(--display);font-size:38px;font-weight:700;letter-spacing:-.05em;line-height:1;margin:9px 0 0}
@@ -453,6 +461,8 @@ button.tphead:active{background:var(--tint)}
   font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
   border-left:1px solid var(--line-2);margin:9px 3px 9px 5px}
 .mlabel small{display:block;font-size:8px;opacity:.7;letter-spacing:.08em}
+/* the two halves of the study page: on a phone they are not there at all */
+.pcol{display:contents}
 .psec{display:flex;align-items:center;gap:10px;margin:26px 2px 10px}
 .psec .eyebrow{flex:1;min-width:0}
 .addblock{width:32px;height:32px;flex:0 0 auto;border-radius:11px;display:grid;place-items:center;
@@ -848,49 +858,182 @@ button.tphead:active{background:var(--tint)}
   .sheet.on{transform:translate(-50%,0)}
 }
 
-/* ---------- tablets: the same app, given the room it has ----------
-   The side padding grows, so the three strips that bleed to the edge are
-   widened with it. Nothing here changes on a phone. */
-@media (min-width:820px){
-  .app{max-width:760px}
-  .tabbar{max-width:760px}
-  .sheet{max-width:620px}
+/* ===========================================================
+   TABLET — not a stretched phone. A screen this size is asked
+   to hold more, sit heavier, and open its sheets in the middle.
+   Gated on height as well as width, so a phone turned sideways
+   is never mistaken for one.
+   =========================================================== */
+@media (min-width:700px) and (min-height:600px){
+  /* the whole shape of the thing loosens up */
+  :root{--r-lg:22px;--r-md:18px}
+  .app{max-width:820px;padding-bottom:calc(108px + env(safe-area-inset-bottom))}
+  .tabbar{max-width:820px}
   .view{padding-left:26px;padding-right:26px}
   .setstrip{margin-left:-26px;margin-right:-26px;padding-left:26px;padding-right:26px}
   .stripwrap{margin-left:-26px;margin-right:-26px;padding-left:26px;padding-right:26px}
   .vhead::before{left:-26px;right:-26px}
-  .topbar{padding-left:26px;padding-right:26px}
-  .day-name{font-size:44px}
-  .ptitle h2{font-size:34px}
-  .northstar{font-size:40px}
-  .lbstage{max-width:820px}
-  .lbimg{max-height:86vh}
+  .topbar{padding:calc(15px + env(safe-area-inset-top)) 26px 15px}
+  .brand{gap:12px}
+  .brand h1{font-size:20px}
+  .mark{width:17px}
+  .iconbtn{width:40px;height:40px;border-radius:13px}
+  .iconbtn svg{width:19px;height:19px}
+  .fsbtn{display:grid}
   .tab span{font-size:10.5px}
-  .dchip{width:54px}
+  /* the mono labels carry the whole hierarchy here, so they hold their weight */
+  .eyebrow{font-size:11px}
+  .tphead .cnt{font-size:12px}
+
+  /* ---------- today ----------
+     No new frames and no new colour. The date stays bare against the
+     background exactly as it does on a phone; only the measure, the spacing
+     and the type grow into the room. */
+  .head{padding:24px 0 30px}
+  .day-name{font-size:44px;margin-top:10px}
+  .prog{gap:24px;margin-top:28px}
+  .ringwrap,.ring{width:118px;height:118px}
+  .ringtxt b{font-size:30px}
+  .pline{font-size:22px}
+  .psub{font-size:14px;margin-top:6px;max-width:42ch}
+  .run{padding:15px 17px;margin-top:16px}
+  .runtop .n{font-size:18px}
+  .runbar{height:6px;margin-top:11px}
+  .streak{margin:6px 0 22px;padding:20px 20px 16px}
+  .sgrid{gap:4px}
+  .sfoot{font-size:13.5px;margin-top:15px}
+  .note{margin:28px 0 4px}
+  .note-head{padding:16px 0}
+  .empty{padding:52px 30px}
+  .empty h3{font-size:20px}
+  .empty p{font-size:14px;max-width:36ch;margin:0 auto}
+  .tpanel{margin-bottom:14px}
+  .tphead{padding:17px 19px 15px}
+  .hrowc{gap:15px;padding:17px 19px}
+  .hrowc .hn{font-size:16px}
+  .hrowc .bar{height:30px}
+  .tick{width:31px;height:31px;border-radius:10px}
+  .tick svg{width:18px;height:18px}
+  .note-head{padding:16px 0}
+  .dn-title{font-size:15px}
+  .dn-text{font-size:14.5px}
+  .addnote{height:46px;font-size:14.5px}
+
+  /* study */
+  .ptitle h2{font-size:36px}
+  .dchip{width:56px;padding:10px 0 9px;border-radius:15px}
+  .dchip .d{font-size:16px}
+  .act{padding:15px 17px}
+  .act .l{font-size:15px}
+  .act svg{width:19px;height:19px}
+  .brkbox{padding-left:16px}
+  .brkbox .n b{font-size:19px}
+  .pcard{padding:17px}
+  .lnote-text,.lnote-ta{font-size:15px}
+  .psec{margin:30px 2px 12px}
+  .addblock{width:36px;height:36px}
+  .pblock{gap:15px;padding:16px 17px 16px 16px;margin-bottom:11px}
+  .btime{width:62px}
+  .btime .hm{font-size:19px}
+  .bname{font-size:15.5px}
+  .bnote{font-size:14px}
+  .bcheck{width:29px;height:29px;border-radius:10px}
+  .bplay{width:36px;height:36px}
+  .fitem{padding:15px 16px}
+  .fitem .l{font-size:15px}
+
+  /* vision */
+  .northstar{font-size:42px}
+  .vchip{height:44px;font-size:14px}
+  .vbar{gap:10px;margin-top:6px}
+  .vpdf{padding:15px 16px;border-radius:18px}
+  .vpdf .pn{font-size:15.5px}
+  .vpdf .pic{width:40px;height:40px}
+  .lbstage{max-width:860px}
+  .lbimg{max-height:86vh}
+  .lbq{padding:44px 40px}
+  .lbq .t{font-size:31px}
+
+  /* settings */
+  .hrow{height:70px;margin-bottom:10px}
+  .hinfo .n{font-size:16px}
+  .hinfo .s{font-size:13px}
+  .schip{padding:11px 16px;font-size:14px}
+  .srow{padding:16px 18px;gap:16px}
+  .srow .t .n{font-size:15.5px}
+  .srow .t .d{font-size:13px}
+  .fxrow{padding:8px 8px 8px 16px}
+  .fxin{height:38px;font-size:15.5px}
   .cell{border-radius:11px;font-size:12px}
+  .pdbig{font-size:50px}
+
+  /* controls */
+  .btn{height:54px;font-size:16px;border-radius:16px}
+  .btn svg{width:18px;height:18px}
+  .input{height:54px;font-size:16px;border-radius:15px}
+  .input.big{height:58px;font-size:18px}
+  .input.area{min-height:118px;padding:15px 17px}
+  .addbtn{width:50px;height:50px}
+  .addrow .input{height:50px}
+  .ritem{padding:14px 15px}
+  .ritem .rt{font-size:14.5px}
+
+  /* ---------- the sheets stop being sheets ----------
+     A tablet has a middle. Bottom drawers on a screen this tall read as
+     a phone habit, so every one of them opens as a card in the centre. */
+  .sheet{
+    left:50%;right:auto;top:50%;bottom:auto;
+    width:min(640px,calc(100vw - 96px));max-width:none;
+    max-height:min(88vh,900px);
+    border:1px solid var(--line);border-radius:26px;
+    padding:24px 28px 28px;
+    box-shadow:0 44px 90px -34px rgba(0,0,0,.72);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translate(-50%,-48%) scale(.97);
+    transition:transform .3s var(--ease),opacity .24s var(--ease),visibility 0s .3s;
+  }
+  .sheet.on{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transform:translate(-50%,-50%) scale(1);
+    transition:transform .42s var(--spring),opacity .2s var(--ease),visibility 0s;
+  }
+  .grabber{display:none}
+  .sheet h3{font-size:25px;margin-bottom:22px}
+  .sheet-actions{margin-top:28px}
+  .stripflat{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
+  .scrim{background:rgba(4,6,12,.66);backdrop-filter:blur(6px)}
 }
-@media (min-width:1180px){
-  .app{max-width:880px}
-  .tabbar{max-width:880px}
+@media (min-width:1180px) and (min-height:600px){
+  .app{max-width:1080px}
+  .tabbar{max-width:1080px}
 }
-/* two columns once there is honestly room for two */
-@media (min-width:1000px){
-  #v-today.active{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+
+/* ---------- wide enough for two real columns ---------- */
+@media (min-width:1000px) and (min-height:600px){
+  /* the day on the left, the list on the right, both starting on the same line,
+     parted by the same hairline the app uses everywhere else.
+     Two columns, one row: neither half can stretch the other. */
+  #v-today.active{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:34px;align-items:start}
+  #v-today.active::before{content:'';position:absolute;z-index:0;pointer-events:none;
+    top:26px;bottom:6px;left:calc(50% - .5px);width:1px;
+    background:linear-gradient(to bottom,transparent,var(--line) 9%,var(--line) 88%,transparent)}
+  #v-today .tcol{display:block;min-width:0}
+  #tMain{padding-top:24px}
+  #tSide .note{margin:24px 0 4px}
+
+  #planWrap{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);
     column-gap:28px;align-items:start}
-  #v-today.active>.head{grid-column:1;grid-row:1}
-  #v-today.active>.streak{grid-column:1;grid-row:2}
-  #v-today.active>#todayWrap{grid-column:2;grid-row:1/span 2}
-  #v-today.active>.note{grid-column:1/-1;grid-row:3;margin-top:14px}
-  #v-settings.active{column-count:2;column-gap:30px}
+  .pcol{display:block}
+  .pcol-b .psec{margin-top:2px}
+
+  #v-settings.active{column-count:2;column-gap:32px}
   #v-settings.active .ptitle,#v-settings.active .foot{column-span:all}
   #v-settings .group{break-inside:avoid;page-break-inside:avoid}
   #v-settings .setstrip{margin-left:0;margin-right:0;padding-left:2px;padding-right:2px}
 }
 /* ---------- tablet: the bar leaves the bottom and stands up the side ----------
    Only on a wide landscape screen. Portrait keeps the bar where the thumb is. */
-@media (min-width:820px){
-  .fsbtn{display:grid}
-}
 @media (orientation:landscape) and (min-width:820px){
   .tabbar{
     top:0;bottom:0;left:0;right:auto;width:92px;max-width:none;transform:none;
@@ -905,11 +1048,11 @@ button.tphead:active{background:var(--tint)}
   .tab::before{top:9px;width:58px;height:34px;border-radius:17px}
   .tab svg{width:22px;height:22px}
   .tab span{font-size:10.5px}
-  .app{max-width:848px;padding-left:92px;padding-bottom:32px}
+  .app{max-width:912px;padding-left:92px;padding-bottom:34px}
   .toast{bottom:calc(30px + env(safe-area-inset-bottom))}
 }
 @media (orientation:landscape) and (min-width:1180px){
-  .app{max-width:968px}
+  .app{max-width:1172px}
 }
 
 /* short and wide: the session screen keeps everything above the fold */
@@ -989,6 +1132,7 @@ button.tphead:active{background:var(--tint)}
   <main>
     <!-- ===== TODAY ===== -->
     <section class="view active" id="v-today">
+      <div class="tcol" id="tSide">
       <div class="head">
         <span class="eyebrow" id="heroEyebrow">—</span>
         <h2 class="day-name" id="heroDate">—</h2>
@@ -1019,7 +1163,9 @@ button.tphead:active{background:var(--tint)}
             <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
         </div>
       </button>
+      </div>
 
+      <div class="tcol" id="tMain">
       <div id="todayWrap"></div>
 
       <section class="note" id="note">
@@ -1034,6 +1180,7 @@ button.tphead:active{background:var(--tint)}
           </div>
         </div></div>
       </section>
+      </div>
     </section>
 
     <!-- ===== PLAN ===== -->
@@ -1677,8 +1824,28 @@ function anim(el,cls){
    Today — only today, nothing else to scroll through
    =========================================================== */
 const RING_C=326.7;              /* 2 * PI * r, with r = 52 */
-const WEEKS=18;
+/* the record reaches back as far as its own card is wide, so a square is the
+   same size on every screen and the row always ends flush with the edge */
+const SQ_CELL=19.5;
+function weeksWanted(){
+  const g=$('#sGrid'), w=g?g.clientWidth:0;
+  if(!w) return 18;                       /* not on screen yet: the phone count */
+  return Math.max(16,Math.min(34,Math.round(w/SQ_CELL)));
+}
+let WEEKS=18;
 let restOpen=false, lastLevel=null;
+
+/* Notes belong under the day on a wide screen and under the list on a narrow
+   one. It is the same element either way — moved, never rebuilt, so nothing
+   written in it and nothing listening to it is disturbed. */
+const MQ_TWO=matchMedia('(min-width:1000px) and (min-height:600px)');
+function placeNote(){
+  const note=$('#note'), side=$('#tSide'), main=$('#tMain');
+  if(!note||!side||!main) return;
+  const home=MQ_TWO.matches?side:main;
+  if(note.parentElement!==home) home.appendChild(note);
+}
+MQ_TWO.addEventListener('change',()=>{ placeNote(); renderStreak(); });
 
 /* how full a day was: 0 nothing, 4 everything that was due */
 function levelOf(date){
@@ -1701,6 +1868,7 @@ function perfectRun(){
 /* one square a day. today's sits at the end, empty, waiting */
 function renderStreak(){
   const g=$('#sGrid');
+  WEEKS=weeksWanted();
   g.style.setProperty('--w',WEEKS);
   const end=addDays(TODAY,6-TODAY.getDay());          /* saturday of this week */
   const start=addDays(end,-(WEEKS*7-1));              /* lands on a sunday */
@@ -1747,6 +1915,7 @@ function renderRun(){
 
 function renderToday(){
   const t=dayTally(TODAY), dow=TODAY.getDay();
+  placeNote();
   renderRun();
   $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
     (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
@@ -2415,7 +2584,13 @@ function renderPlan(){
     if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
   });
 
-  const wrap=$('#planWrap'); wrap.innerHTML='';
+  /* the page is written in two halves — what you do with the day on one side,
+     the blocks themselves on the other. On a phone the halves are `display:contents`,
+     so the order on the page is exactly what it always was. */
+  const host=$('#planWrap'); host.innerHTML='';
+  const wrap=document.createElement('div'); wrap.className='pcol pcol-a';
+  const wrapB=document.createElement('div'); wrapB.className='pcol pcol-b';
+  host.appendChild(wrap); host.appendChild(wrapB);
 
   pruneFocusChecks();
   const acts=document.createElement('div');
@@ -2465,14 +2640,14 @@ function renderPlan(){
   const sec=document.createElement('div'); sec.className='psec';
   sec.innerHTML='<span class="eyebrow">'+esc(label)+'</span>'+
     '<button class="addblock" id="addBlock" aria-label="Add study block"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>';
-  wrap.appendChild(sec);
+  wrapB.appendChild(sec);
   $('#addBlock',sec).addEventListener('click',()=>openBlockSheet(null));
 
   if(!list.length){
     const e=document.createElement('div'); e.className='empty';
     e.innerHTML='<h3>Nothing planned</h3><p>Tap + to set a time, how long, and what you are working on.</p>';
-    wrap.appendChild(e);
-  }else list.forEach(b=>wrap.appendChild(blockCard(b,isToday)));
+    wrapB.appendChild(e);
+  }else list.forEach(b=>wrapB.appendChild(blockCard(b,isToday)));
 }
 function blockCard(b,isToday){
   const t=fmtTime(b.time||'09:00');
@@ -3280,6 +3455,13 @@ function layoutVision(instant,cached){
   if(instant) requestAnimationFrame(()=>g.classList.remove('noanim'));
 }
 addEventListener('resize',()=>{ if($('#v-vision').classList.contains('active')) layoutVision(true); });
+/* turning the tablet changes how far the record reaches, so it is redrawn */
+let weekT=null;
+addEventListener('resize',()=>{
+  if(!$('#v-today').classList.contains('active') || WEEKS===weeksWanted()) return;
+  clearTimeout(weekT);
+  weekT=setTimeout(()=>{ if($('#v-today').classList.contains('active')) renderStreak(); },180);
+});
 
 let northT;
 $('#vNorth').addEventListener('input',()=>{
