@@ -79,6 +79,9 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .iconbtn{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--ink-2);
   transition:transform .2s var(--spring),color .2s,background .2s}
 .iconbtn:active{transform:scale(.88);background:var(--tint)}
+/* full screen belongs to the big screens only */
+.fsbtn{display:none;margin-right:2px}
+.fsbtn.live{background:var(--tint);color:var(--acc)}
 .iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
 .view{display:none;padding:4px 20px 0}
@@ -588,8 +591,19 @@ button.tphead:active{background:var(--tint)}
 .pdfbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .pdfz{flex:0 0 auto;min-width:46px;text-align:center;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.06em;color:rgba(255,255,255,.62);font-variant-numeric:tabular-nums}
-.pdfstage{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;background:#151515}
-.pdfstage iframe{display:block;width:100%;height:100%;border:0;background:#151515}
+.pdfstage{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;background:#151515;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) rgba(255,255,255,.06)}
+/* the app hides every scrollbar — this one earns its place, so it is drawn properly */
+.pdfstage::-webkit-scrollbar{height:11px;width:11px}
+.pdfstage::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:8px}
+.pdfstage::-webkit-scrollbar-thumb{border:3px solid transparent;border-radius:8px;
+  background:rgba(255,255,255,.3);background-clip:padding-box}
+.pdfstage::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.46);background-clip:padding-box}
+.pdfstage::-webkit-scrollbar-thumb:active{background:var(--acc);background-clip:padding-box}
+.pdfstage::-webkit-scrollbar-corner{background:transparent}
+/* narrower than the stage it centres, wider than it the stage scrolls */
+.pdfstage iframe{display:block;width:100%;height:100%;margin:0 auto;border:0;background:#151515}
 .pdffall{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 24px;text-align:center}
 .pdfbox.fallback .pdfstage{display:none}
 .pdfbox.fallback .pdffall{display:flex}
@@ -872,6 +886,32 @@ button.tphead:active{background:var(--tint)}
   #v-settings .group{break-inside:avoid;page-break-inside:avoid}
   #v-settings .setstrip{margin-left:0;margin-right:0;padding-left:2px;padding-right:2px}
 }
+/* ---------- tablet: the bar leaves the bottom and stands up the side ----------
+   Only on a wide landscape screen. Portrait keeps the bar where the thumb is. */
+@media (min-width:820px){
+  .fsbtn{display:grid}
+}
+@media (orientation:landscape) and (min-width:820px){
+  .tabbar{
+    top:0;bottom:0;left:0;right:auto;width:92px;max-width:none;transform:none;
+    flex-direction:column;justify-content:center;gap:8px;
+    padding:16px 12px calc(16px + env(safe-area-inset-bottom));
+    border-top:0;border-right:1px solid var(--line);
+    background:color-mix(in srgb,var(--bg) 88%,transparent);
+  }
+  .tab{flex:0 0 auto;gap:7px;padding:13px 0 12px;border-radius:18px;
+    transition:color .25s var(--ease),background .25s var(--ease)}
+  .tab:active{background:var(--tint)}
+  .tab::before{top:9px;width:58px;height:34px;border-radius:17px}
+  .tab svg{width:22px;height:22px}
+  .tab span{font-size:10.5px}
+  .app{max-width:848px;padding-left:92px;padding-bottom:32px}
+  .toast{bottom:calc(30px + env(safe-area-inset-bottom))}
+}
+@media (orientation:landscape) and (min-width:1180px){
+  .app{max-width:968px}
+}
+
 /* short and wide: the session screen keeps everything above the fold */
 @media (orientation:landscape) and (max-height:560px){
   .timer{padding:18px 24px}
@@ -938,6 +978,9 @@ button.tphead:active{background:var(--tint)}
       <div class="mark"><i></i><i></i><i></i></div>
       <h1>Dayflow</h1>
     </div>
+    <button class="iconbtn fsbtn" id="fsBtn" aria-label="Full screen" hidden>
+      <svg viewBox="0 0 24 24" id="fsIcon"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+    </button>
     <button class="iconbtn" id="themeBtn" aria-label="Switch theme">
       <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
@@ -3508,8 +3551,24 @@ addEventListener('resize',()=>{
    The document, full screen — the browser draws the pages,
    the width is the zoom, and there is always a way out to a tab
    =========================================================== */
-const PDF_ZOOM=[1,1.25,1.5,2,2.5,3,4];
-let pdfUrl=null, pdfZ=0, pdfShared=false, pdfWatch=null;
+/* the width of the frame is the zoom: below the stage the page shrinks and is
+   centred, above it the page grows and the stage scrolls sideways */
+const PDF_ZOOM=[.4,.5,.6,.75,.9,1,1.25,1.5,2,2.5,3,4];
+const PDF_FIT=PDF_ZOOM.indexOf(1);
+let pdfUrl=null, pdfZ=PDF_FIT, pdfShared=false, pdfWatch=null;
+/* the app is pinned at one scale so the interface never zooms under a stray
+   gesture. A document is the one place that has to zoom, so while it is open
+   the page is handed back to the browser's own pinch — which pans and
+   re-sharpens the pages far better than anything done by hand, and reaches
+   inside the frame, where our own touch handlers never could. */
+const VP_META=document.querySelector('meta[name=viewport]');
+const VP_LOCKED=VP_META?VP_META.getAttribute('content'):'';
+const VP_FREE='width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=6,user-scalable=yes';
+function setPinch(on){
+  if(!VP_META) return;
+  VP_META.setAttribute('content',on?VP_FREE:VP_LOCKED);
+}
+const coarse=()=>matchMedia('(pointer:coarse)').matches;
 function dataURLToBlob(u,type){
   const s=String(u||''), i=s.indexOf(',');
   if(i<0) return null;
@@ -3538,7 +3597,7 @@ function openPdf(it){
   catch(err){ console.error('Dayflow · pdf',err); }
   if(!blob){ toast('That document could not be opened'); return; }
   closePdf();
-  pdfUrl=URL.createObjectURL(blob); pdfShared=false; pdfZ=0;
+  pdfUrl=URL.createObjectURL(blob); pdfShared=false; pdfZ=PDF_FIT;
   const box=$('#pdfBox'), frame=$('#pdfFrame'), hint=$('#pdfHint');
   $('#pdfName').textContent=pdfTitle(it);
   const inline=navigator.pdfViewerEnabled!==false;
@@ -3548,6 +3607,7 @@ function openPdf(it){
   if(inline){
     let loaded=false;
     const showHint=t=>{ hint.textContent=t; hint.hidden=false; };
+    if(coarse()) showHint('Pinch to zoom · − and + step the width');
     frame.onload=()=>{
       loaded=true;
       /* iOS draws the first page and stops there, so the way out is offered */
@@ -3560,10 +3620,12 @@ function openPdf(it){
     pdfWatch=setTimeout(()=>{ if(!loaded) showHint('Nothing showing? Open it in its own viewer'); },2600);
   }
   box.classList.add('on');
+  setPinch(true);
   buzz(6);
 }
 function closePdf(){
   const box=$('#pdfBox'); if(!box) return;
+  const was=box.classList.contains('on');
   clearTimeout(pdfWatch); pdfWatch=null;
   const frame=$('#pdfFrame');
   frame.onload=null;
@@ -3571,6 +3633,8 @@ function closePdf(){
   box.classList.remove('on','fallback');
   $('#pdfHint').hidden=true;
   dropPdfUrl();
+  /* the interface is pinned again, which also lets the page snap back to 1× */
+  if(was){ setPinch(false); scrollTo(0,scrollY); }
 }
 function openPdfOut(){
   if(!pdfUrl){ toast('Nothing to open'); return; }
@@ -3581,7 +3645,7 @@ function openPdfOut(){
 }
 $('#pdfIn').addEventListener('click',()=>{ if(pdfZ<PDF_ZOOM.length-1){ pdfZ++; applyPdfZoom(); buzz(6); } });
 $('#pdfOut').addEventListener('click',()=>{ if(pdfZ>0){ pdfZ--; applyPdfZoom(); buzz(6); } });
-$('#pdfFit').addEventListener('click',()=>{ pdfZ=0; applyPdfZoom(); $('#pdfStage').scrollLeft=0; buzz(6); });
+$('#pdfFit').addEventListener('click',()=>{ pdfZ=PDF_FIT; applyPdfZoom(); $('#pdfStage').scrollLeft=0; buzz(6); });
 $('#pdfOpen').addEventListener('click',openPdfOut);
 $('#pdfFallOpen').addEventListener('click',openPdfOut);
 $('#pdfClose').addEventListener('click',()=>{ closePdf(); buzz(6); });
@@ -3803,6 +3867,36 @@ $('#themeBtn').addEventListener('click',()=>{
   S.theme = resolvedTheme()==='dark'?'light':'dark';
   applySettings(); saveSettings(); renderSettings(); buzz(8);
 });
+/* ---------- full screen: the whole tablet, nothing else on it ---------- */
+const fsRoot=()=>document.documentElement;
+const fsOn=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+const fsSupported=()=>!!(fsRoot().requestFullscreen||fsRoot().webkitRequestFullscreen);
+function paintFs(){
+  const b=$('#fsBtn'); if(!b) return;
+  b.hidden=!fsSupported();
+  const on=fsOn();
+  b.classList.toggle('live',on);
+  b.setAttribute('aria-label',on?'Leave full screen':'Full screen');
+  $('#fsIcon').innerHTML = on
+    ? '<path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5"/>'
+    : '<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>';
+}
+async function toggleFs(){
+  try{
+    if(fsOn()){
+      const out=document.exitFullscreen||document.webkitExitFullscreen;
+      if(out) await out.call(document);
+    }else{
+      const el=fsRoot(), go=el.requestFullscreen||el.webkitRequestFullscreen;
+      if(go) await go.call(el,{navigationUI:'hide'});
+    }
+  }catch(err){ toast('Your browser would not allow full screen'); }
+  paintFs();
+}
+$('#fsBtn').addEventListener('click',()=>{ toggleFs(); buzz(8); });
+['fullscreenchange','webkitfullscreenchange'].forEach(n=>document.addEventListener(n,paintFs));
+paintFs();
+
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
 $('#introSw').addEventListener('click',()=>{S.intro=!S.intro;saveSettings();renderSettings();buzz(8);});
 $('#runStart').addEventListener('change',()=>{ S.runStart=$('#runStart').value||''; saveSettings(); renderToday(); });
