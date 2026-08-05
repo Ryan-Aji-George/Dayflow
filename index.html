@@ -813,6 +813,15 @@ button.tphead:active{background:var(--tint)}
 .tacts{display:flex;flex-direction:column;gap:9px;margin-top:38px}
 .tacts .btn.ghost{background:transparent;color:#F5F5F5;border-color:rgba(255,255,255,.2)}
 .tnote{margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.42);line-height:1.5;min-height:18px}
+/* the two ways out of the session screen: a small window, or the whole one */
+.tctl{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;display:flex;gap:9px}
+.tbtn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.1);color:#F5F5F5;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:transform .2s var(--spring),background .22s var(--ease),color .22s var(--ease)}
+.tbtn:active{transform:scale(.9);background:rgba(255,255,255,.2)}
+.tbtn.live{background:var(--acc);color:#14100A}
+.tbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- day record ---------- */
 .rlist{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
@@ -839,6 +848,53 @@ button.tphead:active{background:var(--tint)}
 .digest{width:100%;min-height:280px;border-radius:13px;background:var(--surf);border:1px solid var(--line);
   padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ink-2);
   resize:none;outline:0;white-space:pre;overflow:auto}
+/* anything meant to be lifted out of the app and taken elsewhere */
+.selectable,.selectable *{user-select:text;-webkit-user-select:text;cursor:text}
+
+/* ---------- all feedback, in place ---------- */
+.fball{border-top:1px solid var(--line);padding-top:18px}
+.fbhead{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.fbhead .eyebrow{flex:1;min-width:0}
+.fbmini{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);
+  padding:6px 11px;border-radius:9px;background:color-mix(in srgb,var(--acc) 12%,transparent);
+  transition:transform .2s var(--spring)}
+.fbmini:active{transform:scale(.93)}
+.fbmini.on{background:var(--acc);color:#14100A}
+.fbrow{display:flex;gap:9px;margin-top:10px}
+.fbrow .btn{height:44px;font-size:14px}
+.fbday{padding:13px 14px;border-radius:13px;background:var(--surf);border:1px solid var(--line);margin-bottom:9px}
+.fbday .when{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.fbday .when .eyebrow{flex:1}
+.fbday .when button{color:#F2705E;font-size:11px;font-weight:600;padding:4px 8px;border-radius:8px}
+.fbday p{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+
+/* ---------- one note, on its own ----------
+   The same quiet controls the note has in the list: nothing here is a button
+   that shouts. Closing is a mark in the corner, and delete only appears once
+   you are actually writing. */
+.nshead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.nshead h3{flex:1;min-width:0;margin:0;font-size:21px;word-break:break-word}
+/* the date and the cross hold the right of the row whether the title is shown
+   or not — while writing, the title field is the title */
+.nshead .eyebrow{flex:0 0 auto;margin-left:auto}
+.nsx{flex:0 0 auto;align-self:flex-start;width:30px;height:30px;margin:-4px -6px 0 0;
+  border-radius:10px;display:grid;place-items:center;color:var(--ink-3);
+  transition:transform .2s var(--spring),background .2s var(--ease),color .2s var(--ease)}
+.nsx:active{transform:scale(.88);background:var(--tint);color:var(--ink)}
+.nsx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round}
+/* the title field stands in the heading's place, in the heading's type, so
+   nothing moves or changes size when the writing starts */
+.nstin{flex:1;min-width:0;border:0;outline:0;background:transparent;color:inherit;padding:0;
+  font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-.035em;line-height:1.2}
+.nstin::placeholder{color:var(--ink-3)}
+/* reading and writing are the same block of text, set the same way */
+.ns-read{min-height:72px;max-height:46vh;overflow:auto;padding:2px 0;cursor:text}
+.ns-text{font-size:15px;line-height:1.62;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+.ns-text.empty{color:var(--ink-3)}
+.ns-hint{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:18px}
+#nsEdit .dn-ta{min-height:72px;max-height:46vh;overflow:auto;font-size:15px;line-height:1.62;color:var(--ink)}
+#nsEdit .dn-foot{margin-top:16px}
 
 /* ---------- edit-mode transitions ---------- */
 @keyframes rvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -1536,7 +1592,39 @@ button.tphead:active{background:var(--tint)}
   </div>
   <div class="pdfhint" id="pdfHint" hidden>—</div>
 </div>
+<!-- one note, opened on its own — reading first, writing on the next tap -->
+<div class="sheet" id="noteSheet">
+  <div class="grabber"></div>
+  <div class="nshead">
+    <h3 id="nsTitle">Note</h3>
+    <input class="nstin" id="nsTin" placeholder="Title" maxlength="60" autocomplete="off" hidden>
+    <span class="eyebrow" id="nsWhen">—</span>
+    <button class="nsx" id="nsClose" aria-label="Close">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="ns-read" id="nsRead">
+    <div class="ns-text selectable" id="nsText"></div>
+    <div class="ns-hint" id="nsHint">Tap to write</div>
+  </div>
+  <div id="nsEdit" hidden>
+    <textarea class="dn-ta" id="nsTa" placeholder="Write it down"></textarea>
+    <div class="dn-foot">
+      <button class="dn-del" id="nsDelete">Delete</button>
+      <button class="dn-done" id="nsMain">Done</button>
+    </div>
+  </div>
+</div>
+
 <div class="timer" id="timerWrap">
+  <div class="tctl">
+    <button class="tbtn" id="tPip" aria-label="Pop the timer out" hidden>
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><rect x="12.5" y="11" width="6.5" height="5.5" rx="1.5"/></svg>
+    </button>
+    <button class="tbtn" id="tFs" aria-label="Full screen" hidden>
+      <svg viewBox="0 0 24 24" id="tFsIcon"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+    </button>
+  </div>
   <div class="tinner">
     <div class="tnow" id="tNow">—</div>
     <div class="tname" id="tName">—</div>
@@ -1622,31 +1710,26 @@ button.tphead:active{background:var(--tint)}
     <span class="eyebrow">What went wrong</span>
     <textarea class="input area" id="recFeedback" placeholder="What slipped, and what to change tomorrow." maxlength="1200"></textarea>
   </div>
+  <!-- every day you have written up, opened in place — never a sheet on a sheet -->
+  <div class="field fball" id="recFbWrap" hidden>
+    <div class="fbhead">
+      <span class="eyebrow" id="recFbTitle">All feedback</span>
+      <button class="fbmini" id="recFbCopy">Copy all</button>
+      <button class="fbmini" id="recFbDigest">Everything</button>
+    </div>
+    <div id="recFbBody"></div>
+    <div id="recDigestWrap" hidden>
+      <textarea class="digest selectable" id="recDigest" readonly></textarea>
+      <div class="fbrow">
+        <button class="btn ghost" id="recDigestCopy">Copy</button>
+        <button class="btn ghost" id="recDigestSave">Save as file</button>
+      </div>
+    </div>
+  </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="recFeedbackAll">All feedback</button>
     <button class="btn" id="recClose">Done</button>
   </div>
-</div>
-
-<div class="sheet" id="fbSheet">
-  <div class="grabber"></div>
-  <h3 id="fbTitle">All feedback</h3>
-  <div id="fbBody"></div>
-  <div class="sheet-actions">
-    <button class="btn ghost" id="fbSummary">Summarise</button>
-    <button class="btn" id="fbClose">Close</button>
-  </div>
-</div>
-
-<div class="sheet" id="digestSheet">
-  <div class="grabber"></div>
-  <h3>Everything you wrote</h3>
-  <textarea class="digest" id="digestText" readonly></textarea>
-  <div class="sheet-actions">
-    <button class="btn ghost" id="digestCopy">Copy</button>
-    <button class="btn" id="digestSave">Save as file</button>
-  </div>
-  <div style="margin-top:9px"><button class="btn ghost" id="digestClose">Close</button></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1839,6 +1922,7 @@ let restOpen=false, lastLevel=null;
    one. It is the same element either way — moved, never rebuilt, so nothing
    written in it and nothing listening to it is disturbed. */
 const MQ_TWO=matchMedia('(min-width:1000px) and (min-height:600px)');
+const MQ_TAB=matchMedia('(min-width:700px) and (min-height:600px)');
 function placeNote(){
   const note=$('#note'), side=$('#tSide'), main=$('#tMain');
   if(!note||!side||!main) return;
@@ -2154,8 +2238,15 @@ function noteCard(n){
     refreshNoteLabel();
     anim(head,'rvf'); anim(read,'rvf');
   }
-  head.addEventListener('click',()=>{ el.classList.toggle('open'); buzz(5); });
-  read.addEventListener('click',()=>{ openEdit(); buzz(9); });
+  /* on a tablet a note is opened on its own instead of unfolding in the list */
+  head.addEventListener('click',()=>{
+    if(MQ_TAB.matches){ openNoteSheet(n); return; }
+    el.classList.toggle('open'); buzz(5);
+  });
+  read.addEventListener('click',()=>{
+    if(MQ_TAB.matches){ openNoteSheet(n); return; }
+    openEdit(); buzz(9);
+  });
   ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
   tin.addEventListener('input',()=>{ clearTimeout(saveT); saveT=setTimeout(save,650); });
   done.addEventListener('mousedown',e=>e.preventDefault());
@@ -2174,9 +2265,91 @@ $('#addNote').addEventListener('click',async()=>{
   const n={id:uid(),date:TSTR,title:'',text:'',created:Date.now()};
   myNotes.push(n); await dbPut('dnotes',n);
   renderNotes();
+  if(MQ_TAB.matches){ openNoteSheet(n,true); buzz(8); return; }
   const card=$('.dn[data-id="'+n.id+'"]');
   if(card) card.dispatchEvent(new CustomEvent('editnow'));
   buzz(8);
+});
+
+/* ---------- one note, opened on its own ----------
+   Reading comes first; the next tap on the text is what starts the writing,
+   so nothing is ever edited by accident. Typing is saved as it happens. */
+let nsNote=null, nsEditing=false, nsT=null;
+function nsPaint(){
+  if(!nsNote) return;
+  const t=(nsNote.title||'').trim(), b=(nsNote.text||'').trim();
+  $('#nsTitle').textContent=t||'Untitled';
+  $('#nsWhen').textContent=whenLabel(nsNote.date||TSTR);
+  $('#nsText').textContent=b||'Nothing written yet';
+  $('#nsText').classList.toggle('empty',!b);
+  $('#nsHint').textContent=b?'Tap to edit':'Tap to write';
+}
+/* the text box is exactly as tall as what is in it, so nothing is left empty
+   underneath and the popup does not resize between reading and writing */
+function nsGrow(){
+  const ta=$('#nsTa');
+  ta.style.height='auto';
+  ta.style.height=Math.max(72,ta.scrollHeight)+'px';
+}
+function nsMode(edit){
+  nsEditing=edit;
+  $('#nsRead').hidden=edit;
+  $('#nsEdit').hidden=!edit;
+  $('#nsTitle').hidden=edit;      /* the field takes its place, in its own type */
+  $('#nsTin').hidden=!edit;
+  $('#nsDelete').textContent='Delete'; $('#nsDelete').dataset.armed='';
+  if(edit){
+    $('#nsTin').value=nsNote.title||'';
+    $('#nsTa').value=nsNote.text||'';
+    nsGrow();
+    setTimeout(()=>{ ((nsNote.title||'').trim()?$('#nsTa'):$('#nsTin')).focus(); },60);
+  }else nsPaint();
+}
+async function nsSave(){
+  clearTimeout(nsT);
+  if(!nsNote||!nsEditing) return;
+  const ti=$('#nsTin').value, tx=$('#nsTa').value;
+  if(nsNote.title===ti && nsNote.text===tx) return;
+  nsNote.title=ti; nsNote.text=tx; nsNote.edited=Date.now();
+  await dbPut('dnotes',nsNote);
+}
+function openNoteSheet(n,startEditing){
+  nsNote=n;
+  nsPaint();
+  nsMode(!!startEditing);
+  $('#scrim').classList.add('on'); $('#noteSheet').classList.add('on'); $('#noteSheet').scrollTop=0;
+  buzz(HAPTIC.light);
+}
+async function closeNoteSheet(){
+  if(!$('#noteSheet').classList.contains('on')) return;
+  await nsSave();
+  $('#scrim').classList.remove('on'); $('#noteSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  nsNote=null; nsEditing=false;
+  renderNotes(); renderSettings();
+}
+$('#nsRead').addEventListener('click',()=>{ if(nsNote){ nsMode(true); buzz(9); } });
+$('#nsMain').addEventListener('mousedown',e=>e.preventDefault());
+/* Done puts the writing away and shows the note again, the way it does in the list */
+$('#nsMain').addEventListener('click',async()=>{
+  if(!nsNote) return;
+  await nsSave(); nsMode(false); renderNotes(); buzz(6);
+});
+$('#nsClose').addEventListener('click',closeNoteSheet);
+['#nsTin','#nsTa'].forEach(sel=>{
+  $(sel).addEventListener('input',()=>{
+    if(sel==='#nsTa') nsGrow();
+    clearTimeout(nsT); nsT=setTimeout(nsSave,650);
+  });
+});
+$('#nsDelete').addEventListener('click',async e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; buzz(14); return; }
+  const id=nsNote&&nsNote.id;
+  clearTimeout(nsT); nsEditing=false; nsNote=null;
+  $('#scrim').classList.remove('on'); $('#noteSheet').classList.remove('on');
+  if(id){ myNotes=myNotes.filter(x=>x.id!==id); await dbDel('dnotes',id); }
+  renderNotes(); renderSettings(); toast('Note deleted');
 });
 $('#noteToggle').addEventListener('click',()=>{
   const n=$('#note'), open=n.classList.toggle('open');
@@ -2303,8 +2476,7 @@ function closeSheet(){
 $('#scrim').addEventListener('click',()=>{
   if($('#pauseSheet').classList.contains('on')||$('#replanSheet').classList.contains('on')) return;
   closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet();
-  closeRecord(); closeFeedback(); closeFocus();
-  $('#digestSheet').classList.remove('on');
+  closeRecord(); closeFocus(); closeNoteSheet();
 });
 $('#fCancel').addEventListener('click',closeSheet);
 $('#addBtn').addEventListener('click',()=>openSheet(null));
@@ -2724,6 +2896,7 @@ function showTimer(){
   w.classList.add('on');
   requestAnimationFrame(()=>w.classList.add('show'));
   $('#tName').textContent=T.name;
+  paintPipBtn(); paintFs();
   paintTimer(); tickOn();
 }
 function tickOn(){
@@ -2747,6 +2920,7 @@ function clock12(d){
 function paintTimer(){
   if(!T) return;
   $('#tNow').textContent=clock12();
+  if(pipOn) drawPip();
   const ms=remaining(), sec=Math.ceil(ms/1000);
   $('#tClock').textContent=Math.floor(sec/60)+':'+pad(sec%60);
   $('#tFill').style.width=(100*Math.max(0,Math.min(1,1-ms/T.total)))+'%';
@@ -2771,8 +2945,96 @@ function closeTimer(){
   w.classList.remove('show');
   setTimeout(()=>w.classList.remove('on'),360);
   clearInterval(tTick); tTick=null; T=null;
+  stopPip();
   if(db) dbDel('meta','timer').catch(()=>{});
 }
+
+/* ===========================================================
+   The small window — the session goes on top of everything else
+   Nothing but a canvas painted every tick, handed to a muted video and
+   given to the browser's own picture-in-picture. It is the one route that
+   works on a phone and a tablet as well as a desktop.
+   =========================================================== */
+let pipCanvas=null, pipVideo=null, pipStream=null, pipOn=false;
+function pipSupported(){
+  if(!('captureStream' in document.createElement('canvas'))) return false;
+  const v=document.createElement('video');
+  return !!(document.pictureInPictureEnabled ||
+    (v.webkitSupportsPresentationMode && typeof v.webkitSetPresentationMode==='function'));
+}
+function paintPipBtn(){
+  const b=$('#tPip'); if(!b) return;
+  b.hidden=!pipSupported();
+  b.classList.toggle('live',pipOn);
+  b.setAttribute('aria-label',pipOn?'Close the small window':'Pop the timer out');
+}
+function drawPip(){
+  if(!pipCanvas||!T) return;
+  const c=pipCanvas, x=c.getContext('2d'), W=c.width, H=c.height;
+  const acc=(getComputedStyle(document.documentElement).getPropertyValue('--acc')||'').trim()||'#F2A93B';
+  const brk=T.kind==='break', paused=!!T.pausedAt;
+  const ms=remaining(), sec=Math.ceil(ms/1000);
+  const time=Math.floor(sec/60)+':'+pad(sec%60);
+  x.fillStyle='#000'; x.fillRect(0,0,W,H);
+  x.textAlign='center';
+  x.fillStyle='rgba(255,255,255,.42)';
+  x.font='500 22px ui-monospace,SFMono-Regular,Menlo,monospace';
+  x.fillText((brk?'BREAK':paused?'PAUSED':'FOCUS')+'   '+clock12().toUpperCase(),W/2,58);
+  x.fillStyle=paused?'rgba(245,245,245,.55)':'#F5F5F5';
+  x.font='800 118px system-ui,-apple-system,"Segoe UI",sans-serif';
+  x.fillText(time,W/2,180);
+  const name=String(T.name||'').slice(0,42);
+  x.fillStyle='rgba(255,255,255,.5)';
+  x.font='400 22px system-ui,-apple-system,"Segoe UI",sans-serif';
+  x.fillText(name,W/2,232);
+  const bx=60, bw=W-120, by=278, p=Math.max(0,Math.min(1,1-ms/T.total));
+  x.fillStyle='rgba(255,255,255,.14)';
+  x.beginPath(); x.roundRect ? x.roundRect(bx,by,bw,8,4) : x.rect(bx,by,bw,8); x.fill();
+  x.fillStyle=acc;
+  x.beginPath(); x.roundRect ? x.roundRect(bx,by,Math.max(8,bw*p),8,4) : x.rect(bx,by,bw*p,8); x.fill();
+}
+async function startPip(){
+  if(!T) return;
+  if(!pipCanvas){ pipCanvas=document.createElement('canvas'); pipCanvas.width=640; pipCanvas.height=360; }
+  drawPip();
+  if(!pipVideo){
+    pipVideo=document.createElement('video');
+    pipVideo.muted=true; pipVideo.defaultMuted=true; pipVideo.playsInline=true;
+    pipVideo.setAttribute('playsinline',''); pipVideo.setAttribute('muted','');
+    pipVideo.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none';
+    document.body.appendChild(pipVideo);
+    pipVideo.addEventListener('leavepictureinpicture',()=>{ pipOn=false; paintPipBtn(); });
+    pipVideo.addEventListener('webkitpresentationmodechanged',()=>{
+      pipOn=pipVideo.webkitPresentationMode==='picture-in-picture'; paintPipBtn();
+    });
+  }
+  if(!pipStream){ pipStream=pipCanvas.captureStream(2); pipVideo.srcObject=pipStream; }
+  await pipVideo.play();
+  if(pipVideo.requestPictureInPicture) await pipVideo.requestPictureInPicture();
+  else if(pipVideo.webkitSetPresentationMode) pipVideo.webkitSetPresentationMode('picture-in-picture');
+  pipOn=true; paintPipBtn();
+}
+function stopPip(){
+  pipOn=false;
+  try{
+    if(document.pictureInPictureElement) document.exitPictureInPicture();
+    else if(pipVideo && pipVideo.webkitPresentationMode==='picture-in-picture') pipVideo.webkitSetPresentationMode('inline');
+  }catch(err){}
+  if(pipVideo){ try{ pipVideo.pause(); }catch(err){} }
+  if(pipStream){ pipStream.getTracks().forEach(t=>{ try{ t.stop(); }catch(err){} }); pipStream=null; }
+  if(pipVideo){ pipVideo.srcObject=null; }
+  paintPipBtn();
+}
+$('#tPip').addEventListener('click',async()=>{
+  if(pipOn){ stopPip(); buzz(8); return; }
+  try{ await startPip(); buzz(8); }
+  catch(err){
+    console.error('Dayflow · pip',err);
+    pipOn=false; paintPipBtn();
+    toast('Your browser would not open the small window');
+  }
+});
+$('#tFs').addEventListener('click',()=>{ toggleFs(); buzz(8); });
 /* the block is ticked off, and that is all — what goes on the record is written
    by hand in Record, never added for you */
 async function timerDone(){
@@ -3032,6 +3294,7 @@ function openRecord(ds){
 function closeRecord(){
   $('#scrim').classList.remove('on'); $('#recSheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
+  closeFeedback();
 }
 function recLabel(ds){
   if(ds===TSTR) return 'Today';
@@ -3089,6 +3352,7 @@ function renderRecord(){
 
   const fb=$('#recFeedback');
   if(document.activeElement!==fb) fb.value=(r&&r.feedback)||'';
+  renderFeedback();          /* a no-op unless the list below is open */
 }
 function fillList(host,items,emptyMsg){
   host.innerHTML='';
@@ -3149,25 +3413,35 @@ $('#recFeedback').addEventListener('input',()=>{
   },600);
 });
 
-/* every note you have written about a day, in one place */
-function openFeedback(){
-  renderFeedback();
-  $('#scrim').classList.add('on'); $('#fbSheet').classList.add('on'); $('#fbSheet').scrollTop=0;
+/* ---------- every note you have written about a day ----------
+   It opens inside the record itself: a sheet on top of a sheet buries the
+   thing you were reading. The text is left selectable so any of it can be
+   picked up and taken somewhere else. */
+let fbOpen=false;
+function closeFeedback(){
+  fbOpen=false;
+  const w=$('#recFbWrap'); if(w) w.hidden=true;
+  const d=$('#recDigestWrap'); if(d) d.hidden=true;
+  const b=$('#recFbDigest'); if(b) b.classList.remove('on');
+  const all=$('#recFeedbackAll'); if(all) all.textContent='All feedback';
 }
-function closeFeedback(){ $('#scrim').classList.remove('on'); $('#fbSheet').classList.remove('on'); }
 function feedbackDays(){ return recordedDays().filter(r=>(r.feedback||'').trim()); }
 function renderFeedback(){
-  const list=feedbackDays(), body=$('#fbBody');
-  $('#fbTitle').textContent=list.length?'All feedback · '+list.length:'All feedback';
-  if(!list.length){
-    body.innerHTML='<div class="rempty">Nothing written yet. What you put on a day shows up here.</div>';
-    return;
-  }
-  body.innerHTML=list.map(r=>
-    '<div class="fbitem"><div class="when"><span class="eyebrow">'+esc(recLabel(r.date))+'</span>'+
-    '<button data-fbdel="'+r.date+'">Delete</button></div><p>'+esc(r.feedback)+'</p></div>').join('');
+  if(!fbOpen) return;
+  const list=feedbackDays(), body=$('#recFbBody');
+  $('#recFbTitle').textContent=list.length?'All feedback · '+list.length:'All feedback';
+  $('#recFbCopy').hidden=!list.length;
+  body.innerHTML = list.length
+    ? list.map(r=>
+        '<div class="fbday"><div class="when"><span class="eyebrow">'+esc(recLabel(r.date))+'</span>'+
+        '<button data-fbdel="'+r.date+'">Delete</button></div>'+
+        '<p class="selectable">'+esc(r.feedback)+'</p></div>').join('')
+    : '<div class="rempty">Nothing written yet. What you put on a day shows up here.</div>';
 }
-$('#fbBody').addEventListener('click',async e=>{
+const feedbackText=()=>feedbackDays()
+  .map(r=>recLabel(r.date).toUpperCase()+'  ('+r.date+')\n'+r.feedback.trim())
+  .join('\n\n'+''.padEnd(34,'-')+'\n\n');
+$('#recFbBody').addEventListener('click',async e=>{
   const b=e.target.closest('[data-fbdel]'); if(!b) return;
   if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again'; buzz(14); return; }
   const ds=b.dataset.fbdel;
@@ -3175,8 +3449,42 @@ $('#fbBody').addEventListener('click',async e=>{
   if(r){ r.feedback=''; await saveDay(ds); }
   renderFeedback(); renderRecord(); renderSettings(); toast('Deleted');
 });
-$('#recFeedbackAll').addEventListener('click',openFeedback);
-$('#fbClose').addEventListener('click',closeFeedback);
+$('#recFeedbackAll').addEventListener('click',()=>{
+  fbOpen=!fbOpen;
+  const w=$('#recFbWrap');
+  $('#recFeedbackAll').textContent=fbOpen?'Hide feedback':'All feedback';
+  if(!fbOpen){ closeFeedback(); buzz(6); return; }
+  w.hidden=false; renderFeedback(); buzz(8);
+  requestAnimationFrame(()=>w.scrollIntoView({block:'nearest',behavior:'smooth'}));
+});
+async function copyText(str,el){
+  if(!str){ toast('Nothing to copy'); return; }
+  try{ await navigator.clipboard.writeText(str); }
+  catch(err){
+    const t=el&&el.tagName==='TEXTAREA'?el:document.createElement('textarea');
+    if(t!==el){ t.value=str; t.style.cssText='position:fixed;left:-9999px'; document.body.appendChild(t); }
+    t.removeAttribute('readonly'); t.select();
+    try{ document.execCommand&&document.execCommand('copy'); }catch(e2){}
+    if(t!==el) t.remove(); else t.setAttribute('readonly','');
+  }
+  toast('Copied'); buzz(8);
+}
+$('#recFbCopy').addEventListener('click',()=>copyText(feedbackText()));
+$('#recFbDigest').addEventListener('click',e=>{
+  const w=$('#recDigestWrap'), on=w.hidden;
+  w.hidden=!on;
+  e.currentTarget.classList.toggle('on',on);
+  if(on){ $('#recDigest').value=buildDigest(); }
+  buzz(6);
+});
+$('#recDigestCopy').addEventListener('click',()=>copyText($('#recDigest').value,$('#recDigest')));
+$('#recDigestSave').addEventListener('click',()=>{
+  const url=URL.createObjectURL(new Blob([$('#recDigest').value],{type:'text/plain'}));
+  const a=document.createElement('a'); a.href=url; a.download='dayflow-record-'+TSTR+'.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('Saved'); buzz(8);
+});
 
 /* the whole lot gathered into one piece of text you can keep or hand on */
 function buildDigest(){
@@ -3206,28 +3514,6 @@ function buildDigest(){
   }).join('\n\n');
   return head+body+'\n';
 }
-$('#fbSummary').addEventListener('click',()=>{
-  $('#digestText').value=buildDigest();
-  $('#fbSheet').classList.remove('on');
-  $('#scrim').classList.add('on'); $('#digestSheet').classList.add('on'); $('#digestSheet').scrollTop=0;
-  buzz(8);
-});
-$('#digestClose').addEventListener('click',()=>{
-  $('#scrim').classList.remove('on'); $('#digestSheet').classList.remove('on');
-});
-$('#digestCopy').addEventListener('click',async()=>{
-  const t=$('#digestText');
-  try{ await navigator.clipboard.writeText(t.value); toast('Copied'); }
-  catch(err){ t.removeAttribute('readonly'); t.select(); document.execCommand&&document.execCommand('copy'); t.setAttribute('readonly',''); toast('Copied'); }
-  buzz(8);
-});
-$('#digestSave').addEventListener('click',()=>{
-  const url=URL.createObjectURL(new Blob([$('#digestText').value],{type:'text/plain'}));
-  const a=document.createElement('a'); a.href=url; a.download='dayflow-record-'+TSTR+'.txt';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),2000);
-  toast('Saved');
-});
 
 /* ===========================================================
    Vision lock
@@ -4055,13 +4341,21 @@ const fsOn=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
 const fsSupported=()=>!!(fsRoot().requestFullscreen||fsRoot().webkitRequestFullscreen);
 function paintFs(){
   const b=$('#fsBtn'); if(!b) return;
-  b.hidden=!fsSupported();
-  const on=fsOn();
-  b.classList.toggle('live',on);
-  b.setAttribute('aria-label',on?'Leave full screen':'Full screen');
-  $('#fsIcon').innerHTML = on
+  const ok=fsSupported(), on=fsOn();
+  const icon = on
     ? '<path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5"/>'
     : '<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>';
+  const label=on?'Leave full screen':'Full screen';
+  b.hidden=!ok; b.classList.toggle('live',on);
+  b.setAttribute('aria-label',label);
+  $('#fsIcon').innerHTML=icon;
+  /* the session screen carries the same control */
+  const t=$('#tFs');
+  if(t){
+    t.hidden=!ok; t.classList.toggle('live',on);
+    t.setAttribute('aria-label',label);
+    $('#tFsIcon').innerHTML=icon;
+  }
 }
 async function toggleFs(){
   try{
