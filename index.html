@@ -541,7 +541,8 @@ button.tphead:active{background:var(--tint)}
 .igicon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .igicon svg circle{fill:currentColor;stroke:none}
 .igwho{flex:1;min-width:0;display:flex;align-items:center;gap:6px;
-  font-size:19px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden}
+  font-size:21px;font-weight:700;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}
+.igwho .igbadge{width:17px;height:17px}
 .igwho span{overflow:hidden;text-overflow:ellipsis}
 /* the tick itself — the badge's own twelve-point burst, not a circle */
 .igbadge{flex:0 0 auto;width:16px;height:16px;display:inline-block;
@@ -553,9 +554,14 @@ button.tphead:active{background:var(--tint)}
 #vBody.feed #igMenu,#vBody.feed .igwho .igbadge{display:none}
 .igfollow{height:36px;padding:0 18px;border-radius:9px;background:var(--ig-blue);color:#fff;
   font-size:14.5px;font-weight:600;letter-spacing:-.01em}
-.igfollow.sm{flex:0 0 auto;height:32px;padding:0 15px;font-size:13.5px;display:grid;place-items:center}
-/* the three that are only there to complete the picture */
+/* in the bar it is the quiet grey pill, exactly as it is once you scroll */
+.igfollow.sm{flex:0 0 auto;height:34px;padding:0 17px;font-size:14.5px;display:grid;place-items:center;
+  background:var(--ig-fill);color:var(--ig-ink);border-radius:10px}
+/* the four that are only there to complete the picture */
 #igFollow,#igMessage,#igAddFriend,#igFollowTop{pointer-events:none;cursor:default}
+/* scrolled past the buttons, the bar takes the follow over — the way it does */
+#vBody.scrolled #igMenu{display:none}
+#vBody.scrolled #igFollowTop{display:grid}
 
 /* ---------- profile head ---------- */
 .ighead{display:flex;align-items:center;gap:28px;padding:2px 16px 0}
@@ -591,9 +597,13 @@ button.tphead:active{background:var(--tint)}
 
 /* ---------- the three tabs ---------- */
 .igtabs{display:flex;margin-top:20px;border-top:1px solid var(--ig-line)}
-.igtab{flex:1;height:47px;display:grid;place-items:center;color:var(--ig-dim);
-  border-top:1px solid transparent;margin-top:-1px;
-  transition:color .2s var(--ease),border-color .2s var(--ease)}
+.igtab{position:relative;flex:1;height:49px;display:grid;place-items:center;color:var(--ig-dim);
+  transition:color .2s var(--ease)}
+/* the marker sits under the icon it belongs to, not across the whole tab */
+.igtab::after{content:'';position:absolute;left:27%;right:27%;bottom:0;height:2.5px;border-radius:2px;
+  background:currentColor;opacity:0;transform:scaleX(.4);
+  transition:opacity .24s var(--ease),transform .3s var(--spring)}
+.igtab.on::after{opacity:1;transform:none}
 .igtab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.6;
   stroke-linejoin:round;stroke-linecap:round}
 .igtab.on{color:var(--ig-ink);border-top-color:var(--ig-ink)}
@@ -607,6 +617,11 @@ button.tphead:active{background:var(--tint)}
   animation:fadeIn .4s var(--ease) both}
 .igtile img{width:100%;height:100%;object-fit:cover;display:block}
 .igtile:active img{filter:brightness(.82)}
+/* the stacked-squares mark a post of more than one photo carries */
+.igmulti{position:absolute;top:7px;right:7px;color:#fff;pointer-events:none;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.igmulti svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
 .iggrid.arrange .igtile{touch-action:none;cursor:grab}
 .iggrid.arrange .igtile::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5);
   animation:jiggle .6s ease-in-out infinite}
@@ -634,20 +649,38 @@ button.tphead:active{background:var(--tint)}
 .igmore{width:32px;height:32px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;color:var(--ig-ink);
   transition:transform .2s var(--spring),background .2s}
 .igmore:active{transform:scale(.9);background:rgba(255,255,255,.09)}
-.igmore svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
-.igshot{position:relative;background:#0C0C0C;border-radius:8px;overflow:hidden;margin:0 16px;
-  border:1px solid rgba(255,255,255,.06)}
-.igshot img{width:100%;display:block;max-height:76vh;object-fit:contain}
-.igacts{display:flex;align-items:center;gap:19px;padding:11px 17px 3px}
-.igact{display:flex;align-items:center;gap:7px;color:var(--ig-ink);font-size:13.5px;font-weight:600;
-  font-variant-numeric:tabular-nums;transition:transform .2s var(--spring)}
+.igmore svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+/* ---------- the carousel: swiped, snapped, counted ---------- */
+/* every photo in a post shares the post's frame, so a swipe never resizes it */
+.igcar{position:relative;margin:0 14px;border-radius:12px;overflow:hidden;background:#0C0C0C;
+  max-height:76vh}
+.igtrack{display:flex;height:100%;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;touch-action:pan-x pan-y pinch-zoom}
+.igtrack::-webkit-scrollbar{display:none;width:0;height:0}
+.igslide{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;display:block}
+.igslide img{width:100%;height:100%;display:block;object-fit:cover}
+.igcount{position:absolute;top:12px;right:12px;z-index:2;pointer-events:none;
+  padding:5px 10px;border-radius:14px;background:rgba(0,0,0,.6);
+  font-size:12.5px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .3s var(--ease)}
+.igcar.multi .igcount{opacity:1}
+.igdots{display:flex;align-items:center;justify-content:center;gap:5px;padding:13px 0 1px}
+.igdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.26);
+  transition:background .25s var(--ease),transform .25s var(--spring)}
+.igdot.on{background:var(--ig-blue);transform:scale(1.05)}
+.igdot.far{transform:scale(.7)}
+.igacts{display:flex;align-items:center;gap:17px;padding:12px 16px 2px}
+.igact{display:flex;align-items:center;gap:7px;color:var(--ig-ink);font-size:15px;font-weight:600;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:transform .2s var(--spring)}
 .igact:active{transform:scale(.88)}
-.igact svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;
+.igact svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round;overflow:visible}
-.igact svg polygon{fill:none}
-.igact.liked svg{fill:#FF3040;stroke:#FF3040;animation:pop .3s var(--spring)}
+.igact svg polygon,.igact svg polyline{fill:none}
+.igact.liked svg{fill:#FF3040;stroke:#FF3040;animation:pop .32s var(--spring)}
 .igact.saved svg polygon{fill:currentColor}
-@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.24)}100%{transform:scale(1)}}
 .igact.push{margin-left:auto}
 .igcap{padding:9px 17px 0;font-size:14.5px;line-height:1.45;word-break:break-word;cursor:pointer}
 .igcap b{font-weight:600;margin-right:6px}
@@ -667,6 +700,21 @@ button.tphead:active{background:var(--tint)}
 .igrow svg{width:21px;height:21px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .igrow2{display:flex;gap:9px}
 .igrow2 .input{flex:1;min-width:0}
+.igfield{flex:1;min-width:0;display:block}
+.igfield span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px 2px}
+/* the photos in a post, in the order they are swiped */
+.vthumbs{display:flex;gap:9px;overflow-x:auto;padding:2px 0 10px;margin-bottom:2px}
+.vthumb{position:relative;flex:0 0 auto;width:78px;height:98px;border-radius:12px;overflow:hidden;
+  background:var(--surf);border:1px solid var(--line)}
+.vthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.vthumb .n{position:absolute;left:6px;bottom:6px;padding:2px 6px;border-radius:8px;
+  background:rgba(0,0,0,.62);color:#fff;font-family:var(--mono);font-size:9px}
+.vthumbx{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(0,0,0,.66);color:#fff;
+  transition:transform .2s var(--spring),background .2s}
+.vthumbx:active{transform:scale(.86);background:#E5483F}
+.vthumbx svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
 .igavarow{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .igavatxt{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 #igEditAva{background:var(--cell)}
@@ -1688,14 +1736,22 @@ button.tphead:active{background:var(--tint)}
   <div class="grabber"></div>
   <h3 id="vTitle">Edit post</h3>
   <div id="vPreview"></div>
+  <div id="vImgWrap" hidden>
+    <div class="vthumbs" id="vThumbs"></div>
+    <button class="iglinkbtn" id="vAddImgs">+ Add photos to this post</button>
+  </div>
   <div class="field" id="vCapWrap">
     <textarea class="input area" id="vCaption" placeholder="Write a caption…" maxlength="300" style="min-height:96px"></textarea>
   </div>
   <div class="field" id="vStatWrap">
     <span class="eyebrow">Numbers</span>
     <div class="igrow2">
-      <input class="input" id="vLikes" placeholder="Likes" maxlength="10" autocomplete="off">
-      <input class="input" id="vComments" placeholder="Comments" maxlength="10" autocomplete="off">
+      <label class="igfield"><span>Likes</span><input class="input" id="vLikes" maxlength="10" autocomplete="off"></label>
+      <label class="igfield"><span>Comments</span><input class="input" id="vComments" maxlength="10" autocomplete="off"></label>
+    </div>
+    <div class="igrow2" style="margin-top:9px">
+      <label class="igfield"><span>Reposts</span><input class="input" id="vReposts" maxlength="10" autocomplete="off"></label>
+      <label class="igfield"><span>Shares</span><input class="input" id="vShares" maxlength="10" autocomplete="off"></label>
     </div>
   </div>
   <div class="sheet-actions">
@@ -3879,6 +3935,19 @@ function seedCount(id,min,max){
 }
 const postLikes=it=>it.likes!==undefined&&it.likes!==''?it.likes:seedCount(it.id+'l',180,9400);
 const postComments=it=>it.comments!==undefined&&it.comments!==''?it.comments:seedCount(it.id+'c',4,320);
+const postReposts=it=>it.reposts!==undefined&&it.reposts!==''?it.reposts:seedCount(it.id+'r',12,1400);
+const postShares=it=>it.shares!==undefined&&it.shares!==''?it.shares:seedCount(it.id+'s',30,2600);
+/* a post is a carousel of one or more images; the older single-image posts
+   read as a carousel of one, so nothing already saved has to be rewritten */
+function postImgs(it){
+  if(Array.isArray(it.imgs) && it.imgs.length) return it.imgs.filter(x=>x&&x.src);
+  return it.src?[{src:it.src,ar:it.ar}]:[];
+}
+function setImgs(it,list){
+  it.imgs=list.map(x=>({src:x.src,ar:x.ar}));
+  it.src=list.length?list[0].src:'';      /* the first is the cover on the grid */
+  it.ar=list.length?list[0].ar:undefined;
+}
 /* the post count is a real count, so it is written out in full with commas */
 const groupNum=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 function niceNum(n){
@@ -3932,40 +4001,81 @@ function renderGrid(){
   g.innerHTML=posts.map((it,i)=>
     '<div class="igtile" data-id="'+esc(it.id)+'" style="animation-delay:'+Math.min(i,11)*26+'ms">'+
       '<img src="'+it.src+'" alt="'+esc(it.caption||'Post')+'" draggable="false">'+
+      (postImgs(it).length>1
+        ? '<span class="igmulti"><svg viewBox="0 0 24 24"><path d="M18.5 8.5h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2Z"/><path d="M16.5 5.5v-1a2 2 0 0 0-2-2h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1"/></svg></span>'
+        : '')+
     '</div>').join('');
 }
 /* ---------- the feed: one image to a post ---------- */
 let feedOn=false;
+/* the five marks under a post, drawn from Instagram's own geometry */
+const IG_ICON={
+  like:'<path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.152 14.081 2.5 12.194 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938Z"/>',
+  comment:'<path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/>',
+  repost:'<path d="M5.5 9.5A4 4 0 0 1 9.5 5.5h9"/><polyline points="15.6 2.6 18.9 5.5 15.6 8.4"/><path d="M18.5 14.5a4 4 0 0 1-4 4h-9"/><polyline points="8.4 21.4 5.1 18.5 8.4 15.6"/>',
+  share:'<path d="M22 3 9.218 10.083"/><path d="M11.698 20.334 22 3.001 2 3.001 9.218 10.084Z"/>',
+  save:'<polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"/>'
+};
+const act=(a,label,count)=>'<button class="igact'+(a==='save'?' push':'')+'" data-a="'+a+'" aria-label="'+label+'">'+
+  '<svg viewBox="0 0 24 24">'+IG_ICON[a]+'</svg>'+(count!==null?'<b>'+niceNum(count)+'</b>':'')+'</button>';
+
 function renderFeed(){
   const host=$('#igFeed'); if(!host) return;
   const p=ig();
   const badge=p.verified?BADGE:'';
   const ava=p.avatar?'<img src="'+p.avatar+'" alt="">':'<i class="igavai"></i>';
+  const user=esc(p.user||IG_DEF.user);
   host.innerHTML=vPosts().map(it=>{
     const cap=(it.caption||'').trim();
     const long=cap.length>110;
+    const imgs=postImgs(it), many=imgs.length>1;
+    /* the frame follows the first photo, held inside the range a post can take */
+    const ar=Math.max(.8,Math.min(1.91,+imgs[0].ar||1)).toFixed(4);
     return '<article class="igpost" data-id="'+esc(it.id)+'">'+
       '<div class="igph"><span class="igava sm">'+ava+'</span>'+
-        '<span class="ignm"><em>'+esc(p.user||IG_DEF.user)+'</em>'+badge+'</span>'+
-        '<button class="igmore" aria-label="Post options"><svg viewBox="0 0 24 24"><path d="M4 8.5h16M4 15.5h10"/></svg></button></div>'+
-      '<div class="igshot"><img src="'+it.src+'" alt="'+esc(cap||'Post')+'"></div>'+
+        '<span class="ignm"><em>'+user+'</em>'+badge+'</span>'+
+        '<button class="igmore" aria-label="Post options"><svg viewBox="0 0 24 24"><path d="M4 9h16M4 15h16"/></svg></button></div>'+
+      '<div class="igcar'+(many?' multi':'')+'" style="aspect-ratio:'+ar+'">'+
+        '<span class="igcount">1/'+imgs.length+'</span>'+
+        '<div class="igtrack">'+imgs.map((im,i)=>
+          '<div class="igslide"><img src="'+im.src+'" alt="'+esc(cap||'Post')+'" data-i="'+i+'"></div>').join('')+
+        '</div></div>'+
+      (many?'<div class="igdots">'+imgs.map((x,i)=>'<i class="igdot'+(i?'':' on')+'"></i>').join('')+'</div>':'')+
       '<div class="igacts">'+
-        '<button class="igact" data-a="like" aria-label="Like"><svg viewBox="0 0 24 24">'+
-          '<path d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.152 14.081 2.5 12.194 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938Z"/></svg>'+
-          '<b>'+niceNum(postLikes(it))+'</b></button>'+
-        '<button class="igact" data-a="comment" aria-label="Comments"><svg viewBox="0 0 24 24">'+
-          '<path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"/></svg>'+
-          '<b>'+niceNum(postComments(it))+'</b></button>'+
-        '<button class="igact" data-a="share" aria-label="Share"><svg viewBox="0 0 24 24">'+
-          '<path d="M22 3 9.218 10.083"/><path d="M11.698 20.334 22 3.001 2 3.001 9.218 10.084Z"/></svg></button>'+
-        '<button class="igact push" data-a="save" aria-label="Save"><svg viewBox="0 0 24 24">'+
-          '<polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"/></svg></button>'+
+        act('like','Like',postLikes(it))+
+        act('comment','Comments',postComments(it))+
+        act('repost','Reposts',postReposts(it))+
+        act('share','Shares',postShares(it))+
+        act('save','Save',null)+
       '</div>'+
-      (cap?'<div class="igcap'+(long?' clip':'')+'"><span class="txt"><b>'+esc(p.user||IG_DEF.user)+'</b>'+esc(cap)+'</span>'+
+      (cap?'<div class="igcap'+(long?' clip':'')+'"><span class="txt"><b>'+user+'</b>'+esc(cap)+'</span>'+
         (long?' <span class="more">more</span>':'')+'</div>':'')+
       '<div class="igdate">'+esc(postDate(it))+'</div>'+
     '</article>';
   }).join('');
+  wireCarousels(host);
+}
+/* the dots and the counter follow the swipe itself, so they can never disagree
+   with what is on screen — the browser does the snapping and the momentum */
+function wireCarousels(host){
+  $$('.igcar',host).forEach(car=>{
+    const track=$('.igtrack',car);
+    const dots=$$('.igdot',car.parentElement.querySelector('.igdots')||document.createElement('i'));
+    const count=$('.igcount',car);
+    const total=$$('.igslide',track).length;
+    if(total<2) return;
+    let raf=null;
+    const sync=()=>{
+      raf=null;
+      const i=Math.max(0,Math.min(total-1,Math.round(track.scrollLeft/Math.max(1,track.clientWidth))));
+      if(count) count.textContent=(i+1)+'/'+total;
+      dots.forEach((d,n)=>{
+        d.classList.toggle('on',n===i);
+        d.classList.toggle('far',Math.abs(n-i)>2);
+      });
+    };
+    track.addEventListener('scroll',()=>{ if(!raf) raf=requestAnimationFrame(sync); },{passive:true});
+  });
 }
 function openFeed(id){
   feedOn=true;
@@ -4011,8 +4121,16 @@ $('#igFeed').addEventListener('click',e=>{
   }
   const cap=e.target.closest('.igcap');
   if(cap&&cap.classList.contains('clip')){ cap.classList.remove('clip'); return; }
-  if(e.target.closest('.igshot img')) openLightbox(it);
+  const img=e.target.closest('.igslide img');
+  if(img && !igSwiped) openLightbox({type:'image',src:img.getAttribute('src'),caption:it.caption});
 });
+/* a swipe must never be read as a tap on the photo under it */
+let igSwiped=false, swipeT=null;
+$('#igFeed').addEventListener('scroll',e=>{
+  if(!e.target.classList||!e.target.classList.contains('igtrack')) return;
+  igSwiped=true; clearTimeout(swipeT);
+  swipeT=setTimeout(()=>{ igSwiped=false; },220);
+},true);
 /* the arrow means the same thing Instagram's does: out of here. On the posts
    page that is back to the grid, on the profile it is back to the day. */
 $('#igBack').addEventListener('click',()=>{
@@ -4199,23 +4317,40 @@ addEventListener('resize',()=>{
   weekT=setTimeout(()=>{ if($('#v-today').classList.contains('active')) renderStreak(); },180);
 });
 
-/* photos arrive at the end of the grid, newest last, the way a feed grows */
+/* pick several and they become one post you swipe through, exactly as they do
+   on Instagram — not several posts */
+let addTarget=null;                       /* set when adding into an open post */
 $('#vFile').addEventListener('change',async e=>{
   const files=[...e.target.files]; e.target.value='';
+  const into=addTarget; addTarget=null;
   if(!files.length) return;
   toast(files.length>1?'Adding '+files.length+' photos':'Adding photo');
-  let n=vPosts().length, bad=0, last=null;
+  const got=[]; let bad=0;
   for(const f of files){
-    try{
-      const {src,ar}=await shrinkImage(f);
-      const it={id:uid(),type:'image',src,ar,caption:'',order:n++,created:Date.now()};
-      visionItems.push(it); await dbPut('vision',it); last=it;
-    }catch(err){ bad++; }
+    try{ got.push(await shrinkImage(f)); }catch(err){ bad++; }
+  }
+  if(!got.length){ toast('Those images could not be added'); return; }
+  if(into){
+    setImgs(into,postImgs(into).concat(got));
+    await dbPut('vision',into);
+    paintPostImgs();
+    renderVision(); buzz(10);
+    toast(got.length>1?got.length+' photos added':'Photo added');
+    return;
+  }
+  const it={id:uid(),type:'image',caption:'',order:vPosts().length,created:Date.now()};
+  setImgs(it,got);
+  visionItems.push(it);
+  try{ await dbPut('vision',it); }
+  catch(err){
+    console.error('Dayflow · post',err);
+    visionItems=visionItems.filter(x=>x!==it);
+    toast('That post was too large to store'); return;
   }
   if(feedOn) closeFeed();
   renderVision(); renderSettings(); buzz(10);
   if(bad) toast(bad+' image'+(bad>1?'s':'')+' could not be added');
-  else if(last && files.length===1) setTimeout(()=>openVSheet(last),260);
+  setTimeout(()=>openVSheet(it),260);
 });
 /* a document is picked, titled, then saved like anything else on the page */
 const PDF_MAX=20*1024*1024;
@@ -4477,6 +4612,17 @@ addEventListener('keydown',e=>{
 });
 
 /* ---------- one post, or one document ---------- */
+/* the photos of the post being edited, with the order they will be swiped in */
+function paintPostImgs(){
+  const wrap=$('#vThumbs');
+  if(!vEditing || isPdf(vEditing)){ wrap.innerHTML=''; return; }
+  const imgs=postImgs(vEditing);
+  wrap.innerHTML=imgs.map((im,i)=>
+    '<div class="vthumb" data-i="'+i+'"><img src="'+im.src+'" alt="">'+
+      '<span class="n">'+(i+1)+'</span>'+
+      (imgs.length>1?'<button class="vthumbx" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>':'')+
+    '</div>').join('');
+}
 function openVSheet(it,isNew){
   vEditing=it; vIsNew=!!isNew;
   const isP=isPdf(it);
@@ -4485,13 +4631,17 @@ function openVSheet(it,isNew){
     ? '<div class="pdfcard"><span class="pic">'+PDF_ICON+'</span><div class="t">'+
       '<div class="n">'+esc((it.name||'Document')+'.pdf')+'</div>'+
       '<div class="d">'+esc(fmtBytes(it.size)||'PDF')+'</div></div></div>'
-    : '<img class="vprev" src="'+it.src+'" alt="">';
+    : '';
+  $('#vImgWrap').hidden=isP;
   $('#vStatWrap').hidden=isP;
   $('#vCaption').placeholder=isP?'Title — optional':'Write a caption…';
   $('#vCaption').value=it.caption||'';
   if(!isP){
+    paintPostImgs();
     $('#vLikes').value=String(postLikes(it));
     $('#vComments').value=String(postComments(it));
+    $('#vReposts').value=String(postReposts(it));
+    $('#vShares').value=String(postShares(it));
   }
   $('#vDelete').textContent='Delete'; $('#vDelete').dataset.armed='';
   $('#vDelete').parentElement.hidden=!!isNew;
@@ -4504,6 +4654,17 @@ function closeVSheet(){
   vEditing=null; vIsNew=false;
 }
 $('#vCancel').addEventListener('click',closeVSheet);
+$('#vAddImgs').addEventListener('click',()=>{ addTarget=vEditing; $('#vFile').click(); });
+$('#vThumbs').addEventListener('click',async e=>{
+  const x=e.target.closest('.vthumbx'); if(!x||!vEditing) return;
+  const i=+x.closest('.vthumb').dataset.i;
+  const imgs=postImgs(vEditing);
+  if(imgs.length<2){ toast('A post keeps at least one photo'); return; }
+  imgs.splice(i,1);
+  setImgs(vEditing,imgs);
+  await dbPut('vision',vEditing);
+  paintPostImgs(); renderVision(); buzz(12);
+});
 $('#vSave').addEventListener('click',async()=>{
   if(!vEditing) return;
   const doc=isPdf(vEditing);
@@ -4511,6 +4672,8 @@ $('#vSave').addEventListener('click',async()=>{
   if(!doc){
     vEditing.likes=$('#vLikes').value.trim();
     vEditing.comments=$('#vComments').value.trim();
+    vEditing.reposts=$('#vReposts').value.trim();
+    vEditing.shares=$('#vShares').value.trim();
   }
   const added=vIsNew;
   if(vIsNew) visionItems.push(vEditing);
@@ -4659,7 +4822,11 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
 }));
 addEventListener('scroll',()=>{
   $('#topbar').classList.toggle('stuck',scrollY>6);
-  const ig=$('.igtop'); if(ig) ig.classList.toggle('stuck',scrollY>4);
+  const bar=$('.igtop');
+  if(bar) bar.classList.toggle('stuck',scrollY>4);
+  /* past the profile buttons the bar takes the Follow over, as Instagram's does */
+  const b=$('#vBody');
+  if(b) b.classList.toggle('scrolled',!feedOn && scrollY>210);
 },{passive:true});
 
 (function accents(){
