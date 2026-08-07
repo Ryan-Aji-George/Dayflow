@@ -814,7 +814,11 @@ button.tphead:active{background:var(--tint)}
 .gwrap{max-width:400px;margin:0 auto;padding:0 22px 40px;
   min-height:62vh;display:flex;align-items:center;
   animation:fadeIn .4s var(--ease) both}
-.gpick{flex:1;display:flex;flex-direction:column;gap:10px}
+.ginner{flex:1;min-width:0}
+.gask{text-align:center;margin-bottom:26px}
+.gask h2{margin:0;font-size:26px;font-weight:700;letter-spacing:-.035em;line-height:1.15}
+.gask p{margin:9px auto 0;max-width:30ch;font-size:14.5px;line-height:1.5;color:var(--ig-dim)}
+.gpick{display:flex;flex-direction:column;gap:10px}
 .gbtn{display:flex;align-items:center;gap:12px;width:100%;height:50px;padding:0 16px;
   border-radius:10px;text-align:left;font-size:15px;font-weight:600;letter-spacing:-.012em;
   background:var(--ig-fill);color:var(--ig-ink);
@@ -855,6 +859,44 @@ button.tphead:active{background:var(--tint)}
 .igsheet .igbtn:active{transform:scale(.98);filter:brightness(1.12)}
 .igsheet .igbtn.plain{background:transparent;color:var(--ig-ink);font-weight:500}
 .igsheet .igbtn.plain:active{background:rgba(255,255,255,.07);filter:none}
+
+/* ---------- a sheet that takes the whole screen ----------
+   The record is a page, not a peek: it holds a day's whole account, so it is
+   given the room a page gets. The same element, the same ids, the same
+   handlers — only the frame around them changes. The doubled class keeps the
+   tablet's centred-card rules for .sheet from undoing any of it. */
+.sheet.fullsheet{
+  top:0;left:0;right:0;bottom:0;height:100%;width:auto;
+  max-width:none;max-height:none;
+  border:0;border-radius:0;padding:0;box-shadow:none;
+  background:var(--bg);
+  transform:translateY(100%);
+  transition:transform .42s var(--ease);
+}
+.sheet.fullsheet.on{transform:none}
+.fullsheet .grabber{display:none}
+.fshead{position:sticky;top:0;z-index:6;
+  padding:calc(10px + env(safe-area-inset-top)) 20px 0;
+  background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid var(--line)}
+.fsbar{display:flex;align-items:center;gap:12px;padding:4px 0 12px;max-width:640px;margin:0 auto}
+.fsbar h3{flex:1;min-width:0;margin:0;font-size:24px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fsx{width:38px;height:38px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
+  transition:transform .2s var(--spring),color .2s var(--ease),border-color .2s var(--ease)}
+.fsx:active{transform:scale(.9);color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.fsx svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* the strip runs edge to edge whatever padding the head is carrying */
+.fshead .stripflat{margin:0 -20px;padding:0 20px 10px}
+.fsbody{padding:22px 20px 0;max-width:640px;margin:0 auto}
+.fsfoot{position:sticky;bottom:0;z-index:6;margin-top:26px;
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-top:1px solid var(--line)}
+.fsfoot .sheet-actions{margin:0 auto;max-width:640px}
 
 /* ---------- lock ---------- */
 .vlock{padding:70px 0 40px;text-align:center}
@@ -1632,6 +1674,11 @@ button.tphead:active{background:var(--tint)}
           </button>
         </div>
         <div class="gwrap">
+          <div class="ginner">
+          <div class="gask">
+            <h2>Where to?</h2>
+            <p id="gateSub">&mdash;</p>
+          </div>
           <div class="gpick">
             <button class="gbtn primary" id="gateProfile">
               <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
@@ -1641,6 +1688,7 @@ button.tphead:active{background:var(--tint)}
               <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17.5h4"/></svg>
               <span class="l">Documents</span>
             </button>
+          </div>
           </div>
         </div>
       </div>
@@ -2257,10 +2305,17 @@ button.tphead:active{background:var(--tint)}
   </div>
 </div>
 
-<div class="sheet" id="recSheet">
-  <div class="grabber"></div>
-  <h3 id="recDate">Today</h3>
-  <div class="stripflat"><div class="daystrip" id="recStrip"></div></div>
+<div class="sheet fullsheet" id="recSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="recX" aria-label="Close the record">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </button>
+      <h3 id="recDate">Today</h3>
+    </div>
+    <div class="stripflat"><div class="daystrip" id="recStrip"></div></div>
+  </div>
+  <div class="fsbody">
   <div class="field">
     <span class="eyebrow">Completed</span>
     <div class="rlist" id="recDone"></div>
@@ -2301,9 +2356,12 @@ button.tphead:active{background:var(--tint)}
       </div>
     </div>
   </div>
-  <div class="sheet-actions">
-    <button class="btn ghost" id="recFeedbackAll">All feedback</button>
-    <button class="btn" id="recClose">Done</button>
+  </div>
+  <div class="fsfoot">
+    <div class="sheet-actions">
+      <button class="btn ghost" id="recFeedbackAll">All feedback</button>
+      <button class="btn" id="recClose">Done</button>
+    </div>
   </div>
 </div>
 
@@ -4068,6 +4126,7 @@ $('#recStrip').addEventListener('click',e=>{
   recDay=b.dataset.d; renderRecord(); buzz(5);
 });
 $('#recClose').addEventListener('click',closeRecord);
+$('#recX').addEventListener('click',closeRecord);
 async function addFromField(inputId,kind){
   const el=$(inputId), text=el.value.trim();
   if(!text){ el.focus(); toast('Write what you finished'); return; }
@@ -4376,7 +4435,21 @@ function postDate(it){
 }
 const BADGE='<i class="igbadge"></i>';
 
-/* the door carries nothing about the profile — only the two ways on from it */
+/* the door carries nothing about the profile — only the two ways on from it,
+   and a line under the question that turns over once a day rather than on
+   every repaint, so it never flickers while you are standing there */
+const GATE_LINES=[
+  'The life you are building, or the plans behind it.',
+  'Look at where this goes, or read how it gets there.',
+  'The picture, or the paperwork.',
+  'What you are building, or what it takes.',
+  'See it, or study it.'
+];
+function paintGate(){
+  const el=$('#gateSub'); if(!el) return;
+  const d=Math.floor(TODAY.getTime()/86400000), n=GATE_LINES.length;
+  el.textContent=GATE_LINES[((d%n)+n)%n];
+}
 function visionStage(s){
   vStage = s==='profile' ? 'profile' : 'gate';
   renderVision(); scrollTo(0,0);
@@ -4390,6 +4463,7 @@ $('#gateBack').addEventListener('click',()=>{
 function renderVision(){
   syncVisionLock();
   if(visionLocked()) return;
+  paintGate();
   const p=ig();
   /* the bar says Posts while the feed is open, so it is left alone there */
   if(!feedOn) $('#igTopName').textContent=p.user||IG_DEF.user;
