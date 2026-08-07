@@ -1071,6 +1071,78 @@ button.tphead:active{background:var(--tint)}
 .rvf{animation:rvFade .24s var(--ease) both}
 .rvp{animation:rvPop .3s var(--spring) both}
 
+/* ---------- divider ----------
+   A named break in the list of habits. On Today it is not a card and not a
+   row: it is the same hairline the panel already draws between habits, with
+   its name resting on it. Unnamed, it is only the line. */
+.hdiv{display:flex;align-items:center;gap:11px;padding:14px 16px 10px;
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg,var(--tint),transparent);
+  animation:rvFade .34s var(--ease) both}
+.hdiv .lbl{flex:0 0 auto;max-width:68%;font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdiv .rule{flex:1;min-width:12px;height:1px;border-radius:1px;
+  background:linear-gradient(to right,var(--line-2),transparent)}
+.hdiv.bare{padding:0;height:15px;background:none;border-top:1px solid var(--line)}
+.hdiv.bare .rule{margin:7px 16px 0;
+  background:linear-gradient(to right,transparent,var(--line-2) 22%,var(--line-2) 78%,transparent)}
+.tpanel.todo-set .hdiv .lbl{color:color-mix(in srgb,var(--acc) 70%,var(--ink-3))}
+/* the card's header already drew the line above the first thing in it */
+.tpinner>.hdiv:first-child{border-top:0}
+
+/* the same divider as a row you can drag, in settings */
+.hrow.divider{background:transparent;border-style:dashed;padding-right:14px}
+.hrow.divider .hinfo .n{font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-2)}
+.hrow.divider .hinfo .n.blank{color:var(--ink-3);letter-spacing:.09em}
+.dmark{width:22px;height:22px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink-3)}
+.dmark svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+
+/* ---------- settings: a front page of doors ----------
+   Each group sits behind its own title, so the page you land on asks one
+   question — which thing did you come to change — instead of all of them. */
+#setPages{display:none}
+#v-settings.sub #setRoot{display:none}
+#v-settings.sub #setPages{display:block}
+.subpage{display:none}
+.subpage.on{display:block;animation:spIn .34s var(--ease) both}
+@keyframes spIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+#setRoot{animation:rvFade .3s var(--ease) both}
+.sphead{display:flex;align-items:center;gap:12px;padding:14px 0 20px}
+.spback{width:38px;height:38px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
+  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
+  transition:transform .2s var(--spring),color .2s var(--ease),border-color .2s var(--ease)}
+.spback:active{transform:scale(.9);color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.spback svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sptitle{flex:1;min-width:0}
+.sptitle .eyebrow{display:block}
+.sptitle h2{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.042em;margin:5px 0 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spnote{font-size:13px;color:var(--ink-3);line-height:1.55;margin:-4px 2px 24px}
+
+.smenu{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.smenu>.eyebrow{display:block;padding:16px 2px 2px}
+.smenu>.eyebrow:first-child{padding-top:0}
+.smrow{width:100%;display:flex;align-items:center;gap:13px;text-align:left;
+  padding:13px 14px;border-radius:var(--r-md);
+  background:var(--surf);border:1px solid var(--line);box-shadow:var(--shadow);
+  transition:transform .2s var(--spring),border-color .22s var(--ease),background .22s var(--ease)}
+.smrow:active{transform:scale(.985);background:var(--surf-2);border-color:var(--line-2)}
+.smrow .ico{width:36px;height:36px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc)}
+.smrow.quiet .ico{background:var(--cell);color:var(--ink-2)}
+.smrow .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.smrow .t{flex:1;min-width:0}
+.smrow .t .n{font-size:15px;font-weight:600;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.smrow .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.smrow .go{flex:0 0 auto;width:18px;color:var(--ink-3);display:grid;place-items:center}
+.smrow .go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.06s!important}
 }
@@ -1187,6 +1259,13 @@ button.tphead:active{background:var(--tint)}
   .srow .t .d{font-size:13px}
   .fxrow{padding:8px 8px 8px 16px}
   .fxin{height:38px;font-size:15.5px}
+  .smrow{padding:15px 16px;gap:15px}
+  .smrow .t .n{font-size:16px}
+  .smrow .t .d{font-size:13px}
+  .smrow .ico{width:40px;height:40px;border-radius:14px}
+  .sptitle h2{font-size:30px}
+  .spback{width:42px;height:42px;border-radius:14px}
+  .hdiv{padding:16px 19px 11px}
   .cell{border-radius:11px;font-size:12px}
   .pdbig{font-size:50px}
 
@@ -1250,8 +1329,10 @@ button.tphead:active{background:var(--tint)}
   .pcol{display:block}
   .pcol-b .psec{margin-top:2px}
 
-  #v-settings.active{column-count:2;column-gap:32px}
-  #v-settings.active .ptitle,#v-settings.active .foot{column-span:all}
+  /* the doors stand two abreast; a page behind one keeps a single measure */
+  .smenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:start}
+  .smenu>.eyebrow{grid-column:1/-1}
+  .subpage{max-width:640px}
   #v-settings .group{break-inside:avoid;page-break-inside:avoid}
   #v-settings .setstrip{margin-left:0;margin-right:0;padding-left:2px;padding-right:2px}
 }
@@ -1497,42 +1578,15 @@ button.tphead:active{background:var(--tint)}
       <input type="file" id="igAvaFile" accept="image/*" hidden>
     </section>
 
-    <!-- ===== SETTINGS ===== -->
+    <!-- ===== SETTINGS =====
+         The front of the page is a list of doors: a title, a line saying what
+         is behind it, and nothing else. Every panel that used to shout at once
+         is still here, one tap in, exactly as it was. -->
     <section class="view" id="v-settings">
+      <div id="setRoot">
       <div class="ptitle">
         <span class="eyebrow">Settings</span>
         <h2>Preferences</h2>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">Habits</span>
-        <div class="setstrip" id="setStrip"></div>
-        <div class="hlist" id="hlist"></div>
-        <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">Pre-focus checklist</span>
-        <div class="panel" id="fxPanel"></div>
-        <div style="display:flex;gap:8px;margin-top:9px">
-          <button class="btn ghost" id="fxAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
-          <button class="btn ghost" id="fxReset">Defaults</button>
-        </div>
-        <p class="hint">The boxes you tick before a session. What you tick is never saved &mdash; it clears itself when the app closes.</p>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">Privacy</span>
-        <div class="panel">
-          <div class="srow">
-            <div class="t"><div class="n">Lock the Vision page</div>
-              <div class="d">Asks for a PIN before the board is shown.</div></div>
-            <button class="switch" id="lockSw" role="switch"></button>
-          </div>
-          <div class="btnrow" id="lockRow" hidden>
-            <button class="btn ghost" id="lockChange">Change PIN</button>
-          </div>
-        </div>
       </div>
 
       <div class="group" id="installGroup" hidden>
@@ -1546,60 +1600,189 @@ button.tphead:active{background:var(--tint)}
         </div>
       </div>
 
-      <div class="group">
-        <span class="eyebrow">Appearance</span>
-        <div class="panel">
-          <div class="srow">
-            <div class="t"><div class="n">Theme</div></div>
-            <div class="seg-ctrl" id="themeCtrl">
-              <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
+      <nav class="smenu" id="setMenu">
+        <span class="eyebrow">Your day</span>
+        <button class="smrow" data-sp="habits">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h9M4 12h13M4 17h7"/><path d="m17 5.6 1.6 1.6L22 3.8"/></svg></span>
+          <span class="t"><span class="n">Habits &amp; dividers</span><span class="d" id="mHabits">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="focus">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="m4 12.5 4 4 8-9"/><path d="M20 7v10a3 3 0 0 1-3 3H7"/></svg></span>
+          <span class="t"><span class="n">Pre-focus checklist</span><span class="d" id="mFocus">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="run">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M5.5 21V4"/><path d="M5.5 4.6h11l-2 3.2 2 3.2h-11"/></svg></span>
+          <span class="t"><span class="n">The run</span><span class="d" id="mRun">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+
+        <span class="eyebrow">Look and feel</span>
+        <button class="smrow" data-sp="look">
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4a8.6 8.6 0 0 1 0 17.2z"/></svg></span>
+          <span class="t"><span class="n">Appearance</span><span class="d" id="mLook">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="intro">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h10M4 17.5h6"/><path d="M17.5 14.5v6M14.5 17.5h6"/></svg></span>
+          <span class="t"><span class="n">Opening screen</span><span class="d" id="mIntro">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="privacy">
+          <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg></span>
+          <span class="t"><span class="n">Privacy</span><span class="d" id="mPrivacy">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+
+        <span class="eyebrow">Your data</span>
+        <button class="smrow quiet" data-sp="parts">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 15V4M8.5 7.5 12 4l3.5 3.5"/><path d="M4.5 15v3.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V15"/></svg></span>
+          <span class="t"><span class="n">Move one part</span><span class="d" id="mParts">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="smrow quiet" data-sp="data">
+          <span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span>
+          <span class="t"><span class="n">Everything</span><span class="d" id="mData">&mdash;</span></span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+      </nav>
+      <p class="foot">Dayflow 2.0 · everything stays on this device</p>
+      </div>
+
+      <div id="setPages">
+
+      <section class="subpage" id="sp-habits">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Habits</h2></div>
+        </header>
+        <div class="group">
+          <span class="eyebrow">Sets</span>
+          <div class="setstrip" id="setStrip"></div>
+          <div class="hlist" id="hlist"></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
+            <button class="btn ghost" id="addDivider"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M8 7h8M8 17h8"/></svg>Add divider</button>
+          </div>
+          <p class="hint">Drag a handle to reorder. A divider is a named break in the list &mdash; on Today it heads whichever habits follow it, inside the card they land in.</p>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-focus">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Pre-focus</h2></div>
+        </header>
+        <p class="spnote">The boxes you tick before a session. What you tick is never saved &mdash; it clears itself when the app closes.</p>
+        <div class="group">
+          <div class="panel" id="fxPanel"></div>
+          <div style="display:flex;gap:8px;margin-top:9px">
+            <button class="btn ghost" id="fxAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+            <button class="btn ghost" id="fxReset">Defaults</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-run">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>The run</h2></div>
+        </header>
+        <p class="spnote">A stretch of days, counted off at the top of Today. Leave it clear and the card never appears.</p>
+        <div class="group">
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Starts</div><div class="d">Day one of the stretch you are counting.</div></div>
+              <input class="input" id="runStart" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+            </div>
+            <div class="srow">
+              <div class="t"><div class="n">Ends</div><div class="d">The last day of it.</div></div>
+              <input class="input" id="runEnd" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+            </div>
+            <div class="btnrow" style="border-bottom:0"><button class="btn ghost" id="runClear">Clear the run</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-look">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Appearance</h2></div>
+        </header>
+        <div class="group">
+          <span class="eyebrow">Theme</span>
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Light or dark</div><div class="d">Auto follows the device.</div></div>
+              <div class="seg-ctrl" id="themeCtrl">
+                <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
+              </div>
+            </div>
+            <div class="swatches" id="accents"></div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="eyebrow">Feedback</span>
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Haptics</div><div class="d">A firm buzz when you tick something off.</div></div>
+              <button class="switch" id="hapticSw" role="switch"></button>
             </div>
           </div>
-          <div class="swatches" id="accents"></div>
         </div>
-      </div>
+      </section>
 
-      <div class="group">
-        <span class="eyebrow">Feedback</span>
-        <div class="panel">
-          <div class="srow">
-            <div class="t"><div class="n">Haptics</div><div class="d">A firm buzz when you tick something off.</div></div>
-            <button class="switch" id="hapticSw" role="switch"></button>
-          </div>
-          <div class="srow">
-            <div class="t"><div class="n">Opening animation</div><div class="d">Show the title screen and wait for a tap on every start.</div></div>
-            <button class="switch" id="introSw" role="switch"></button>
-          </div>
-        </div>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">The run</span>
-        <div class="panel">
-          <div class="srow">
-            <div class="t"><div class="n">Starts</div><div class="d">Day one of the stretch you are counting.</div></div>
-            <input class="input" id="runStart" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
-          </div>
-          <div class="srow">
-            <div class="t"><div class="n">Ends</div><div class="d">The last day of it.</div></div>
-            <input class="input" id="runEnd" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
-          </div>
-          <div class="btnrow" style="border-bottom:0"><button class="btn ghost" id="runClear">Clear the run</button></div>
-        </div>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">Opening words</span>
-        <div class="panel">
-          <div style="padding:14px 16px">
-            <textarea class="input area" id="introText" placeholder="Reset.&#10;Rebuild.&#10;Dominate" maxlength="90" style="min-height:96px"></textarea>
-            <p class="hint">One line each, three at most. The last line takes your accent colour.</p>
+      <section class="subpage" id="sp-intro">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Opening screen</h2></div>
+        </header>
+        <div class="group">
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Opening animation</div><div class="d">Show the title screen and wait for a tap on every start.</div></div>
+              <button class="switch" id="introSw" role="switch"></button>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="group">
+          <span class="eyebrow">Opening words</span>
+          <div class="panel">
+            <div style="padding:14px 16px">
+              <textarea class="input area" id="introText" placeholder="Reset.&#10;Rebuild.&#10;Dominate" maxlength="90" style="min-height:96px"></textarea>
+              <p class="hint">One line each, three at most. The last line takes your accent colour.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div class="group">
-        <span class="eyebrow">Move one part</span>
+      <section class="subpage" id="sp-privacy">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Privacy</h2></div>
+        </header>
+        <p class="spnote">The PIN is kept on this device and nowhere else.</p>
+        <div class="group">
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Lock the Vision page</div>
+                <div class="d">Asks for a PIN before the board is shown.</div></div>
+              <button class="switch" id="lockSw" role="switch"></button>
+            </div>
+            <div class="btnrow" id="lockRow" hidden>
+              <button class="btn ghost" id="lockChange">Change PIN</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-parts">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Move one part</h2></div>
+        </header>
+        <div class="group">
         <div class="panel" id="partPanel">
           <div class="partrow" data-part="habits">
             <div class="t"><div class="n">Habits and marks</div><div class="d" id="cntHabits">—</div></div>
@@ -1629,21 +1812,29 @@ button.tphead:active{background:var(--tint)}
         </div>
         <p class="hint">Up sends that part to a file. Down merges a file back in — anything already here stays, and the rest of your data is never touched.</p>
         <input type="file" id="partFile" accept="application/json,.json" hidden>
-      </div>
-
-      <div class="group">
-        <span class="eyebrow">Everything</span>
-        <div class="panel">
-          <div class="srow"><div class="t"><div class="n" id="dataStat">—</div><div class="d">Stored in this browser only. Nothing is uploaded.</div></div></div>
-          <div class="btnrow">
-            <button class="btn ghost" id="exportBtn">Export</button>
-            <button class="btn ghost" id="importBtn">Import</button>
-          </div>
-          <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
         </div>
+      </section>
+
+      <section class="subpage" id="sp-data">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Everything</h2></div>
+        </header>
+        <div class="group">
+          <div class="panel">
+            <div class="srow"><div class="t"><div class="n" id="dataStat">—</div><div class="d">Stored in this browser only. Nothing is uploaded.</div></div></div>
+            <div class="btnrow">
+              <button class="btn ghost" id="exportBtn">Export</button>
+              <button class="btn ghost" id="importBtn">Import</button>
+            </div>
+            <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
+          </div>
+          <p class="hint">Erasing empties every store on this device and cannot be undone. Export first if there is anything worth keeping.</p>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </section>
+
       </div>
-      <p class="foot">Dayflow 2.0 · everything stays on this device</p>
-      <input type="file" id="importFile" accept="application/json,.json" hidden>
     </section>
   </main>
 
@@ -1716,6 +1907,28 @@ button.tphead:active{background:var(--tint)}
     <button class="btn" id="bSave">Save</button>
   </div>
   <div style="margin-top:9px" id="bDeleteWrap" hidden><button class="btn danger" id="bDelete">Delete block</button></div>
+</div>
+
+<!-- one divider: a named break in the list of habits -->
+<div class="sheet" id="divSheet">
+  <div class="grabber"></div>
+  <h3 id="divTitle">New divider</h3>
+  <div class="field">
+    <span class="eyebrow">Label</span>
+    <input class="input big" id="dName" placeholder="Morning" maxlength="24" autocomplete="off">
+    <div class="presets" id="divQuick" style="margin-top:12px">
+      <button class="preset" data-l="Morning">Morning</button>
+      <button class="preset" data-l="Afternoon">Afternoon</button>
+      <button class="preset" data-l="Evening">Evening</button>
+      <button class="preset" data-l="Non-negotiable">Non-negotiable</button>
+    </div>
+    <p class="hint">Leave it empty for a plain line. Drag the divider in the list to choose where the break falls.</p>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="dCancel">Cancel</button>
+    <button class="btn" id="dSave">Save</button>
+  </div>
+  <div style="margin-top:9px" id="dDeleteWrap" hidden><button class="btn danger" id="dDelete">Remove divider</button></div>
 </div>
 
 <!-- perfect days sheet -->
@@ -2060,11 +2273,33 @@ const dbClear=n=>wrap(store(n,'readwrite').clear());
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map();
 let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
-       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0};
+       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,dividers:[]};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
 const activeSet=()=>sets.find(x=>x.id===S.activeSet)||sets[0];
+
+/* ===========================================================
+   Dividers — a named break between habits
+   A divider carries nothing but a label and a place. It shares the habits'
+   own order, so one drag settles both, and it is kept in settings rather
+   than a store of its own: no habit, no mark and no file already exported
+   changes shape because of it.
+   =========================================================== */
+const allDividers=()=>Array.isArray(S.dividers)?S.dividers:(S.dividers=[]);
+const setDividers=()=>allDividers().filter(d=>d.setId===S.activeSet)
+  .sort((a,b)=>(a.order||0)-(b.order||0));
+/* the habits and the dividers as the one list they are dragged in */
+function orderedList(){
+  return [...habits.map(h=>({kind:'h',ref:h})),...setDividers().map(d=>({kind:'d',ref:d}))]
+    .sort((a,b)=>((a.ref.order||0)-(b.ref.order||0))||(a.kind==='h'?-1:1));
+}
+async function writeOrder(items){
+  for(let i=0;i<items.length;i++) items[i].ref.order=i;
+  for(const h of habits) await dbPut('habits',h);
+  await saveSettings();
+  applySet();
+}
 
 const THREADS=['#DE8C42','#D4605A','#C25E93','#8A6FD6','#4C86D4','#2BA396','#6BA342','#7C8BA1'];
 const ACCENTS=['#F2A93B','#4EA8F5','#8B7CF7','#29B98E','#F0587F','#8D98AB'];
@@ -2341,8 +2576,25 @@ function panel(label,list,cls,mode,collapsible){
   /* the rows stay in the page so opening and shutting can actually animate */
   const body=document.createElement('div'); body.className='tpbody';
   const inner=document.createElement('div'); inner.className='tpinner';
-  list.forEach(h=>inner.appendChild(habitRow(h,mode)));
+  /* a divider heads whichever habits follow it and land in this card. One with
+     nothing after it here is simply not drawn, so no card ever ends on a label
+     with nothing under it. */
+  const here=new Set(list.map(h=>h.id));
+  let pending=null;
+  orderedList().forEach(it=>{
+    if(it.kind==='d'){ pending=it.ref; return; }
+    if(!here.has(it.ref.id)) return;
+    if(pending){ inner.appendChild(dividerRow(pending)); pending=null; }
+    inner.appendChild(habitRow(it.ref,mode));
+  });
   body.appendChild(inner); el.appendChild(body);
+  return el;
+}
+function dividerRow(d){
+  const lbl=(d.label||'').trim();
+  const el=document.createElement('div');
+  el.className='hdiv'+(lbl?'':' bare');
+  el.innerHTML=(lbl?'<span class="lbl">'+esc(lbl)+'</span>':'')+'<i class="rule"></i>';
   return el;
 }
 function habitRow(h,mode){
@@ -2652,26 +2904,41 @@ $('#noteToggle').addEventListener('click',()=>{
 /* ===========================================================
    Habits
    =========================================================== */
+const HANDLE_SVG='<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>';
+const GO_SVG='<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
 function renderHabits(){
   const list=$('#hlist'); list.innerHTML='';
   if(!habits.length){
     list.innerHTML='<div class="empty"><h3>No habits in this set</h3><p>Add two or three you actually want to keep. Other sets are untouched.</p></div>';
-    return;
   }
-  habits.forEach(h=>{
+  /* habits and dividers are the one list, so one drag settles both */
+  orderedList().forEach(it=>{
     const row=document.createElement('div');
-    row.className='hrow'; row.dataset.id=h.id; row.style.setProperty('--c',h.color);
-    row.innerHTML=
-      '<div class="handle" aria-label="Reorder"><svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg></div>'+
-      '<i class="hbar"></i>'+
-      '<div class="hinfo"><div class="n">'+esc(h.name)+'</div><div class="s">'+scheduleLabel(h.days)+'</div></div>'+
-      '<div class="hgo"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></div>';
+    row.className='hrow'+(it.kind==='d'?' divider':'');
+    row.dataset.id=it.ref.id; row.dataset.k=it.kind;
+    if(it.kind==='h'){
+      row.style.setProperty('--c',it.ref.color);
+      row.innerHTML=HANDLE_SVG+'<i class="hbar"></i>'+
+        '<div class="hinfo"><div class="n">'+esc(it.ref.name)+'</div>'+
+        '<div class="s">'+scheduleLabel(it.ref.days)+'</div></div>'+GO_SVG;
+    }else{
+      const lbl=(it.ref.label||'').trim();
+      row.innerHTML=HANDLE_SVG+
+        '<div class="dmark"><svg viewBox="0 0 24 24"><path d="M3 12h18"/></svg></div>'+
+        '<div class="hinfo"><div class="n'+(lbl?'':' blank')+'">'+esc(lbl||'Plain line')+'</div>'+
+        '<div class="s">Divider</div></div>'+GO_SVG;
+    }
     list.appendChild(row);
   });
 }
 $('#hlist').addEventListener('click',e=>{
   if(e.target.closest('.handle')) return;
   const row=e.target.closest('.hrow'); if(!row) return;
+  if(row.dataset.k==='d'){
+    const d=allDividers().find(x=>x.id===row.dataset.id);
+    if(d) openDivSheet(d);
+    return;
+  }
   const h=habits.find(x=>x.id===row.dataset.id); if(h) openSheet(h);
 });
 (function initDrag(){
@@ -2706,18 +2973,66 @@ $('#hlist').addEventListener('click',e=>{
     const {rows,idx,cur}=drag; drag=null;
     rows.forEach(r=>{r.style.transform='';r.classList.remove('dragging');});
     if(cur!==idx){
-      const [moved]=habits.splice(idx,1);
-      habits.splice(cur,0,moved);
-      await persistOrder();
+      const items=orderedList();
+      const [moved]=items.splice(idx,1);
+      items.splice(cur,0,moved);
+      await writeOrder(items);
       renderHabits(); renderToday();
     }
   };
   list.addEventListener('pointerup',end);
   list.addEventListener('pointercancel',end);
 })();
-async function persistOrder(){
-  for(let i=0;i<habits.length;i++){ habits[i].order=i; await dbPut('habits',habits[i]); }
+async function persistOrder(){ await writeOrder(orderedList()); }
+
+/* ---------- the divider sheet ---------- */
+let divEditing=null;
+function openDivSheet(d){
+  divEditing=d||null;
+  const lbl=d?(d.label||''):'';
+  $('#divTitle').textContent=d?'Edit divider':'New divider';
+  $('#dName').value=lbl;
+  $$('#divQuick .preset').forEach(b=>b.classList.toggle('on',!!lbl&&b.dataset.l===lbl));
+  $('#dDeleteWrap').hidden=!d;
+  $('#dDelete').textContent='Remove divider'; $('#dDelete').dataset.armed='';
+  $('#scrim').classList.add('on'); $('#divSheet').classList.add('on'); $('#divSheet').scrollTop=0;
+  if(!d) setTimeout(()=>$('#dName').focus(),380);
+  buzz(HAPTIC.light);
 }
+function closeDivSheet(){
+  $('#scrim').classList.remove('on'); $('#divSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  divEditing=null;
+}
+$('#dCancel').addEventListener('click',closeDivSheet);
+$('#addDivider').addEventListener('click',()=>openDivSheet(null));
+$('#divQuick').addEventListener('click',e=>{
+  const b=e.target.closest('.preset'); if(!b) return;
+  $('#dName').value=b.dataset.l;
+  $$('#divQuick .preset').forEach(x=>x.classList.toggle('on',x===b));
+  buzz(6);
+});
+$('#dName').addEventListener('input',()=>{
+  const v=$('#dName').value.trim();
+  $$('#divQuick .preset').forEach(b=>b.classList.toggle('on',!!v&&b.dataset.l===v));
+});
+$('#dSave').addEventListener('click',async()=>{
+  const label=$('#dName').value.trim(), was=!!divEditing;
+  if(divEditing) divEditing.label=label;
+  else allDividers().push({id:uid(),setId:S.activeSet,label,order:orderedList().length});
+  await saveSettings();
+  closeDivSheet(); renderHabits(); renderToday(); renderSettings();
+  toast(was?'Divider updated':'Divider added'); buzz(10);
+});
+$('#dDelete').addEventListener('click',async e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to remove'; buzz(14); return; }
+  const id=divEditing&&divEditing.id;
+  closeDivSheet();
+  if(id) S.dividers=allDividers().filter(x=>x.id!==id);
+  await persistOrder();
+  renderHabits(); renderToday(); renderSettings(); toast('Divider removed');
+});
 
 /* ---------- habit sheet ---------- */
 let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6]};
@@ -2769,7 +3084,7 @@ function closeSheet(){
 $('#scrim').addEventListener('click',()=>{
   if($('#pauseSheet').classList.contains('on')||$('#replanSheet').classList.contains('on')) return;
   closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet();
-  closeRecord(); closeFocus(); closeNoteSheet();
+  closeRecord(); closeFocus(); closeNoteSheet(); closeDivSheet();
   closeIgMenu(); closeIgEdit(); closeDocs();
 });
 $('#fCancel').addEventListener('click',closeSheet);
@@ -2782,7 +3097,7 @@ $('#fSave').addEventListener('click',async()=>{
     Object.assign(editing,{name,color:form.color,days:form.days});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,order:habits.length,start:TSTR,created:Date.now()};
+    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,order:orderedList().length,start:TSTR,created:Date.now()};
     allHabits.push(h); applySet(); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
@@ -2889,6 +3204,16 @@ function normalizeExtras(){
     if(JSON.stringify(S.focusItems)!==before) changed=true;
   }
   if(typeof S.breakResetAt!=='number' || !isFinite(S.breakResetAt)){ S.breakResetAt=0; changed=true; }
+  /* a divider is only ever an id, the set it belongs to, a label and a place */
+  if(!Array.isArray(S.dividers)){ S.dividers=[]; changed=true; }
+  else{
+    const was=JSON.stringify(S.dividers);
+    S.dividers=S.dividers.filter(x=>x&&typeof x==='object'&&x.id).map(x=>({
+      id:String(x.id), setId:x.setId||null,
+      label:String(x.label==null?'':x.label).slice(0,24),
+      order:(typeof x.order==='number'&&isFinite(x.order))?x.order:0}));
+    if(JSON.stringify(S.dividers)!==was) changed=true;
+  }
   return changed;
 }
 
@@ -4771,10 +5096,18 @@ $('#sDup').addEventListener('click',async()=>{
   if(!editingSet) return;
   const st={id:uid(),name:editingSet.name+' copy',order:sets.length,created:Date.now()};
   sets.push(st); await dbPut('sets',st);
-  const src=allHabits.filter(h=>h.setId===editingSet.id).sort((a,b)=>a.order-b.order);
-  for(let i=0;i<src.length;i++){
-    const h={...src[i],id:uid()+i,setId:st.id,order:i,start:TSTR,created:Date.now()};
-    allHabits.push(h); await dbPut('habits',h);
+  /* habits and dividers are copied in the one order they were arranged in */
+  const seq=[
+    ...allHabits.filter(h=>h.setId===editingSet.id).map(h=>({kind:'h',ref:h})),
+    ...allDividers().filter(d=>d.setId===editingSet.id).map(d=>({kind:'d',ref:d}))
+  ].sort((a,b)=>((a.ref.order||0)-(b.ref.order||0))||(a.kind==='h'?-1:1));
+  for(let i=0;i<seq.length;i++){
+    if(seq[i].kind==='h'){
+      const h={...seq[i].ref,id:uid()+i,setId:st.id,order:i,start:TSTR,created:Date.now()};
+      allHabits.push(h); await dbPut('habits',h);
+    }else{
+      allDividers().push({id:uid()+'d'+i,setId:st.id,label:seq[i].ref.label||'',order:i});
+    }
   }
   S.activeSet=st.id; await saveSettings(); applySet();
   closeSetSheet(); planDay=TSTR; renderAll(); buzz([10,40,14]);
@@ -4795,6 +5128,7 @@ $('#sDelete').addEventListener('click',async e=>{
     for(const k of [...recs]) if(k.startsWith(h.id+'|')){ recs.delete(k); await dbDel('records',k); }
   }
   allHabits=allHabits.filter(x=>x.setId!==id);
+  S.dividers=allDividers().filter(x=>x.setId!==id);
   sets=sets.filter(x=>x.id!==id);
   await dbDel('sets',id);
   S.activeSet=sets[0].id; await saveSettings(); applySet();
@@ -4817,8 +5151,40 @@ function showView(v){
   if(v==='vision') renderVision();
   if(v==='settings'){ renderSets(); renderHabits(); renderSettings(); }
 }
+/* ---------- settings: the doors and what is behind them ----------
+   Nothing moved out of the app. The same panels, the same handlers, the same
+   ids — only put one tap in, so the page you land on asks a single question. */
+let setPage=null;
+const SP_PAGES=['habits','focus','run','look','intro','privacy','parts','data'];
+function openSetPage(id){
+  if(SP_PAGES.indexOf(id)<0) return;
+  setPage=id;
+  $$('#setPages .subpage').forEach(s=>s.classList.toggle('on',s.id==='sp-'+id));
+  $('#v-settings').classList.add('sub');
+  renderSettings(); scrollTo(0,0); buzz(HAPTIC.light);
+}
+function closeSetPage(){
+  if(!setPage) return;
+  setPage=null;
+  $('#v-settings').classList.remove('sub');
+  $$('#setPages .subpage').forEach(s=>s.classList.remove('on'));
+  renderSettings(); scrollTo(0,0);
+}
+$('#setMenu').addEventListener('click',e=>{
+  const b=e.target.closest('.smrow'); if(!b) return;
+  openSetPage(b.dataset.sp);
+});
+$$('.spback').forEach(b=>b.addEventListener('click',()=>{ closeSetPage(); buzz(6); }));
+addEventListener('keydown',e=>{
+  if(e.key!=='Escape' || !setPage) return;
+  if(!$('#v-settings').classList.contains('active') || $('.sheet.on')) return;
+  e.preventDefault(); closeSetPage();
+});
+
 $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   const v=t.dataset.v;
+  /* tapping Settings while already inside one of its pages steps back out */
+  if(v==='settings' && $('#v-settings').classList.contains('active')) closeSetPage();
   $$('.tab').forEach(x=>x.classList.toggle('on',x===t));
   const wasTheme=visionDark?'dark':resolvedTheme();
   const wantDark=(v==='vision');
@@ -4969,7 +5335,26 @@ function renderSettings(){
   if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
   renderFocusSettings();
   renderInstall();
+
+  /* the front page says only what is behind each door */
+  const dv=setDividers().length, fx=activeFocus().length;
+  $('#mHabits').textContent=habits.length+' habit'+(habits.length===1?'':'s')+
+    (dv?' · '+dv+' divider'+(dv===1?'':'s'):'')+
+    (sets.length>1?' · '+sets.length+' sets':'');
+  $('#mFocus').textContent=fx?fx+' check'+(fx===1?'':'s')+' before a session':'Nothing on the list';
+  $('#mRun').textContent=(S.runStart&&S.runEnd&&S.runEnd>=S.runStart)
+    ? shortDay(S.runStart)+' → '+shortDay(S.runEnd) : 'Not set';
+  $('#mLook').textContent=(S.theme==='auto'?'Auto':S.theme==='light'?'Light':'Dark')+
+    ' · '+accentName(S.accent)+' · haptics '+(S.haptics?'on':'off');
+  $('#mIntro').textContent=(S.intro===false?'Skipped':'Shown')+' · '+introLines().join(' ');
+  $('#mPrivacy').textContent=locked?'Vision asks for a PIN':'Vision opens without a PIN';
+  $('#mParts').textContent='Export or merge one part at a time';
+  $('#mData').textContent=$('#dataStat').textContent;
 }
+const shortDay=ds=>{ const d=parseDay(ds); return d.getDate()+' '+MN[d.getMonth()]; };
+const ACCENT_NAME={'#F2A93B':'Amber','#4EA8F5':'Blue','#8B7CF7':'Violet',
+                   '#29B98E':'Green','#F0587F':'Pink','#8D98AB':'Slate'};
+const accentName=c=>ACCENT_NAME[String(c||'').toUpperCase()]||'Custom';
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
 /* ===========================================================
@@ -5000,7 +5385,7 @@ $('#exportBtn').addEventListener('click',()=>{
    Importing a part merges, it never clears — nothing else in the app is touched. */
 const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision',record:'Day records'};
 function partPayload(kind){
-  if(kind==='habits') return {habits:allHabits,sets,records:[...recs]};
+  if(kind==='habits') return {habits:allHabits,sets,records:[...recs],dividers:allDividers()};
   if(kind==='notes')  return {dnotes:myNotes};
   if(kind==='plan')   return {plans:[...plans.entries()],blocks};
   if(kind==='vision') return {vision:visionItems,profile:S.ig||null,northStar:S.northStar||''};
@@ -5048,6 +5433,15 @@ async function mergePart(kind,d){
       const [hid,date]=String(k).split('|');
       await dbPut('records',{key:k,habitId:hid,date,done:1});
     }
+    for(const dv of (d.dividers||[])){
+      if(!dv||!dv.id) continue;
+      const item={id:String(dv.id),setId:dv.setId||null,
+        label:String(dv.label==null?'':dv.label).slice(0,24),order:dv.order||0};
+      const j=allDividers().findIndex(x=>x.id===item.id);
+      if(j>=0) allDividers()[j]=item; else allDividers().push(item);
+      n++;
+    }
+    await saveSettings();
     await ensureSets();
   }
   if(kind==='notes'){
@@ -5157,9 +5551,14 @@ $('#importFile').addEventListener('change',async e=>{
     visionItems=d.vision||[];
     days=new Map((d.days||[]).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
     const keepIntro=S.intro;
-    S=Object.assign({},S,d.settings||{},{seeded:true});
+    const inSettings=d.settings||{};
+    S=Object.assign({},S,inSettings,{seeded:true});
     if(S.intro===undefined) S.intro=keepIntro;
+    /* the sets these belonged to have just been replaced, so dividers the file
+       does not carry are dropped rather than left pointing at nothing */
+    if(!Array.isArray(inSettings.dividers)) S.dividers=[];
     normalizeExtras(); focusChecks.clear();
+    closeSetPage();
 
     for(const st of sets) await dbPut('sets',st);
     for(const h of allHabits) await dbPut('habits',h);
@@ -5189,7 +5588,8 @@ $('#resetBtn').addEventListener('click',async e=>{
   visionItems=[]; days=new Map();
   S.seeded=false; S.activeSet=null; S.northStar=''; S.ig=null; S.visionLock=null; visionUnlocked=false;
   feedOn=false; arrangeOn=false; $('#vBody').classList.remove('feed');
-  S.focusItems=null; S.breakResetAt=0; normalizeExtras(); focusChecks.clear();
+  S.focusItems=null; S.breakResetAt=0; S.dividers=[]; normalizeExtras(); focusChecks.clear();
+  closeSetPage();
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
   planDay=TSTR; renderAll(); renderNotes(); toast('Everything reset');
@@ -5325,7 +5725,11 @@ async function ensureSets(){
     sets=[st]; await dbPut('sets',st);
   }
   for(const h of allHabits) if(!h.setId){ h.setId=sets[0].id; await dbPut('habits',h); }
-  if(!S.activeSet || !sets.some(x=>x.id===S.activeSet)){ S.activeSet=sets[0].id; await saveSettings(); }
+  /* a divider that arrived without a home joins the first set, as a habit does */
+  let touched=false;
+  for(const d of allDividers()) if(!d.setId){ d.setId=sets[0].id; touched=true; }
+  if(!S.activeSet || !sets.some(x=>x.id===S.activeSet)){ S.activeSet=sets[0].id; touched=true; }
+  if(touched) await saveSettings();
   applySet();
 }
 async function seed(){
