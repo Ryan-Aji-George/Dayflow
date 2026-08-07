@@ -61,7 +61,7 @@ button{background:none;border:0;padding:0;cursor:pointer}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
 
 /* ---------- shell ---------- */
-.app{min-height:100%;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+.app{min-height:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 .topbar{
   position:sticky;top:0;z-index:40;display:flex;align-items:center;
   padding:calc(11px + env(safe-area-inset-top)) 20px 11px;
@@ -146,7 +146,8 @@ button{background:none;border:0;padding:0;cursor:pointer}
 /* one card per state, habits are rows inside it */
 .tpanel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);
   overflow:hidden;margin-bottom:12px;transition:border-color .4s var(--ease),background .4s var(--ease)}
-.tpanel.todo-set{border-color:color-mix(in srgb,var(--acc) 24%,transparent)}
+/* the To do card is told apart by its label, not by a coloured edge */
+.tpanel.todo-set{border-color:var(--line)}
 .tpanel.done-set{background:var(--bg-2)}
 .tphead{width:100%;display:flex;align-items:center;gap:10px;padding:15px 16px 13px;text-align:left}
 .tphead .eyebrow{flex:1}
@@ -179,11 +180,7 @@ button.tphead:active{background:var(--tint)}
 .hrowc.rest{opacity:.46}
 .hrowc.rest .tick{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
 .hrowc.rest .tick svg{stroke:var(--ink-3);stroke-dashoffset:0;opacity:.7}
-/* the open ones ask to be closed */
-.hrowc.todo .tick::after{content:'';position:absolute;inset:-4px;border-radius:12px;
-  border:1.5px solid color-mix(in srgb,var(--c) 45%,transparent);
-  opacity:0;animation:breathe 2.8s var(--ease) infinite}
-@keyframes breathe{0%,100%{opacity:0;transform:scale(.86)}50%{opacity:1;transform:scale(1)}}
+/* an open habit is left plain — no ring around the box, nothing breathing */
 
 /* ---------- notes ---------- */
 .note{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:26px 0 4px}
@@ -261,12 +258,16 @@ button.tphead:active{background:var(--tint)}
 .empty{text-align:center;padding:44px 24px;border:1px dashed var(--line-2);border-radius:var(--r-lg);color:var(--ink-2);margin-bottom:12px}
 .empty h3{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px;color:var(--ink)}
 .empty p{margin:0;font-size:13.5px;line-height:1.5}
+/* one button, everywhere: the quiet dark plate with a hairline round it.
+   Nothing is filled with the accent any more — weight comes from the label. */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
-  height:50px;padding:0 20px;border-radius:14px;font-size:15px;font-weight:600;letter-spacing:-.01em;
-  background:var(--acc);color:#14100A;transition:transform .2s var(--spring),opacity .2s}
-.btn:active{transform:scale(.975)}
+  height:50px;padding:0 20px;border-radius:12px;font-size:15px;font-weight:600;letter-spacing:-.01em;
+  background:var(--surf);color:var(--ink);border:1px solid var(--line);
+  transition:transform .2s var(--spring),background .2s var(--ease),border-color .2s var(--ease)}
+.btn:active{transform:scale(.975);background:var(--surf-2);border-color:var(--line-2)}
 .btn.ghost{background:var(--surf);color:var(--ink);border:1px solid var(--line)}
 .btn.danger{background:transparent;color:#F2705E;border:1px solid color-mix(in srgb,#F2705E 32%,transparent)}
+.btn.danger:active{background:color-mix(in srgb,#F2705E 10%,transparent);border-color:color-mix(in srgb,#F2705E 45%,transparent)}
 .btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .setstrip{display:flex;gap:7px;overflow-x:auto;margin:0 -20px 18px;padding:2px 20px 4px}
@@ -313,24 +314,22 @@ button.tphead:active{background:var(--tint)}
   padding:4px 8px;border-radius:7px;transition:color .2s,background .25s var(--ease)}
 .seg-ctrl button.on{background:var(--surf-2);color:var(--ink)}
 
-/* ---------- nav ---------- */
+/* ---------- nav ----------
+   Instagram's bar: icons and nothing else. No labels, no pill behind the
+   one you are on — it is simply the one drawn at full contrast, with a
+   heavier line. The colours are the app's, so it follows the theme. */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
-  padding:6px 16px calc(6px + env(safe-area-inset-bottom));
-  background:color-mix(in srgb,var(--bg) 84%,transparent);
-  backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
-  border-top:1px solid var(--line)}
-.tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
-  padding:8px 0 7px;color:var(--ink-3);transition:color .25s var(--ease)}
-.tab::before{content:'';position:absolute;top:4px;width:52px;height:28px;border-radius:14px;
-  background:color-mix(in srgb,var(--acc) 15%,transparent);
-  opacity:0;transform:scale(.75);transition:opacity .28s var(--ease),transform .32s var(--spring)}
-.tab[data-v="vision"] svg{fill:currentColor;stroke:none}
-.tab svg{position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
-  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--spring)}
-.tab span{font-size:9.5px;letter-spacing:.01em;font-weight:500;transition:font-weight .2s}
-.tab.on{color:var(--acc)}
-.tab.on::before{opacity:1;transform:none}
-.tab.on span{font-weight:600}
+  padding:0 8px env(safe-area-inset-bottom);
+  background:var(--bg);border-top:1px solid var(--line)}
+.tab{position:relative;flex:1;display:flex;align-items:center;justify-content:center;
+  padding:13px 0;color:var(--ink-3);transition:color .22s var(--ease)}
+.tab svg{position:relative;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .3s var(--spring),stroke-width .22s var(--ease)}
+.tab span{display:none}
+.tab.on{color:var(--ink)}
+.tab.on svg{stroke-width:2.3}
+.tab:active svg{transform:scale(.9)}
 
 /* ---------- sheet ---------- */
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
@@ -880,33 +879,46 @@ button.tphead:active{background:var(--tint)}
   background:color-mix(in srgb,var(--bg) 86%,transparent);
   backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
   border-bottom:1px solid var(--line)}
-.fsbar{display:flex;align-items:center;gap:12px;padding:4px 0 12px;max-width:640px;margin:0 auto}
-.fsbar h3{flex:1;min-width:0;margin:0;font-size:24px;
+/* the mark and the title share one optical line: the type is set solid so
+   its box is its ink, and both sit on the row's centre */
+.fsbar{display:flex;align-items:center;gap:12px;padding:2px 0 12px;max-width:640px;margin:0 auto}
+/* the line box is the mark's own height, so the two centre on one another
+   and the title can still be trimmed when the day's name runs long */
+.fsbar h3{flex:1;min-width:0;margin:0;font-size:24px;line-height:38px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fsx{width:38px;height:38px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
   background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
   transition:transform .2s var(--spring),color .2s var(--ease),border-color .2s var(--ease)}
-.fsx:active{transform:scale(.9);color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.fsx:active{transform:scale(.9);color:var(--ink);border-color:var(--line-2)}
 .fsx svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-/* the strip runs edge to edge whatever padding the head is carrying */
-.fshead .stripflat{margin:0 -20px;padding:0 20px 10px}
-.fsbody{padding:22px 20px 0;max-width:640px;margin:0 auto}
-.fsfoot{position:sticky;bottom:0;z-index:6;margin-top:26px;
-  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
-  background:color-mix(in srgb,var(--bg) 86%,transparent);
-  backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
-  border-top:1px solid var(--line)}
-.fsfoot .sheet-actions{margin:0 auto;max-width:640px}
+/* the strip is held to the same column the page below it keeps */
+.fshead .stripflat{max-width:640px;margin:0 auto;padding:0 0 10px}
+.fsbody{padding:22px 20px calc(28px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+/* the feedback lives in the page, opened by a plain row at the end of it */
+.fbopen{width:100%;margin-top:4px}
 
 /* ---------- lock ---------- */
-.vlock{padding:70px 0 40px;text-align:center}
-.vlock svg{width:32px;height:32px;stroke:var(--ink-3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.vlock h3{font-family:var(--display);font-size:23px;font-weight:700;letter-spacing:-.04em;margin:16px 0 24px}
-.vlock .input,.vlock .btn{max-width:230px;margin-left:auto;margin-right:auto}
-.vlock .input{margin-bottom:10px}
-.vlock-err{min-height:17px;margin-top:12px;font-size:12.5px;color:#F2705E}
-.pin{text-align:center;font-family:var(--mono);font-size:17px;letter-spacing:.35em;text-indent:.35em}
-.pin::placeholder{letter-spacing:.1em;text-indent:0}
+/* the way in: it sits in the middle of the screen rather than near the top,
+   so the ring, the name and the one field read as a single centred column */
+.vlock{padding:24px 22px calc(40px + env(safe-area-inset-bottom));text-align:center;
+  min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.vlock svg{width:34px;height:34px;stroke:var(--ig-ink);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+/* the mark sits inside Instagram's own hairline ring rather than floating */
+.vlock .lockring{width:78px;height:78px;margin:0 auto;border-radius:50%;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1.5px var(--ig-line);background:rgba(255,255,255,.02)}
+.vlock h3{font-family:var(--ui);font-size:22px;font-weight:700;letter-spacing:-.03em;margin:22px 0 8px}
+.vlock .lockwhy{max-width:30ch;margin:0 auto 26px;font-size:14px;line-height:1.45;color:var(--ig-dim)}
+.vlock .input,.vlock .btn{max-width:290px;margin-left:auto;margin-right:auto}
+.vlock .input{margin-bottom:11px;height:46px;border-radius:11px;font-size:15px;
+  background:#121212;border:1px solid var(--ig-line);box-shadow:none;color:var(--ig-ink)}
+.vlock .input:focus{border-color:#4a4a4a;box-shadow:none}
+.vlock .input::placeholder{color:var(--ig-dim)}
+.vlock .btn{height:46px;border-radius:9px;font-size:14.5px;font-weight:600;letter-spacing:0;
+  background:var(--ig-blue);color:#fff;box-shadow:none}
+.vlock .btn:active{transform:none;filter:brightness(1.15)}
+.vlock-err{min-height:18px;margin-top:14px;font-size:13px;color:#ED4956}
+.pin{text-align:center;font-family:var(--ui);font-size:16px;letter-spacing:.3em;text-indent:.3em}
+.pin::placeholder{letter-spacing:.06em;text-indent:0}
 .shake{animation:nope .34s ease}
 @keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
 
@@ -939,7 +951,7 @@ button.tphead:active{background:var(--tint)}
   transition:transform .44s cubic-bezier(.3,.86,.32,1),opacity .32s var(--ease);pointer-events:none}
 
 /* ---------- toast ---------- */
-.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));z-index:80;
+.toast{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));z-index:80;
   transform:translate(-50%,16px);opacity:0;pointer-events:none;
   background:var(--surf-2);border:1px solid var(--line-2);padding:10px 16px;border-radius:13px;
   font-size:13.5px;font-weight:500;white-space:nowrap;box-shadow:0 14px 30px -16px rgba(0,0,0,.7);
@@ -1000,8 +1012,10 @@ button.tphead:active{background:var(--tint)}
 .fask{padding:13px 14px;border-radius:13px;background:var(--surf-2);border:1px solid var(--line);margin-bottom:14px}
 .fask p{margin:0 0 11px;font-size:13.5px;color:var(--ink-2);line-height:1.45}
 .fask .row{display:flex;gap:8px}
-.fask button{flex:1;height:40px;border-radius:12px;font-size:13.5px;font-weight:600;
-  background:var(--acc);color:#14100A;transition:transform .2s var(--spring)}
+.fask button{flex:1;height:40px;border-radius:11px;font-size:13.5px;font-weight:600;
+  background:var(--surf);color:var(--ink);border:1px solid var(--line);
+  transition:transform .2s var(--spring),background .2s var(--ease)}
+.fask button:active{background:var(--surf-2)}
 .fask button.alt{background:var(--surf);color:var(--ink);border:1px solid var(--line)}
 .fask button:active{transform:scale(.97)}
 .stripflat{margin:0 -20px 20px;padding:0 20px 2px}
@@ -1095,9 +1109,10 @@ button.tphead:active{background:var(--tint)}
 .ritem .x svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
 .addrow{display:flex;gap:8px}
 .addrow .input{flex:1;height:46px;font-size:14.5px}
-.addbtn{width:46px;height:46px;flex:0 0 auto;border-radius:13px;display:grid;place-items:center;
-  background:var(--acc);color:#14100A;transition:transform .2s var(--spring)}
-.addbtn:active{transform:scale(.93)}
+.addbtn{width:46px;height:46px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
+  background:var(--surf);color:var(--ink);border:1px solid var(--line);
+  transition:transform .2s var(--spring),background .2s var(--ease),border-color .2s var(--ease)}
+.addbtn:active{transform:scale(.93);background:var(--surf-2);border-color:var(--line-2)}
 .addbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
 .rempty{font-size:13px;color:var(--ink-3);padding:4px 2px 12px;line-height:1.5}
 .fbitem{padding:14px;border-radius:13px;background:var(--surf);border:1px solid var(--line);margin-bottom:9px}
@@ -1132,20 +1147,23 @@ button.tphead:active{background:var(--tint)}
    The same quiet controls the note has in the list: nothing here is a button
    that shouts. Closing is a mark in the corner, and delete only appears once
    you are actually writing. */
-.nshead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
-.nshead h3{flex:1;min-width:0;margin:0;font-size:21px;word-break:break-word}
+/* Every part of the row is given the same 30px line box, so the title, the
+   date and the cross share one optical line however long the title runs —
+   a title that wraps grows downward and leaves the other two where they are. */
+.nshead{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.nshead h3{flex:1;min-width:0;margin:0;font-size:21px;line-height:30px;word-break:break-word}
 /* the date and the cross hold the right of the row whether the title is shown
    or not — while writing, the title field is the title */
-.nshead .eyebrow{flex:0 0 auto;margin-left:auto}
-.nsx{flex:0 0 auto;align-self:flex-start;width:30px;height:30px;margin:-4px -6px 0 0;
+.nshead .eyebrow{flex:0 0 auto;margin-left:auto;line-height:30px}
+.nsx{flex:0 0 auto;width:30px;height:30px;margin-right:-6px;
   border-radius:10px;display:grid;place-items:center;color:var(--ink-3);
   transition:transform .2s var(--spring),background .2s var(--ease),color .2s var(--ease)}
 .nsx:active{transform:scale(.88);background:var(--tint);color:var(--ink)}
 .nsx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round}
 /* the title field stands in the heading's place, in the heading's type, so
    nothing moves or changes size when the writing starts */
-.nstin{flex:1;min-width:0;border:0;outline:0;background:transparent;color:inherit;padding:0;
-  font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-.035em;line-height:1.2}
+.nstin{flex:1;min-width:0;height:30px;border:0;outline:0;background:transparent;color:inherit;padding:0;
+  font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:-.035em;line-height:30px}
 .nstin::placeholder{color:var(--ink-3)}
 /* reading and writing are the same block of text, set the same way */
 .ns-read{min-height:72px;max-height:46vh;overflow:auto;padding:2px 0;cursor:text}
@@ -1202,34 +1220,54 @@ button.tphead:active{background:var(--tint)}
 .subpage.on{display:block;animation:spIn .34s var(--ease) both}
 @keyframes spIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
 #setRoot{animation:rvFade .3s var(--ease) both}
-.sphead{display:flex;align-items:center;gap:12px;padding:14px 0 20px}
-.spback{width:38px;height:38px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
-  background:var(--surf);border:1px solid var(--line);color:var(--ink-2);
-  transition:transform .2s var(--spring),color .2s var(--ease),border-color .2s var(--ease)}
-.spback:active{transform:scale(.9);color:var(--acc);border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
-.spback svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.sptitle{flex:1;min-width:0}
-.sptitle .eyebrow{display:block}
-.sptitle h2{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.042em;margin:5px 0 0;
+/* One column, always — a phone and a tablet read the same list, only wider.
+   The shape is Instagram's: no cards, a bare icon, the name, a chevron, and a
+   hairline naming each group. The colour is the app's own, so Light, Dark and
+   the accent still mean exactly what they meant. */
+#setRoot,#setPages{max-width:560px;margin:0 auto}
+.sphead{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 0 14px}
+.spback{width:36px;height:36px;flex:0 0 auto;margin-left:-8px;border-radius:50%;
+  display:grid;place-items:center;background:transparent;color:var(--ink);
+  transition:transform .2s var(--spring),background .2s var(--ease)}
+.spback:active{transform:scale(.92);background:var(--tint)}
+.spback svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sptitle{flex:1;min-width:0;text-align:center;padding-right:28px}
+.sptitle .eyebrow{display:none}
+.sptitle h2{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.025em;margin:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.smenu{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.smenu>.eyebrow{display:block;padding:16px 2px 2px}
-.smenu>.eyebrow:first-child{padding-top:0}
-.smrow{width:100%;display:flex;align-items:center;gap:13px;text-align:left;
-  padding:13px 14px;border-radius:var(--r-md);
-  background:var(--surf);border:1px solid var(--line);box-shadow:var(--shadow);
-  transition:transform .2s var(--spring),border-color .22s var(--ease),background .22s var(--ease)}
-.smrow:active{transform:scale(.985);background:var(--surf-2);border-color:var(--line-2)}
-.smrow .ico{width:36px;height:36px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;
-  background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc)}
-.smrow.quiet .ico{background:var(--cell);color:var(--ink-2)}
-.smrow .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
+
+.smenu{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
+.smenu>.eyebrow{display:block;margin:4px 0 0;padding:20px 0 8px;border-top:1px solid var(--line)}
+.smenu>.eyebrow:first-child{margin-top:0;padding-top:2px;border-top:0}
+.smrow{width:100%;display:flex;align-items:center;gap:18px;text-align:left;
+  padding:13px 10px;margin:0 -10px;border-radius:10px;
+  background:transparent;border:0;
+  transition:background .18s var(--ease)}
+.smrow:active{background:var(--tint)}
+.smrow .ico{width:24px;height:24px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink)}
+.smrow .ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;
   stroke-linecap:round;stroke-linejoin:round}
-.smrow .n{flex:1;min-width:0;font-size:15.5px;font-weight:600;letter-spacing:-.015em;
+.smrow .n{flex:1;min-width:0;font-size:15px;font-weight:500;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.smrow .go{flex:0 0 auto;width:18px;color:var(--ink-3);display:grid;place-items:center}
-.smrow .go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;
+.smrow .go{flex:0 0 auto;width:16px;color:var(--ink-3);display:grid;place-items:center}
+.smrow .go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round}
+
+/* inside a door, the same flat list: the panels lose their frames and the
+   group headings carry the hairline instead */
+.subpage .group{margin-bottom:6px}
+.subpage .group>.eyebrow{margin:4px 0 0;padding:20px 0 8px;border-top:1px solid var(--line)}
+.subpage .group:first-of-type>.eyebrow{margin-top:0;padding-top:0;border-top:0}
+.subpage .panel{background:transparent;border:0;border-radius:0;overflow:visible}
+.subpage .srow{padding:13px 0;gap:16px;border-bottom:0}
+.subpage .srow .t .n{font-size:15px;font-weight:500}
+.subpage .btnrow{padding:10px 0;border-bottom:0}
+.subpage .swatches{padding:14px 0}
+.subpage .partrow{padding:12px 0;border-bottom:0;gap:10px}
+.subpage .hint{padding:0 2px}
+/* the two that stay framed, because they are lists you edit rather than read */
+.subpage .panel#fxPanel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.subpage .panel#fxPanel .fxrow{padding-left:14px}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.06s!important}
@@ -1250,7 +1288,7 @@ button.tphead:active{background:var(--tint)}
 @media (min-width:700px) and (min-height:600px){
   /* the whole shape of the thing loosens up */
   :root{--r-lg:22px;--r-md:18px}
-  .app{max-width:820px;padding-bottom:calc(108px + env(safe-area-inset-bottom))}
+  .app{max-width:820px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
   .tabbar{max-width:820px}
   .view{padding-left:26px;padding-right:26px}
   .setstrip{margin-left:-26px;margin-right:-26px;padding-left:26px;padding-right:26px}
@@ -1347,11 +1385,9 @@ button.tphead:active{background:var(--tint)}
   .srow .t .d{font-size:13px}
   .fxrow{padding:8px 8px 8px 16px}
   .fxin{height:38px;font-size:15.5px}
-  .smrow{padding:16px;gap:15px}
-  .smrow .n{font-size:16.5px}
-  .smrow .ico{width:40px;height:40px;border-radius:14px}
-  .sptitle h2{font-size:30px}
-  .spback{width:42px;height:42px;border-radius:14px}
+  .smrow{padding:15px 10px;gap:19px}
+  .smrow .n{font-size:16px}
+  .sptitle h2{font-size:18px}
   .hdiv{padding:16px 19px 11px}
   .cell{border-radius:11px;font-size:12px}
   .pdbig{font-size:50px}
@@ -1419,10 +1455,7 @@ button.tphead:active{background:var(--tint)}
   .pcol{display:block}
   .pcol-b .psec{margin-top:2px}
 
-  /* the doors stand two abreast; a page behind one keeps a single measure */
-  .smenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:start}
-  .smenu>.eyebrow{grid-column:1/-1}
-  .subpage{max-width:640px}
+  /* Settings is one column at every width — only the measure changes */
   #v-settings .group{break-inside:avoid;page-break-inside:avoid}
   #v-settings .setstrip{margin-left:0;margin-right:0;padding-left:2px;padding-right:2px}
 }
@@ -1430,19 +1463,17 @@ button.tphead:active{background:var(--tint)}
    Only on a wide landscape screen. Portrait keeps the bar where the thumb is. */
 @media (orientation:landscape) and (min-width:820px){
   .tabbar{
-    top:0;bottom:0;left:0;right:auto;width:92px;max-width:none;transform:none;
-    flex-direction:column;justify-content:center;gap:8px;
-    padding:16px 12px calc(16px + env(safe-area-inset-bottom));
+    top:0;bottom:0;left:0;right:auto;width:80px;max-width:none;transform:none;
+    flex-direction:column;justify-content:center;gap:6px;
+    padding:16px 10px calc(16px + env(safe-area-inset-bottom));
     border-top:0;border-right:1px solid var(--line);
-    background:color-mix(in srgb,var(--bg) 88%,transparent);
+    background:var(--bg);
   }
-  .tab{flex:0 0 auto;gap:7px;padding:13px 0 12px;border-radius:18px;
-    transition:color .25s var(--ease),background .25s var(--ease)}
+  .tab{flex:0 0 auto;padding:14px 0;border-radius:14px;
+    transition:color .22s var(--ease),background .25s var(--ease)}
   .tab:active{background:var(--tint)}
-  .tab::before{top:9px;width:58px;height:34px;border-radius:17px}
-  .tab svg{width:22px;height:22px}
-  .tab span{font-size:10.5px}
-  .app{max-width:912px;padding-left:92px;padding-bottom:34px}
+  .tab svg{width:26px;height:26px}
+  .app{max-width:912px;padding-left:80px;padding-bottom:34px}
   .toast{bottom:calc(30px + env(safe-area-inset-bottom))}
 }
 @media (orientation:landscape) and (min-width:1180px){
@@ -1460,7 +1491,11 @@ button.tphead:active{background:var(--tint)}
   .tacts .btn{flex:1}
   .tnote{margin-top:10px}
   .sheet{max-height:96vh}
-  .vlock{padding:26px 0 20px}
+  .vlock{padding:26px 22px 20px;min-height:0}
+  .vlock .lockring{width:58px;height:58px}
+  .vlock svg{width:26px;height:26px}
+  .vlock h3{margin-top:14px}
+  .vlock .lockwhy{margin-bottom:16px}
   .boottitle{font-size:clamp(26px,7.4vh,40px)}
   .bootrule{margin-top:14px}
   .bootname{margin-top:12px}
@@ -1595,8 +1630,11 @@ button.tphead:active{background:var(--tint)}
     <!-- ===== VISION ===== -->
     <section class="view" id="v-vision">
       <div class="vlock" id="vLock" hidden>
-        <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
+        <div class="lockring">
+          <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
+        </div>
         <h3>Vision is locked</h3>
+        <p class="lockwhy">Enter your PIN to open the board.</p>
         <input class="input pin" id="vPin" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off">
         <button class="btn" id="vUnlock">Unlock</button>
         <div class="vlock-err" id="vPinErr"></div>
@@ -1957,7 +1995,7 @@ button.tphead:active{background:var(--tint)}
   </main>
 
   <nav class="tabbar">
-    <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Today</span></button>
+    <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M3 10.2a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15 21v-7.5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1V21"/></svg><span>Today</span></button>
     <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Study</span></button>
     <button class="tab" data-v="vision"><svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg><span>Vision</span></button>
     <button class="tab" data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-3-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.2-3l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 3 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.1a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1.1z"/></svg><span>Settings</span></button>
@@ -2274,7 +2312,6 @@ button.tphead:active{background:var(--tint)}
   </div>
   <div class="flist" id="focusList"></div>
   <p class="hint">None of this is saved. It clears itself when you close the app.</p>
-  <div class="sheet-actions"><button class="btn" id="focusDone">Done</button></div>
 </div>
 
 <div class="sheet" id="pauseSheet">
@@ -2340,6 +2377,7 @@ button.tphead:active{background:var(--tint)}
     <span class="eyebrow">What went wrong</span>
     <textarea class="input area" id="recFeedback" placeholder="What slipped, and what to change tomorrow." maxlength="1200"></textarea>
   </div>
+  <button class="btn ghost fbopen" id="recFeedbackAll">All feedback</button>
   <!-- every day you have written up, opened in place — never a sheet on a sheet -->
   <div class="field fball" id="recFbWrap" hidden>
     <div class="fbhead">
@@ -2356,12 +2394,6 @@ button.tphead:active{background:var(--tint)}
       </div>
     </div>
   </div>
-  </div>
-  <div class="fsfoot">
-    <div class="sheet-actions">
-      <button class="btn ghost" id="recFeedbackAll">All feedback</button>
-      <button class="btn" id="recClose">Done</button>
-    </div>
   </div>
 </div>
 
@@ -3409,7 +3441,7 @@ $('#focusList').addEventListener('click',e=>{
 });
 $('#focusKeep').addEventListener('click',()=>{ focusAsk=false; $('#focusAsk').hidden=true; buzz(6); });
 $('#focusClear').addEventListener('click',()=>{ focusChecks.clear(); focusAsk=false; renderFocus(); buzz(10); });
-$('#focusDone').addEventListener('click',closeFocus);
+/* no Done here either: the scrim, the back gesture and the grabber close it */
 
 /* the same list, built in settings */
 let fxT=null;
@@ -4125,7 +4157,7 @@ $('#recStrip').addEventListener('click',e=>{
   const b=e.target.closest('.dchip'); if(!b) return;
   recDay=b.dataset.d; renderRecord(); buzz(5);
 });
-$('#recClose').addEventListener('click',closeRecord);
+/* the back mark is the only way out now — Done went with the bottom bar */
 $('#recX').addEventListener('click',closeRecord);
 async function addFromField(inputId,kind){
   const el=$(inputId), text=el.value.trim();
