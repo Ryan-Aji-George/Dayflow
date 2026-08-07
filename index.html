@@ -805,6 +805,40 @@ button.tphead:active{background:var(--tint)}
 .seg-ctrl.solid{display:flex;width:100%;padding:3px}
 .seg-ctrl.solid button{flex:1;padding:10px 0;font-size:11.5px;letter-spacing:.04em}
 
+/* ---------- the door ----------
+   Instagram's own furniture, asking one question. Its bar is not .igtop:
+   the real one belongs to the profile, and the scroll handler must go on
+   finding that one and no other. */
+.gtop{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;
+  padding:calc(9px + env(safe-area-inset-top)) 14px 11px;background:var(--ig-bg)}
+.gwho{flex:1;min-width:0;display:flex;align-items:center;gap:6px;
+  font-size:18px;font-weight:700;letter-spacing:-.028em;white-space:nowrap;overflow:hidden}
+.gwho span{overflow:hidden;text-overflow:ellipsis}
+.gwho .igbadge{width:15px;height:15px}
+.gwrap{max-width:420px;margin:0 auto;padding:22px 22px 40px;text-align:center;
+  animation:fadeIn .4s var(--ease) both}
+.gava{width:96px;height:96px;margin:0 auto}
+.gname{margin-top:18px;font-size:19px;font-weight:700;letter-spacing:-.022em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.guser{margin-top:3px;font-size:14.5px;color:var(--ig-dim)}
+.gstats{display:flex;justify-content:center;gap:34px;margin-top:20px;padding:16px 0;
+  border-top:1px solid var(--ig-line);border-bottom:1px solid var(--ig-line)}
+.gstat{display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.gstat b{font-size:16.5px;font-weight:700;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.gstat span{font-size:12.5px;color:var(--ig-dim)}
+.gpick{display:flex;flex-direction:column;gap:9px;margin-top:22px}
+.gbtn{display:flex;align-items:center;gap:12px;width:100%;height:50px;padding:0 15px;
+  border-radius:11px;text-align:left;font-size:15px;font-weight:600;letter-spacing:-.012em;
+  background:var(--ig-fill);color:var(--ig-ink);
+  transition:transform .2s var(--spring),filter .22s var(--ease)}
+.gbtn:active{transform:scale(.975);filter:brightness(1.3)}
+.gbtn.primary{background:var(--ig-blue);color:#fff}
+.gbtn.primary:active{filter:brightness(1.12)}
+.gbtn svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.gbtn .l{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gbtn .c{flex:0 0 auto;font-size:13px;font-weight:500;opacity:.6;font-variant-numeric:tabular-nums}
+
 /* ---------- lock ---------- */
 .vlock{padding:70px 0 40px;text-align:center}
 .vlock svg{width:32px;height:32px;stroke:var(--ink-3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -1566,6 +1600,40 @@ button.tphead:active{background:var(--tint)}
         </div>
 
         <div id="igFeed" hidden></div>
+      </div>
+
+      <!-- the door. Past the lock you say which of the two you came for, in the
+           profile's own furniture: the picture, the numbers, the blue button
+           and the grey one under it. -->
+      <div id="vGate" hidden>
+        <div class="gtop">
+          <button class="igicon" id="gateBack" aria-label="Back">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          </button>
+          <div class="gwho"><span id="gateUser">future.me</span><i class="igbadge" id="gateBadge"></i></div>
+        </div>
+        <div class="gwrap">
+          <span class="igava gava"><img id="gateAvaImg" alt="" hidden><i class="igavai"></i></span>
+          <div class="gname" id="gateName">Future Me</div>
+          <div class="guser" id="gateHandle">@future.me</div>
+          <div class="gstats">
+            <div class="gstat"><b id="gPosts">0</b><span>posts</span></div>
+            <div class="gstat"><b id="gFollowers">0</b><span>followers</span></div>
+            <div class="gstat"><b id="gFollowing">0</b><span>following</span></div>
+          </div>
+          <div class="gpick">
+            <button class="gbtn primary" id="gateProfile">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+              <span class="l">Open the profile</span>
+              <span class="c" id="gPostsC">0</span>
+            </button>
+            <button class="gbtn" id="gateDocs">
+              <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17.5h4"/></svg>
+              <span class="l">Documents</span>
+              <span class="c" id="gDocsC">0</span>
+            </button>
+          </div>
+        </div>
       </div>
       <input type="file" id="vFile" accept="image/*" multiple hidden>
       <input type="file" id="vPdfFile" accept="application/pdf,.pdf" hidden>
@@ -4145,10 +4213,13 @@ async function pinMatches(pin){
   if(!S.visionLock) return false;
   return (await pinHash(pin,S.visionLock.salt))===S.visionLock.hash;
 }
+/* the page has two stops past the lock: the door, and the profile behind it */
+let vStage='gate';
 function syncVisionLock(){
   const locked=visionLocked();
   $('#vLock').hidden=!locked;
-  $('#vBody').hidden=locked;
+  $('#vBody').hidden=locked||vStage==='gate';
+  $('#vGate').hidden=locked||vStage!=='gate';
   if(locked){
     $('#igGrid').innerHTML=''; $('#vPdfs').innerHTML=''; $('#igFeed').innerHTML='';
     $('#vPin').value=''; $('#vPinErr').textContent='';
@@ -4297,9 +4368,35 @@ function postDate(it){
 }
 const BADGE='<i class="igbadge"></i>';
 
+/* the door, painted from the same profile the page behind it is painted from */
+function renderGate(){
+  const p=ig();
+  $('#gateUser').textContent=p.user||IG_DEF.user;
+  $('#gateBadge').classList.toggle('off',!p.verified);
+  $('#gateName').textContent=p.name||IG_DEF.name;
+  $('#gateHandle').textContent='@'+(p.user||IG_DEF.user);
+  paintAvatar($('#gateAvaImg'));
+  const posts=vPosts().length, docs=vPdfList().length;
+  $('#gPosts').textContent=groupNum(posts);
+  $('#gFollowers').textContent=String(p.followers||'0');
+  $('#gFollowing').textContent=String(p.following||'0');
+  $('#gPostsC').textContent=groupNum(posts);
+  $('#gDocsC').textContent=groupNum(docs);
+}
+function visionStage(s){
+  vStage = s==='profile' ? 'profile' : 'gate';
+  renderVision(); scrollTo(0,0);
+}
+$('#gateProfile').addEventListener('click',()=>{ visionStage('profile'); buzz(8); });
+$('#gateDocs').addEventListener('click',()=>openDocs());
+$('#gateBack').addEventListener('click',()=>{
+  const t=$('.tab[data-v="today"]'); if(t) t.click();
+});
+
 function renderVision(){
   syncVisionLock();
   if(visionLocked()) return;
+  renderGate();
   const p=ig();
   /* the bar says Posts while the feed is open, so it is left alone there */
   if(!feedOn) $('#igTopName').textContent=p.user||IG_DEF.user;
@@ -4467,8 +4564,7 @@ $('#igFeed').addEventListener('scroll',e=>{
    page that is back to the grid, on the profile it is back to the day. */
 $('#igBack').addEventListener('click',()=>{
   if(feedOn){ closeFeed(); buzz(6); return; }
-  const t=$('.tab[data-v="today"]');
-  if(t) t.click();
+  visionStage('gate'); buzz(6);
 });
 /* Follow, Message and the person beside them are part of the picture and
    nothing more — they carry no handler at all, and CSS lets taps pass through
@@ -5141,7 +5237,7 @@ function showView(v){
   scrollTo(0,0);
   if(v==='today') renderToday();
   if(v==='plan'){ planDay=TSTR; renderPlan(); }
-  if(v==='vision') renderVision();
+  if(v==='vision'){ vStage='gate'; renderVision(); }
   if(v==='settings'){ renderSets(); renderHabits(); renderSettings(); }
 }
 /* ---------- settings: the doors and what is behind them ----------
@@ -5735,6 +5831,87 @@ document.addEventListener('visibilitychange',()=>{
   else{ checkRollover(); syncVisionLock(); }
 });
 setInterval(checkRollover,60000);
+
+/* ===========================================================
+   The back gesture — Android's button, the edge swipe, a mouse's
+   fourth key. One guard entry sits in history whenever there is
+   something to close, and back closes the top thing instead of
+   leaving Dayflow. Nothing about how a layer opens or closes is
+   changed: this only watches, and calls the very closers the
+   buttons already call.
+   =========================================================== */
+/* topmost first — the two that sit above the scrim lead the list */
+const BACK_SHEETS=[
+  ['#pauseSheet',closePauseSheet],
+  ['#replanSheet',()=>{
+    $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
+    replanId=null; renderPlan();
+  }],
+  ['#pinSheet',closePin],
+  ['#divSheet',closeDivSheet],
+  ['#sheet',closeSheet],
+  ['#blockSheet',closeBlockSheet],
+  ['#setSheet',closeSetSheet],
+  ['#pdSheet',closePerfect],
+  ['#noteSheet',closeNoteSheet],
+  ['#focusSheet',closeFocus],
+  ['#recSheet',closeRecord],
+  ['#vSheet',closeVSheet],
+  ['#igEditSheet',closeIgEdit],
+  ['#igMenuSheet',closeIgMenu],
+  ['#docSheet',closeDocs]
+];
+function topLayer(){
+  if($('#pdfBox').classList.contains('on')) return closePdf;
+  if($('#vBox').classList.contains('on')) return closeLightbox;
+  for(const [sel,fn] of BACK_SHEETS){
+    const el=$(sel);
+    if(el && el.classList.contains('on')) return fn;
+  }
+  /* a session that is actually running is not something to lose to a stray swipe */
+  if($('#timerWrap').classList.contains('on')) return ()=>{};
+  if(feedOn) return closeFeed;
+  if(arrangeOn) return ()=>{ arrangeOn=false; renderGrid(); toast('Order saved'); };
+  if($('#v-vision').classList.contains('active') && vStage==='profile')
+    return ()=>visionStage('gate');
+  if($('#v-settings').classList.contains('active') && setPage) return closeSetPage;
+  const tab=$('.tab.on');
+  if(tab && tab.dataset.v!=='today') return ()=>{ const t=$('.tab[data-v="today"]'); if(t) t.click(); };
+  return null;                       /* nothing left: back leaves, as it should */
+}
+let backGuard=false, backBusy=false;
+function syncBackGuard(){
+  if(backBusy) return;
+  const need=!!topLayer();
+  if(need===backGuard) return;
+  if(need){
+    backGuard=true;
+    try{ history.pushState({df:1},''); }catch(err){ backGuard=false; }
+  }else{
+    /* the last layer was closed by its own button, so the guard is spent */
+    backGuard=false;
+    try{ history.back(); }catch(err){}
+  }
+}
+addEventListener('popstate',()=>{
+  backGuard=false; backBusy=true;
+  const fn=topLayer();
+  if(fn){ try{ fn(); buzz(6); }catch(err){ console.error('Dayflow · back',err); } }
+  /* let the close settle before the watcher is allowed near history again */
+  setTimeout(()=>{ backBusy=false; syncBackGuard(); },0);
+});
+/* what is open is written in the DOM already, so the guard reads it there
+   rather than asking every open and close in the app to report in */
+(function watchLayers(){
+  if(typeof MutationObserver!=='function') return;
+  const mo=new MutationObserver(()=>syncBackGuard());
+  const opts={attributes:true,attributeFilter:['class','hidden']};
+  ['#pdfBox','#vBox','#timerWrap','#v-vision','#v-settings','#vBody','#vGate','#igGrid']
+    .concat(BACK_SHEETS.map(x=>x[0]))
+    .forEach(sel=>{ const el=$(sel); if(el) mo.observe(el,opts); });
+  $$('.tab').forEach(t=>mo.observe(t,opts));
+  syncBackGuard();
+})();
 
 /* the opening */
 /* the screen opens out from the middle, the way the Vision board swaps over */
