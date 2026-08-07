@@ -1119,8 +1119,6 @@ button.tphead:active{background:var(--tint)}
 .sptitle .eyebrow{display:block}
 .sptitle h2{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.042em;margin:5px 0 0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spnote{font-size:13px;color:var(--ink-3);line-height:1.55;margin:-4px 2px 24px}
-
 .smenu{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
 .smenu>.eyebrow{display:block;padding:16px 2px 2px}
 .smenu>.eyebrow:first-child{padding-top:0}
@@ -1134,10 +1132,7 @@ button.tphead:active{background:var(--tint)}
 .smrow.quiet .ico{background:var(--cell);color:var(--ink-2)}
 .smrow .ico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round}
-.smrow .t{flex:1;min-width:0}
-.smrow .t .n{font-size:15px;font-weight:600;letter-spacing:-.015em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.smrow .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4;
+.smrow .n{flex:1;min-width:0;font-size:15.5px;font-weight:600;letter-spacing:-.015em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .smrow .go{flex:0 0 auto;width:18px;color:var(--ink-3);display:grid;place-items:center}
 .smrow .go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;
@@ -1259,9 +1254,8 @@ button.tphead:active{background:var(--tint)}
   .srow .t .d{font-size:13px}
   .fxrow{padding:8px 8px 8px 16px}
   .fxin{height:38px;font-size:15.5px}
-  .smrow{padding:15px 16px;gap:15px}
-  .smrow .t .n{font-size:16px}
-  .smrow .t .d{font-size:13px}
+  .smrow{padding:16px;gap:15px}
+  .smrow .n{font-size:16.5px}
   .smrow .ico{width:40px;height:40px;border-radius:14px}
   .sptitle h2{font-size:30px}
   .spback{width:42px;height:42px;border-radius:14px}
@@ -1603,48 +1597,48 @@ button.tphead:active{background:var(--tint)}
       <nav class="smenu" id="setMenu">
         <span class="eyebrow">Your day</span>
         <button class="smrow" data-sp="habits">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h9M4 12h13M4 17h7"/><path d="m17 5.6 1.6 1.6L22 3.8"/></svg></span>
-          <span class="t"><span class="n">Habits &amp; dividers</span><span class="d" id="mHabits">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="m3 7 2 2 4-4"/><path d="m3 17 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/></svg></span>
+          <span class="n">Habits &amp; dividers</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="focus">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="m4 12.5 4 4 8-9"/><path d="M20 7v10a3 3 0 0 1-3 3H7"/></svg></span>
-          <span class="t"><span class="n">Pre-focus checklist</span><span class="d" id="mFocus">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6"/></svg></span>
+          <span class="n">Pre-focus checklist</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="run">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M5.5 21V4"/><path d="M5.5 4.6h11l-2 3.2 2 3.2h-11"/></svg></span>
-          <span class="t"><span class="n">The run</span><span class="d" id="mRun">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></svg></span>
+          <span class="n">The run</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
 
         <span class="eyebrow">Look and feel</span>
         <button class="smrow" data-sp="look">
-          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4a8.6 8.6 0 0 1 0 17.2z"/></svg></span>
-          <span class="t"><span class="n">Appearance</span><span class="d" id="mLook">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 2.5a9.5 9.5 0 0 1 0 19z" fill="currentColor" stroke="none"/></svg></span>
+          <span class="n">Appearance</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="intro">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h10M4 17.5h6"/><path d="M17.5 14.5v6M14.5 17.5h6"/></svg></span>
-          <span class="t"><span class="n">Opening screen</span><span class="d" id="mIntro">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2.5v7"/><path d="m8.5 6 3.5-3.5L15.5 6"/><path d="M16 18a4 4 0 0 0-8 0"/><path d="M4.9 11.9 6.3 13.3M19.1 11.9 17.7 13.3M2 18h2M20 18h2M2.5 22h19"/></svg></span>
+          <span class="n">Opening screen</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="privacy">
-          <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg></span>
-          <span class="t"><span class="n">Privacy</span><span class="d" id="mPrivacy">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><rect x="3.5" y="10.5" width="17" height="11" rx="2.5"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg></span>
+          <span class="n">Privacy</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
 
         <span class="eyebrow">Your data</span>
         <button class="smrow quiet" data-sp="parts">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 15V4M8.5 7.5 12 4l3.5 3.5"/><path d="M4.5 15v3.5A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5V15"/></svg></span>
-          <span class="t"><span class="n">Move one part</span><span class="d" id="mParts">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5"/><path d="M17 20V4M13.5 7.5 17 4l3.5 3.5"/></svg></span>
+          <span class="n">Move one part</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow quiet" data-sp="data">
-          <span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span>
-          <span class="t"><span class="n">Everything</span><span class="d" id="mData">&mdash;</span></span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          <span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8.5" ry="3"/><path d="M3.5 5.5v13a8.5 3 0 0 0 17 0v-13"/><path d="M3.5 12a8.5 3 0 0 0 17 0"/></svg></span>
+          <span class="n">Everything</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
       </nav>
       <p class="foot">Dayflow 2.0 · everything stays on this device</p>
@@ -1654,7 +1648,7 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-habits">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Habits</h2></div>
         </header>
         <div class="group">
@@ -1663,18 +1657,17 @@ button.tphead:active{background:var(--tint)}
           <div class="hlist" id="hlist"></div>
           <div style="display:flex;gap:8px">
             <button class="btn ghost" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add habit</button>
-            <button class="btn ghost" id="addDivider"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M8 7h8M8 17h8"/></svg>Add divider</button>
+            <button class="btn ghost" id="addDivider"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="m16 8-4-4-4 4"/><path d="m8 16 4 4 4-4"/></svg>Add divider</button>
           </div>
-          <p class="hint">Drag a handle to reorder. A divider is a named break in the list &mdash; on Today it heads whichever habits follow it, inside the card they land in.</p>
         </div>
       </section>
 
       <section class="subpage" id="sp-focus">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Pre-focus</h2></div>
         </header>
-        <p class="spnote">The boxes you tick before a session. What you tick is never saved &mdash; it clears itself when the app closes.</p>
+        
         <div class="group">
           <div class="panel" id="fxPanel"></div>
           <div style="display:flex;gap:8px;margin-top:9px">
@@ -1686,18 +1679,18 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-run">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>The run</h2></div>
         </header>
-        <p class="spnote">A stretch of days, counted off at the top of Today. Leave it clear and the card never appears.</p>
+        
         <div class="group">
           <div class="panel">
             <div class="srow">
-              <div class="t"><div class="n">Starts</div><div class="d">Day one of the stretch you are counting.</div></div>
+              <div class="t"><div class="n">Starts</div></div>
               <input class="input" id="runStart" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
             </div>
             <div class="srow">
-              <div class="t"><div class="n">Ends</div><div class="d">The last day of it.</div></div>
+              <div class="t"><div class="n">Ends</div></div>
               <input class="input" id="runEnd" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
             </div>
             <div class="btnrow" style="border-bottom:0"><button class="btn ghost" id="runClear">Clear the run</button></div>
@@ -1707,14 +1700,14 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-look">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Appearance</h2></div>
         </header>
         <div class="group">
           <span class="eyebrow">Theme</span>
           <div class="panel">
             <div class="srow">
-              <div class="t"><div class="n">Light or dark</div><div class="d">Auto follows the device.</div></div>
+              <div class="t"><div class="n">Light or dark</div></div>
               <div class="seg-ctrl" id="themeCtrl">
                 <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
               </div>
@@ -1726,7 +1719,7 @@ button.tphead:active{background:var(--tint)}
           <span class="eyebrow">Feedback</span>
           <div class="panel">
             <div class="srow">
-              <div class="t"><div class="n">Haptics</div><div class="d">A firm buzz when you tick something off.</div></div>
+              <div class="t"><div class="n">Haptics</div></div>
               <button class="switch" id="hapticSw" role="switch"></button>
             </div>
           </div>
@@ -1735,13 +1728,13 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-intro">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Opening screen</h2></div>
         </header>
         <div class="group">
           <div class="panel">
             <div class="srow">
-              <div class="t"><div class="n">Opening animation</div><div class="d">Show the title screen and wait for a tap on every start.</div></div>
+              <div class="t"><div class="n">Opening animation</div></div>
               <button class="switch" id="introSw" role="switch"></button>
             </div>
           </div>
@@ -1751,7 +1744,7 @@ button.tphead:active{background:var(--tint)}
           <div class="panel">
             <div style="padding:14px 16px">
               <textarea class="input area" id="introText" placeholder="Reset.&#10;Rebuild.&#10;Dominate" maxlength="90" style="min-height:96px"></textarea>
-              <p class="hint">One line each, three at most. The last line takes your accent colour.</p>
+              
             </div>
           </div>
         </div>
@@ -1759,15 +1752,15 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-privacy">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Privacy</h2></div>
         </header>
-        <p class="spnote">The PIN is kept on this device and nowhere else.</p>
+        
         <div class="group">
           <div class="panel">
             <div class="srow">
               <div class="t"><div class="n">Lock the Vision page</div>
-                <div class="d">Asks for a PIN before the board is shown.</div></div>
+                </div>
               <button class="switch" id="lockSw" role="switch"></button>
             </div>
             <div class="btnrow" id="lockRow" hidden>
@@ -1779,7 +1772,7 @@ button.tphead:active{background:var(--tint)}
 
       <section class="subpage" id="sp-parts">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Move one part</h2></div>
         </header>
         <div class="group">
@@ -1810,26 +1803,26 @@ button.tphead:active{background:var(--tint)}
             <button class="pbtn" data-do="in" aria-label="Import vision"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
           </div>
         </div>
-        <p class="hint">Up sends that part to a file. Down merges a file back in — anything already here stays, and the rest of your data is never touched.</p>
+        
         <input type="file" id="partFile" accept="application/json,.json" hidden>
         </div>
       </section>
 
       <section class="subpage" id="sp-data">
         <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M20 12H4M10.5 5.5 4 12l6.5 6.5"/></svg></button>
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
           <div class="sptitle"><span class="eyebrow">Settings</span><h2>Everything</h2></div>
         </header>
         <div class="group">
           <div class="panel">
-            <div class="srow"><div class="t"><div class="n" id="dataStat">—</div><div class="d">Stored in this browser only. Nothing is uploaded.</div></div></div>
+            <div class="srow"><div class="t"><div class="n" id="dataStat">—</div></div></div>
             <div class="btnrow">
               <button class="btn ghost" id="exportBtn">Export</button>
               <button class="btn ghost" id="importBtn">Import</button>
             </div>
             <div class="srow"><button class="btn danger" id="resetBtn">Erase all data</button></div>
           </div>
-          <p class="hint">Erasing empties every store on this device and cannot be undone. Export first if there is anything worth keeping.</p>
+          
         </div>
         <input type="file" id="importFile" accept="application/json,.json" hidden>
       </section>
@@ -5335,26 +5328,7 @@ function renderSettings(){
   if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
   renderFocusSettings();
   renderInstall();
-
-  /* the front page says only what is behind each door */
-  const dv=setDividers().length, fx=activeFocus().length;
-  $('#mHabits').textContent=habits.length+' habit'+(habits.length===1?'':'s')+
-    (dv?' · '+dv+' divider'+(dv===1?'':'s'):'')+
-    (sets.length>1?' · '+sets.length+' sets':'');
-  $('#mFocus').textContent=fx?fx+' check'+(fx===1?'':'s')+' before a session':'Nothing on the list';
-  $('#mRun').textContent=(S.runStart&&S.runEnd&&S.runEnd>=S.runStart)
-    ? shortDay(S.runStart)+' → '+shortDay(S.runEnd) : 'Not set';
-  $('#mLook').textContent=(S.theme==='auto'?'Auto':S.theme==='light'?'Light':'Dark')+
-    ' · '+accentName(S.accent)+' · haptics '+(S.haptics?'on':'off');
-  $('#mIntro').textContent=(S.intro===false?'Skipped':'Shown')+' · '+introLines().join(' ');
-  $('#mPrivacy').textContent=locked?'Vision asks for a PIN':'Vision opens without a PIN';
-  $('#mParts').textContent='Export or merge one part at a time';
-  $('#mData').textContent=$('#dataStat').textContent;
 }
-const shortDay=ds=>{ const d=parseDay(ds); return d.getDate()+' '+MN[d.getMonth()]; };
-const ACCENT_NAME={'#F2A93B':'Amber','#4EA8F5':'Blue','#8B7CF7':'Violet',
-                   '#29B98E':'Green','#F0587F':'Pink','#8D98AB':'Slate'};
-const accentName=c=>ACCENT_NAME[String(c||'').toUpperCase()]||'Custom';
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
 
 /* ===========================================================
