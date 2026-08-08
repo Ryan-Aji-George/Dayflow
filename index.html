@@ -289,10 +289,6 @@ button.tphead:active{background:var(--tint)}
 .srow .t{flex:1;min-width:0}
 .srow .t .n{font-size:14.5px;font-weight:500}
 .srow .t .d{font-size:12.5px;color:var(--ink-3);margin-top:2px;line-height:1.4}
-.switch{width:46px;height:28px;border-radius:14px;background:var(--line-2);position:relative;flex:0 0 auto;transition:background .3s var(--ease)}
-.switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .3s var(--spring);box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.switch.on{background:var(--acc)}
-.switch.on::after{transform:translateX(18px)}
 .swatches{display:flex;gap:10px;flex-wrap:wrap;padding:16px}
 .sw{width:28px;height:28px;border-radius:50%;background:var(--c);position:relative;transition:transform .2s var(--spring)}
 .sw:active{transform:scale(.86)}
@@ -335,12 +331,18 @@ button.tphead:active{background:var(--tint)}
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
 .scrim.on{opacity:1;pointer-events:auto}
 .scrim.high{z-index:96}
-#pauseSheet,#replanSheet{z-index:97}
+#pauseSheet{z-index:97}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92vh;overflow-y:auto;
   background:var(--bg-2);border-top:1px solid var(--line);
   border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
-  transform:translateY(101%);transition:transform .42s var(--ease)}
-.sheet.on{transform:none}
+  transform:translateY(101%);
+  /* a shut sheet is taken off the screen outright. Two dozen of them live in
+     the page at once, and a shut one left merely translated can still paint a
+     hairline of itself — and any shadow it casts — across the bar below. */
+  visibility:hidden;pointer-events:none;
+  transition:transform .42s var(--ease),visibility 0s linear .42s}
+.sheet.on{transform:none;visibility:visible;pointer-events:auto;
+  transition:transform .42s var(--ease),visibility 0s linear 0s}
 .grabber{width:36px;height:4px;border-radius:3px;background:var(--line-2);margin:4px auto 18px}
 .sheet h3{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.035em;margin:0 0 20px}
 .field{margin-bottom:22px}
@@ -372,61 +374,6 @@ button.tphead:active{background:var(--tint)}
 .day.on{background:color-mix(in srgb,var(--acc) 14%,transparent);border-color:color-mix(in srgb,var(--acc) 50%,transparent);color:var(--acc)}
 .hint{font-size:12.5px;color:var(--ink-3);margin:10px 0 0;line-height:1.5}
 .sheet-actions{display:flex;gap:9px;margin-top:24px}
-
-/* ---------- time picker ---------- */
-.steps{display:flex;align-items:stretch;gap:9px;margin-bottom:20px}
-.step{flex:1;min-width:0;padding:11px 14px;border-radius:14px;text-align:left;
-  background:var(--surf);border:1px solid var(--line);
-  transition:border-color .25s var(--ease),background .25s var(--ease)}
-.step.on{border-color:color-mix(in srgb,var(--acc) 55%,transparent);
-  background:color-mix(in srgb,var(--acc) 8%,var(--surf))}
-.step .lbl{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
-.step .val{display:block;font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.03em;margin-top:4px;white-space:nowrap}
-.step.on .val{color:var(--acc)}
-.step .val.none{color:var(--ink-3);font-weight:500;font-size:16px}
-.steparrow{flex:0 0 auto;align-self:center;color:var(--ink-3);font-size:15px;line-height:1}
-
-.tdisplay{display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:20px}
-.tnum{position:relative;font-family:var(--display);font-size:clamp(38px,12vw,46px);font-weight:700;
-  letter-spacing:-.05em;line-height:1;color:var(--ink-3);padding:4px 10px 9px;
-  transition:color .25s var(--ease)}
-.tnum.on{color:var(--ink)}
-.tnum::after{content:'';position:absolute;left:10px;right:10px;bottom:0;height:2.5px;border-radius:3px;
-  background:var(--acc);transform:scaleX(0);transition:transform .32s var(--spring)}
-.tnum.on::after{transform:scaleX(1)}
-.tcolon{font-family:var(--display);font-size:clamp(28px,9vw,34px);font-weight:700;color:var(--ink-3);
-  line-height:1;padding-bottom:8px}
-.ampm{display:flex;flex-direction:column;margin-left:16px;border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;background:var(--surf)}
-.ampm button{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;padding:9px 12px;
-  color:var(--ink-3);transition:background .24s var(--ease),color .24s var(--ease)}
-.ampm button+button{border-top:1px solid var(--line)}
-.ampm button.on{background:var(--acc);color:#14100A}
-
-.clock{position:relative;width:262px;height:262px;margin:0 auto;border-radius:50%;touch-action:manipulation;
-  background:radial-gradient(circle at 50% 38%,color-mix(in srgb,var(--acc) 7%,var(--surf)),var(--surf) 70%);
-  border:1px solid var(--line);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 20px 46px -30px rgba(0,0,0,.9)}
-.clock::before{content:'';position:absolute;inset:6px;border-radius:50%;
-  border:1px solid color-mix(in srgb,var(--ink) 6%,transparent)}
-.hub{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
-  background:var(--acc);z-index:2;box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 14%,transparent)}
-/* the hand reaches exactly as far as the numbers, and its head is the selection */
-.hand{position:absolute;left:calc(50% - 1.5px);bottom:50%;width:3px;height:98px;border-radius:3px;z-index:1;
-  background:linear-gradient(to top,color-mix(in srgb,var(--acc) 40%,transparent),var(--acc));
-  transform-origin:50% 100%;transition:transform .36s var(--spring)}
-.hand::after{content:'';position:absolute;left:50%;top:-20px;width:40px;height:40px;margin-left:-20px;
-  border-radius:50%;background:var(--acc);
-  box-shadow:0 0 0 5px color-mix(in srgb,var(--acc) 13%,transparent),
-             0 8px 20px -8px color-mix(in srgb,var(--acc) 85%,transparent)}
-.cnum{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;z-index:3;
-  display:grid;place-items:center;font-family:var(--mono);font-size:13.5px;color:var(--ink-2);
-  transition:color .22s var(--ease),transform .2s var(--spring)}
-.cnum:active{transform:scale(.86)}
-.cnum.on{color:#14100A;font-weight:500}
-.blockdur{width:fit-content;margin:22px auto 0;padding:7px 14px;border-radius:10px;
-  background:color-mix(in srgb,var(--acc) 12%,transparent);color:var(--acc);
-  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
 
 /* ---------- plan ---------- */
 .plan-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:10px}
@@ -472,17 +419,17 @@ button.tphead:active{background:var(--tint)}
 .pcard{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;
   transition:background .3s var(--ease),border-color .3s var(--ease)}
 .pcard.editing{border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:var(--surf-2)}
-.pblock{display:flex;align-items:flex-start;gap:13px;padding:14px 15px 14px 14px;margin-bottom:9px;
+.pblock{padding:14px 15px 14px 14px;margin-bottom:9px;
   background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);
   transition:background .3s var(--ease),border-color .3s var(--ease)}
+.brow{display:flex;align-items:flex-start;gap:13px}
 .pblock.done{border-color:color-mix(in srgb,var(--acc) 30%,transparent);background:color-mix(in srgb,var(--acc) 7%,var(--surf))}
 .btime{flex:0 0 auto;width:56px;text-align:left;padding-top:1px}
 .btime .hm{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.035em;line-height:1}
 .btime .ap{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;color:var(--ink-3);margin-top:3px}
-.bsep{width:1px;align-self:stretch;background:var(--line);flex:0 0 auto}
+.bsep{width:1px;align-self:stretch;min-height:34px;background:var(--line);flex:0 0 auto}
 .btxt{flex:1;min-width:0;text-align:left;padding-top:1px}
 .bname{font-size:14.5px;font-weight:600;letter-spacing:-.015em;line-height:1.35;word-break:break-word}
-.bnote{font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:4px;white-space:pre-wrap;word-break:break-word}
 .bmeta{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
 .pblock.done .bname{color:var(--ink-2)}
 .bcheck{width:26px;height:26px;border-radius:8px;flex:0 0 auto;position:relative;margin-top:1px;
@@ -1060,12 +1007,49 @@ button.tphead:active{background:var(--tint)}
 .fxdel svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
 .fxempty{padding:16px;font-size:13px;color:var(--ink-3);line-height:1.5}
 
-/* ---------- block play button ---------- */
-.bplay{width:32px;height:32px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
+/* ---------- a session and the goals under it ---------- */
+.stag{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--acc);padding:3px 7px;border-radius:6px;margin-top:6px;
+  background:color-mix(in srgb,var(--acc) 13%,transparent)}
+.sgoals{margin-top:11px;display:flex;flex-direction:column;gap:6px}
+.sgoal{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;
+  background:var(--bg-2);border:1px solid var(--line);text-align:left;
+  transition:background .22s var(--ease),border-color .22s var(--ease)}
+.sgoal:active{background:var(--tint)}
+.sgoal .gbox{width:19px;height:19px;border-radius:6px;flex:0 0 auto;margin-top:1px;display:grid;place-items:center;
+  background:var(--cell);box-shadow:var(--well),inset 0 0 0 1px var(--line);
+  transition:background .25s var(--ease),box-shadow .25s var(--ease)}
+.sgoal .gbox svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:24;stroke-dashoffset:24;opacity:0;transition:stroke-dashoffset .3s var(--ease),opacity .12s}
+.sgoal.on .gbox{background:var(--acc);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.sgoal.on .gbox svg{stroke-dashoffset:0;opacity:1}
+.sgoal .gl{flex:1;min-width:0;font-size:13.5px;line-height:1.45;word-break:break-word}
+.sgoal.on .gl{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--line-2)}
+.sgprog{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:9px}
+.sgprog.full{color:var(--acc)}
+.sgadd{display:flex;align-items:center;gap:7px;margin-top:7px}
+.sgadd .input{height:38px;font-size:13.5px}
+.sgnew{width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;
   background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc);
   transition:transform .2s var(--spring)}
-.bplay:active{transform:scale(.88)}
-.bplay svg{width:14px;height:14px;fill:currentColor;stroke:none;margin-left:1px}
+.sgnew:active{transform:scale(.88)}
+.sgnew svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+
+/* the goals as they are built inside the session sheet */
+.gxrow{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 13px;border-bottom:1px solid var(--line)}
+.gxrow:last-child{border-bottom:0}
+.gxin{flex:1;min-width:0;height:34px;border:0;outline:0;background:transparent;color:inherit;font-size:14.5px;padding:0}
+.gxin::placeholder{color:var(--ink-3)}
+.gxdel{width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;color:var(--ink-3);
+  transition:transform .2s var(--spring),color .2s var(--ease)}
+.gxdel:active{transform:scale(.86);color:#F2705E}
+.gxdel svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
+.gxempty{padding:15px;font-size:13px;color:var(--ink-3);line-height:1.5}
+
+/* the study switch inside the habit sheet */
+.sheet .panel{margin-top:2px}
+.sheet .srow{padding:13px 15px}
 
 /* ---------- the full screen session ---------- */
 .timer{position:fixed;inset:0;z-index:95;background:#000;color:#F5F5F5;display:none;
@@ -1120,9 +1104,6 @@ button.tphead:active{background:var(--tint)}
 .fbitem .when .eyebrow{flex:1}
 .fbitem .when button{color:#F2705E;font-size:11.5px;font-weight:600;padding:4px 8px;border-radius:8px}
 .fbitem p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
-.digest{width:100%;min-height:280px;border-radius:13px;background:var(--surf);border:1px solid var(--line);
-  padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ink-2);
-  resize:none;outline:0;white-space:pre;overflow:auto}
 /* anything meant to be lifted out of the app and taken elsewhere */
 .selectable,.selectable *{user-select:text;-webkit-user-select:text;cursor:text}
 
@@ -1135,8 +1116,6 @@ button.tphead:active{background:var(--tint)}
   transition:transform .2s var(--spring)}
 .fbmini:active{transform:scale(.93)}
 .fbmini.on{background:var(--acc);color:#14100A}
-.fbrow{display:flex;gap:9px;margin-top:10px}
-.fbrow .btn{height:44px;font-size:14px}
 .fbday{padding:13px 14px;border-radius:13px;background:var(--surf);border:1px solid var(--line);margin-bottom:9px}
 .fbday .when{display:flex;align-items:center;gap:10px;margin-bottom:7px}
 .fbday .when .eyebrow{flex:1}
@@ -1210,9 +1189,12 @@ button.tphead:active{background:var(--tint)}
 .dmark{width:22px;height:22px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink-3)}
 .dmark svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 
-/* ---------- settings: a front page of doors ----------
-   Each group sits behind its own title, so the page you land on asks one
-   question — which thing did you come to change — instead of all of them. */
+/* ---------- settings: Instagram's list ----------
+   No cards and no frames. A row is an icon, a name and a chevron on the bare
+   background; groups are parted by a solid band that runs edge to edge, and
+   the page title sits hard left beside its arrow. The geometry is Instagram's;
+   the colour is still the app's, so Light, Dark and the accent keep meaning
+   exactly what they meant. */
 #setPages{display:none}
 #v-settings.sub #setRoot{display:none}
 #v-settings.sub #setPages{display:block}
@@ -1220,54 +1202,139 @@ button.tphead:active{background:var(--tint)}
 .subpage.on{display:block;animation:spIn .34s var(--ease) both}
 @keyframes spIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
 #setRoot{animation:rvFade .3s var(--ease) both}
-/* One column, always — a phone and a tablet read the same list, only wider.
-   The shape is Instagram's: no cards, a bare icon, the name, a chevron, and a
-   hairline naming each group. The colour is the app's own, so Light, Dark and
-   the accent still mean exactly what they meant. */
 #setRoot,#setPages{max-width:560px;margin:0 auto}
-.sphead{display:flex;align-items:center;gap:6px;padding:calc(6px + env(safe-area-inset-top)) 0 14px}
-.spback{width:36px;height:36px;flex:0 0 auto;margin-left:-8px;border-radius:50%;
-  display:grid;place-items:center;background:transparent;color:var(--ink);
-  transition:transform .2s var(--spring),background .2s var(--ease)}
-.spback:active{transform:scale(.92);background:var(--tint)}
-.spback svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.sptitle{flex:1;min-width:0;text-align:center;padding-right:28px}
-.sptitle .eyebrow{display:none}
-.sptitle h2{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:-.025em;margin:0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.smenu{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
-.smenu>.eyebrow{display:block;margin:4px 0 0;padding:20px 0 8px;border-top:1px solid var(--line)}
-.smenu>.eyebrow:first-child{margin-top:0;padding-top:2px;border-top:0}
-.smrow{width:100%;display:flex;align-items:center;gap:18px;text-align:left;
-  padding:13px 10px;margin:0 -10px;border-radius:10px;
-  background:transparent;border:0;
-  transition:background .18s var(--ease)}
+/* the front page carries the same weight as a door does */
+#setRoot .ptitle{padding:calc(10px + env(safe-area-inset-top)) 0 12px}
+#setRoot .ptitle .eyebrow{display:none}
+#setRoot .ptitle h2{font-family:var(--display);font-size:23px;font-weight:700;
+  letter-spacing:-.03em;margin:0;line-height:1.2}
+
+/* ---------- the head of a door ---------- */
+.sphead{position:relative;display:flex;align-items:center;gap:26px;
+  padding:calc(10px + env(safe-area-inset-top)) 0 17px;margin-bottom:6px}
+.sphead::after{content:'';position:absolute;left:-20px;right:-20px;bottom:0;
+  height:1px;background:var(--line)}
+.spback{width:30px;height:30px;flex:0 0 auto;margin-left:-3px;border-radius:50%;
+  display:grid;place-items:center;background:transparent;color:var(--ink);
+  transition:transform .2s var(--spring),opacity .2s var(--ease)}
+.spback:active{transform:scale(.88);opacity:.55}
+.spback svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.sptitle{flex:1;min-width:0;text-align:left;padding:0}
+.sptitle .eyebrow{display:none}
+.sptitle h2{font-family:var(--display);font-size:23px;font-weight:700;letter-spacing:-.03em;
+  margin:0;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- a group heading, and the band that parts two groups ----------
+   On the front page the heading is quiet and grey; inside a door it is the
+   loudest thing on the page, exactly as Instagram sets it. */
+.smenu>.eyebrow,
+#setRoot .group>.eyebrow,
+.subpage .group>.eyebrow{position:relative;display:block;font-family:var(--ui);
+  font-size:15px;font-weight:400;letter-spacing:-.01em;text-transform:none;
+  color:var(--ink-3);padding:25px 0 9px;margin:10px 0 0;border-top:0}
+.subpage .group>.eyebrow{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.smenu>.eyebrow::before,
+#setRoot .group>.eyebrow::before,
+.subpage .group>.eyebrow::before{content:'';position:absolute;top:0;left:-20px;right:-20px;
+  height:8px;background:var(--bg-2)}
+.smenu>.eyebrow:first-child,
+#installGroup>.eyebrow,
+.subpage .group:first-of-type>.eyebrow{margin-top:0;padding-top:14px}
+.smenu>.eyebrow:first-child::before,
+#installGroup>.eyebrow::before,
+.subpage .group:first-of-type>.eyebrow::before{display:none}
+
+/* ---------- one row on the front page ---------- */
+.smenu{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.smrow{width:100%;display:flex;align-items:center;gap:25px;text-align:left;
+  min-height:53px;padding:11px 20px;margin:0 -20px;border-radius:0;
+  background:transparent;border:0;transition:background .18s var(--ease)}
 .smrow:active{background:var(--tint)}
 .smrow .ico{width:24px;height:24px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink)}
-.smrow .ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;
+.smrow .ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round}
-.smrow .n{flex:1;min-width:0;font-size:15px;font-weight:500;letter-spacing:-.01em;
+.smrow .n{flex:1;min-width:0;font-size:16.5px;font-weight:400;letter-spacing:-.012em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.smrow .go{flex:0 0 auto;width:16px;color:var(--ink-3);display:grid;place-items:center}
-.smrow .go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
+.smrow .go{flex:0 0 auto;width:14px;color:var(--ink-3);display:grid;place-items:center}
+.smrow .go svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;
   stroke-linecap:round;stroke-linejoin:round}
 
-/* inside a door, the same flat list: the panels lose their frames and the
-   group headings carry the hairline instead */
-.subpage .group{margin-bottom:6px}
-.subpage .group>.eyebrow{margin:4px 0 0;padding:20px 0 8px;border-top:1px solid var(--line)}
-.subpage .group:first-of-type>.eyebrow{margin-top:0;padding-top:0;border-top:0}
-.subpage .panel{background:transparent;border:0;border-radius:0;overflow:visible}
-.subpage .srow{padding:13px 0;gap:16px;border-bottom:0}
-.subpage .srow .t .n{font-size:15px;font-weight:500}
-.subpage .btnrow{padding:10px 0;border-bottom:0}
-.subpage .swatches{padding:14px 0}
-.subpage .partrow{padding:12px 0;border-bottom:0;gap:10px}
-.subpage .hint{padding:0 2px}
-/* the two that stay framed, because they are lists you edit rather than read */
-.subpage .panel#fxPanel{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
-.subpage .panel#fxPanel .fxrow{padding-left:14px}
+/* ---------- inside a door ----------
+   The panels lose their frames and every row goes flat on the background. A
+   row's explanation drops beneath it and runs the full width, the way it does
+   under Instagram's own switches, rather than squeezing into the left column. */
+#setRoot .panel,.subpage .panel{background:transparent;border:0;border-radius:0;overflow:visible}
+#setRoot .group,.subpage .group{margin-bottom:0}
+#setRoot .srow,.subpage .srow{display:grid;grid-template-columns:1fr auto;align-items:center;
+  column-gap:16px;padding:12px 0;border-bottom:0;min-height:52px}
+#setRoot .srow .t,.subpage .srow .t{display:contents}
+#setRoot .srow .t .n,.subpage .srow .t .n{grid-column:1;grid-row:1;font-size:16.5px;
+  font-weight:400;letter-spacing:-.012em}
+#setRoot .srow .t .d,.subpage .srow .t .d{grid-column:1/-1;grid-row:2;font-size:14.5px;
+  color:var(--ink-3);margin-top:9px;line-height:1.45}
+/* the control keeps the top right corner even when an explanation runs under it */
+#setRoot .srow>.switch,.subpage .srow>.switch,
+#setRoot .srow>.input,.subpage .srow>.input,
+#setRoot .srow>.seg-ctrl,.subpage .srow>.seg-ctrl,
+#setRoot .srow>#installBtn{grid-column:2;grid-row:1}
+.subpage .btnrow{padding:14px 0 4px;border-bottom:0;gap:9px}
+.subpage .swatches{padding:16px 0 6px;gap:12px}
+.subpage .hint{padding:0;font-size:14.5px;color:var(--ink-3);margin-top:12px}
+
+/* a value you tap sits in a soft pill, hard right */
+#setRoot .srow input[type="date"],#setRoot .srow input[type="time"],
+.subpage .srow input[type="date"],.subpage .srow input[type="time"]{
+  width:auto;height:44px;padding:0 15px;border-radius:11px;font-size:15.5px;
+  background:var(--bg-2);border:0;color:var(--ink-2);box-shadow:none}
+.subpage .seg-ctrl{background:var(--bg-2);border-radius:11px;padding:3px;gap:2px}
+.subpage .seg-ctrl button{font-family:var(--ui);font-size:13.5px;font-weight:500;letter-spacing:0;
+  padding:8px 13px;border-radius:9px;color:var(--ink-3)}
+.subpage .seg-ctrl button.on{background:var(--surf);color:var(--ink)}
+
+/* Instagram's switch: black on white, white on black, nothing in between */
+.switch{width:52px;height:31px;border-radius:16px;flex:0 0 auto;position:relative;
+  background:var(--cell);box-shadow:inset 0 0 0 1.5px var(--line-2);
+  transition:background .3s var(--ease),box-shadow .3s var(--ease)}
+.switch::after{content:'';position:absolute;top:4px;left:4px;width:23px;height:23px;border-radius:50%;
+  background:var(--ink-3);box-shadow:none;
+  transition:transform .32s var(--spring),background .3s var(--ease)}
+.switch.on{background:var(--ink);box-shadow:none}
+.switch.on::after{transform:translateX(21px);background:var(--bg)}
+
+/* the buttons: a soft grey plate, and one filled blue for the thing to do */
+.subpage .btn{height:48px;border-radius:11px;font-size:15.5px;font-weight:600;
+  background:var(--bg-2);border:0;color:var(--ink)}
+.subpage .btn:active{background:var(--cell);border:0}
+.subpage .btn.danger{background:transparent;color:#ED4956;border:0}
+.subpage .btn.danger:active{background:color-mix(in srgb,#ED4956 12%,transparent)}
+#installBtn{background:#4F46E5;color:#fff;border:0;font-weight:600;border-radius:11px}
+#installBtn:active{background:#453DCB;border:0}
+
+/* moving one part: the name, what is in it, and the two arrows */
+.subpage .partrow{padding:11px 0;border-bottom:0;gap:10px}
+.subpage .partrow .t .n{font-size:16.5px;font-weight:400;letter-spacing:-.012em}
+.subpage .partrow .t .d{font-family:var(--ui);font-size:14px;letter-spacing:0;
+  text-transform:none;color:var(--ink-3);margin-top:4px}
+.subpage .pbtn{width:40px;height:40px;border-radius:11px;background:var(--bg-2);
+  border:0;color:var(--ink-2)}
+.subpage .pbtn:active{background:var(--cell);border:0}
+.subpage .pbtn svg{width:17px;height:17px}
+
+/* the habits and the checklist: still lists you edit, now without their cards */
+.subpage .hrow{background:transparent;border:0;border-radius:0;padding-left:0}
+.subpage .hrow.dragging{background:var(--surf);border-radius:14px;
+  box-shadow:0 20px 36px -20px rgba(0,0,0,.6)}
+.subpage .hinfo .n{font-size:16.5px;font-weight:400;letter-spacing:-.012em}
+.subpage .hinfo .s{font-size:14px;color:var(--ink-3);margin-top:3px}
+.subpage .panel#fxPanel{background:transparent;border:0;border-radius:0;overflow:visible}
+.subpage .panel#fxPanel .fxrow{padding:3px 0;border-bottom:1px solid var(--line)}
+.subpage .panel#fxPanel .fxin{font-size:16.5px;height:42px}
+.subpage .fxempty{padding:14px 0;font-size:14.5px}
+.subpage .empty{margin-top:6px}
+.subpage textarea.area{background:var(--bg-2);border:0;border-radius:12px;font-size:16px}
+.foot{color:var(--ink-3);font-size:13px;padding:22px 0 10px}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.06s!important}
@@ -1357,9 +1424,8 @@ button.tphead:active{background:var(--tint)}
   .btime{width:62px}
   .btime .hm{font-size:19px}
   .bname{font-size:15.5px}
-  .bnote{font-size:14px}
   .bcheck{width:29px;height:29px;border-radius:10px}
-  .bplay{width:36px;height:36px}
+  .sgoal .gl{font-size:14.5px}
   .fitem{padding:15px 16px}
   .fitem .l{font-size:15px}
 
@@ -1385,9 +1451,15 @@ button.tphead:active{background:var(--tint)}
   .srow .t .d{font-size:13px}
   .fxrow{padding:8px 8px 8px 16px}
   .fxin{height:38px;font-size:15.5px}
-  .smrow{padding:15px 10px;gap:19px}
-  .smrow .n{font-size:16px}
-  .sptitle h2{font-size:18px}
+  .smrow{padding:14px 26px;margin:0 -26px;gap:27px;min-height:58px}
+  .smrow .n{font-size:17.5px}
+  .sptitle h2,#setRoot .ptitle h2{font-size:26px}
+  .smenu>.eyebrow,#setRoot .group>.eyebrow{font-size:16px}
+  .subpage .group>.eyebrow{font-size:18.5px}
+  .smenu>.eyebrow::before,#setRoot .group>.eyebrow::before,
+  .subpage .group>.eyebrow::before,.sphead::after{left:-26px;right:-26px}
+  .subpage .srow .t .n,#setRoot .srow .t .n,.subpage .partrow .t .n{font-size:17.5px}
+  .subpage .srow .t .d,#setRoot .srow .t .d{font-size:15px}
   .hdiv{padding:16px 19px 11px}
   .cell{border-radius:11px;font-size:12px}
   .pdbig{font-size:50px}
@@ -1499,6 +1571,946 @@ button.tphead:active{background:var(--tint)}
   .boottitle{font-size:clamp(26px,7.4vh,40px)}
   .bootrule{margin-top:14px}
   .bootname{margin-top:12px}
+}
+
+/* ===========================================================
+   INSTAGRAM — Study and Settings
+   These two tabs drop the app's colours entirely and take Instagram's:
+   its paper, its greys, its blue, its 16pt gutter and its type scale.
+   Sheets opened from here inherit it, so a popup never half-changes.
+   =========================================================== */
+html.igskin,.igpop{
+  --gut:16px;
+  --bg:#FFFFFF; --bg-2:#FFFFFF; --surf:#FFFFFF; --surf-2:#FFFFFF;
+  --line:#DBDBDB; --line-2:#C7C7C7;
+  --ink:#000000; --ink-2:#737373; --ink-3:#A8A8A8;
+  --tint:rgba(0,0,0,.05); --cell:#E4E4E4; --well:none;
+  --acc:#4F5BF7;
+  --ig-sheet:#FFFFFF;          /* a sheet sits on the same paper in Light  */
+  --ig-fill:#EFEFEF;           /* inputs, chips, secondary buttons         */
+  --ig-fill-2:#F7F7F8;         /* the quieter fill: day chips, value pills */
+  --ig-band:#F1F1F3;           /* the band that parts two groups           */
+  --ig-hair:#EFEFEF;           /* the inset hairline inside a list         */
+  --ig-blue:#4F5BF7; --ig-blue-2:#3F4AD8; --ig-blue-soft:#C5C9FB;
+  --ig-red:#ED4956; --sun:#ED4956; --ig-purple:#4F5BF7;
+  --r-lg:16px; --r-md:12px;
+}
+html[data-theme="dark"].igskin,html[data-theme="dark"] .igpop{
+  --bg:#000000; --bg-2:#000000; --surf:#000000; --surf-2:#000000;
+  --line:#262626; --line-2:#3A3A3C;
+  --ink:#FFFFFF; --ink-2:#A8A8A8; --ink-3:#737373;
+  --tint:rgba(255,255,255,.07); --cell:#2C2C2E; --well:none;
+  --acc:#4F5BF7;
+  --ig-sheet:#1C1C1E;          /* in Dark a sheet lifts off the black page */
+  --ig-fill:#262626;
+  --ig-fill-2:#1C1C1E;
+  --ig-band:#121212;
+  --ig-hair:#262626;
+  --ig-blue:#4F5BF7; --ig-blue-2:#4048C8; --ig-blue-soft:#2B2E63;
+  --ig-red:#ED4956; --sun:#FF6B61; --ig-purple:#6C77FF;
+}
+html.igskin{background:var(--bg)}
+html.igskin body,html.igskin .app{background:var(--bg)}
+/* full screen paints the root over a black backdrop, so both need the paper */
+html.igskin:fullscreen,html.igskin:-webkit-full-screen{background:var(--bg)}
+html.igskin::backdrop{background:var(--bg)}
+/* the one frame that rebuilds the blurred bars */
+html.fsflush .topbar,html.fsflush .stripwrap,html.fsflush .fshead{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.igskin .tabbar{background:var(--bg);border-top:1px solid var(--line)}
+html.igskin .topbar{background:var(--bg)}
+html.igskin .tab svg{width:26px;height:26px;stroke-width:1.8}
+html.igskin .tab.on svg{stroke-width:2.4}
+/* Instagram sets everything in one face, so the app's display type steps aside */
+html.igskin #v-plan,html.igskin #v-settings,html.igskin .sheet{--display:var(--ui)}
+/* the 16pt gutter Instagram keeps on every page */
+html.igskin #v-plan,html.igskin #v-settings{padding-left:var(--gut);padding-right:var(--gut)}
+html.igskin #v-plan.active>*,html.igskin #v-settings.active>*{animation:none}
+
+/* ---------- type ---------- */
+html.igskin .ig-h1{font-size:24px;font-weight:700;letter-spacing:-.033em;line-height:1.18;margin:0}
+html.igskin .ig-h2{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+html.igskin .ig-body{font-size:15px;line-height:1.42;color:var(--ink-2)}
+
+/* ---------- Instagram's blue bar ---------- */
+html.igskin .btn.primary,html.igskin .igbtn{display:inline-flex;align-items:center;
+  justify-content:center;gap:8px;width:100%;height:50px;border-radius:12px;
+  font-size:16px;font-weight:600;letter-spacing:-.01em;background:var(--ig-blue);
+  color:#fff;border:0;transition:background .18s var(--ease),opacity .18s var(--ease)}
+html.igskin .btn.primary:active,html.igskin .igbtn:active{background:var(--ig-blue-2)}
+html.igskin .btn.primary[disabled],html.igskin .igbtn[disabled]{background:var(--ig-blue-soft);color:#fff}
+
+/* ===========================================================
+   SHEETS — Instagram's popup
+   =========================================================== */
+html.igskin .scrim{background:rgba(0,0,0,.55);backdrop-filter:none;-webkit-backdrop-filter:none}
+html.igskin .sheet{background:var(--ig-sheet);border-top:0;border-radius:16px 16px 0 0;
+  padding:0 var(--gut) calc(20px + env(safe-area-inset-bottom));
+  /* a closed sheet casts nothing: twenty-odd of them sit just under the screen
+     and their shadows would stack into a dark band across the nav bar */
+  box-shadow:none}
+html.igskin .sheet.on{box-shadow:0 -12px 40px -20px rgba(0,0,0,.45)}
+html[data-theme="dark"].igskin .sheet.on{box-shadow:none}
+html.igskin .sheet .grabber{width:36px;height:4px;border-radius:2px;background:var(--line-2);
+  margin:8px auto 0;opacity:1}
+html.igskin .sheet>h3{position:relative;text-align:center;font-family:var(--ui);font-size:17px;
+  font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  margin:0 calc(-1*var(--gut)) 20px;padding:15px var(--gut) 15px}
+html.igskin .sheet>h3::after{content:'';position:absolute;left:0;right:0;bottom:0;
+  height:1px;background:var(--line)}
+html.igskin .sheet .field{margin-bottom:24px}
+html.igskin .sheet .field>.eyebrow{display:block;font-family:var(--ui);font-size:17px;
+  font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--ink);margin-bottom:12px}
+html.igskin .sheet #blockDay{font-family:var(--ui);font-size:15px;font-weight:400;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink-2);margin-bottom:12px}
+html.igskin .sheet .hint{font-size:15px;color:var(--ink-2);line-height:1.42;margin-top:12px}
+
+/* fields: a soft well, no border, no glow */
+html.igskin .input{background:var(--ig-fill);border:0;border-radius:12px;color:var(--ink);
+  font-size:16px;height:48px;padding:0 15px;box-shadow:none}
+html.igskin .input::placeholder{color:var(--ink-3)}
+html.igskin .input:focus{background:var(--ig-fill);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .input.big{height:50px;font-size:17px;font-weight:400}
+html.igskin textarea.input,html.igskin .input.area{height:auto;min-height:104px;
+  padding:14px 15px;line-height:1.45}
+html.igskin .presets{gap:8px;margin-bottom:12px}
+html.igskin .presets:last-child{margin-bottom:0}
+/* how long the break runs: the chips, then a field and the time it ends,
+   on one line that cannot push itself off the edge */
+html.igskin .durrow{display:flex;align-items:center;gap:10px}
+html.igskin .durrow .numbox{width:118px;flex:0 0 auto;justify-content:flex-start;gap:6px}
+html.igskin .durrow .numin{width:auto;flex:1;min-width:0;text-align:left}
+html.igskin .durtotal{flex:1;min-width:0;margin-left:0;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.igskin #pauseDurWrap{margin-bottom:4px}
+html.igskin #pauseReason{margin-top:0}
+html.igskin .preset{font-size:15px;font-weight:500;padding:10px 16px;border-radius:10px;
+  background:var(--ig-fill);border:0;color:var(--ink)}
+html.igskin .preset.on{background:var(--ink);color:var(--bg)}
+html.igskin .days{gap:7px}
+html.igskin .day{height:48px;border-radius:10px;background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);border:0;
+  font-family:var(--ui);font-size:15px;font-weight:600;color:var(--ink)}
+html.igskin .day.on{background:var(--ink);color:var(--bg);box-shadow:none}
+html.igskin .colors{gap:11px}
+html.igskin .co.on::after{border-color:var(--ink)}
+html.igskin .numbox{height:48px;border-radius:12px;background:var(--ig-fill);border:0;padding:0 15px}
+html.igskin .numbox:focus-within{box-shadow:none;border:0}
+html.igskin .numin{font-family:var(--ui);font-size:16px;font-weight:500}
+html.igskin .numbox .u,html.igskin .durtotal{font-family:var(--ui);font-size:14px;font-weight:400;
+  letter-spacing:0;text-transform:none;color:var(--ink-2)}
+
+/* the foot of a sheet: one grey plate, one blue bar */
+html.igskin .sheet-actions{gap:9px;margin-top:28px}
+html.igskin .sheet-actions .btn,html.igskin .sheet .btn.ghost{height:50px;border-radius:12px;
+  font-size:16px;font-weight:600;background:var(--ig-fill);color:var(--ink);border:0}
+html.igskin .sheet-actions .btn:active,html.igskin .sheet .btn.ghost:active{background:var(--cell);border:0}
+html.igskin .sheet-actions .btn:last-child{background:var(--ig-blue);color:#fff}
+html.igskin .sheet-actions .btn:last-child:active{background:var(--ig-blue-2)}
+/* a sheet whose only action is Cancel or Close has no blue bar to offer */
+html.igskin .sheet-actions .btn:only-child{background:var(--ig-fill);color:var(--ink)}
+html.igskin .sheet-actions .btn:only-child:active{background:var(--cell)}
+html.igskin .sheet .btn.danger{background:transparent;color:var(--ig-red);border:0;
+  height:50px;border-radius:12px;font-size:16px;font-weight:600}
+html.igskin .sheet .btn.danger:active{background:var(--tint)}
+html.igskin .sheet .panel{background:transparent;border:0;border-radius:0}
+html.igskin .sheet .srow{padding:13px 0;border-bottom:0;min-height:52px}
+html.igskin .sheet .srow .t .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
+html.igskin .sheet .srow .t .d{font-size:15px;color:var(--ink-2);margin-top:7px;line-height:1.42}
+
+/* a list inside a sheet: rows parted by a hairline that starts at the label */
+html.igskin .fitem,html.igskin .sheet .gxrow{background:transparent;border:0;border-radius:0;
+  position:relative}
+html.igskin .fitem{padding:14px 0;gap:16px}
+html.igskin .fitem::after{content:'';position:absolute;left:38px;right:0;bottom:0;height:1px;
+  background:var(--ig-hair)}
+html.igskin .flist .fitem:last-child::after{display:none}
+html.igskin .fitem:active{background:transparent;opacity:.5}
+html.igskin .fitem .fbox{width:22px;height:22px;border-radius:50%;background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .fitem.on .fbox{background:var(--ink);box-shadow:none}
+html.igskin .fitem .fbox svg{stroke:var(--bg);width:12px;height:12px;stroke-width:3}
+html.igskin .fitem .l{font-size:16px}
+html.igskin .fitem.on .l{color:var(--ink-3)}
+html.igskin .flist{gap:0}
+html.igskin .fask{background:var(--ig-fill);border:0;border-radius:12px;padding:16px}
+html.igskin .fask p{font-size:15px;color:var(--ink-2)}
+html.igskin .fask button{background:var(--bg);border:0;border-radius:10px;font-size:15px;
+  font-weight:600;height:42px}
+html[data-theme="dark"].igskin .fask button{background:var(--cell)}
+html.igskin .sheet .gxrow{padding:4px 0;border-bottom:1px solid var(--ig-hair)}
+html.igskin .sheet .gxrow:last-child{border-bottom:0}
+html.igskin .sheet .gxin{font-size:16px;height:46px}
+html.igskin .sheet .gxempty,html.igskin .sheet .fxempty{padding:14px 0;font-size:15px;color:var(--ink-2)}
+
+
+/* ---------- the same popup, opened from Vision ----------
+   Vision keeps its own page; only the sheets you asked for are dressed
+   in the Instagram furniture the rest of the app now wears. */
+.sheet.igpop{background:var(--ig-sheet);border-top:0;border-radius:16px 16px 0 0;
+  padding:0 var(--gut) calc(20px + env(safe-area-inset-bottom));
+  /* a closed sheet casts nothing: twenty-odd of them sit just under the screen
+     and their shadows would stack into a dark band across the nav bar */
+  box-shadow:none}
+.sheet.igpop.on{box-shadow:0 -12px 40px -20px rgba(0,0,0,.45)}
+html[data-theme="dark"] .sheet.igpop.on{box-shadow:none}
+.sheet.igpop .grabber{width:36px;height:4px;border-radius:2px;background:var(--line-2);
+  margin:8px auto 0;opacity:1}
+.sheet.igpop>h3{position:relative;text-align:center;font-family:var(--ui);font-size:17px;
+  font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  margin:0 calc(-1*var(--gut)) 20px;padding:15px var(--gut) 15px}
+.sheet.igpop>h3::after{content:'';position:absolute;left:0;right:0;bottom:0;
+  height:1px;background:var(--line)}
+.sheet.igpop .field{margin-bottom:24px}
+.sheet.igpop .field>.eyebrow{display:block;font-family:var(--ui);font-size:17px;
+  font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--ink);margin-bottom:12px}
+.sheet.igpop #blockDay{font-family:var(--ui);font-size:15px;font-weight:400;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink-2);margin-bottom:12px}
+.sheet.igpop .hint{font-size:15px;color:var(--ink-2);line-height:1.42;margin-top:12px}
+.igpop .input{background:var(--ig-fill);border:0;border-radius:12px;color:var(--ink);
+  font-size:16px;height:48px;padding:0 15px;box-shadow:none}
+.igpop .input::placeholder{color:var(--ink-3)}
+.igpop .input:focus{background:var(--ig-fill);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.igpop .input.big{height:50px;font-size:17px;font-weight:400}
+.igpop textarea.input,.igpop .input.area{height:auto;min-height:104px;
+  padding:14px 15px;line-height:1.45}
+.igpop .presets{gap:8px;margin-bottom:12px}
+.igpop .presets:last-child{margin-bottom:0}
+.igpop .durrow{display:flex;align-items:center;gap:10px}
+.igpop .durrow .numbox{width:118px;flex:0 0 auto;justify-content:flex-start;gap:6px}
+.igpop .durrow .numin{width:auto;flex:1;min-width:0;text-align:left}
+.igpop .durtotal{flex:1;min-width:0;margin-left:0;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.igpop #pauseDurWrap{margin-bottom:4px}
+.igpop #pauseReason{margin-top:0}
+.igpop .preset{font-size:15px;font-weight:500;padding:10px 16px;border-radius:10px;
+  background:var(--ig-fill);border:0;color:var(--ink)}
+.igpop .preset.on{background:var(--ink);color:var(--bg)}
+.igpop .days{gap:7px}
+.igpop .day{height:48px;border-radius:10px;background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);border:0;
+  font-family:var(--ui);font-size:15px;font-weight:600;color:var(--ink)}
+.igpop .day.on{background:var(--ink);color:var(--bg);box-shadow:none}
+.igpop .colors{gap:11px}
+.igpop .co.on::after{border-color:var(--ink)}
+.igpop .numbox{height:48px;border-radius:12px;background:var(--ig-fill);border:0;padding:0 15px}
+.igpop .numbox:focus-within{box-shadow:none;border:0}
+.igpop .numin{font-family:var(--ui);font-size:16px;font-weight:500}
+.igpop .numbox .u,.igpop .durtotal{font-family:var(--ui);font-size:14px;font-weight:400;
+  letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.igpop .sheet-actions{gap:9px;margin-top:28px}
+.igpop .sheet-actions .btn,.sheet.igpop .btn.ghost{height:50px;border-radius:12px;
+  font-size:16px;font-weight:600;background:var(--ig-fill);color:var(--ink);border:0}
+.igpop .sheet-actions .btn:active,.sheet.igpop .btn.ghost:active{background:var(--cell);border:0}
+.igpop .sheet-actions .btn:last-child{background:var(--ig-blue);color:#fff}
+.igpop .sheet-actions .btn:last-child:active{background:var(--ig-blue-2)}
+.igpop .sheet-actions .btn:only-child{background:var(--ig-fill);color:var(--ink)}
+.igpop .sheet-actions .btn:only-child:active{background:var(--cell)}
+.sheet.igpop .btn.danger{background:transparent;color:var(--ig-red);border:0;
+  height:50px;border-radius:12px;font-size:16px;font-weight:600}
+.sheet.igpop .btn.danger:active{background:var(--tint)}
+.sheet.igpop .panel{background:transparent;border:0;border-radius:0}
+.sheet.igpop .srow{padding:13px 0;border-bottom:0;min-height:52px}
+.sheet.igpop .srow .t .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
+.sheet.igpop .srow .t .d{font-size:15px;color:var(--ink-2);margin-top:7px;line-height:1.42}
+.igpop .fitem,.sheet.igpop .gxrow{background:transparent;border:0;border-radius:0;
+  position:relative}
+.igpop .fitem{padding:14px 0;gap:16px}
+.igpop .fitem::after{content:'';position:absolute;left:38px;right:0;bottom:0;height:1px;
+  background:var(--ig-hair)}
+.igpop .flist .fitem:last-child::after{display:none}
+.igpop .fitem:active{background:transparent;opacity:.5}
+.igpop .fitem .fbox{width:22px;height:22px;border-radius:50%;background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.igpop .fitem.on .fbox{background:var(--ink);box-shadow:none}
+.igpop .fitem .fbox svg{stroke:var(--bg);width:12px;height:12px;stroke-width:3}
+.igpop .fitem .l{font-size:16px}
+.igpop .fitem.on .l{color:var(--ink-3)}
+.igpop .flist{gap:0}
+.igpop .fask{background:var(--ig-fill);border:0;border-radius:12px;padding:16px}
+.igpop .fask p{font-size:15px;color:var(--ink-2)}
+.igpop .fask button{background:var(--bg);border:0;border-radius:10px;font-size:15px;
+  font-weight:600;height:42px}
+html[data-theme="dark"] .igpop .fask button{background:var(--cell)}
+.sheet.igpop .gxrow{padding:4px 0;border-bottom:1px solid var(--ig-hair)}
+.sheet.igpop .gxrow:last-child{border-bottom:0}
+.sheet.igpop .gxin{font-size:16px;height:46px}
+.sheet.igpop .gxempty,.sheet.igpop .fxempty{padding:14px 0;font-size:15px;color:var(--ink-2)}
+/* ===========================================================
+   INTERACTIONS — how Instagram answers a tap
+   Nothing here moves far. A press dims or shrinks a touch and lets go
+   quickly; a sheet rides the same curve iOS and Instagram use; a tick
+   fills rather than flashing. All of it is short enough to feel like
+   the app answering rather than animating.
+   =========================================================== */
+html.igskin{--ig-press:cubic-bezier(.2,.8,.3,1);--ig-slide:cubic-bezier(.32,.72,0,1)}
+
+/* a sheet rides up on Instagram's curve, and the scrim comes with it */
+html.igskin .sheet,.sheet.igpop{
+  transition:transform .40s var(--ig-slide),visibility 0s linear .40s}
+html.igskin .sheet.on,.sheet.igpop.on{
+  transition:transform .46s var(--ig-slide),visibility 0s linear 0s}
+html.igskin .scrim{transition:opacity .3s var(--ig-slide)}
+
+/* buttons give a little and come straight back */
+html.igskin .btn,.igpop .btn,html.igskin .igbtn{transition:background .16s var(--ease),
+  transform .14s var(--ig-press),opacity .14s var(--ease)}
+html.igskin .btn:active,.igpop .btn:active,html.igskin .igbtn:active{transform:scale(.975)}
+html.igskin .addblock,html.igskin .sgnew,html.igskin .addrow .addbtn,html.igskin .brkreset,
+html.igskin .spback,html.igskin .nsx,html.igskin .fsx,html.igskin .iconbtn{
+  transition:background .16s var(--ease),transform .16s var(--ig-press),
+  color .16s var(--ease),opacity .16s var(--ease)}
+html.igskin .addblock:active,html.igskin .sgnew:active,
+html.igskin .addrow .addbtn:active{transform:scale(.9)}
+
+/* chips: the day strip, the presets, the sets */
+html.igskin .dchip{transition:background .22s var(--ease),color .22s var(--ease),
+  box-shadow .22s var(--ease),transform .16s var(--ig-press)}
+html.igskin .dchip:active{transform:scale(.93)}
+html.igskin .preset,html.igskin .day,html.igskin .schip{
+  transition:background .18s var(--ease),color .18s var(--ease),transform .14s var(--ig-press)}
+html.igskin .preset:active,html.igskin .day:active,html.igskin .schip:active{transform:scale(.95)}
+
+/* rows answer with the faintest wash, the way a list row does */
+html.igskin .smrow,html.igskin .hrowc,html.igskin .ritem,html.igskin .partrow{
+  transition:background .14s linear}
+html.igskin .btxt,html.igskin .dn-head,html.igskin .note-head,html.igskin .tphead{
+  transition:opacity .14s var(--ease)}
+html.igskin .btxt:active,html.igskin .dn-head:active,
+html.igskin .note-head:active{opacity:.55}
+html.igskin .sgoal,html.igskin .fitem{transition:opacity .14s var(--ease)}
+
+/* a tick fills, and the mark is drawn into it */
+html.igskin .tick,html.igskin .bcheck,html.igskin .sgoal .gbox,html.igskin .fitem .fbox{
+  transition:background .24s var(--ig-press),box-shadow .24s var(--ig-press),
+  transform .18s var(--ig-press)}
+html.igskin .tick:active,html.igskin .bcheck:active{transform:scale(.88)}
+html.igskin .tick svg,html.igskin .bcheck svg,html.igskin .sgoal .gbox svg,
+html.igskin .fitem .fbox svg{transition:stroke-dashoffset .3s var(--ease) .04s,opacity .1s}
+/* the name greys out as the row closes rather than snapping */
+html.igskin .hrowc .hn,html.igskin .sgoal .gl,html.igskin .bname{
+  transition:color .26s var(--ease)}
+
+/* the rings and bars that report progress move, they do not jump */
+html.igskin .ring .rfg{transition:stroke-dashoffset .7s var(--ig-slide),stroke .3s var(--ease)}
+html.igskin .runbar i{transition:width .7s var(--ig-slide)}
+html.igskin .sq{transition:background .4s var(--ease),box-shadow .4s var(--ease)}
+
+/* the day strip slides under the thumb instead of stepping */
+html.igskin .daystrip{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+html.igskin .daystrip::-webkit-scrollbar{display:none}
+html.igskin .daystrip{scrollbar-width:none}
+
+/* a chevron turns; a panel opens on the same curve as everything else */
+html.igskin .chev,html.igskin .tphead .chev{transition:transform .34s var(--ig-slide)}
+html.igskin .tpbody{transition:grid-template-rows .38s var(--ig-slide)}
+html.igskin .note-body{transition:grid-template-rows .38s var(--ig-slide)}
+
+/* keyboard users get the ring Instagram gives them */
+html.igskin :focus-visible{outline:2px solid var(--ig-blue);outline-offset:2px;border-radius:8px}
+
+@media (prefers-reduced-motion:reduce){
+  html.igskin *,html.igskin *::before,html.igskin *::after{
+    transition-duration:.06s!important;animation-duration:.01ms!important}
+}
+
+/* ---------- Vision's own screens, in the same furniture ----------
+   The door, the lock, the picture and the PDF reader. Vision is always dark,
+   so these take Instagram's dark values straight rather than reading the
+   app's — the page around them is untouched. */
+#vGate .gask h2{font-family:var(--ui);font-size:24px;font-weight:700;letter-spacing:-.033em}
+#vGate .gask p{font-size:15px;line-height:1.42;color:#A8A8A8;max-width:32ch}
+#vGate .gpick{gap:9px}
+#vGate .gbtn{height:50px;border-radius:12px;padding:0 16px;font-size:16px;font-weight:600;
+  letter-spacing:-.01em;background:#262626;color:#FFF;border:0}
+#vGate .gbtn:active{transform:none;filter:none;background:#333}
+#vGate .gbtn.primary{background:#4F5BF7;color:#fff}
+#vGate .gbtn.primary:active{background:#4048C8;filter:none}
+#vGate .gbtn svg{width:21px;height:21px;stroke-width:1.8}
+#vGate .igicon{width:32px;height:32px}
+#vGate .igicon svg{width:24px;height:24px;stroke-width:2}
+
+/* the lock: the authentication screen */
+.vlock h3{font-family:var(--ui);font-size:24px;font-weight:700;letter-spacing:-.033em;margin:22px 0 8px}
+.vlock .lockwhy{font-size:15px;line-height:1.42;color:#A8A8A8;margin:0 auto 26px}
+.vlock .lockring{background:#1C1C1E;box-shadow:none}
+.vlock .input{height:50px;border-radius:12px;font-size:16px;background:#262626;
+  border:0;color:#fff;margin-bottom:12px}
+.vlock .input:focus{background:#262626;border:0;box-shadow:inset 0 0 0 1.5px #3A3A3C}
+.vlock .input::placeholder{color:#737373}
+.vlock .btn{height:50px;border-radius:12px;font-size:16px;font-weight:600;
+  background:#4F5BF7;color:#fff;border:0}
+.vlock .btn:active{background:#4048C8;filter:none}
+.vlock-err{font-size:14px;color:#ED4956;margin-top:14px}
+
+/* the picture, opened on its own */
+.lbx{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff}
+.lbx:active{background:rgba(255,255,255,.22)}
+.lbx svg{width:20px;height:20px;stroke-width:2}
+
+/* the PDF reader */
+.pdfbox{background:#000}
+.pdfbar{background:#000;border-bottom:1px solid #262626;gap:4px}
+.pdfbar .nm{font-family:var(--ui);font-size:16px;font-weight:600;letter-spacing:-.015em;color:#fff}
+.pdfbtn{width:36px;height:36px;border-radius:50%;background:transparent;color:#fff}
+.pdfbtn:active{transform:none;background:rgba(255,255,255,.14)}
+.pdfbtn svg{width:18px;height:18px;stroke-width:2}
+.pdfz{font-family:var(--ui);font-size:13px;font-weight:500;letter-spacing:0;color:#A8A8A8}
+.pdfstage,.pdfstage iframe{background:#000}
+.pdffall h4{font-family:var(--ui);font-size:19px;font-weight:700;letter-spacing:-.025em}
+.pdffall p{font-size:15px;line-height:1.45;color:#A8A8A8}
+.pdffall .btn{height:50px;border-radius:12px;font-size:16px;font-weight:600;
+  background:#4F5BF7;color:#fff;border:0}
+.pdffall .btn:active{background:#4048C8}
+
+/* ---------- one note, opened on its own ----------
+   The head is a proper bar — a title, the day, a cross — parted from the
+   writing by a rule, so nothing sits against the edge of the card. */
+html.igskin .nshead{align-items:center;gap:12px;
+  margin:0 calc(-1*var(--gut)) 18px;padding:2px var(--gut) 14px;
+  border-bottom:1px solid var(--line)}
+html.igskin .nshead h3{font-family:var(--ui);font-size:18px;font-weight:700;
+  letter-spacing:-.02em;line-height:30px}
+html.igskin .nstin{font-family:var(--ui);font-size:18px;font-weight:700;letter-spacing:-.02em;
+  line-height:30px;height:30px}
+html.igskin .nshead .eyebrow{font-family:var(--ui);font-size:13px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);line-height:30px}
+html.igskin .nsx{width:32px;height:32px;border-radius:50%;color:var(--ink);margin-right:-4px}
+html.igskin .nsx:active{background:var(--tint)}
+html.igskin .nsx svg{width:18px;height:18px;stroke-width:2}
+html.igskin .ns-read{min-height:132px;padding:0}
+html.igskin .ns-text{font-size:16px;line-height:1.55}
+html.igskin .ns-hint{font-family:var(--ui);font-size:14px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);margin-top:16px}
+html.igskin #nsEdit .dn-ta{min-height:150px;font-size:16px;line-height:1.55;
+  background:var(--ig-fill);border-radius:12px;padding:14px}
+html.igskin #nsEdit .dn-foot{margin-top:20px}
+
+/* ---------- the record, opened as a full page ---------- */
+html.igskin .fullsheet{background:var(--bg);border-radius:0;box-shadow:none;padding:0}
+html.igskin .fshead{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top)) var(--gut) 0}
+html.igskin .fsbar{gap:24px;padding:6px 0 14px}
+html.igskin .fsbar h3{font-family:var(--ui);font-size:24px;font-weight:700;letter-spacing:-.033em;
+  line-height:32px}
+html.igskin .fsx{width:30px;height:30px;border-radius:50%;background:transparent;border:0;color:var(--ink)}
+html.igskin .fsx:active{transform:scale(.88);opacity:.5;border:0}
+html.igskin .fsx svg{width:24px;height:24px;stroke-width:2}
+html.igskin .fsbody{padding:20px var(--gut) calc(32px + env(safe-area-inset-bottom))}
+html.igskin .fsbody .field{margin-bottom:30px}
+html.igskin .fsbody .field>.eyebrow{display:block;font-family:var(--ui);font-size:17px;
+  font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--ink);margin-bottom:8px}
+html.igskin .rlist{gap:0;margin-bottom:8px}
+html.igskin .ritem{background:transparent;border:0;border-bottom:1px solid var(--ig-hair);
+  border-radius:0;padding:14px 0;gap:14px}
+html.igskin .ritem.timed{border-color:var(--ig-hair)}
+html.igskin .ritem .rt{font-size:16px;line-height:1.4}
+html.igskin .ritem .rm{font-family:var(--ui);font-size:13px;letter-spacing:0;text-transform:none;
+  color:var(--ink-2);margin-top:5px}
+html.igskin .ritem .x{color:var(--ink-3)}
+html.igskin .rempty{font-size:15px;color:var(--ink-2);padding:8px 0 14px}
+html.igskin .addrow{gap:9px;margin-top:12px}
+html.igskin .addrow .input{height:48px;font-size:16px;border-radius:12px}
+html.igskin .addrow .addbtn{width:48px;height:48px;background:var(--ig-blue);border:0;color:#fff;
+  border-radius:50%}
+html.igskin .addrow .addbtn:active{background:var(--ig-blue-2);border:0}
+html.igskin .fbopen{background:var(--ig-fill);border:0;color:var(--ink);height:48px;
+  border-radius:12px;font-size:16px;font-weight:600}
+html.igskin .fbopen:active{background:var(--cell);border:0}
+html.igskin .fball{border-top:1px solid var(--line);padding-top:22px;margin-top:22px}
+html.igskin .fbhead{margin-bottom:4px}
+html.igskin .fbhead .eyebrow{font-family:var(--ui);font-size:17px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+html.igskin .fbmini{font-family:var(--ui);font-size:15px;font-weight:600;letter-spacing:0;
+  text-transform:none;background:transparent;color:var(--ig-blue);padding:6px 0}
+html.igskin .fbitem{background:transparent;border:0;border-bottom:1px solid var(--ig-hair);
+  border-radius:0;padding:16px 0;margin-bottom:0}
+html.igskin .fbitem .when .eyebrow{font-family:var(--ui);font-size:14px;font-weight:600;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink-2)}
+html.igskin .fbitem .when button{font-family:var(--ui);font-size:14px;font-weight:600;
+  color:var(--ig-red);padding:4px 0}
+html.igskin .fbitem p{font-size:15px;color:var(--ink);line-height:1.45}
+
+/* ===========================================================
+   STUDY
+   A bold title, a strip of days, then flat sections: a heading, rows on
+   the bare paper, hairlines instead of cards.
+   =========================================================== */
+html.igskin #v-plan .plan-head{align-items:flex-end;padding:calc(8px + env(safe-area-inset-top)) 0 14px}
+html.igskin #v-plan .plan-head .eyebrow{display:block;font-family:var(--ui);font-size:15px;
+  font-weight:400;letter-spacing:-.01em;text-transform:none;color:var(--ink-2);margin-bottom:2px}
+html.igskin #v-plan .plan-head h2{font-family:var(--ui);font-size:24px;font-weight:700;
+  letter-spacing:-.033em;margin:0;line-height:1.18}
+html.igskin #v-plan .todaybtn{font-family:var(--ui);font-size:15px;font-weight:600;
+  letter-spacing:-.01em;text-transform:none;color:var(--ig-blue);background:transparent;
+  padding:0;margin:0 0 4px}
+
+/* the strip of days */
+html.igskin .stripwrap{background:var(--bg);margin:0 calc(-1*var(--gut)) 20px;
+  padding:16px var(--gut) 16px}
+html.igskin .stripwrap::after{background:var(--line)}
+html.igskin .daystrip{gap:7px}
+html.igskin .dchip{width:52px;padding:9px 0 8px;border-radius:12px;background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);border:0;color:var(--ink)}
+html.igskin .dchip .w{font-family:var(--ui);font-size:11.5px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2)}
+html.igskin .dchip .d{font-size:16px;font-weight:600;letter-spacing:-.02em;margin-top:2px}
+html.igskin .dchip .dot{width:4px;height:4px;margin-top:4px}
+html.igskin .dchip.has .dot{background:var(--ink-3)}
+html.igskin .dchip.today{box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .dchip.today .dot{background:var(--ig-blue)}
+html.igskin .dchip.sun .w,html.igskin .dchip.sun .d{color:var(--sun)}
+html.igskin .dchip.on{background:var(--ink);color:var(--bg);box-shadow:none}
+html.igskin .dchip.on .w{color:var(--bg);opacity:.65}
+html.igskin .dchip.on .d{color:var(--bg)}
+html.igskin .dchip.on .dot{background:var(--bg);opacity:.8}
+html.igskin .msep{background:var(--line)}
+
+/* the three things you do to a day, as Instagram's grey plates */
+html.igskin #v-plan .actrow,html.igskin #v-plan .brkrow{gap:8px;margin-bottom:9px}
+html.igskin #v-plan .act{background:var(--ig-fill);border:0;border-radius:12px;
+  padding:0 14px;height:48px;gap:10px}
+html.igskin #v-plan .act:active{background:var(--cell)}
+html.igskin #v-plan .act svg{width:19px;height:19px;stroke:var(--ink);stroke-width:1.7}
+html.igskin #v-plan .act .l{font-size:15px;font-weight:600;letter-spacing:-.015em}
+html.igskin #v-plan .act .tag{font-family:var(--ui);font-size:13px;font-weight:500;
+  letter-spacing:0;color:var(--ink-2)}
+html.igskin #v-plan .act.lit{background:var(--ig-blue);color:#fff}
+html.igskin #v-plan .act.lit svg{stroke:#fff}
+html.igskin #v-plan .act.lit .l{color:#fff}
+html.igskin #v-plan .act.lit .tag{color:rgba(255,255,255,.8)}
+html.igskin .brkbox{background:var(--ig-fill);border:0;border-radius:12px;padding:0 6px 0 14px;height:48px}
+html.igskin .brkbox .n b{font-family:var(--ui);font-size:16px;font-weight:700;letter-spacing:-.02em}
+html.igskin .brkbox .n span{font-family:var(--ui);font-size:11px;font-weight:400;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);margin-top:2px}
+html.igskin .brkbox.some .n b{color:var(--ig-blue)}
+html.igskin .brkreset{width:34px;height:34px;color:var(--ink-2)}
+html.igskin .brkreset:active{color:var(--ig-blue)}
+
+/* the day's plan */
+html.igskin #v-plan .pcard{background:transparent;border:0;border-radius:0;
+  border-top:1px solid var(--line);margin-top:18px;padding:18px 0 6px}
+html.igskin #v-plan .pcard.editing{background:transparent;border-color:var(--line)}
+html.igskin .lnote-text,html.igskin .lnote-ta{font-size:16px;line-height:1.5}
+html.igskin .lnote-hint{font-family:var(--ui);font-size:15px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2)}
+html.igskin .lnote.blank .lnote-hint{color:var(--ink-2)}
+html.igskin .lnote.editing .lnote-hint{color:var(--ig-blue)}
+html.igskin .lnote-done{font-size:15px;font-weight:600;color:#fff;background:var(--ig-blue);
+  padding:9px 18px;border-radius:10px}
+
+/* the heading over the sessions, and the blue plus beside it */
+/* the sessions have their own head: a band parts them from the day above, and a
+   rule closes the head off from the list under it, so the title and the plus
+   read as one bar rather than floating over the first session */
+html.igskin #v-plan .psec{position:relative;align-items:center;gap:10px;
+  margin:26px 0 0;padding:26px 0 14px;border-top:0}
+html.igskin #v-plan .psec::before{content:'';position:absolute;top:0;
+  left:calc(-1*var(--gut));right:calc(-1*var(--gut));height:8px;background:var(--ig-band)}
+html.igskin #v-plan .psec::after{content:'';position:absolute;bottom:0;
+  left:calc(-1*var(--gut));right:calc(-1*var(--gut));height:1px;background:var(--line)}
+html.igskin #v-plan .psec .eyebrow{flex:0 0 auto;font-family:var(--ui);font-size:22px;
+  font-weight:700;letter-spacing:-.03em;text-transform:none;color:var(--ink);line-height:1.2}
+html.igskin .pcount{flex:1;min-width:0;font-family:var(--ui);font-size:14px;font-weight:500;
+  letter-spacing:-.01em;color:var(--ink-2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding-top:3px}
+html.igskin .addblock{width:34px;height:34px;border-radius:50%;background:var(--ig-blue);color:#fff}
+html.igskin .addblock:active{background:var(--ig-blue-2)}
+html.igskin .addblock svg{width:17px;height:17px;stroke-width:2.4}
+/* the first session sits right under the head, so it needs no rule of its own */
+html.igskin .pblock:first-of-type{padding-top:18px}
+
+/* ---------- a session ---------- */
+html.igskin .pblock{background:transparent;border:0;border-radius:0;
+  border-bottom:1px solid var(--ig-hair);padding:16px 0;margin-bottom:0}
+html.igskin .pblock.done{background:transparent;border-color:var(--ig-hair)}
+html.igskin .brow{gap:14px;align-items:flex-start}
+html.igskin .btime{width:56px;padding-top:2px}
+html.igskin .btime .hm{font-family:var(--ui);font-size:15px;font-weight:600;letter-spacing:-.02em}
+html.igskin .btime .ap{font-family:var(--ui);font-size:11.5px;letter-spacing:0;color:var(--ink-2);margin-top:2px}
+html.igskin .bsep{display:none}
+html.igskin .bname{font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.35}
+html.igskin .pblock.done .bname{color:var(--ink-2)}
+html.igskin .stag{font-family:var(--ui);font-size:12.5px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);background:transparent;padding:0;margin-top:3px}
+/* Instagram ticks things off in a circle, so the session and its goals both do */
+html.igskin .bcheck{width:26px;height:26px;border-radius:50%;background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--line-2);margin-top:2px}
+html.igskin .bcheck.on{background:var(--ink);box-shadow:none}
+html.igskin .bcheck svg{width:14px;height:14px;stroke:var(--bg);stroke-width:3}
+html.igskin .bcheck.locked{opacity:.3}
+html.igskin .sgoals{margin-top:10px;gap:0;padding-left:70px}
+html.igskin .sgoal{background:transparent;border:0;border-radius:0;padding:8px 0;gap:12px}
+html.igskin .sgoal:active{background:transparent;opacity:.5}
+html.igskin .sgoal .gbox{width:20px;height:20px;border-radius:50%;background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--line-2);margin-top:1px}
+html.igskin .sgoal.on .gbox{background:var(--ink);box-shadow:none}
+html.igskin .sgoal .gbox svg{width:11px;height:11px;stroke:var(--bg);stroke-width:3}
+html.igskin .sgoal .gl{font-size:15px;line-height:1.4}
+html.igskin .sgoal.on .gl{color:var(--ink-3);text-decoration-color:var(--line-2)}
+html.igskin .sgprog{font-family:var(--ui);font-size:13px;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);margin-top:8px;padding-left:70px}
+html.igskin .sgprog.full{color:var(--ig-blue)}
+html.igskin .sgadd{margin-top:10px;gap:8px;padding-left:70px}
+html.igskin .sgadd .input{height:42px;font-size:15px;border-radius:11px;background:var(--ig-fill)}
+html.igskin .sgnew{width:36px;height:36px;border-radius:50%;background:var(--ig-blue);color:#fff}
+html.igskin .sgnew:active{background:var(--ig-blue-2)}
+html.igskin .sgnew svg{width:15px;height:15px;stroke-width:2.4}
+html.igskin #v-plan .empty{border:0;border-radius:0;padding:44px 8px;color:var(--ink-2)}
+html.igskin #v-plan .empty h3{font-family:var(--ui);font-size:17px;font-weight:700;
+  letter-spacing:-.02em;margin-bottom:7px}
+html.igskin #v-plan .empty p{font-size:15px;line-height:1.45}
+
+/* ===========================================================
+   SETTINGS — the same list, in Instagram's colours and measure
+   =========================================================== */
+html.igskin #setRoot .ptitle{padding:calc(8px + env(safe-area-inset-top)) 0 8px}
+html.igskin #setRoot .ptitle h2,html.igskin .sptitle h2{font-family:var(--ui);font-size:24px;
+  font-weight:700;letter-spacing:-.033em}
+html.igskin .sphead{gap:24px;padding:calc(8px + env(safe-area-inset-top)) 0 16px}
+html.igskin .sphead::after{left:calc(-1*var(--gut));right:calc(-1*var(--gut))}
+html.igskin .spback svg{width:24px;height:24px;stroke-width:2}
+/* the group headings: quiet and grey on the front page, loud inside a door */
+html.igskin .smenu>.eyebrow,html.igskin #installGroup>.eyebrow{font-family:var(--ui);font-size:15px;
+  font-weight:400;letter-spacing:-.01em;color:var(--ink-2);padding:24px 0 8px}
+html.igskin .subpage .group>.eyebrow{font-family:var(--ui);font-size:17px;font-weight:700;
+  letter-spacing:-.02em;color:var(--ink);padding:24px 0 8px}
+html.igskin .smenu>.eyebrow::before,html.igskin #installGroup>.eyebrow::before,
+html.igskin .subpage .group>.eyebrow::before{left:calc(-1*var(--gut));right:calc(-1*var(--gut));
+  height:8px;background:var(--ig-band)}
+html.igskin .smrow{min-height:52px;padding:11px var(--gut);margin:0 calc(-1*var(--gut));gap:24px}
+html.igskin .smrow .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
+html.igskin .smrow .ico svg{width:24px;height:24px;stroke-width:1.7}
+html.igskin .smrow .go svg{width:13px;height:13px;stroke-width:2}
+html.igskin .subpage .srow,html.igskin #setRoot .srow{padding:13px 0;min-height:52px}
+html.igskin .subpage .srow .t .n,html.igskin #setRoot .srow .t .n{font-size:17px;font-weight:400;
+  letter-spacing:-.015em}
+html.igskin .subpage .srow .t .d,html.igskin #setRoot .srow .t .d{font-size:15px;color:var(--ink-2);
+  margin-top:8px;line-height:1.42}
+html.igskin .subpage .hint{font-size:15px;color:var(--ink-2);margin-top:12px;line-height:1.42}
+/* a value you tap sits in a soft pill, hard right */
+html.igskin .subpage .srow input[type="date"],html.igskin .subpage .srow input[type="time"]{
+  background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair);border:0;color:var(--ink-2);
+  height:44px;border-radius:10px;padding:0 15px;font-size:16px}
+html.igskin .subpage .seg-ctrl{background:var(--ig-fill);border-radius:11px;padding:3px}
+html.igskin .subpage .seg-ctrl button{font-family:var(--ui);font-size:14px;font-weight:600;
+  letter-spacing:0;padding:8px 13px;border-radius:9px;color:var(--ink-2)}
+html.igskin .subpage .seg-ctrl button.on{background:var(--bg);color:var(--ink)}
+html[data-theme="dark"].igskin .subpage .seg-ctrl button.on{background:var(--line-2)}
+html.igskin .subpage .btn,html.igskin .subpage .btn.ghost{height:48px;border-radius:12px;
+  font-size:16px;font-weight:600;background:var(--ig-fill);color:var(--ink);border:0}
+html.igskin .subpage .btn:active{background:var(--cell);border:0}
+html.igskin .subpage .btn.danger{background:transparent;color:var(--ig-red)}
+html.igskin .subpage .btn.danger:active{background:var(--tint)}
+html.igskin #installBtn{background:var(--ig-blue);color:#fff;border:0;height:44px;border-radius:10px;
+  font-size:15px}
+html.igskin #installBtn:active{background:var(--ig-blue-2)}
+html.igskin .subpage .partrow{padding:12px 0;gap:10px}
+html.igskin .subpage .partrow .t .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
+html.igskin .subpage .partrow .t .d{font-family:var(--ui);font-size:14px;letter-spacing:0;
+  text-transform:none;color:var(--ink-2);margin-top:4px}
+html.igskin .subpage .pbtn{width:40px;height:40px;border-radius:12px;background:var(--ig-fill);
+  border:0;color:var(--ink)}
+html.igskin .subpage .pbtn:active{background:var(--cell);border:0}
+html.igskin .schip{background:var(--ig-fill);border:0;border-radius:11px;font-size:15px;
+  padding:10px 15px;color:var(--ink)}
+html.igskin .schip.on{background:var(--ink);color:var(--bg)}
+html.igskin .schip.add{color:var(--ig-blue);background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--ig-blue-soft)}
+html.igskin .setstrip{margin:0 calc(-1*var(--gut)) 18px;padding:2px var(--gut) 4px}
+html.igskin .subpage .hrow{background:transparent;border:0;border-radius:0;padding-left:0;
+  height:auto;min-height:58px;margin-bottom:0;border-bottom:1px solid var(--ig-hair)}
+html.igskin .subpage .hrow.dragging{background:var(--ig-sheet);border-radius:12px;
+  border-bottom-color:transparent;box-shadow:0 18px 32px -18px rgba(0,0,0,.4)}
+html.igskin .subpage .hinfo .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
+html.igskin .subpage .hinfo .s{font-size:14px;color:var(--ink-2);margin-top:3px}
+html.igskin .subpage .handle{color:var(--ink-3)}
+html.igskin .subpage .panel#fxPanel{background:transparent;border:0;border-radius:0}
+html.igskin .subpage .panel#fxPanel .fxrow{padding:4px 0;border-bottom:1px solid var(--ig-hair)}
+html.igskin .subpage .panel#fxPanel .fxin{font-size:17px;height:46px}
+html.igskin .subpage textarea.area{background:var(--ig-fill);border:0;border-radius:12px;font-size:16px}
+html.igskin .subpage .empty{border:0;padding:40px 8px;color:var(--ink-2)}
+html.igskin .subpage .empty h3{font-family:var(--ui);font-size:17px;font-weight:700}
+html.igskin .subpage .empty p{font-size:15px}
+html.igskin .foot{color:var(--ink-3);font-size:13px;padding:26px 0 10px}
+
+/* Instagram's switch: black on white, white on black, grey when off */
+html.igskin .switch{width:52px;height:31px;border-radius:16px;flex:0 0 auto;position:relative;
+  background:var(--line-2);box-shadow:none;
+  transition:background .28s var(--ease)}
+html.igskin .switch::after{content:'';position:absolute;top:3px;left:3px;width:25px;height:25px;
+  border-radius:50%;background:var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.2);
+  transition:transform .3s var(--spring),background .28s var(--ease)}
+html.igskin .switch.on{background:var(--ink)}
+html.igskin .switch.on::after{transform:translateX(21px);background:var(--bg)}
+html[data-theme="dark"].igskin .switch::after{background:var(--ink-3);box-shadow:none}
+html[data-theme="dark"].igskin .switch.on::after{background:var(--bg)}
+
+html.igskin .toast{background:var(--ink);color:var(--bg);border-radius:10px;font-size:15px;
+  font-weight:500}
+
+/* ===========================================================
+   HOME — the same Instagram page
+   A bold title, the ring, the record, then the habits as flat rows under
+   bold headings. No cards, no frames: hairlines do all the parting.
+   =========================================================== */
+html.igskin #v-today{padding-left:var(--gut);padding-right:var(--gut)}
+html.igskin #v-today.active>.tcol>*{animation:none}
+html.igskin .topbar{border-bottom:0}
+html.igskin .brand h1{font-family:var(--ui);font-size:20px;font-weight:700;letter-spacing:-.03em}
+html.igskin .iconbtn{border-radius:50%;background:transparent;color:var(--ink)}
+html.igskin .iconbtn:active{background:var(--tint)}
+html.igskin .iconbtn svg{width:22px;height:22px;stroke-width:1.8}
+
+/* the head of the day */
+html.igskin .head{padding:8px 0 22px}
+html.igskin .head .eyebrow{display:block;font-family:var(--ui);font-size:15px;font-weight:400;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink-2);margin-bottom:2px}
+html.igskin .day-name{font-family:var(--ui);font-size:24px;font-weight:700;letter-spacing:-.033em;
+  line-height:1.18;margin:0}
+html.igskin .prog{gap:18px;margin:20px 0 0}
+html.igskin .ringwrap,html.igskin .ring{width:96px;height:96px}
+html.igskin .ring circle{stroke-width:8}
+html.igskin .ring .rbg{stroke:var(--ig-fill)}
+html.igskin .ring .rfg{stroke:var(--ig-blue)}
+html.igskin .ringtxt b{font-family:var(--ui);font-size:26px;font-weight:700;letter-spacing:-.04em}
+html.igskin .ringtxt span{font-family:var(--ui);font-size:12px;letter-spacing:0;text-transform:none;
+  color:var(--ink-2);margin-top:2px}
+html.igskin .pline{font-family:var(--ui);font-size:19px;font-weight:700;letter-spacing:-.025em}
+html.igskin .psub{font-size:15px;color:var(--ink-2);margin-top:5px;line-height:1.42}
+
+/* the run, as a quiet strip rather than a card */
+html.igskin .run{background:var(--ig-fill);border:0;border-radius:12px;padding:13px 15px;margin-top:18px}
+html.igskin .runtop .n{font-family:var(--ui);font-size:16px;font-weight:600;letter-spacing:-.02em}
+html.igskin .runtop .r{font-family:var(--ui);font-size:13px;letter-spacing:0;text-transform:none;
+  color:var(--ink-2)}
+html.igskin .runbar{background:var(--line-2);height:4px;border-radius:3px;margin-top:10px}
+html.igskin .runbar i{background:var(--ig-blue)}
+
+/* the record of the run of days */
+html.igskin .streak{background:transparent;border:0;border-radius:0;padding:20px 0 20px;
+  margin:0;border-top:1px solid var(--line);border-bottom:0}
+html.igskin .streak.clean{background:transparent}
+html.igskin .streak:active{transform:none;opacity:.6}
+html.igskin .sq{border-radius:3px;background:var(--ig-fill)}
+html.igskin .sq.none{background:var(--ig-fill)}
+html.igskin .sq.future{background:var(--ig-fill-2)}
+html.igskin .sq.l1{background:color-mix(in srgb,var(--ig-purple) 30%,var(--ig-fill))}
+html.igskin .sq.l2{background:color-mix(in srgb,var(--ig-purple) 55%,var(--ig-fill))}
+html.igskin .sq.l3{background:color-mix(in srgb,var(--ig-purple) 78%,var(--ig-fill))}
+html.igskin .sq.l4{background:var(--ig-purple)}
+html.igskin .sq.today{box-shadow:0 0 0 1.5px var(--ink-2)}
+html.igskin .sq.today.l4{box-shadow:0 0 0 1.5px var(--ig-purple)}
+html.igskin .sfoot{font-family:var(--ui);font-size:14px;color:var(--ink-2);margin-top:16px}
+html.igskin .sfoot b{color:var(--ink);font-weight:600}
+html.igskin .sfoot .right b{color:var(--ig-purple)}
+html.igskin .sfoot svg{width:13px;height:13px;stroke-width:2}
+
+/* ---------- the habits, as three flat lists ---------- */
+/* each state keeps its own grouped box, the way Instagram groups a short list */
+html.igskin .tpanel{background:var(--ig-fill-2);border:0;border-radius:14px;overflow:hidden;
+  margin-bottom:12px;box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html.igskin .tpanel.done-set,html.igskin .tpanel.todo-set{background:var(--ig-fill-2)}
+html.igskin .tphead{padding:14px 16px 11px;gap:9px}
+html.igskin .tphead .eyebrow{font-family:var(--ui);font-size:16px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+html.igskin .tpanel.todo-set .tphead .eyebrow{color:var(--ink)}
+html.igskin .tphead .cnt{font-family:var(--ui);font-size:15px;font-weight:500;color:var(--ink-2)}
+html.igskin button.tphead:active{background:var(--tint)}
+html.igskin .tphead .chev{width:15px;height:15px;stroke-width:2}
+/* a habit is a row with its colour on the left and a round tick on the right */
+html.igskin .hrowc{padding:13px 16px;gap:13px;border-top:0;border-bottom:1px solid var(--ig-hair);
+  min-height:54px}
+html.igskin .tpinner>.hrowc:last-child{border-bottom:0}
+html.igskin .hrowc:active{background:var(--tint);opacity:1}
+html.igskin .hrowc .bar{display:block;width:10px;height:10px;border-radius:50%;
+  background:var(--c);flex:0 0 auto}
+html.igskin .hrowc.on .bar{opacity:.45}
+html.igskin .hrowc .hn{font-size:16.5px;font-weight:400;letter-spacing:-.015em}
+html.igskin .tick{width:26px;height:26px;border-radius:50%;background:transparent;
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .tick svg{width:14px;height:14px;stroke:#fff;stroke-width:3}
+html.igskin .hrowc.on{opacity:1}
+html.igskin .hrowc.on .hn{color:var(--ink-3);text-decoration:line-through;
+  text-decoration-color:var(--line-2)}
+html.igskin .hrowc.on .tick{background:var(--c);box-shadow:none}
+html.igskin .hrowc.rest{opacity:.5}
+html.igskin .hrowc.rest .tick{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ig-hair)}
+html.igskin .hrowc.rest .tick svg{stroke:var(--ink-3)}
+html.igskin .hdiv{padding:14px 16px 8px}
+html.igskin .hdiv .lbl{font-family:var(--ui);font-size:13px;font-weight:600;letter-spacing:0;
+  text-transform:none;color:var(--ink-2)}
+html.igskin .hdiv .rule{background:var(--ig-hair)}
+html.igskin #v-today .empty{border:0;border-radius:0;padding:44px 8px;color:var(--ink-2)}
+html.igskin #v-today .empty h3{font-family:var(--ui);font-size:17px;font-weight:700;
+  letter-spacing:-.02em;margin-bottom:7px}
+html.igskin #v-today .empty p{font-size:15px;line-height:1.45}
+
+/* ---------- notes ---------- */
+html.igskin .note{border-top:1px solid var(--line);border-bottom:0;margin:22px 0 4px}
+html.igskin .note-head{padding:20px 0 12px}
+html.igskin .note-head .eyebrow{font-family:var(--ui);font-size:17px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+html.igskin .note-dot{background:var(--ig-blue)}
+html.igskin .dn{background:var(--ig-fill-2);border:0;border-radius:12px;
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html.igskin .dn.editing{background:var(--ig-fill);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .dn-head{padding:13px 14px 10px}
+html.igskin .dn-title{font-size:16px;font-weight:600;letter-spacing:-.015em}
+html.igskin .dn-when{font-family:var(--ui);font-size:12.5px;letter-spacing:0;text-transform:none;
+  color:var(--ink-2)}
+html.igskin .dn-read{padding:0 14px 14px}
+html.igskin .dn-text{font-size:15px;line-height:1.5;color:var(--ink-2)}
+html.igskin .dn-edit{padding:13px 14px 14px}
+html.igskin .dn-tin{font-size:16px;font-weight:600}
+html.igskin .dn-ta{font-size:15px;line-height:1.5}
+html.igskin .dn-del{font-size:14px;font-weight:600;color:var(--ig-red)}
+html.igskin .dn-done{font-size:14px;font-weight:600;color:#fff;background:var(--ig-blue);
+  padding:8px 16px;border-radius:10px}
+html.igskin .addnote{height:46px;border:0;border-radius:12px;background:var(--ig-fill);
+  color:var(--ink);font-size:15px;font-weight:600;margin-top:9px}
+html.igskin .addnote:active{background:var(--cell)}
+
+/* ---------- perfect days ---------- */
+html.igskin .pdbig{font-family:var(--ui);font-size:40px;font-weight:700;letter-spacing:-.04em;
+  color:var(--ig-purple)}
+html.igskin .pdsub{font-size:15px;color:var(--ink-2)}
+html.igskin .mon h4{font-family:var(--ui);font-size:16px;font-weight:700;letter-spacing:-.02em}
+html.igskin .dow span{font-family:var(--ui);font-size:12px;letter-spacing:0;text-transform:none;
+  color:var(--ink-2)}
+html.igskin .cell{border-radius:9px;font-family:var(--ui);font-size:13px;background:var(--ig-fill-2);
+  color:var(--ink-3)}
+html.igskin .cell.blank{background:transparent}
+html.igskin .cell.part{background:var(--ig-fill);color:var(--ink-2)}
+html.igskin .cell.perf{background:var(--ig-purple);color:#fff;font-weight:600}
+html.igskin .cell.today{box-shadow:inset 0 0 0 1.5px var(--ink-2)}
+
+@media (min-width:700px) and (min-height:600px){
+  html.igskin .day-name{font-size:28px}
+  html.igskin .head .eyebrow{font-size:16px}
+  html.igskin .ringwrap,html.igskin .ring{width:110px;height:110px}
+  html.igskin .ringtxt b{font-size:30px}
+  html.igskin .pline{font-size:21px}
+  html.igskin .psub{font-size:16px}
+  html.igskin .tphead .eyebrow,html.igskin .note-head .eyebrow{font-size:19px}
+  html.igskin .hrowc .hn{font-size:18px}
+  html.igskin .tick{width:28px;height:28px}
+}
+@media (max-width:370px){
+  html.igskin .ringwrap,html.igskin .ring{width:86px;height:86px}
+  html.igskin .ringtxt b{font-size:23px}
+  html.igskin .pline{font-size:17px}
+}
+
+/* ---------- the record is a page at every size ----------
+   The tablet centres an ordinary sheet as a card, and that rule was winning
+   over the full-screen one. This out-ranks it, so the record fills the screen
+   on a tablet exactly as it does on a phone. */
+html.igskin .sheet.fullsheet{top:0;left:0;right:0;bottom:0;width:auto;height:100%;
+  max-width:none;max-height:none;border-radius:0;padding:0;box-shadow:none;
+  background:var(--bg);transform:translateY(100%)}
+html.igskin .sheet.fullsheet.on{transform:none;box-shadow:none}
+
+/* ---------- nothing on these pages fades itself in ----------
+   The entry animations use a `both` fill, so anything that misses its frame
+   is left at zero opacity and the page reads as blank until a tap repaints
+   it. On a tablet that was happening on the way into a sub-page. */
+html.igskin .view.active>*,html.igskin .view.active>.tcol>*,
+html.igskin .view.active>.tcol,html.igskin .subpage.on,
+html.igskin #setRoot,html.igskin #v-plan.active>*,
+html.igskin #v-settings.active>*{animation:none}
+/* the blurred bars get a layer of their own, which is what keeps a tablet
+   from dropping the whole composite while one of them is scrolling */
+html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{transform:translateZ(0)}
+
+/* ---------- tablet: the same page, given the room ---------- */
+@media (min-width:700px) and (min-height:600px){
+  html.igskin{--gut:24px}
+  html.igskin #setRoot .ptitle h2,html.igskin .sptitle h2,
+  html.igskin #v-plan .plan-head h2,html.igskin .fsbar h3{font-size:28px}
+  html.igskin #v-plan .plan-head .eyebrow{font-size:16px}
+  html.igskin .smrow{min-height:58px;gap:26px}
+  html.igskin .smrow .n,html.igskin .subpage .srow .t .n,html.igskin #setRoot .srow .t .n,
+  html.igskin .subpage .partrow .t .n,html.igskin .subpage .hinfo .n{font-size:18px}
+  html.igskin .smenu>.eyebrow,html.igskin #installGroup>.eyebrow{font-size:16px}
+  html.igskin .subpage .group>.eyebrow,
+  html.igskin .fsbody .field>.eyebrow,html.igskin .sheet .field>.eyebrow{font-size:19px}
+  html.igskin #v-plan .psec .eyebrow{font-size:25px}
+  html.igskin .pcount{font-size:15px}
+  html.igskin .addblock{width:38px;height:38px}
+  html.igskin .dchip{width:58px;padding:11px 0 10px;border-radius:14px}
+  html.igskin .dchip .d{font-size:17.5px}
+  html.igskin .dchip .w{font-size:12.5px}
+  html.igskin #v-plan .act{height:52px}
+  html.igskin #v-plan .act .l{font-size:16px}
+  html.igskin .brkbox{height:52px}
+  html.igskin .bname{font-size:17px}
+  html.igskin .sgoal .gl{font-size:16px}
+  html.igskin .sgoal .gbox{width:22px;height:22px}
+  html.igskin .bcheck{width:28px;height:28px}
+  html.igskin .addblock{width:36px;height:36px}
+  html.igskin .sgnew{width:40px;height:40px}
+  html.igskin .sgadd .input{height:46px;font-size:16px}
+  html.igskin .input{height:50px;font-size:17px}
+  html.igskin .sheet,.sheet.igpop{width:min(560px,calc(100vw - 96px));max-width:none;
+    border-radius:16px;border:0;padding:0 var(--gut) var(--gut)}
+  html.igskin .sheet .grabber,.sheet.igpop .grabber{display:none}
+  html.igskin .sheet>h3,.sheet.igpop>h3{margin:0 calc(-1*var(--gut)) 22px;
+    padding:22px var(--gut) 18px}
+  html.igskin .nshead{padding-top:22px}
+  html.igskin .sheet-actions{margin-top:26px}
+  /* the bar over a tablet's wider page reads better with the page showing through */
+  html.igskin .topbar{background:color-mix(in srgb,var(--bg) 72%,transparent);
+    backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5)}
+  html.igskin .stripwrap{background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4)}
+  /* the habit boxes and the notes both get the room a tablet has */
+  html.igskin .tpanel{border-radius:16px;margin-bottom:14px}
+  html.igskin .tphead{padding:16px 20px 13px}
+  html.igskin .hrowc{padding:15px 20px;gap:15px;min-height:60px}
+  html.igskin .hrowc .hn{font-size:17.5px}
+  html.igskin .hrowc .bar{width:11px;height:11px}
+  html.igskin .hdiv{padding:16px 20px 9px}
+  html.igskin .streak{padding:24px 0}
+  html.igskin .sgrid{gap:4px}
+  html.igskin .sfoot{font-size:15px;margin-top:18px}
+  /* notes: the cards and the field you type in both open up */
+  html.igskin .dnlist{gap:11px}
+  html.igskin .dn{border-radius:14px}
+  html.igskin .dn-head{padding:15px 18px 11px}
+  html.igskin .dn-title{font-size:17px}
+  html.igskin .dn-when{font-size:13px}
+  html.igskin .dn-read{padding:0 18px 16px}
+  html.igskin .dn-text{font-size:16px;line-height:1.55}
+  html.igskin .dn-edit{padding:16px 18px 16px}
+  html.igskin .dn-tin{font-size:17px;padding-bottom:11px}
+  html.igskin .dn-ta{font-size:16px;line-height:1.55;min-height:120px}
+  html.igskin .dn-foot{margin-top:16px}
+  html.igskin .dn-done{font-size:15px;padding:9px 20px}
+  html.igskin .dn-del{font-size:15px}
+  html.igskin .addnote{height:50px;font-size:16px;margin-top:11px}
+  html.igskin .note-head{padding:22px 0 14px}
+  html.igskin .sheet>h3{font-size:18px}
+  html.igskin .sheet-actions .btn,html.igskin .btn.primary{height:52px;font-size:17px}
+  html.igskin .pblock{padding:18px 0}
+}
+/* two real columns: each starts clean, so no hairline hangs at the top */
+@media (min-width:1000px) and (min-height:600px){
+  html.igskin #v-plan .psec{margin-top:0;padding-top:0}
+  html.igskin #v-plan .psec::before{display:none}
+  html.igskin #v-plan .pcard{margin-top:0}
+}
+/* the bar stands up the side on a wide landscape screen, so its edge moves */
+@media (orientation:landscape) and (min-width:820px){
+  html.igskin .tabbar{border-top:0;border-right:1px solid var(--line)}
+}
+/* a narrow phone: nothing overflows */
+@media (max-width:370px){
+  html.igskin{--gut:14px}
+  html.igskin .dchip{width:46px}
+  html.igskin #v-plan .act{padding:0 11px;gap:8px}
+  html.igskin #v-plan .act .l{font-size:14px}
+  html.igskin .sgoals,html.igskin .sgprog,html.igskin .sgadd{padding-left:0}
 }
 </style>
 <script>
@@ -1743,7 +2755,7 @@ button.tphead:active{background:var(--tint)}
       <div id="setRoot">
       <div class="ptitle">
         <span class="eyebrow">Settings</span>
-        <h2>Preferences</h2>
+        <h2>Settings and activity</h2>
       </div>
 
       <div class="group" id="installGroup" hidden>
@@ -1752,7 +2764,7 @@ button.tphead:active{background:var(--tint)}
           <div class="srow">
             <div class="t"><div class="n" id="installTitle">Install Dayflow</div>
               <div class="d" id="installHint">Keep it on your home screen and use it offline.</div></div>
-            <button class="btn" id="installBtn" style="width:auto;height:38px;padding:0 16px;font-size:13.5px">Install</button>
+            <button class="btn" id="installBtn" style="width:auto;padding:0 20px">Install</button>
           </div>
         </div>
       </div>
@@ -1850,11 +2862,11 @@ button.tphead:active{background:var(--tint)}
           <div class="panel">
             <div class="srow">
               <div class="t"><div class="n">Starts</div></div>
-              <input class="input" id="runStart" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+              <input class="input" id="runStart" type="date">
             </div>
             <div class="srow">
               <div class="t"><div class="n">Ends</div></div>
-              <input class="input" id="runEnd" type="date" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+              <input class="input" id="runEnd" type="date">
             </div>
             <div class="btnrow" style="border-bottom:0"><button class="btn ghost" id="runClear">Clear the run</button></div>
           </div>
@@ -1875,7 +2887,6 @@ button.tphead:active{background:var(--tint)}
                 <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
               </div>
             </div>
-            <div class="swatches" id="accents"></div>
           </div>
         </div>
         <div class="group">
@@ -1900,6 +2911,13 @@ button.tphead:active{background:var(--tint)}
               <div class="t"><div class="n">Opening animation</div></div>
               <button class="switch" id="introSw" role="switch"></button>
             </div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="eyebrow">Opening colour</span>
+          <div class="panel">
+            <div class="swatches" id="accents"></div>
+            <p class="hint" style="padding:0 16px 14px;margin:0">This colour is the title screen's. The rest of the app keeps its own.</p>
           </div>
         </div>
         <div class="group">
@@ -2023,6 +3041,20 @@ button.tphead:active{background:var(--tint)}
     <div class="days" id="fDays"></div>
     <p class="hint">Days you turn off are marked as rest days.</p>
   </div>
+  <div class="field">
+    <span class="eyebrow">Study</span>
+    <div class="panel">
+      <div class="srow">
+        <div class="t"><div class="n">Study habit</div>
+          <div class="d">It opens as a session on the Study page. Tick off every sub-goal and the habit ticks itself off.</div></div>
+        <button class="switch" id="fStudy" role="switch"></button>
+      </div>
+      <div class="srow" id="fStudyTimeRow" hidden>
+        <div class="t"><div class="n">Session starts</div></div>
+        <input class="input" id="fStudyTime" type="time" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+      </div>
+    </div>
+  </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="fCancel">Cancel</button>
     <button class="btn" id="fSave">Save</button>
@@ -2030,39 +3062,34 @@ button.tphead:active{background:var(--tint)}
   <div style="margin-top:9px" id="fDeleteWrap" hidden><button class="btn danger" id="fDelete">Delete habit</button></div>
 </div>
 
-<!-- study block sheet -->
+<!-- session sheet: a title, the hour it starts, and the goals under it -->
 <div class="sheet" id="blockSheet">
   <div class="grabber"></div>
-  <h3 id="blockTitle">New study block</h3>
-  <div class="field">
-    <span class="eyebrow" id="blockDay">—</span>
-    <div class="steps">
-      <button class="step on" id="stepFrom"><span class="lbl">From</span><span class="val" id="valFrom">—</span></button>
-      <i class="steparrow">→</i>
-      <button class="step" id="stepTo"><span class="lbl">Till</span><span class="val none" id="valTo">Set</span></button>
-    </div>
-    <div class="tdisplay">
-      <button class="tnum on" id="tHour">07</button>
-      <span class="tcolon">:</span>
-      <button class="tnum" id="tMin">30</button>
-      <div class="ampm">
-        <button data-a="AM" id="tAM">AM</button>
-        <button data-a="PM" id="tPM">PM</button>
-      </div>
-    </div>
-    <div class="clock" id="clock"><i class="hand" id="cHand"></i><i class="hub"></i></div>
-    <div class="blockdur" id="blockDur">—</div>
-    <p class="hint" id="stepHint" style="text-align:center">Tap the hour it starts.</p>
+  <h3 id="blockTitle">New session</h3>
+  <div class="field" id="bTitleField">
+    <span class="eyebrow">Title</span>
+    <input class="input big" id="bTitle" placeholder="Organic chemistry" maxlength="60" autocomplete="off">
   </div>
   <div class="field">
-    <span class="eyebrow">What you are doing</span>
-    <textarea class="input area" id="bText" placeholder="Organic chemistry — reaction mechanisms, chapters 4 and 5." maxlength="400"></textarea>
+    <span class="eyebrow" id="blockDay">—</span>
+    <div class="panel">
+      <div class="srow">
+        <div class="t"><div class="n">Starts</div></div>
+        <input class="input" id="bTime" type="time" style="width:auto;height:40px;padding:0 12px;font-size:13.5px">
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <span class="eyebrow">Sub-goals</span>
+    <div class="panel" id="gxPanel"></div>
+    <button class="btn ghost" id="gxAdd" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add sub-goal</button>
+    <p class="hint" id="gxHint">Tick every one of these off and the session is finished.</p>
   </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="bCancel">Cancel</button>
     <button class="btn" id="bSave">Save</button>
   </div>
-  <div style="margin-top:9px" id="bDeleteWrap" hidden><button class="btn danger" id="bDelete">Delete block</button></div>
+  <div style="margin-top:9px" id="bDeleteWrap" hidden><button class="btn danger" id="bDelete">Delete session</button></div>
 </div>
 
 <!-- one divider: a named break in the list of habits -->
@@ -2115,7 +3142,7 @@ button.tphead:active{background:var(--tint)}
 </div>
 
 <!-- one post, or one document -->
-<div class="sheet" id="vSheet">
+<div class="sheet igpop" id="vSheet">
   <div class="grabber"></div>
   <h3 id="vTitle">Edit post</h3>
   <div id="vPreview"></div>
@@ -2145,7 +3172,7 @@ button.tphead:active{background:var(--tint)}
 </div>
 
 <!-- the three dots -->
-<div class="sheet" id="igMenuSheet">
+<div class="sheet igpop" id="igMenuSheet">
   <div class="grabber"></div>
   <h3>Options</h3>
   <div class="igmenu">
@@ -2158,7 +3185,7 @@ button.tphead:active{background:var(--tint)}
 </div>
 
 <!-- everything about the profile -->
-<div class="sheet" id="igEditSheet">
+<div class="sheet igpop" id="igEditSheet">
   <div class="grabber"></div>
   <h3>Edit profile</h3>
   <div class="igavarow">
@@ -2217,7 +3244,7 @@ button.tphead:active{background:var(--tint)}
 </div>
 
 <!-- pin sheet -->
-<div class="sheet" id="pinSheet">
+<div class="sheet igpop" id="pinSheet">
   <div class="grabber"></div>
   <h3 id="pinTitle">Set a PIN</h3>
   <p class="hint" id="pinHint" style="margin:0 0 18px">Four characters or more. It guards this page on this device only.</p>
@@ -2293,8 +3320,7 @@ button.tphead:active{background:var(--tint)}
     <div class="tbar"><i id="tFill"></i></div>
     <div class="tstate" id="tState">Focus</div>
     <div class="tacts">
-      <button class="btn" id="tPause">Pause</button>
-      <button class="btn ghost" id="tEnd" hidden>End session</button>
+      <button class="btn" id="tPause">End the break</button>
     </div>
     <div class="tnote" id="tNote"></div>
   </div>
@@ -2311,13 +3337,11 @@ button.tphead:active{background:var(--tint)}
     </div>
   </div>
   <div class="flist" id="focusList"></div>
-  <p class="hint">None of this is saved. It clears itself when you close the app.</p>
 </div>
 
 <div class="sheet" id="pauseSheet">
   <div class="grabber"></div>
   <h3>Why the break?</h3>
-  <p class="hint" id="pauseHint" style="margin:0 0 18px">It goes on today's record with everything else.</p>
   <div class="field">
     <div class="presets" id="pauseQuick">
       <button class="preset" data-r="Brush teeth">Brush teeth</button>
@@ -2326,19 +3350,25 @@ button.tphead:active{background:var(--tint)}
     </div>
     <input class="input" id="pauseReason" placeholder="Or write it yourself" maxlength="90" autocomplete="off" style="margin-top:9px">
   </div>
-  <div class="sheet-actions">
-    <button class="btn ghost" id="pauseSkip">Skip</button>
-    <button class="btn" id="pauseSave">Save and hold</button>
+  <div class="field" id="pauseDurWrap">
+    <span class="eyebrow">How long</span>
+    <div class="presets" id="pauseDurQuick">
+      <button class="preset" data-m="5">5 min</button>
+      <button class="preset" data-m="10">10 min</button>
+      <button class="preset" data-m="15">15 min</button>
+      <button class="preset" data-m="30">30 min</button>
+    </div>
+    <div class="durrow">
+      <div class="numbox">
+        <input class="numin" id="pauseMins" type="number" min="1" max="180" step="1" inputmode="numeric" value="5">
+        <span class="u">min</span>
+      </div>
+      <div class="durtotal" id="pauseDurTotal">—</div>
+    </div>
   </div>
-</div>
-
-<div class="sheet" id="replanSheet">
-  <div class="grabber"></div>
-  <h3>The break ran long</h3>
-  <p class="hint" id="replanHint" style="margin:0 0 20px">That session passed five minutes paused, so the timer stopped and reset. Nothing was lost — the break is on today's record.</p>
   <div class="sheet-actions">
-    <button class="btn ghost" id="replanClose">Leave it</button>
-    <button class="btn" id="replanEdit">Replan the block</button>
+    <button class="btn ghost" id="pauseSkip">Cancel</button>
+    <button class="btn" id="pauseSave">Start the break</button>
   </div>
 </div>
 
@@ -2383,16 +3413,8 @@ button.tphead:active{background:var(--tint)}
     <div class="fbhead">
       <span class="eyebrow" id="recFbTitle">All feedback</span>
       <button class="fbmini" id="recFbCopy">Copy all</button>
-      <button class="fbmini" id="recFbDigest">Everything</button>
     </div>
     <div id="recFbBody"></div>
-    <div id="recDigestWrap" hidden>
-      <textarea class="digest selectable" id="recDigest" readonly></textarea>
-      <div class="fbrow">
-        <button class="btn ghost" id="recDigestCopy">Copy</button>
-        <button class="btn ghost" id="recDigestSave">Save as file</button>
-      </div>
-    </div>
   </div>
   </div>
 </div>
@@ -2432,7 +3454,7 @@ const dbClear=n=>wrap(store(n,'readwrite').clear());
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map();
 let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
-       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,dividers:[]};
+       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
@@ -2521,6 +3543,7 @@ function fmtTime(t){
   const ap=H>=12?'PM':'AM', h=H%12===0?12:H%12;
   return {hm:h+':'+pad(M), ap};
 }
+const fmtTimeStr=t=>{ const f=fmtTime(t||'09:00'); return f.hm+' '+f.ap; };
 function scheduleLabel(days){
   const s=[...days].sort().join(',');
   if(s==='0,1,2,3,4,5,6') return 'Every day';
@@ -3077,9 +4100,11 @@ function renderHabits(){
     row.dataset.id=it.ref.id; row.dataset.k=it.kind;
     if(it.kind==='h'){
       row.style.setProperty('--c',it.ref.color);
+      const sub=scheduleLabel(it.ref.days)+
+        (it.ref.study?' · session at '+fmtTimeStr(it.ref.stime||'09:00'):'');
       row.innerHTML=HANDLE_SVG+'<i class="hbar"></i>'+
         '<div class="hinfo"><div class="n">'+esc(it.ref.name)+'</div>'+
-        '<div class="s">'+scheduleLabel(it.ref.days)+'</div></div>'+GO_SVG;
+        '<div class="s">'+esc(sub)+'</div></div>'+GO_SVG;
     }else{
       const lbl=(it.ref.label||'').trim();
       row.innerHTML=HANDLE_SVG+
@@ -3194,7 +4219,7 @@ $('#dDelete').addEventListener('click',async e=>{
 });
 
 /* ---------- habit sheet ---------- */
-let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6]};
+let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6],study:false,stime:'09:00'};
 (function buildHabitForm(){
   const cc=$('#fColors');
   THREADS.forEach(c=>{
@@ -3217,19 +4242,26 @@ let editing=null, form={color:THREADS[0],days:[0,1,2,3,4,5,6]};
     form.days = p==='all'?[0,1,2,3,4,5,6] : p==='wd'?[1,2,3,4,5] : p==='we'?[0,6] : [0];
     syncForm();
   });
+  /* a study habit is not a different kind of habit: it is the same one, opened
+     on the Study page as a session with its goals under it */
+  $('#fStudy').addEventListener('click',()=>{ form.study=!form.study; syncForm(); buzz(8); });
+  $('#fStudyTime').addEventListener('input',e=>{ form.stime=e.target.value||'09:00'; });
 })();
 function syncForm(){
   $$('#fColors .co').forEach(b=>b.classList.toggle('on',b.dataset.c===form.color));
   $$('#fDays .day').forEach(b=>b.classList.toggle('on',form.days.includes(+b.dataset.d)));
   const lbl=scheduleLabel(form.days), map={all:'Every day',wd:'Weekdays',we:'Weekends',sun:'Sundays'};
   $$('#fPresets .preset').forEach(b=>b.classList.toggle('on',map[b.dataset.p]===lbl));
+  $('#fStudy').classList.toggle('on',!!form.study);
+  $('#fStudyTimeRow').hidden=!form.study;
+  if(document.activeElement!==$('#fStudyTime')) $('#fStudyTime').value=form.stime||'09:00';
 }
 function openSheet(h){
   editing=h||null;
   $('#sheetTitle').textContent=h?'Edit habit':'New habit';
   $('#fName').value=h?h.name:'';
-  form = h ? {color:h.color,days:[...h.days]}
-           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6]};
+  form = h ? {color:h.color,days:[...h.days],study:!!h.study,stime:h.stime||'09:00'}
+           : {color:THREADS[habits.length%THREADS.length],days:[0,1,2,3,4,5,6],study:false,stime:'09:00'};
   syncForm();
   $('#fDeleteWrap').hidden=!h;
   $('#fDelete').textContent='Delete habit'; $('#fDelete').dataset.armed='';
@@ -3241,7 +4273,7 @@ function closeSheet(){
   if(document.activeElement) document.activeElement.blur();
 }
 $('#scrim').addEventListener('click',()=>{
-  if($('#pauseSheet').classList.contains('on')||$('#replanSheet').classList.contains('on')) return;
+  if($('#pauseSheet').classList.contains('on')) return;
   closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet();
   closeRecord(); closeFocus(); closeNoteSheet(); closeDivSheet();
   closeIgMenu(); closeIgEdit(); closeDocs();
@@ -3252,11 +4284,13 @@ $('#fSave').addEventListener('click',async()=>{
   const name=$('#fName').value.trim();
   if(!name){ $('#fName').focus(); toast('Give the habit a name'); return; }
   if(!form.days.length){ toast('Pick at least one active day'); return; }
+  const study=!!form.study, stime=form.stime||'09:00';
   if(editing){
-    Object.assign(editing,{name,color:form.color,days:form.days});
+    Object.assign(editing,{name,color:form.color,days:form.days,study,stime});
     await dbPut('habits',editing); toast('Habit updated');
   }else{
-    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,order:orderedList().length,start:TSTR,created:Date.now()};
+    const h={id:uid(),setId:S.activeSet,name,color:form.color,days:form.days,study,stime,
+             order:orderedList().length,start:TSTR,created:Date.now()};
     allHabits.push(h); applySet(); await dbPut('habits',h); toast('Habit added');
   }
   closeSheet(); renderAll(); buzz(10);
@@ -3337,7 +4371,7 @@ function buildNote(host,o){
 }
 
 /* ===========================================================
-   Plan — a day note and as many study blocks as you add
+   Study — a day note, the break, and the sessions on the day
    =========================================================== */
 /* the list is yours to change in Settings; these are only what a fresh install starts with */
 const DEFAULT_FOCUS=['Phone out of reach','Water within reach','Desk and screen clear',
@@ -3363,6 +4397,10 @@ function normalizeExtras(){
     if(JSON.stringify(S.focusItems)!==before) changed=true;
   }
   if(typeof S.breakResetAt!=='number' || !isFinite(S.breakResetAt)){ S.breakResetAt=0; changed=true; }
+  /* how long a break runs is the user's to set; it is only ever remembered */
+  const bm=Math.round(Number(S.breakMins));
+  if(!isFinite(bm)||bm<1||bm>180){ S.breakMins=DEFAULT_BREAK_MINS; changed=true; }
+  else if(S.breakMins!==bm){ S.breakMins=bm; changed=true; }
   /* a divider is only ever an id, the set it belongs to, a label and a place */
   if(!Array.isArray(S.dividers)){ S.dividers=[]; changed=true; }
   else{
@@ -3377,15 +4415,18 @@ function normalizeExtras(){
 }
 
 /* ---------- breaks: every one is recorded, the count is only a tally ----------
-   It spans both kinds — the ones taken inside a focus session and the standalone
-   five minute ones — and resetting only moves the line the tally counts from, so
-   nothing on any day record is touched. */
-const BREAK_MS=5*60000;
+   The tally is today's and today's alone: it starts at zero every morning of
+   its own accord. Resetting by hand only moves the line the tally counts from,
+   so nothing on any day record is ever touched. */
+const DEFAULT_BREAK_MINS=5;
+const breakMins=()=>{
+  const n=Math.round(Number(S.breakMins));
+  return (isFinite(n)&&n>0) ? Math.min(180,n) : DEFAULT_BREAK_MINS;
+};
 function totalBreaks(){
-  const from=Number(S.breakResetAt)||0;
-  let n=0;
-  days.forEach(r=>{ (r.pauses||[]).forEach(p=>{ if((p.at||0)>=from) n++; }); });
-  return n;
+  /* a reset made on an earlier day has no hold over this one */
+  const from=Math.max(Number(S.breakResetAt)||0, TODAY.getTime());
+  return ((days.get(TSTR)||{}).pauses||[]).filter(p=>(p.at||0)>=from).length;
 }
 function paintBreakCount(){
   const el=$('#brkN'); if(!el) return;
@@ -3395,7 +4436,7 @@ function paintBreakCount(){
   if(box) box.classList.toggle('some',n>0);
 }
 async function resetBreakCount(){
-  if(!totalBreaks()){ toast('The count is already at zero'); buzz(HAPTIC.light); return; }
+  if(!totalBreaks()){ toast('Today\'s count is already at zero'); buzz(HAPTIC.light); return; }
   S.breakResetAt=Date.now();
   await saveSettings();
   paintBreakCount(); buzz([14,40,14]);
@@ -3502,9 +4543,102 @@ async function savePlan(k,v){
   if(v.trim()){ plans.set(k,v); await dbPut('plans',{key:k,date:k.slice(-10),text:v}); }
   else{ plans.delete(k); await dbDel('plans',k); }
 }
-const blocksOn=ds=>blocks.filter(b=>b.date===ds)
-  .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
 const dayHasSomething=ds=>plans.has(planKeyDay(ds))||blocks.some(b=>b.date===ds);
+
+/* ---------- sessions ----------
+   A session is a title and the hour it opens. There is no end to it and no
+   clock running against you: what closes it is the list of sub-goals under it.
+   A study habit brings its own session to the day it is due, and it is not
+   written to the database until you actually put something on it — the habit
+   is already the record, so an untouched day stays empty. */
+function normGoals(g){
+  return (Array.isArray(g)?g:[]).filter(x=>x&&typeof x==='object')
+    .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,120),done:x.done?1:0}))
+    .filter(x=>x.text.trim());
+}
+/* one shape for a session, whether it came off the disk or out of a file */
+function normSession(b){
+  b=b||{};
+  let title=b.title, goals=b.goals;
+  if(title===undefined){
+    const lines=String(b.text||'').trim().split('\n').map(x=>x.trim()).filter(Boolean);
+    title=lines[0]||'Session';
+    goals=lines.slice(1).map(t=>({id:uid(),text:t,done:b.done?1:0}));
+  }
+  return {id:b.id||uid(), date:b.date||TSTR, time:b.time||'09:00',
+          title:String(title||'Session').slice(0,60), habitId:b.habitId||null,
+          goals:normGoals(goals), done:b.done?1:0, created:b.created||Date.now()};
+}
+function studyHabitsOn(ds){
+  const dow=parseDay(ds).getDay();
+  return habits.filter(h=>h.study && h.days.includes(dow) && !(h.start && ds<h.start));
+}
+const habitSessionId=(hid,ds)=>'h:'+hid+':'+ds;
+function habitSession(h,ds){
+  const id=habitSessionId(h.id,ds);
+  const saved=blocks.find(b=>b.id===id);
+  if(saved){ saved.title=h.name; return saved; }   /* the title is always the habit's */
+  return {id,date:ds,time:h.stime||'09:00',title:h.name,habitId:h.id,goals:[],done:0,
+          created:Date.now(),ghost:true};
+}
+function sessionsOn(ds){
+  const own=blocks.filter(b=>b.date===ds&&!b.habitId);
+  const fromHabits=studyHabitsOn(ds).map(h=>habitSession(h,ds));
+  return own.concat(fromHabits)
+    .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
+}
+function findSession(id){
+  const saved=blocks.find(b=>b.id===id);
+  if(saved) return saved;
+  const m=/^h:(.+):(\d{4}-\d{2}-\d{2})$/.exec(id||'');
+  if(m){ const h=habits.find(x=>x.id===m[1]); if(h) return habitSession(h,m[2]); }
+  return null;
+}
+/* a session that came from a habit becomes real the moment you put a goal on it */
+async function landSession(s){
+  if(s.ghost){ delete s.ghost; blocks.push(s); }
+  await dbPut('blocks',s);
+  return s;
+}
+const sessionHabit=s=>s.habitId?habits.find(h=>h.id===s.habitId)||null:null;
+/* a habit session wears the habit's own tick; anything else keeps its own */
+function sessionDone(s){
+  const h=sessionHabit(s);
+  if(h) return recs.has(key(h,s.date));
+  return !!s.done;
+}
+async function setHabitMark(h,ds,on){
+  const k=key(h,ds);
+  if(!!on===recs.has(k)) return;
+  if(on) { recs.add(k); await dbPut('records',{key:k,habitId:h.id,date:ds,done:1,ts:Date.now()}); }
+  else   { recs.delete(k); await dbDel('records',k); }
+}
+/* the whole point of the sub-goals: clear them all and the thing above them
+   closes itself, whether that is a plain session or the habit behind one */
+async function syncSessionGoals(s){
+  const g=s.goals||[];
+  if(!g.length) return false;
+  const all=g.every(x=>x.done);
+  const h=sessionHabit(s);
+  if(h){
+    if(s.date!==TSTR) return false;              /* never tick a habit off ahead of its day */
+    const was=dayTally(TODAY), had=recs.has(key(h,s.date));
+    await setHabitMark(h,s.date,all);
+    if(all&&!had){
+      toast(h.name+' · ticked off');
+      const now=dayTally(TODAY);
+      buzz(now.perfect&&!was.perfect?HAPTIC.done:HAPTIC.tick);
+      if(now.perfect&&!was.perfect) setTimeout(()=>toast('Perfect day · everything due is done'),1200);
+      return true;
+    }
+    return false;
+  }
+  const had=!!s.done;
+  s.done=all?1:0;
+  await dbPut('blocks',s);
+  if(all&&!had){ toast('Session finished'); buzz(HAPTIC.done); return true; }
+  return false;
+}
 
 function renderPlan(){
   if(planDay<TSTR) planDay=TSTR;
@@ -3563,9 +4697,9 @@ function renderPlan(){
     '<button class="act" id="btnBreak">'+
       '<svg viewBox="0 0 24 24"><path d="M4 8h11v5.5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/>'+
       '<path d="M15 9.5h2.2a2.3 2.3 0 0 1 0 4.6H15"/><path d="M4.5 21h11"/></svg>'+
-      '<span class="l">Take a break</span><span class="tag">5 MIN</span></button>'+
+      '<span class="l">Take a break</span><span class="tag">'+breakMins()+' MIN</span></button>'+
     '<div class="brkbox'+(brkN?' some':'')+'">'+
-      '<div class="n"><b id="brkN">'+brkN+'</b><span>breaks</span></div>'+
+      '<div class="n"><b id="brkN">'+brkN+'</b><span>today</span></div>'+
       '<button class="brkreset" id="brkReset" aria-label="Reset the break count">'+
         '<svg viewBox="0 0 24 24"><path d="M3.6 12a8.4 8.4 0 1 0 2.7-6.2"/><path d="M3.3 4.9v4.4h4.4"/></svg>'+
       '</button></div>';
@@ -3580,42 +4714,50 @@ function renderPlan(){
     placeholder:'What does this day need to look like?'
   });
 
-  const list=blocksOn(planDay);
-  const mins=list.reduce((n,b)=>n+(b.mins||0),0);
-  const done=list.filter(b=>b.done).length;
-  let label='Study blocks';
-  if(list.length && isToday) label+=' · '+done+'/'+list.length;
-  if(mins) label+=' · '+fmtMins(mins);
-
+  const list=sessionsOn(planDay);
+  const done=list.filter(sessionDone).length;
+  /* the heading, the tally beside it and the one thing you can add — the count
+     is its own element so it can sit quiet next to a loud title */
   const sec=document.createElement('div'); sec.className='psec';
-  sec.innerHTML='<span class="eyebrow">'+esc(label)+'</span>'+
-    '<button class="addblock" id="addBlock" aria-label="Add study block"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>';
+  sec.innerHTML='<span class="eyebrow">Sessions</span>'+
+    (list.length?'<span class="pcount">'+done+' of '+list.length+' done</span>':'')+
+    '<button class="addblock" id="addBlock" aria-label="Add a session"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>';
   wrapB.appendChild(sec);
   $('#addBlock',sec).addEventListener('click',()=>openBlockSheet(null));
 
   if(!list.length){
     const e=document.createElement('div'); e.className='empty';
-    e.innerHTML='<h3>Nothing planned</h3><p>Tap + to set a time, how long, and what you are working on.</p>';
+    e.innerHTML='<h3>No sessions</h3><p>Tap + to open one, or mark a habit as a study habit in Settings and it will bring its own.</p>';
     wrapB.appendChild(e);
-  }else list.forEach(b=>wrapB.appendChild(blockCard(b,isToday)));
+  }else list.forEach(s=>wrapB.appendChild(sessionCard(s,isToday)));
 }
-function blockCard(b,isToday){
-  const t=fmtTime(b.time||'09:00');
-  const e=b.end?fmtTime(b.end):null;
+function sessionCard(s,isToday){
+  const t=fmtTime(s.time||'09:00');
+  const goals=s.goals||[], hit=goals.filter(g=>g.done).length;
+  const fin=sessionDone(s);
   const el=document.createElement('div');
-  el.className='pblock'+(b.done?' done':''); el.dataset.id=b.id;
-  const first=(b.text||'').trim().split('\n')[0]||'Study block';
-  const rest=(b.text||'').trim().split('\n').slice(1).join('\n');
-  const meta=[b.mins?fmtMins(b.mins):'', e?'till '+e.hm+' '+e.ap:''].filter(Boolean).join(' · ');
+  el.className='pblock'+(fin?' done':''); el.dataset.id=s.id;
+  const title=(s.title||'').trim()||'Session';
   el.innerHTML=
-    '<div class="btime"><div class="hm">'+t.hm+'</div><div class="ap">'+t.ap+'</div></div>'+
-    '<i class="bsep"></i>'+
-    '<button class="btxt"><div class="bname">'+esc(first)+'</div>'+
-      (rest?'<div class="bnote">'+esc(rest)+'</div>':'')+
-      (meta?'<div class="bmeta">'+meta+'</div>':'')+'</button>'+
-    (isToday&&!b.done?'<button class="bplay" aria-label="Start the timer"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></button>':'')+
-    '<button class="bcheck'+(b.done?' on':'')+(isToday?'':' locked')+'" aria-label="Mark done">'+
-      '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>';
+    '<div class="brow">'+
+      '<div class="btime"><div class="hm">'+t.hm+'</div><div class="ap">'+t.ap+'</div></div>'+
+      '<i class="bsep"></i>'+
+      '<button class="btxt"><div class="bname">'+esc(title)+'</div>'+
+        (s.habitId?'<div class="stag">Habit</div>':'')+'</button>'+
+      '<button class="bcheck'+(fin?' on':'')+(isToday?'':' locked')+'" aria-label="Mark done">'+
+        '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
+    '</div>'+
+    (goals.length
+      ? '<div class="sgoals">'+goals.map(g=>
+          '<button class="sgoal'+(g.done?' on':'')+'" data-g="'+esc(g.id)+'">'+
+            '<span class="gbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
+            '<span class="gl">'+esc(g.text)+'</span></button>').join('')+'</div>'+
+        '<div class="sgprog'+(hit===goals.length?' full':'')+'">'+hit+' of '+goals.length+' done</div>'
+      : '')+
+    '<div class="sgadd">'+
+      '<input class="input sgin" placeholder="Add a sub-goal" maxlength="120" autocomplete="off">'+
+      '<button class="sgnew" aria-label="Add sub-goal"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>'+
+    '</div>';
   return el;
 }
 $('#planToday').addEventListener('click',()=>{ planDay=TSTR; renderPlan(); buzz(6); });
@@ -3628,44 +4770,81 @@ $('#planWrap').addEventListener('click',async e=>{
   if(e.target.closest('#btnFocus')){ openFocus(); return; }
   if(e.target.closest('#brkReset')){ resetBreakCount(); return; }
   if(e.target.closest('#btnBreak')){
-    if(T){ toast('A session is already running'); buzz(HAPTIC.light); return; }
-    openPauseSheet('break'); return;
+    if(T){ toast('A break is already running'); buzz(HAPTIC.light); return; }
+    openPauseSheet(); return;
   }
   const el=e.target.closest('.pblock'); if(!el) return;
-  if(e.target.closest('.bplay')){
-    const b=blocks.find(x=>x.id===el.dataset.id);
-    if(b) startTimer(b);
+  const s=findSession(el.dataset.id); if(!s) return;
+
+  /* a sub-goal, ticked off */
+  const gb=e.target.closest('.sgoal');
+  if(gb){
+    const g=(s.goals||[]).find(x=>x.id===gb.dataset.g); if(!g) return;
+    g.done=g.done?0:1;
+    gb.classList.toggle('on',!!g.done);
+    await landSession(s);
+    const closed=await syncSessionGoals(s);
+    if(!closed) buzz(g.done?HAPTIC.tick:HAPTIC.untick);
+    renderPlan(); renderToday(); renderSettings();
     return;
   }
-  const b=blocks.find(x=>x.id===el.dataset.id); if(!b) return;
+  /* a sub-goal, added without opening anything */
+  if(e.target.closest('.sgnew')){
+    const inp=$('.sgin',el); const text=(inp&&inp.value||'').trim();
+    if(!text){ if(inp) inp.focus(); return; }
+    s.goals=(s.goals||[]).concat({id:uid(),text:text.slice(0,120),done:0});
+    await landSession(s);
+    await syncSessionGoals(s);
+    renderPlan(); renderToday(); renderSettings(); buzz(10);
+    /* the row is redrawn, so put the cursor back where it was — one after
+       another is how these actually get written */
+    const again=$('.pblock[data-id="'+CSS.escape(s.id)+'"] .sgin');
+    if(again) again.focus();
+    return;
+  }
+  if(e.target.closest('.sgin')) return;
+
   if(e.target.closest('.bcheck')){
     if(planDay!==TSTR){ toast('You can tick this off on the day'); return; }
-    b.done=b.done?0:1;
-    await dbPut('blocks',b);
-    renderPlan(); buzz(b.done?HAPTIC.tick:HAPTIC.untick);
+    const h=sessionHabit(s);
+    if(h){
+      const on=!recs.has(key(h,s.date));
+      const was=dayTally(TODAY);
+      await setHabitMark(h,s.date,on);
+      const now=dayTally(TODAY);
+      buzz(on?HAPTIC.tick:HAPTIC.untick);
+      if(now.perfect&&!was.perfect){ toast('Perfect day · everything due is done'); buzz(HAPTIC.done); }
+      renderPlan(); renderToday(); renderSettings();
+      return;
+    }
+    s.done=s.done?0:1;
+    await landSession(s);
+    renderPlan(); renderSettings(); buzz(s.done?HAPTIC.tick:HAPTIC.untick);
     return;
   }
-  if(e.target.closest('.btxt')) openBlockSheet(b);
+  if(e.target.closest('.btxt')) openBlockSheet(s);
+});
+/* the enter key does what the + beside it does */
+$('#planWrap').addEventListener('keydown',e=>{
+  const inp=e.target.closest('.sgin'); if(!inp || e.key!=='Enter') return;
+  e.preventDefault();
+  const el=inp.closest('.pblock'); if(!el) return;
+  const btn=$('.sgnew',el); if(btn) btn.click();
 });
 
 /* ===========================================================
-   The session — one block, full screen, one button
+   The break — the one thing here that still runs against a clock.
+   A session has no timer at all: it is closed by its sub-goals.
    =========================================================== */
-let T=null, tTick=null, replanId=null;
+let T=null, tTick=null;
 const timerSave=()=>{ if(db&&T) dbPut('meta',{key:'timer',value:T}).catch(()=>{}); };
-const remaining=()=>T ? Math.max(0,T.endsAt-(T.pausedAt||Date.now())) : 0;
+const remaining=()=>T ? Math.max(0,T.endsAt-Date.now()) : 0;
 
-function startTimer(b){
-  const mins=b.mins||45;
-  if(!mins){ toast('Give the block a length first'); return; }
-  T={kind:'block',id:b.id,date:b.date,total:mins*60000,endsAt:Date.now()+mins*60000,pausedAt:0,
-     name:(b.text||'').trim().split('\n')[0]||'Study block'};
-  timerSave(); showTimer(); buzz(HAPTIC.tick);
-}
-/* a break stands on its own: five minutes, no pausing, nothing to tick off after.
-   It survives a reload the same way a study session does. */
-function startBreak(reason){
-  T={kind:'break',id:'break',date:TSTR,total:BREAK_MS,endsAt:Date.now()+BREAK_MS,pausedAt:0,
+/* how long it runs is yours to say before it starts. It survives a reload. */
+function startBreak(reason,mins){
+  const m=Math.max(1,Math.min(180,Math.round(mins)||breakMins()));
+  const ms=m*60000;
+  T={kind:'break',id:'break',date:TSTR,total:ms,endsAt:Date.now()+ms,mins:m,
      name:reason?'Break · '+reason:'Break',reason:reason||''};
   timerSave(); showTimer(); buzz(HAPTIC.tick);
 }
@@ -3682,12 +4861,10 @@ function tickOn(){
   tTick=setInterval(()=>{
     if(!T) return;
     paintTimer();
-    if(T.kind==='break'){ if(remaining()<=0) breakOver(); return; }
-    if(T.pausedAt){ if(Date.now()-T.pausedAt>=300000) timerBlew(); return; }
-    if(remaining()<=0) timerDone();
+    if(remaining()<=0) breakOver();
   },500);
 }
-/* the wall clock, on both the session and the break */
+/* the wall clock, so the hour is never a guess */
 function clock12(d){
   const t=d||new Date();
   let h=t.getHours();
@@ -3702,21 +4879,9 @@ function paintTimer(){
   const ms=remaining(), sec=Math.ceil(ms/1000);
   $('#tClock').textContent=Math.floor(sec/60)+':'+pad(sec%60);
   $('#tFill').style.width=(100*Math.max(0,Math.min(1,1-ms/T.total)))+'%';
-  if(T.kind==='break'){
-    $('#tPause').textContent='End the break';
-    $('#tEnd').hidden=true;
-    $('#tState').textContent='Break';
-    $('#tNote').textContent='Five minutes, then back to it.';
-    return;
-  }
-  const paused=!!T.pausedAt;
-  $('#tPause').textContent=paused?'Resume':'Pause';
-  $('#tEnd').hidden=!paused;
-  $('#tState').textContent=paused?'Paused':'Focus';
-  if(paused){
-    const held=Math.floor((Date.now()-T.pausedAt)/1000);
-    $('#tNote').textContent='Held '+Math.floor(held/60)+':'+pad(held%60)+' · the session resets at 5:00';
-  }else $('#tNote').textContent='';
+  $('#tPause').textContent='End the break';
+  $('#tState').textContent='Break';
+  $('#tNote').textContent=fmtMins(T.mins||Math.round(T.total/60000))+', then back to it.';
 }
 function closeTimer(){
   const w=$('#timerWrap');
@@ -3750,15 +4915,14 @@ function drawPip(){
   if(!pipCanvas||!T) return;
   const c=pipCanvas, x=c.getContext('2d'), W=c.width, H=c.height;
   const acc=(getComputedStyle(document.documentElement).getPropertyValue('--acc')||'').trim()||'#F2A93B';
-  const brk=T.kind==='break', paused=!!T.pausedAt;
   const ms=remaining(), sec=Math.ceil(ms/1000);
   const time=Math.floor(sec/60)+':'+pad(sec%60);
   x.fillStyle='#000'; x.fillRect(0,0,W,H);
   x.textAlign='center';
   x.fillStyle='rgba(255,255,255,.42)';
   x.font='500 22px ui-monospace,SFMono-Regular,Menlo,monospace';
-  x.fillText((brk?'BREAK':paused?'PAUSED':'FOCUS')+'   '+clock12().toUpperCase(),W/2,58);
-  x.fillStyle=paused?'rgba(245,245,245,.55)':'#F5F5F5';
+  x.fillText('BREAK   '+clock12().toUpperCase(),W/2,58);
+  x.fillStyle='#F5F5F5';
   x.font='800 118px system-ui,-apple-system,"Segoe UI",sans-serif';
   x.fillText(time,W/2,180);
   const name=String(T.name||'').slice(0,42);
@@ -3813,24 +4977,6 @@ $('#tPip').addEventListener('click',async()=>{
   }
 });
 $('#tFs').addEventListener('click',()=>{ toggleFs(); buzz(8); });
-/* the block is ticked off, and that is all — what goes on the record is written
-   by hand in Record, never added for you */
-async function timerDone(){
-  const b=blocks.find(x=>x.id===T.id);
-  clearInterval(tTick); tTick=null;
-  if(b && !b.done){ b.done=1; await dbPut('blocks',b); }
-  closeTimer(); buzz(HAPTIC.done);
-  toast('Session done');
-  renderPlan(); renderSettings();
-}
-/* a break past five minutes is not a break, so the session goes back to zero */
-async function timerBlew(){
-  replanId=T.id;
-  clearInterval(tTick); tTick=null;
-  closeTimer(); buzz([30,70,30]);
-  closePauseSheet();
-  $('#scrim').classList.add('on','high'); $('#replanSheet').classList.add('on');
-}
 /* a break either runs out or you end it early — nothing is logged either way,
    because the reason went on the record before it started */
 function breakOver(){
@@ -3845,35 +4991,20 @@ function endBreak(){
   toast('Break ended');
   renderPlan();
 }
-$('#tPause').addEventListener('click',()=>{
-  if(!T) return;
-  if(T.kind==='break'){ endBreak(); return; }
-  if(T.pausedAt){
-    T.endsAt+=Date.now()-T.pausedAt; T.pausedAt=0;
-    timerSave(); paintTimer(); buzz(8); return;
-  }
-  T.pausedAt=Date.now(); timerSave(); paintTimer(); buzz(12);
-  openPauseSheet();
-});
-$('#tEnd').addEventListener('click',()=>{
-  if(!T) return;
-  closeTimer(); buzz(10);
-  toast('Session ended');
-  renderPlan(); renderSettings();
-});
+$('#tPause').addEventListener('click',()=>{ if(T) endBreak(); });
 
-/* ---------- why the break ---------- */
-let pauseMode='timer';
-function openPauseSheet(mode){
-  pauseMode = mode==='break' ? 'break' : 'timer';
-  const brk = pauseMode==='break';
-  $('#pauseHint').textContent = brk
-    ? 'It goes on today\'s record, then a five minute timer starts.'
-    : 'It goes on today\'s record with everything else.';
-  $('#pauseSkip').textContent = brk ? 'Cancel' : 'Skip';
-  $('#pauseSave').textContent = brk ? 'Start the break' : 'Save and hold';
+/* ---------- why the break, and how long ---------- */
+function paintPauseDur(){
+  const m=Math.max(1,Math.min(180,Math.round(Number($('#pauseMins').value))||breakMins()));
+  $$('#pauseDurQuick .preset').forEach(b=>b.classList.toggle('on',+b.dataset.m===m));
+  $('#pauseDurTotal').textContent='Back at '+clock12(new Date(Date.now()+m*60000));
+  return m;
+}
+function openPauseSheet(){
   $('#pauseReason').value='';
   $$('#pauseQuick .preset').forEach(b=>b.classList.remove('on'));
+  $('#pauseMins').value=breakMins();
+  paintPauseDur();
   $('#scrim').classList.add('on','high'); $('#pauseSheet').classList.add('on'); $('#pauseSheet').scrollTop=0;
 }
 function closePauseSheet(){
@@ -3885,6 +5016,11 @@ $('#pauseQuick').addEventListener('click',e=>{
   $$('#pauseQuick .preset').forEach(x=>x.classList.toggle('on',x===b));
   $('#pauseReason').value=b.dataset.r; buzz(6);
 });
+$('#pauseDurQuick').addEventListener('click',e=>{
+  const b=e.target.closest('.preset'); if(!b) return;
+  $('#pauseMins').value=b.dataset.m; paintPauseDur(); buzz(6);
+});
+$('#pauseMins').addEventListener('input',paintPauseDur);
 async function logPause(reason,opt){
   const o=opt||{};
   const ds=o.date||(T&&T.date)||TSTR;
@@ -3896,159 +5032,109 @@ async function logPause(reason,opt){
 }
 $('#pauseSave').addEventListener('click',async()=>{
   const reason=$('#pauseReason').value.trim();
-  const brk=pauseMode==='break';
+  const mins=paintPauseDur();
   closePauseSheet();
-  if(brk){
-    /* the reason lands on today's record first, then the five minutes start */
-    await logPause(reason,{date:TSTR,block:'5 min break'});
-    startBreak(reason);
-    return;
-  }
-  await logPause(reason);
-  toast('Break noted'); buzz(8);
-});
-$('#pauseSkip').addEventListener('click',async()=>{
-  if(pauseMode==='break'){ closePauseSheet(); buzz(6); return; }
-  closePauseSheet(); await logPause('');
-});
-$('#replanClose').addEventListener('click',()=>{
-  $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
-  replanId=null; renderPlan();
-});
-$('#replanEdit').addEventListener('click',()=>{
-  $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
-  const b=blocks.find(x=>x.id===replanId); replanId=null;
+  /* the length you chose is remembered for the next one */
+  if(mins!==breakMins()){ S.breakMins=mins; await saveSettings(); }
+  await logPause(reason,{date:TSTR,block:mins+' min break'});
+  startBreak(reason,mins);
   renderPlan();
-  if(b){ planDay=b.date; renderPlan(); setTimeout(()=>openBlockSheet(b),260); }
 });
+$('#pauseSkip').addEventListener('click',()=>{ closePauseSheet(); buzz(6); });
 
-/* ---------- study block sheet: set the start on the clock, then the end ---------- */
-let bEditing=null, bStage='from', bStart='09:00', bEnd='10:00', bEndSet=false;
-let bH=9, bM=0, bAP='AM', bMode='h';
+/* ---------- session sheet: the hour it opens, and what it breaks into ----------
+   The start is a plain time field, the same one Settings uses, so the phone's
+   own picker opens rather than a dial of the app's own making. */
+let bEditing=null, bStart='09:00';
 const mins24=t=>{const[H,M]=String(t||'0:0').split(':').map(Number);return H*60+M;};
 const str24=m=>{m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60);};
-const blockMins=(a,b)=>(mins24(b)-mins24(a)+1440)%1440;
-function to24(){ let h=bH%12; if(bAP==='PM') h+=12; return pad(h)+':'+pad(bM); }
-function from24(t){
-  const [H,M]=String(t||'09:00').split(':').map(Number);
-  bAP=H>=12?'PM':'AM'; bH=H%12===0?12:H%12; bM=M||0;
-}
-function commitStage(){
-  const t=to24();
-  if(bStage==='from'){
-    bStart=t;
-    /* a start pushed past its own end just resets the hour that follows it */
-    if(bEndSet && blockMins(bStart,bEnd)>720) bEnd=str24(mins24(bStart)+60);
-  }else{ bEnd=t; bEndSet=true; }
-}
-function setHand(){
-  $('#cHand').style.transform='rotate('+(bMode==='h'?(bH%12)*30:bM*6)+'deg)';
-}
-function paintClock(){
-  const c=$('#clock');
-  $$('.cnum',c).forEach(n=>n.remove());
-  const R=98, C=131;
-  const vals = bMode==='h' ? [12,1,2,3,4,5,6,7,8,9,10,11] : [0,5,10,15,20,25,30,35,40,45,50,55];
-  vals.forEach((v,i)=>{
-    const ang=(i*30-90)*Math.PI/180;
-    const b=document.createElement('button');
-    b.className='cnum'; b.dataset.v=v;
-    b.textContent = bMode==='h' ? v : pad(v);
-    b.style.left=(C+R*Math.cos(ang))+'px';
-    b.style.top=(C+R*Math.sin(ang))+'px';
-    if(bMode==='h' ? v===bH : v===bM) b.classList.add('on');
-    c.appendChild(b);
-  });
-  setHand();
-  $('#tHour').textContent=pad(bH);
-  $('#tMin').textContent=pad(bM);
-  $('#tHour').classList.toggle('on',bMode==='h');
-  $('#tMin').classList.toggle('on',bMode==='m');
-  $('#tAM').classList.toggle('on',bAP==='AM');
-  $('#tPM').classList.toggle('on',bAP==='PM');
-  paintSteps();
-}
-function paintSteps(){
-  const f=fmtTime(bStart);
-  $('#valFrom').textContent=f.hm+' '+f.ap;
-  const vt=$('#valTo');
-  if(bEndSet){ const e=fmtTime(bEnd); vt.textContent=e.hm+' '+e.ap; vt.classList.remove('none'); }
-  else{ vt.textContent='Set'; vt.classList.add('none'); }
-  $('#stepFrom').classList.toggle('on',bStage==='from');
-  $('#stepTo').classList.toggle('on',bStage==='to');
-  const m=bEndSet?blockMins(bStart,bEnd):0;
-  $('#blockDur').textContent = !bEndSet ? 'Now set when it ends'
-    : m ? fmtMins(m)+(mins24(bEnd)<=mins24(bStart)?' · runs past midnight':'')
-        : 'Start and end are the same';
-  $('#stepHint').textContent = bMode==='h'
-    ? 'Tap the hour it '+(bStage==='from'?'starts':'ends')+'.'
-    : 'Now tap the minutes.';
-}
-function goStage(which){
-  bStage=which; bMode='h';
-  if(which==='to' && !bEndSet){ bEnd=str24(mins24(bStart)+60); bEndSet=true; }
-  from24(which==='from'?bStart:bEnd);
-  paintClock();
-}
-$('#clock').addEventListener('click',e=>{
-  const b=e.target.closest('.cnum'); if(!b) return;
-  const v=+b.dataset.v;
-  buzz(HAPTIC.light);
-  if(bMode==='h'){ bH=v; bMode='m'; commitStage(); paintClock(); return; }
-  bM=v; commitStage();
-  /* the start is done, so the sheet moves straight on to asking when it ends */
-  if(bStage==='from'){ setTimeout(()=>goStage('to'),160); paintClock(); }
-  else paintClock();
-});
-$('#stepFrom').addEventListener('click',()=>{ goStage('from'); buzz(6); });
-$('#stepTo').addEventListener('click',()=>{ goStage('to'); buzz(6); });
-$('#tHour').addEventListener('click',()=>{ bMode='h'; paintClock(); });
-$('#tMin').addEventListener('click',()=>{ bMode='m'; paintClock(); });
-$('#tAM').addEventListener('click',()=>{ bAP='AM'; commitStage(); paintClock(); buzz(6); });
-$('#tPM').addEventListener('click',()=>{ bAP='PM'; commitStage(); paintClock(); buzz(6); });
+$('#bTime').addEventListener('input',e=>{ bStart=e.target.value||'09:00'; });
 
-function openBlockSheet(b){
-  bEditing=b||null; bStage='from'; bMode='h';
+/* the goals are built in the sheet and only written when you save */
+let bGoals=[];
+function renderGoalEditor(){
+  const p=$('#gxPanel');
+  if(p.contains(document.activeElement)) return;   /* never yank the field being typed in */
+  if(!bGoals.length){
+    p.innerHTML='<div class="gxempty">No sub-goals yet. Add the pieces this session breaks into.</div>';
+    return;
+  }
+  p.innerHTML=bGoals.map(g=>
+    '<div class="gxrow" data-i="'+esc(g.id)+'">'+
+      '<input class="gxin" value="'+esc(g.text)+'" placeholder="What to finish" maxlength="120" autocomplete="off">'+
+      '<button class="gxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('');
+}
+$('#gxPanel').addEventListener('input',e=>{
+  const inp=e.target.closest('.gxin'); if(!inp) return;
+  const row=inp.closest('.gxrow'); if(!row) return;
+  const g=bGoals.find(x=>x.id===row.dataset.i); if(g) g.text=inp.value;
+});
+$('#gxPanel').addEventListener('click',e=>{
+  const del=e.target.closest('.gxdel'); if(!del) return;
+  const row=del.closest('.gxrow'); if(!row) return;
+  bGoals=bGoals.filter(x=>x.id!==row.dataset.i);
+  renderGoalEditor(); buzz(12);
+});
+$('#gxAdd').addEventListener('click',()=>{
+  bGoals=bGoals.concat({id:uid(),text:'',done:0});
+  renderGoalEditor();
+  const rows=$$('#gxPanel .gxrow'), last=rows[rows.length-1];
+  if(last) $('.gxin',last).focus();
+  buzz(8);
+});
+
+function openBlockSheet(s){
+  bEditing=s||null;
   const sel=parseDay(planDay);
-  $('#blockTitle').textContent=b?'Edit study block':'New study block';
+  const fromHabit=!!(s&&s.habitId);
+  $('#blockTitle').textContent=s?'Edit session':'New session';
   $('#blockDay').textContent=(planDay===TSTR?'Today':FULLDAY[sel.getDay()])+' · '+sel.getDate()+' '+MN[sel.getMonth()];
-  if(b){
-    bStart=b.time||'09:00';
-    bEnd=b.end||str24(mins24(bStart)+(b.mins||60));
-    bEndSet=true; $('#bText').value=b.text||'';
+  /* a session that came from a habit wears the habit's name, so there is
+     nothing to type here: renaming it belongs in Settings, on the habit */
+  $('#bTitleField').hidden=fromHabit;
+  if(s){
+    bStart=s.time||'09:00';
+    $('#bTitle').value=fromHabit?'':(s.title||'');
+    bGoals=(s.goals||[]).map(g=>({id:g.id||uid(),text:g.text||'',done:g.done?1:0}));
   }else{
     let h=planDay===TSTR ? new Date().getHours()+1 : 9;
     if(h>22) h=21;
-    bStart=pad(h)+':00'; bEnd=str24(mins24(bStart)+60); bEndSet=false;
-    $('#bText').value='';
+    bStart=pad(h)+':00';
+    $('#bTitle').value=''; bGoals=[];
   }
-  from24(bStart); paintClock();
-  $('#bDeleteWrap').hidden=!b;
-  $('#bDelete').textContent='Delete block'; $('#bDelete').dataset.armed='';
+  $('#gxHint').textContent=fromHabit
+    ? 'Tick every one of these off and the habit ticks itself off.'
+    : 'Tick every one of these off and the session is finished.';
+  $('#bTime').value=bStart; renderGoalEditor();
+  $('#bDeleteWrap').hidden=!s||fromHabit;
+  $('#bDelete').textContent='Delete session'; $('#bDelete').dataset.armed='';
   $('#scrim').classList.add('on'); $('#blockSheet').classList.add('on'); $('#blockSheet').scrollTop=0;
   buzz(HAPTIC.light);
 }
 function closeBlockSheet(){
   $('#scrim').classList.remove('on'); $('#blockSheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
-  bEditing=null;
+  bEditing=null; bGoals=[];
 }
 $('#bCancel').addEventListener('click',closeBlockSheet);
 $('#bSave').addEventListener('click',async()=>{
-  const text=$('#bText').value.trim();
-  if(!bEndSet){ toast('Set when it ends'); goStage('to'); return; }
-  const mins=blockMins(bStart,bEnd);
-  if(!mins){ toast('The end time has to be after the start'); goStage('to'); return; }
+  const fromHabit=!!(bEditing&&bEditing.habitId);
+  const title=$('#bTitle').value.trim();
+  if(!fromHabit && !title){ $('#bTitle').focus(); toast('Give the session a title'); return; }
+  const goals=normGoals(bGoals);
   if(bEditing){
-    Object.assign(bEditing,{time:bStart,end:bEnd,mins,text});
-    await dbPut('blocks',bEditing);
-    toast('Block updated');
+    bEditing.time=bStart; bEditing.goals=goals;
+    if(!fromHabit) bEditing.title=title;
+    await landSession(bEditing);
+    await syncSessionGoals(bEditing);
+    toast('Session updated');
   }else{
-    const b={id:uid(),date:planDay,time:bStart,end:bEnd,mins,text,done:0,created:Date.now()};
-    blocks.push(b); await dbPut('blocks',b);
-    toast('Block added');
+    const s={id:uid(),date:planDay,time:bStart,title,habitId:null,goals,done:0,created:Date.now()};
+    blocks.push(s); await dbPut('blocks',s);
+    toast('Session added');
   }
-  closeBlockSheet(); renderPlan(); renderSettings(); buzz(10);
+  closeBlockSheet(); renderPlan(); renderToday(); renderSettings(); buzz(10);
 });
 $('#bDelete').addEventListener('click',async e=>{
   const btn=e.currentTarget;
@@ -4056,7 +5142,7 @@ $('#bDelete').addEventListener('click',async e=>{
   const id=bEditing&&bEditing.id;
   closeBlockSheet();
   if(id){ blocks=blocks.filter(x=>x.id!==id); await dbDel('blocks',id); }
-  renderPlan(); renderSettings(); toast('Block deleted');
+  renderPlan(); renderSettings(); toast('Session deleted');
 });
 
 /* ===========================================================
@@ -4200,8 +5286,6 @@ let fbOpen=false;
 function closeFeedback(){
   fbOpen=false;
   const w=$('#recFbWrap'); if(w) w.hidden=true;
-  const d=$('#recDigestWrap'); if(d) d.hidden=true;
-  const b=$('#recFbDigest'); if(b) b.classList.remove('on');
   const all=$('#recFeedbackAll'); if(all) all.textContent='All feedback';
 }
 function feedbackDays(){ return recordedDays().filter(r=>(r.feedback||'').trim()); }
@@ -4217,9 +5301,12 @@ function renderFeedback(){
         '<p class="selectable">'+esc(r.feedback)+'</p></div>').join('')
     : '<div class="rempty">Nothing written yet. What you put on a day shows up here.</div>';
 }
-const feedbackText=()=>feedbackDays()
-  .map(r=>recLabel(r.date).toUpperCase()+'  ('+r.date+')\n'+r.feedback.trim())
-  .join('\n\n'+''.padEnd(34,'-')+'\n\n');
+/* the feedback and nothing around it: no dates, no goals, no headings —
+   every line you have written, oldest first, as one plain list */
+const feedbackText=()=>feedbackDays().slice().reverse()
+  .flatMap(r=>r.feedback.split('\n').map(l=>l.trim()).filter(Boolean))
+  .map(l=>'• '+l)
+  .join('\n');
 $('#recFbBody').addEventListener('click',async e=>{
   const b=e.target.closest('[data-fbdel]'); if(!b) return;
   if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again'; buzz(14); return; }
@@ -4249,50 +5336,6 @@ async function copyText(str,el){
   toast('Copied'); buzz(8);
 }
 $('#recFbCopy').addEventListener('click',()=>copyText(feedbackText()));
-$('#recFbDigest').addEventListener('click',e=>{
-  const w=$('#recDigestWrap'), on=w.hidden;
-  w.hidden=!on;
-  e.currentTarget.classList.toggle('on',on);
-  if(on){ $('#recDigest').value=buildDigest(); }
-  buzz(6);
-});
-$('#recDigestCopy').addEventListener('click',()=>copyText($('#recDigest').value,$('#recDigest')));
-$('#recDigestSave').addEventListener('click',()=>{
-  const url=URL.createObjectURL(new Blob([$('#recDigest').value],{type:'text/plain'}));
-  const a=document.createElement('a'); a.href=url; a.download='dayflow-record-'+TSTR+'.txt';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),2000);
-  toast('Saved'); buzz(8);
-});
-
-/* the whole lot gathered into one piece of text you can keep or hand on */
-function buildDigest(){
-  const list=recordedDays().slice().reverse();
-  if(!list.length) return 'Nothing recorded yet.';
-  const first=list[0].date, last=list[list.length-1].date;
-  let totalDone=0, totalExtra=0, totalPauses=0, withNotes=0;
-  list.forEach(r=>{
-    r.done.forEach(x=>{ if(x.kind==='unplanned') totalExtra++; else totalDone++; });
-    totalPauses+=r.pauses.length;
-    if((r.feedback||'').trim()) withNotes++;
-  });
-  const head=[
-    'DAYFLOW · RECORD',
-    recLabel(first).toUpperCase()+'  to  '+recLabel(last).toUpperCase(),
-    list.length+' days recorded · '+totalDone+' planned · '+totalExtra+' unplanned · '+
-      totalPauses+' breaks · '+withNotes+' days written up',
-    ''.padEnd(46,'-'),''
-  ].join('\n');
-  const body=list.map(r=>{
-    const out=[recLabel(r.date).toUpperCase()+'  ('+r.date+')'];
-    r.done.filter(x=>x.kind!=='unplanned').forEach(x=>out.push('  + '+x.text+(x.timed?'  [timed]':'')));
-    r.done.filter(x=>x.kind==='unplanned').forEach(x=>out.push('  * '+x.text+'  [unplanned]'));
-    r.pauses.forEach(x=>out.push('  ~ break: '+(x.reason||'no reason given')));
-    if((r.feedback||'').trim()) out.push('  > '+r.feedback.replace(/\n/g,'\n    '));
-    return out.join('\n');
-  }).join('\n\n');
-  return head+body+'\n';
-}
 
 /* ===========================================================
    Vision lock
@@ -5332,6 +6375,11 @@ function showView(v){
     if(feedOn) closeFeed();
     if(arrangeOn){ arrangeOn=false; renderGrid(); }
   }
+  /* Study and Settings wear Instagram's own palette, not the app's: the accent
+     and the paper colour step aside on these two tabs and come back on the
+     others. Sheets opened from here inherit it, so a popup never half-changes. */
+  document.documentElement.classList.toggle('igskin',v==='today'||v==='plan'||v==='settings');
+  applySettings();
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));
   scrollTo(0,0);
   if(v==='today') renderToday();
@@ -5449,7 +6497,17 @@ async function toggleFs(){
   paintFs();
 }
 $('#fsBtn').addEventListener('click',()=>{ toggleFs(); buzz(8); });
-['fullscreenchange','webkitfullscreenchange'].forEach(n=>document.addEventListener(n,paintFs));
+/* Entering or leaving full screen rebuilds the compositing tree, and a blurred
+   sticky bar can be left unpainted until something touches the page — which is
+   why it came up blank until a tap. Dropping the blur for one frame forces
+   those layers to be built again straight away. */
+function fsRepaint(){
+  const r=document.documentElement;
+  r.classList.add('fsflush');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>r.classList.remove('fsflush')));
+}
+['fullscreenchange','webkitfullscreenchange'].forEach(n=>
+  document.addEventListener(n,()=>{ paintFs(); fsRepaint(); }));
 paintFs();
 
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
@@ -5475,7 +6533,11 @@ function applySettings(){
   document.documentElement.style.setProperty('--acc',S.accent);
   cacheLook();
   const m=document.querySelector('meta[name=theme-color]');
-  if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000' : (t==='dark'?'#000000':'#F4F4F3'));
+  /* Study and Settings paint Instagram's white, so the status bar follows them
+     there rather than staying on the app's own paper colour */
+  const ig=document.documentElement.classList.contains('igskin');
+  if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000'
+    : t==='dark' ? '#000000' : (ig?'#FFFFFF':'#F4F4F3'));
   $('#themeIcon').innerHTML = t==='dark'
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
@@ -5490,9 +6552,11 @@ function cacheLook(){
   }catch(e){}
 }
 const THEME_BG={dark:'#000000',light:'#F4F4F3'};
+const sweepBG=t=>(t==='light'&&document.documentElement.classList.contains('igskin'))
+  ? '#FFFFFF' : THEME_BG[t];
 function themeSweep(to,origin,atCover){
   const o=document.createElement('div');
-  o.className='sweep'; o.style.background=THEME_BG[to];
+  o.className='sweep'; o.style.background=sweepBG(to);
   const r=origin.getBoundingClientRect();
   const x=r.left+r.width/2, y=r.top+r.height/2;
   o.style.left=x+'px'; o.style.top=y+'px';
@@ -5511,7 +6575,7 @@ function renderSettings(){
   $('#hapticSw').classList.toggle('on',S.haptics);
   $('#introSw').classList.toggle('on',S.intro!==false);
   $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+myNotes.length+' notes · '+
-    blocks.length+' study blocks · '+vPosts().length+' posts'+
+    blocks.length+' sessions · '+vPosts().length+' posts'+
     (vPdfList().length?' · '+vPdfList().length+' PDFs':'');
   $('#cntHabits').textContent=partCount('habits');
   $('#cntNotes').textContent=partCount('notes');
@@ -5627,9 +6691,7 @@ async function mergePart(kind,d){
       plans.set(k,text); await dbPut('plans',{key:k,date:String(k).slice(-10),text}); n++;
     }
     for(const x of (d.blocks||[])){
-      const time=x.time||'09:00', end=x.end||str24(mins24(time)+(x.mins||45));
-      const bk={id:x.id||uid(),date:x.date||TSTR,time,end,mins:x.mins||blockMins(time,end),
-        text:x.text||'',done:x.done?1:0,created:x.created||Date.now()};
+      const bk=normSession(x);
       const i=blocks.findIndex(y=>y.id===bk.id);
       if(i>=0) blocks[i]=bk; else blocks.push(bk);
       await dbPut('blocks',bk); n++;
@@ -5711,12 +6773,7 @@ $('#importFile').addEventListener('change',async e=>{
       if(text&&text.trim()) myNotes.push({id:uid(),date,title:'Note',text,created:Date.now()});
     });
     plans=new Map(d.plans||[]);
-    blocks=(d.blocks||[]).map(b=>{
-      const time=b.time||'09:00';
-      const end=b.end||str24(mins24(time)+(b.mins||45));
-      return {id:b.id||uid(), date:b.date||TSTR, time, end,
-        mins:b.mins||blockMins(time,end), text:b.text||'', done:b.done?1:0, created:b.created||Date.now()};
-    });
+    blocks=(d.blocks||[]).map(normSession);
     visionItems=d.vision||[];
     days=new Map((d.days||[]).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
     const keepIntro=S.intro;
@@ -5757,7 +6814,7 @@ $('#resetBtn').addEventListener('click',async e=>{
   visionItems=[]; days=new Map();
   S.seeded=false; S.activeSet=null; S.northStar=''; S.ig=null; S.visionLock=null; visionUnlocked=false;
   feedOn=false; arrangeOn=false; $('#vBody').classList.remove('feed');
-  S.focusItems=null; S.breakResetAt=0; S.dividers=[]; normalizeExtras(); focusChecks.clear();
+  S.focusItems=null; S.breakResetAt=0; S.breakMins=DEFAULT_BREAK_MINS; S.dividers=[]; normalizeExtras(); focusChecks.clear();
   closeSetPage();
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
@@ -5840,11 +6897,9 @@ async function loadAll(){
   allHabits=(await dbAll('habits')).sort((a,b)=>a.order-b.order);
   sets=(await dbAll('sets')).sort((a,b)=>a.order-b.order);
   plans=new Map((await dbAll('plans')).map(r=>[r.key,r.text]));
-  blocks=(await dbAll('blocks')).map(b=>{
-    if(!b.end) b.end=str24(mins24(b.time||'09:00')+(b.mins||45));
-    if(!b.mins) b.mins=blockMins(b.time||'09:00',b.end);
-    return b;
-  });
+  /* an old timed block becomes a session: its first line is the title and
+     every line under it becomes a sub-goal. The end time and length go. */
+  blocks=(await dbAll('blocks')).map(normSession);
   const rows=await dbAll('records');
   recs=new Set(rows.filter(r=>r.done).map(r=>r.key));
   legacyNotes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
@@ -5871,22 +6926,28 @@ async function migrateNotes(){
   }
   legacyNotes=new Map();
 }
-/* study habits are gone: their session notes become blocks on the plan page */
+/* the old per-day session notes become sub-goals on the habit's own session */
 async function migrateStudyHabits(){
-  const studies=allHabits.filter(h=>h.study);
-  if(!studies.length) return;
   for(const [k,text] of [...plans.entries()]){
     if(!k.startsWith('s:')) continue;
     const [,hid,date]=k.split(':');
     const h=allHabits.find(x=>x.id===hid);
     if(h && date>=TSTR && text && text.trim()){
-      const mm=h.mins||45;
-      const b={id:uid(),date,time:'09:00',end:str24(540+mm),mins:mm,text:h.name+'\n'+text,done:0,created:Date.now()};
-      blocks.push(b); await dbPut('blocks',b);
+      const goals=normGoals(text.split('\n').map(t=>({id:uid(),text:t.trim(),done:0})));
+      if(goals.length){
+        const id=habitSessionId(h.id,date);
+        if(!blocks.some(b=>b.id===id)){
+          const s={id,date,time:h.stime||'09:00',title:h.name,habitId:h.id,goals,done:0,created:Date.now()};
+          blocks.push(s); await dbPut('blocks',s);
+        }
+      }
     }
     plans.delete(k); await dbDel('plans',k);
   }
-  for(const h of studies){ delete h.study; delete h.mins; await dbPut('habits',h); }
+  /* a habit that was a study habit before stays one — it just has a start now */
+  for(const h of allHabits.filter(x=>x.study)){
+    if(!h.stime){ h.stime=str24(540); delete h.mins; await dbPut('habits',h); }
+  }
 }
 async function ensureSets(){
   if(!sets.length){
@@ -5942,10 +7003,6 @@ setInterval(checkRollover,60000);
 /* topmost first — the two that sit above the scrim lead the list */
 const BACK_SHEETS=[
   ['#pauseSheet',closePauseSheet],
-  ['#replanSheet',()=>{
-    $('#scrim').classList.remove('on','high'); $('#replanSheet').classList.remove('on');
-    replanId=null; renderPlan();
-  }],
   ['#pinSheet',closePin],
   ['#divSheet',closeDivSheet],
   ['#sheet',closeSheet],
@@ -6046,14 +7103,14 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
     if(loaded && !S.seeded && !allHabits.length) await seed();
   }catch(err){ console.error('Dayflow · seed',err); }
   try{
+    document.documentElement.classList.add('igskin');
     applySettings(); cacheLook(); renderAll(); renderNotes();
     const saved=(await dbAll('meta')).find(m=>m.key==='timer');
-    if(saved && saved.value && saved.value.id){
+    if(saved && saved.value && saved.value.kind==='break'){
       const v=saved.value;
-      if(v.pausedAt || v.endsAt>Date.now()){ T=v; showTimer(); }
-      else{ await dbDel('meta','timer');
-        toast(v.kind==='break'?'Your break finished while you were away':'A session finished while you were away'); }
-    }
+      if(v.endsAt>Date.now()){ T=v; showTimer(); }
+      else{ await dbDel('meta','timer'); toast('Your break finished while you were away'); }
+    }else if(saved){ await dbDel('meta','timer'); }
   }catch(err){
     console.error('Dayflow · render',err);
     toast('Something failed to draw — your data is safe');
