@@ -1836,6 +1836,35 @@ html[data-theme="dark"] .igpop .fask button{background:var(--cell)}
 .sheet.igpop .gxrow:last-child{border-bottom:0}
 .sheet.igpop .gxin{font-size:16px;height:46px}
 .sheet.igpop .gxempty,.sheet.igpop .fxempty{padding:14px 0;font-size:15px;color:var(--ink-2)}
+/* ---------- the divider between habits ----------
+   No wash under it and no fading rule: a flat hairline, with the name on it
+   in the app's blue. */
+html.igskin .hdiv{background:none;border-top:1px solid var(--ig-hair)}
+html.igskin .hdiv .rule,html.igskin .hdiv.bare .rule{background:var(--ig-hair)}
+html.igskin .hdiv .lbl,html.igskin .tpanel.todo-set .hdiv .lbl{
+  font-family:var(--ui);font-size:13px;font-weight:600;letter-spacing:0;
+  text-transform:none;color:var(--ig-blue)}
+html.igskin .tpinner>.hdiv:first-child{border-top:0}
+
+/* ---------- a note being written in ----------
+   A hairline rather than a heavy ring, and the writing kept well off it. */
+html.igskin .dn.editing{background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+html.igskin .dn-edit{padding:17px 17px 16px}
+html.igskin .dn-tin{padding:0 0 12px}
+html.igskin .dn-ta{min-height:92px}
+html.igskin .dn-read{padding:0 16px 15px}
+html.igskin .dn-head{padding:14px 16px 10px}
+/* the fold: the clamp still does the cutting, the morph does the moving */
+html.igskin .dn-text{transition:color .2s var(--ease)}
+html.igskin .dn .chev{transition:transform .34s var(--ig-slide)}
+
+/* ---------- the opening colour, and what it is for ---------- */
+html.igskin .subpage .swatches{padding:16px 0 8px;gap:13px}
+html.igskin .sw{width:30px;height:30px}
+html.igskin .swhelp{margin:0;padding:0 0 6px;font-size:15px;line-height:1.42;color:var(--ink-2)}
+/* the pre-focus list closes with a button of its own */
+html.igskin #focusSheet .sheet-actions{margin-top:22px}
+
 /* ===========================================================
    INTERACTIONS — how Instagram answers a tap
    Nothing here moves far. A press dims or shrinks a touch and lets go
@@ -2482,7 +2511,7 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{transform:transla
   html.igskin .dn-when{font-size:13px}
   html.igskin .dn-read{padding:0 18px 16px}
   html.igskin .dn-text{font-size:16px;line-height:1.55}
-  html.igskin .dn-edit{padding:16px 18px 16px}
+  html.igskin .dn-edit{padding:19px 20px 18px}
   html.igskin .dn-tin{font-size:17px;padding-bottom:11px}
   html.igskin .dn-ta{font-size:16px;line-height:1.55;min-height:120px}
   html.igskin .dn-foot{margin-top:16px}
@@ -2917,7 +2946,7 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{transform:transla
           <span class="eyebrow">Opening colour</span>
           <div class="panel">
             <div class="swatches" id="accents"></div>
-            <p class="hint" style="padding:0 16px 14px;margin:0">This colour is the title screen's. The rest of the app keeps its own.</p>
+            <p class="swhelp">Only the title screen takes this colour. The rest of the app keeps its own.</p>
           </div>
         </div>
         <div class="group">
@@ -3337,6 +3366,9 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{transform:transla
     </div>
   </div>
   <div class="flist" id="focusList"></div>
+  <div class="sheet-actions">
+    <button class="btn" id="focusDone">Done</button>
+  </div>
 </div>
 
 <div class="sheet" id="pauseSheet">
@@ -3968,7 +4000,10 @@ function noteCard(n){
   /* on a tablet a note is opened on its own instead of unfolding in the list */
   head.addEventListener('click',()=>{
     if(MQ_TAB.matches){ openNoteSheet(n); return; }
-    el.classList.toggle('open'); buzz(5);
+    /* the same height morph the editor uses, so a note unfolds rather than
+       snapping from three clamped lines to all of them */
+    morph(el,()=>el.classList.toggle('open'));
+    buzz(5);
   });
   read.addEventListener('click',()=>{
     if(MQ_TAB.matches){ openNoteSheet(n); return; }
@@ -4482,13 +4517,20 @@ $('#focusList').addEventListener('click',e=>{
 });
 $('#focusKeep').addEventListener('click',()=>{ focusAsk=false; $('#focusAsk').hidden=true; buzz(6); });
 $('#focusClear').addEventListener('click',()=>{ focusChecks.clear(); focusAsk=false; renderFocus(); buzz(10); });
-/* no Done here either: the scrim, the back gesture and the grabber close it */
+$('#focusDone').addEventListener('click',()=>{ closeFocus(); buzz(8); });
 
 /* the same list, built in settings */
 let fxT=null;
+/* true only when the caret is actually inside a field in this panel */
+function typing(p){
+  const a=document.activeElement;
+  return !!(a && p.contains(a) && (a.tagName==='INPUT'||a.tagName==='TEXTAREA'));
+}
 function renderFocusSettings(){
   const p=$('#fxPanel'); if(!p) return;
-  if(p.contains(document.activeElement)) return;   /* never yank the field being typed in */
+  /* only a field being typed in is worth protecting — a button that was just
+     tapped is not, or removing a row would never redraw the list */
+  if(typing(p)) return;
   const items=focusItems();
   if(!items.length){
     p.innerHTML='<div class="fxempty">Nothing on the list. Add the checks you want in front of you before a session.</div>';
@@ -5054,7 +5096,7 @@ $('#bTime').addEventListener('input',e=>{ bStart=e.target.value||'09:00'; });
 let bGoals=[];
 function renderGoalEditor(){
   const p=$('#gxPanel');
-  if(p.contains(document.activeElement)) return;   /* never yank the field being typed in */
+  if(typing(p)) return;   /* never yank the field being typed in */
   if(!bGoals.length){
     p.innerHTML='<div class="gxempty">No sub-goals yet. Add the pieces this session breaks into.</div>';
     return;
