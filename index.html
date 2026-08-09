@@ -343,7 +343,8 @@ button.tphead:active{background:var(--tint)}
 .scrim{position:fixed;inset:0;z-index:60;background:rgba(4,6,12,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
 .scrim.on{opacity:1;pointer-events:auto}
 .scrim.high{z-index:96}
-#pauseSheet{z-index:97}
+/* these open on top of the Ground page, so they must clear the raised scrim */
+#pauseSheet,#gndNameSheet,#gndCellSheet,#gndPickSheet{z-index:97}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92vh;overflow-y:auto;
   background:var(--bg-2);border-top:1px solid var(--line);
   border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
@@ -825,7 +826,7 @@ button.tphead:active{background:var(--tint)}
    handlers — only the frame around them changes. The doubled class keeps the
    tablet's centred-card rules for .sheet from undoing any of it. */
 .sheet.fullsheet{
-  top:0;left:0;right:0;bottom:0;height:100%;width:auto;
+  top:0;left:0;right:0;bottom:0;height:100%;width:auto;overflow-x:hidden;
   max-width:none;max-height:none;
   border:0;border-radius:0;padding:0;box-shadow:none;
   background:var(--bg);
@@ -933,9 +934,16 @@ button.tphead:active{background:var(--tint)}
 .bootstage{text-align:center;padding:0 24px}
 .boottitle{font-family:var(--display);font-weight:800;text-transform:uppercase;
   font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:#F5F5F5}
-.boottitle .go{color:var(--acc);transition:color .45s var(--ease)}
-.bootrule{transition:background .45s var(--ease)}
-.bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;background:var(--acc)}
+/* the opening screen wears the mark's own gradient, so it is not something
+   to be chosen: it is the app's face and it always matches the icon */
+.boottitle .go{background-image:linear-gradient(96deg,#4F5BF7,#8B3DF0 48%,#E0399B);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  color:#8B3DF0}
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .boottitle .go{background-image:none;-webkit-text-fill-color:currentColor}
+}
+.bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;
+  background:linear-gradient(90deg,#4F5BF7,#8B3DF0 50%,#E0399B)}
 .bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
   text-transform:uppercase;color:rgba(255,255,255,.36)}
 .bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
@@ -1879,6 +1887,176 @@ html.igskin .swhelp{margin:0;padding:0 0 6px;font-size:15px;line-height:1.42;col
 html.igskin #focusSheet .sheet-actions{margin-top:22px}
 
 /* ===========================================================
+   GROUND — the ground a subject covers
+   Two screens. The subjects, each with its own colour and the share of it
+   covered. Then one subject as a sheet read across: topics down the side,
+   phases along the top, one reading in every cell. Colour carries the
+   meaning, so the furniture stays out of the way.
+   =========================================================== */
+.gndplus{width:34px;height:34px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  background:var(--ig-blue,#4F5BF7);color:#fff;border:0;
+  transition:background .16s var(--ease),transform .16s var(--ease)}
+.gndplus:active{background:var(--ig-blue-2,#3F4AD8);transform:scale(.9)}
+.gndplus svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+
+/* ---------- the subjects ---------- */
+#gndBody .gsublist{margin-top:2px}
+.gsub{width:100%;display:flex;align-items:center;gap:15px;text-align:left;
+  padding:15px 0;border:0;border-bottom:1px solid var(--ig-hair,#EFEFEF);background:transparent;
+  transition:opacity .14s var(--ease)}
+.gsub:last-child{border-bottom:0}
+.gsub:active{opacity:.55}
+.gring{width:46px;height:46px;flex:0 0 auto;position:relative}
+.gring svg{display:block;width:46px;height:46px;transform:rotate(-90deg)}
+.gring circle{fill:none;stroke-width:3.5;stroke-linecap:round}
+.gring .gbgc{stroke:var(--ig-fill,#EFEFEF)}
+.gring .gfgc{stroke:var(--c,#4F5BF7);transition:stroke-dashoffset .6s var(--ease)}
+.gring b{position:absolute;top:0;right:0;bottom:0;left:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ui);font-size:12.5px;font-weight:700;letter-spacing:-.03em}
+.gsub .gt{flex:1;min-width:0;display:flex;flex-direction:column}
+.gsub .gn{font-size:16.5px;font-weight:600;letter-spacing:-.02em;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gsub .gm{font-family:var(--ui);font-size:13px;font-weight:400;letter-spacing:-.005em;
+  color:var(--ink-2);line-height:1.3;margin-top:5px}
+.gsub .go{flex:0 0 auto;width:13px;color:var(--ink-3);display:grid;place-items:center}
+.gsub .go svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.gempty{padding:56px 8px;text-align:center;color:var(--ink-2)}
+.gempty h4{font-family:var(--ui);font-size:17px;font-weight:700;letter-spacing:-.02em;
+  color:var(--ink);margin:0 0 8px}
+.gempty p{font-size:15px;line-height:1.45;margin:0;max-width:34ch;margin-inline:auto}
+
+/* ---------- one subject ----------
+   The sheet is read as a heat map. Every cell is a chip whose colour deepens
+   with how sure you are, so the state of a whole subject is taken in at a
+   glance and the numbers are there only when you look closer. */
+.ghead{display:flex;align-items:center;gap:10px;padding:2px 0 4px}
+.ghead .gdot{width:10px;height:10px;border-radius:50%;background:var(--c,#4F5BF7);flex:0 0 auto}
+.gsum{display:flex;align-items:baseline;gap:9px;padding:0 0 12px}
+.gsum .gsbig{font-family:var(--ui);font-size:34px;font-weight:700;letter-spacing:-.045em;
+  color:var(--ig-blue,#4F5BF7);line-height:1}
+.gsum .gsn{font-family:var(--ui);font-size:14px;font-weight:500;color:var(--ink-2)}
+.gsbar{height:6px;border-radius:4px;background:var(--ig-fill,#EFEFEF);overflow:hidden}
+.gsbar i{display:block;height:100%;border-radius:4px;background:var(--ig-blue,#4F5BF7);
+  transition:width .5s var(--ease)}
+.gmeta{font-family:var(--ui);font-size:13.5px;color:var(--ink-2);padding:10px 0 16px}
+
+/* the sheet, and the fade that says there is more to the right */
+.gscroll{position:relative;margin:0 calc(-1*var(--gut,16px))}
+.gscroll::after{content:'';position:absolute;top:0;right:0;bottom:0;width:28px;pointer-events:none;
+  background:linear-gradient(to right,transparent,var(--bg,#fff));
+  opacity:0;transition:opacity .25s var(--ease)}
+.gscroll.more::after{opacity:1}
+/* The topic column is not sticky any more: it is a column of its own that
+   never scrolls, sitting beside a scroller that holds only the phases. A
+   sticky column is drawn over the scrolling content, and anywhere it fails to
+   cover — the gaps between its rows, the moment before it catches up with a
+   flick — the cells behind show through. Taking it out of the scroller means
+   there is nothing to leak past. */
+.gsheet{display:flex;align-items:flex-start;margin-right:calc(-1*var(--gut,16px));
+  --gcellw:78px;--growh:52px;--ghdrh:30px;--ggap:6px;--c:var(--ig-blue,#4F5BF7)}
+.gfixed{flex:0 0 auto;width:128px;min-width:0;background:var(--bg,#fff)}
+.gscroll{flex:1;min-width:0;position:relative}
+.gwrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.gwrap::-webkit-scrollbar{display:none}
+.gcols{display:flex;flex-direction:column;width:max-content;min-width:100%}
+.ghdrrow,.gchiprow{display:flex;align-items:stretch;width:100%}
+/* the head and every row stand the same height on both sides, so the two
+   columns line up without either one measuring the other */
+.gcorner,.gphwrap{height:var(--ghdrh);display:flex;align-items:flex-end;
+  padding-bottom:calc(var(--ggap) + 2px)}
+.gcorner{padding-right:10px;font-family:var(--ui);font-size:11px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.gphwrap{flex:1 0 var(--gcellw);min-width:0;padding-left:calc(var(--ggap)/2);
+  padding-right:calc(var(--ggap)/2)}
+.gph{width:100%;background:transparent;border:0;text-align:center;
+  font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gph:active{opacity:.5}
+/* the row holds its height whatever the name does, or a long topic would
+   push its side of the sheet out of step with the chips beside it */
+.growname{height:var(--growh);min-height:var(--growh);max-height:var(--growh);
+  overflow:hidden;display:flex;align-items:center;padding-right:10px}
+.gtop{width:100%;padding:0;text-align:left;background:transparent;border:0;
+  font-size:14.5px;line-height:1.3;color:var(--ink);max-height:2.6em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gtop:active{opacity:.5}
+/* the chip: colour is the reading, the number confirms it */
+.gcell{position:relative;flex:1 0 var(--gcellw);min-width:0;
+  height:calc(var(--growh) - var(--ggap));margin:0 calc(var(--ggap)/2) var(--ggap);
+  border:0;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:var(--ig-fill,#EFEFEF);
+  text-align:center;font-family:var(--ui);font-size:15px;font-weight:700;letter-spacing:-.03em;
+  color:#fff;transition:transform .14s var(--ease),background .3s var(--ease)}
+.gcell.none{color:var(--ink-3);font-weight:500}
+.gcell:active{transform:scale(.93)}
+.gcell .gsrc{position:absolute;top:6px;right:7px;width:4px;height:4px;border-radius:50%;
+  background:currentColor;opacity:.5}
+/* the column lifts a little once the phases have been slid under it */
+.gfixed{transition:box-shadow .25s var(--ease)}
+.gsheet.slid .gfixed{box-shadow:7px 0 9px -7px rgba(0,0,0,.4)}
+/* the two quiet words that end the page */
+.gfoot{display:flex;justify-content:center;gap:24px;padding:34px 0 8px}
+.gfoot button{background:transparent;border:0;font-family:var(--ui);font-size:13.5px;
+  font-weight:500;letter-spacing:-.01em;color:var(--ink-3);padding:6px 2px}
+.gfoot button:active{opacity:.5}
+.gfoot button.armed{color:var(--ig-red,#ED4956);font-weight:600}
+
+/* ---------- what the plus offers ---------- */
+.picklist{display:flex;flex-direction:column}
+.pickrow{display:flex;align-items:center;gap:15px;text-align:left;width:100%;
+  padding:15px 0;background:transparent;border:0;border-bottom:1px solid var(--ig-hair,#EFEFEF);
+  transition:opacity .14s var(--ease)}
+.pickrow:last-child{border-bottom:0}
+.pickrow:active{opacity:.55}
+.pickico{width:38px;height:38px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  background:var(--ig-fill,#EFEFEF);color:var(--ink)}
+.pickico svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.pickt{display:flex;flex-direction:column;min-width:0}
+.pickt b{font-size:16.5px;font-weight:600;letter-spacing:-.02em}
+.pickt i{font-style:normal;font-size:13.5px;color:var(--ink-2);margin-top:4px}
+
+/* ---------- the eleven steps of sureness ---------- */
+/* Every step is lit to its own depth, so the row climbs from pale to full
+   across the ten. A flat fill made nine and ten the same picture; graded,
+   the difference is a whole extra step of colour. */
+.confrow{display:flex;gap:5px}
+.confstep{flex:1;min-width:0;height:46px;border-radius:9px;border:0;
+  background:var(--ig-fill,#EFEFEF);
+  font-family:var(--ui);font-size:13px;font-weight:700;color:var(--ink-3);
+  transition:background .18s var(--ease),color .18s var(--ease),transform .14s var(--ease)}
+.confstep:active{transform:scale(.9)}
+.confstep.lit{color:#fff}
+/* the one you chose is ringed, and stands a little proud of the rest */
+.confstep.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink);position:relative;z-index:1}
+
+@media (min-width:700px) and (min-height:600px){
+  .gsub{padding:18px 0}
+  .gsub .gn{font-size:18px}
+  .gsub .gm{font-size:14px}
+  .gring,.gring svg{width:52px;height:52px}
+  .gsum .gsbig{font-size:34px}
+  .gsheet{--gcellw:98px;--growh:62px;--ghdrh:34px;--ggap:8px}
+  .gfixed{width:186px}
+  .gcell{font-size:16.5px;border-radius:13px}
+  .gtop{font-size:16px}
+  .gph,.gcorner{font-size:12px}
+  .gsum .gsbig{font-size:40px}
+  .gmeta{font-size:14.5px}
+  .confstep{height:48px;font-size:14px}
+  .pickt b{font-size:17.5px}
+}
+@media (max-width:370px){
+  .gsheet{--gcellw:66px;--growh:48px;--ghdrh:28px;--ggap:4px}
+  .gfixed{width:104px}
+  .gcell{font-size:14px;border-radius:10px}
+  .gtop{font-size:13.5px}
+  .confstep{height:40px;font-size:12px}
+}
+
+/* ===========================================================
    INTERACTIONS — how Instagram answers a tap
    Nothing here moves far. A press dims or shrinks a touch and lets go
    quickly; a sheet rides the same curve iOS and Instagram use; a tick
@@ -2031,7 +2209,14 @@ html.igskin #nsEdit .dn-foot{margin-top:20px}
 /* ---------- the record, opened as a full page ---------- */
 html.igskin .fullsheet{background:var(--bg);border-radius:0;box-shadow:none;padding:0}
 html.igskin .fshead{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;
-  border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top)) var(--gut) 0}
+  border-bottom:1px solid var(--line);z-index:12;
+  padding:calc(8px + env(safe-area-inset-top)) var(--gut) 0}
+/* The body is given a stacking context of its own at the very bottom. Raising
+   the head's z-index was not enough on its own — anything positioned inside
+   the body could still be painted over it, which is how a topic name came to
+   sit on the title. Trapped in a context of zero, nothing in the body can
+   reach past the head no matter what it does. */
+.fsbody{position:relative;z-index:0}
 html.igskin .fsbar{gap:24px;padding:6px 0 14px}
 html.igskin .fsbar h3{font-family:var(--ui);font-size:24px;font-weight:700;letter-spacing:-.033em;
   line-height:32px}
@@ -2463,7 +2648,7 @@ html.igskin #setRoot,html.igskin #v-plan.active>*,
 html.igskin #v-settings.active>*{animation:none}
 /* the blurred bars get a layer of their own, which is what keeps a tablet
    from dropping the whole composite while one of them is scrolling */
-html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:transform}
+html.igskin .topbar,html.igskin .stripwrap{will-change:transform}
 
 /* ---------- tablet: the same page, given the room ---------- */
 @media (min-width:700px) and (min-height:600px){
@@ -2600,7 +2785,11 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
 
 <div class="app">
   <header class="topbar" id="topbar">
-    <span class="barside"></span>
+    <span class="barside">
+      <button class="iconbtn" id="gndBtn" aria-label="Ground">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+      </button>
+    </span>
     <h1 class="wordmark">Onwards</h1>
     <span class="barside right">
       <button class="iconbtn fsbtn" id="fsBtn" aria-label="Full screen" hidden>
@@ -2956,13 +3145,6 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
           </div>
         </div>
         <div class="group">
-          <span class="eyebrow">Opening colour</span>
-          <div class="panel">
-            <div class="swatches" id="accents"></div>
-            <p class="swhelp">Only the title screen takes this colour. The rest of the app keeps its own.</p>
-          </div>
-        </div>
-        <div class="group">
           <span class="eyebrow">Opening words</span>
           <div class="panel">
             <div style="padding:14px 16px">
@@ -3009,6 +3191,11 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
             <div class="t"><div class="n">Notes</div><div class="d" id="cntNotes">—</div></div>
             <button class="pbtn" data-do="out" aria-label="Export notes"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
             <button class="pbtn" data-do="in" aria-label="Import notes"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+          </div>
+          <div class="partrow" data-part="ground">
+            <div class="t"><div class="n">Ground</div><div class="d" id="cntGround">—</div></div>
+            <button class="pbtn" data-do="out" aria-label="Export ground"><svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
+            <button class="pbtn" data-do="in" aria-label="Import ground"><svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg></button>
           </div>
           <div class="partrow" data-part="plan">
             <div class="t"><div class="n">Plan</div><div class="d" id="cntPlan">—</div></div>
@@ -3417,6 +3604,73 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
   </div>
 </div>
 
+<!-- ===== GROUND — the ground a subject covers ===== -->
+<div class="sheet fullsheet igpop" id="gndSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="gndBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3 id="gndTitle">Ground</h3>
+      <button class="gndplus" id="gndAdd" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+  </div>
+  <div class="fsbody" id="gndBody"></div>
+</div>
+
+<!-- the plus asks first: a phase across, or a topic down -->
+<div class="sheet igpop" id="gndPickSheet">
+  <div class="grabber"></div>
+  <h3>Add</h3>
+  <div class="picklist">
+    <button class="pickrow" data-add="phase">
+      <span class="pickico"><svg viewBox="0 0 24 24"><path d="M7 4v16M12 4v16M17 4v16"/></svg></span>
+      <span class="pickt"><b>Phase</b><i>Another pass across every topic</i></span>
+    </button>
+    <button class="pickrow" data-add="topic">
+      <span class="pickico"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+      <span class="pickt"><b>Topic</b><i>Another row down the side</i></span>
+    </button>
+  </div>
+  <div class="sheet-actions"><button class="btn ghost" id="gndPickCancel">Cancel</button></div>
+</div>
+
+<!-- naming a subject, a phase or a topic: one sheet, three uses -->
+<div class="sheet igpop" id="gndNameSheet">
+  <div class="grabber"></div>
+  <h3 id="gndNameTitle">Name</h3>
+  <div class="field">
+    <input class="input big" id="gndNameIn" maxlength="60" autocomplete="off" placeholder="Name">
+  </div>
+  <div class="field" id="gndColWrap" hidden>
+    <span class="eyebrow">Colour</span>
+    <div class="colors" id="gndColors"></div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="gndNameCancel">Cancel</button>
+    <button class="btn" id="gndNameSave">Save</button>
+  </div>
+  <div style="margin-top:9px" id="gndNameDelWrap" hidden><button class="btn danger" id="gndNameDel">Delete</button></div>
+</div>
+
+<!-- one reading: how sure you are, and where you read it -->
+<div class="sheet igpop" id="gndCellSheet">
+  <div class="grabber"></div>
+  <h3 id="gndCellTitle">Topic</h3>
+  <div class="field">
+    <span class="eyebrow">How sure are you</span>
+    <div class="confrow" id="gndConf"></div>
+    <p class="hint" id="gndConfWord">Not started</p>
+  </div>
+  <div class="field">
+    <span class="eyebrow">Sources</span>
+    <div class="panel" id="gndSrcPanel"></div>
+    <button class="btn ghost" id="gndSrcAdd" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a source</button>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn ghost" id="gndCellCancel">Cancel</button>
+    <button class="btn" id="gndCellSave">Save</button>
+  </div>
+</div>
+
 <div class="sheet fullsheet" id="recSheet">
   <div class="fshead">
     <div class="fsbar">
@@ -3474,30 +3728,42 @@ const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-const DB_NAME='dayflow', STORES=['habits','records','notes','meta','plans','sets','dnotes','vision','blocks','days'];
+/* Every store and the key it is filed under, in one place. The list of stores
+   is read straight off this, so a new one can never be added to the app and
+   forgotten in the upgrade — which is exactly how `ground` came to be asked
+   for on a database that had never been told to make it. */
+const STORE_KEYS={habits:'id',records:'key',notes:'date',meta:'key',plans:'key',
+  sets:'id',dnotes:'id',vision:'id',blocks:'id',days:'date',ground:'id'};
+const DB_NAME='dayflow', STORES=Object.keys(STORE_KEYS);
+/* Raised whenever a store is added. Nothing already saved is touched: the
+   upgrade only creates what is missing and leaves every existing store, and
+   everything in it, exactly as it was. */
+const DB_VERSION=8;
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,7);
+    const r=indexedDB.open(DB_NAME,DB_VERSION);
     r.onupgradeneeded=e=>{
       const d=e.target.result;
-      const mk=(n,k)=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:k}); };
-      mk('habits','id'); mk('records','key'); mk('notes','date'); mk('meta','key');
-      mk('plans','key'); mk('sets','id'); mk('dnotes','id'); mk('vision','id'); mk('blocks','id');
-      mk('days','date');
+      for(const n of STORES){
+        if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:STORE_KEYS[n]});
+      }
     };
     r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
   });
 }
+const hasStore=n=>!!(db&&db.objectStoreNames.contains(n));
 const store=(n,m='readonly')=>db.transaction(n,m).objectStore(n);
 const wrap=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-const dbAll=n=>wrap(store(n).getAll());
-const dbPut=(n,v)=>wrap(store(n,'readwrite').put(v));
-const dbDel=(n,k)=>wrap(store(n,'readwrite').delete(k));
-const dbClear=n=>wrap(store(n,'readwrite').clear());
+/* A store the database has never heard of reads as empty and takes no writes,
+   rather than throwing and stopping the whole app from opening. */
+const dbAll=n=>hasStore(n)?wrap(store(n).getAll()):Promise.resolve([]);
+const dbPut=(n,v)=>hasStore(n)?wrap(store(n,'readwrite').put(v)):Promise.resolve();
+const dbDel=(n,k)=>hasStore(n)?wrap(store(n,'readwrite').delete(k)):Promise.resolve();
+const dbClear=n=>hasStore(n)?wrap(store(n,'readwrite').clear()):Promise.resolve();
 
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
-    myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map();
+    myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map(), ground=[];
 let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
        visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
 let visionDark=false, visionUnlocked=false;
@@ -4322,9 +4588,13 @@ function closeSheet(){
 }
 $('#scrim').addEventListener('click',()=>{
   if($('#pauseSheet').classList.contains('on')) return;
-  closeSheet(); closeSetSheet(); closeVSheet(); closePin(); closePerfect(); closeBlockSheet();
-  closeRecord(); closeFocus(); closeNoteSheet(); closeDivSheet();
-  closeIgMenu(); closeIgEdit(); closeDocs();
+  /* Close the layer on top and nothing else. This used to be a hand-written
+     list of closers, so any sheet added later — the Ground ones — simply
+     ignored a tap outside, and a sheet opened over another took both down. */
+  for(const [sel,close] of BACK_SHEETS){
+    const el=$(sel);
+    if(el && el.classList.contains('on')){ close(); return; }
+  }
 });
 $('#fCancel').addEventListener('click',closeSheet);
 $('#addBtn').addEventListener('click',()=>openSheet(null));
@@ -4610,6 +4880,46 @@ function normGoals(g){
   return (Array.isArray(g)?g:[]).filter(x=>x&&typeof x==='object')
     .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,120),done:x.done?1:0}))
     .filter(x=>x.text.trim());
+}
+/* ---------- Ground: the ground a subject covers ----------
+   A subject holds phases (the passes you make over it) and topics (what it is
+   made of). Where a topic meets a phase there is one reading: how sure you
+   are, nought to ten, and where you read it. Kept as a flat map keyed by the
+   two ids so adding or removing either never disturbs the rest. */
+const GKEY=(t,ph)=>t+'|'+ph;
+function normGround(g){
+  g=g||{};
+  const phases=(Array.isArray(g.phases)?g.phases:[])
+    .filter(x=>x&&x.id).map(x=>({id:String(x.id),name:String(x.name||'Phase').slice(0,28)}));
+  const topics=(Array.isArray(g.topics)?g.topics:[])
+    .filter(x=>x&&x.id).map(x=>({id:String(x.id),name:String(x.name||'Topic').slice(0,60)}));
+  const live=new Set(), cells={};
+  topics.forEach(t=>phases.forEach(ph=>live.add(GKEY(t.id,ph.id))));
+  const inc=(g.cells&&typeof g.cells==='object')?g.cells:{};
+  for(const k of Object.keys(inc)){
+    if(!live.has(k)) continue;                 /* a reading with no cell is dropped */
+    const c=inc[k]||{};
+    const n=Math.round(Number(c.c));
+    const conf=(isFinite(n)&&n>0)?Math.min(10,n):0;
+    /* one block of text became a list; a file written before that still
+       reads, its lines becoming the entries */
+    const raw = Array.isArray(c.s) ? c.s : String(c.s==null?'':c.s).split('\n');
+    const src = raw.map(x=>String(x==null?'':x).trim().slice(0,120))
+                   .filter(Boolean).slice(0,12);
+    if(conf||src.length) cells[k]={c:conf,s:src};
+  }
+  const col=/^#[0-9A-Fa-f]{6}$/.test(g.color||'') ? g.color : THREADS[0];
+  return {id:g.id||uid(), name:String(g.name||'Subject').slice(0,48), color:col,
+          order:Number(g.order)||0, created:g.created||Date.now(), phases, topics, cells};
+}
+const gCell=(g,t,ph)=>g.cells[GKEY(t,ph)]||{c:0,s:[]};
+/* how much of a subject is covered: every cell counts, an empty one as nought */
+function gScore(g){
+  const n=g.topics.length*g.phases.length;
+  if(!n) return 0;
+  let sum=0;
+  g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=gCell(g,t.id,ph.id).c; }));
+  return sum/(n*10);
 }
 /* One shape for a habit and for a note, used by every path that reads one in.
    These were written out field by field in two different places, so anything
@@ -6559,14 +6869,6 @@ addEventListener('scroll',()=>{
   if(b) b.classList.toggle('scrolled',!feedOn && scrollY>210);
 },{passive:true});
 
-(function accents(){
-  const w=$('#accents');
-  ACCENTS.forEach(c=>{const b=document.createElement('button');b.className='sw';b.style.setProperty('--c',c);b.dataset.c=c;b.setAttribute('aria-label','Accent '+c);w.appendChild(b);});
-  w.addEventListener('click',e=>{
-    const b=e.target.closest('.sw'); if(!b) return;
-    S.accent=b.dataset.c; applySettings(); saveSettings(); renderSettings(); buzz(8);
-  });
-})();
 $('#themeBtn').addEventListener('click',()=>{
   visionDark=false;
   S.theme = resolvedTheme()==='dark'?'light':'dark';
@@ -6576,6 +6878,410 @@ $('#themeCtrl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   S.theme=b.dataset.t; applySettings(); saveSettings(); renderSettings();
 });
+/* ===========================================================
+   GROUND — the ground a subject covers
+   Two stages in one page: the subjects, then one subject as a sheet read
+   across. Everything is saved the moment it changes.
+   =========================================================== */
+let gOpen=false, gSubj=null, gCellAt=null, gConf=0, gName=null, gColor=THREADS[0];
+/* Red at barely looked, through amber, to green at cold. Hue carries the
+   reading, and lightness climbs with it so two neighbouring steps differ in
+   two ways at once — which is what makes a nine tell itself from a ten. */
+function confHSL(c){
+  return {h:2+(c-1)*15.3, s:74-(c-1)*1.4, l:42+(c-1)*1.2};
+}
+function confColor(c){
+  if(!c) return '';
+  const k=confHSL(c);
+  return 'hsl('+k.h.toFixed(1)+','+k.s.toFixed(0)+'%,'+k.l.toFixed(0)+'%)';
+}
+/* The amber middle of the ramp is far too bright to carry white numerals, so
+   the ink is chosen against each step rather than assumed. */
+function confInk(c){
+  if(!c) return '';
+  const k=confHSL(c), h=k.h/360, sa=k.s/100, li=k.l/100;
+  const a=sa*Math.min(li,1-li);
+  const ch=n=>{ const t=(n+h*12)%12;
+    return li-a*Math.max(-1,Math.min(t-3,Math.min(9-t,1))); };
+  const lin=v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);
+  const lum=.2126*lin(ch(0))+.7152*lin(ch(8))+.0722*lin(ch(4));
+  /* whichever of white or near-black stands out more against this step */
+  return ((1.05)/(lum+.05)) >= ((lum+.05)/.05) ? '#FFFFFF' : '#141414';
+}
+const scoreColor=p=>p>0?confColor(Math.min(10,Math.max(1,Math.round(p/10)))):'';
+const CONF_WORD=['Not started','Barely looked','Read once','Vaguely there','Getting it',
+  'Half sure','Mostly there','Comfortable','Strong','Nearly cold','Cold'];
+const gById=id=>ground.find(x=>x.id===id)||null;
+async function gSave(g){ g.order=ground.indexOf(g); await dbPut('ground',g); }
+
+function openGround(){
+  gOpen=true; gSubj=null;
+  $('#scrim').classList.add('on');
+  $('#gndSheet').classList.add('on');
+  renderGround(); buzz(HAPTIC.light);
+}
+function closeGround(){
+  if(gSubj){ gSubj=null; renderGround(); return; }   /* the arrow steps back first */
+  gOpen=false;
+  $('#scrim').classList.remove('on');
+  $('#gndSheet').classList.remove('on');
+}
+$('#gndBtn').addEventListener('click',openGround);
+$('#gndBack').addEventListener('click',()=>{ closeGround(); buzz(6); });
+
+function renderGround(){
+  const b=$('#gndBody'); b.innerHTML='';
+  $('#gndTitle').textContent = gSubj ? gSubj.name : 'Ground';
+
+  $('#gndAdd').setAttribute('aria-label', gSubj?'Add a topic':'Add a subject');
+  gSubj ? renderGroundSheet(b) : renderGroundList(b);
+}
+
+/* ---------- the subjects ---------- */
+function renderGroundList(b){
+  if(!ground.length){
+    b.innerHTML='<div class="gempty"><h4>No subjects yet</h4>'+
+      '<p>Add one, give it the phases you plan to make over it, and list what it is made of.</p></div>';
+    return;
+  }
+  const list=document.createElement('div'); list.className='gsublist';
+  ground.forEach(g=>{
+    const pct=Math.round(gScore(g)*100), C=2*Math.PI*20;
+    const el=document.createElement('button');
+    el.className='gsub'; el.dataset.id=g.id; el.style.setProperty('--c',g.color);
+    el.innerHTML=
+      '<span class="gring"><svg viewBox="0 0 46 46">'+
+        '<circle class="gbgc" cx="23" cy="23" r="20"></circle>'+
+        '<circle class="gfgc" cx="23" cy="23" r="20" stroke-dasharray="'+C.toFixed(1)+'" '+
+          'stroke-dashoffset="'+(C*(1-pct/100)).toFixed(1)+'"></circle></svg><b>'+pct+'</b></span>'+
+      '<span class="gt"><span class="gn">'+esc(g.name)+'</span>'+
+        '<span class="gm">'+g.topics.length+' topic'+(g.topics.length===1?'':'s')+
+        ' · '+g.phases.length+' phase'+(g.phases.length===1?'':'s')+'</span></span>'+
+      '<span class="go"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>';
+    list.appendChild(el);
+  });
+  b.appendChild(list);
+}
+
+/* ---------- one subject, read across ---------- */
+function renderGroundSheet(b){
+  const g=gSubj;
+  const pct=Math.round(gScore(g)*100);
+  const sum=document.createElement('div');
+  sum.className='gsum';
+  const tone=scoreColor(pct);
+  sum.innerHTML='<span class="gsbig"'+(tone?' style="color:'+tone+'"':'')+'>'+pct+
+    '%</span><span class="gsn">covered</span>';
+  b.appendChild(sum);
+  const bar=document.createElement('div');
+  bar.className='gsbar';
+  bar.innerHTML='<i style="width:'+pct+'%'+(tone?';background:'+tone:'')+'"></i>';
+  b.appendChild(bar);
+  /* what the number is made of, said once and quietly */
+  const cells=g.topics.length*g.phases.length;
+  let read=0;
+  g.topics.forEach(t=>g.phases.forEach(ph=>{ if(gCell(g,t.id,ph.id).c) read++; }));
+  const meta=document.createElement('div');
+  meta.className='gmeta';
+  meta.textContent = cells
+    ? g.topics.length+' topic'+(g.topics.length===1?'':'s')+' across '+
+      g.phases.length+' phase'+(g.phases.length===1?'':'s')+' · '+read+' of '+cells+' filled in'
+    : '';
+  b.appendChild(meta);
+
+  if(!g.phases.length && !g.topics.length){
+    const e=document.createElement('div');
+    e.className='gempty';
+    e.innerHTML='<h4>Nothing on it yet</h4><p>Add a phase for each pass you plan to make, '+
+      'then the topics this subject is made of.</p>';
+    b.appendChild(e);
+  }else{
+    /* two columns side by side: the topics, which never move, and the phases,
+       which scroll. Both are built to the same row heights. */
+    const sheet=document.createElement('div'); sheet.className='gsheet';
+    let fixed='<div class="gcorner">Topic</div>';
+    g.topics.forEach(tp=>{
+      fixed+='<div class="growname"><button class="gtop" data-t="'+esc(tp.id)+'">'+
+        esc(tp.name)+'</button></div>';
+    });
+    const fx=document.createElement('div'); fx.className='gfixed'; fx.innerHTML=fixed;
+
+    let cols='<div class="ghdrrow">';
+    g.phases.forEach(ph=>{
+      cols+='<div class="gphwrap"><button class="gph" data-ph="'+esc(ph.id)+'">'+
+        esc(ph.name)+'</button></div>';
+    });
+    cols+='</div>';
+    g.topics.forEach(tp=>{
+      cols+='<div class="gchiprow">';
+      g.phases.forEach(ph=>{
+        const c=gCell(g,tp.id,ph.id);
+        const tint=confColor(c.c);
+        const cls=c.c?'':' none';
+        cols+='<button class="gcell'+cls+'"'+
+          (tint?' style="background:'+tint+';color:'+confInk(c.c)+'"':'')+
+          ' data-t="'+esc(tp.id)+'" data-ph="'+esc(ph.id)+'"'+
+          ' aria-label="'+esc(tp.name)+', '+esc(ph.name)+': '+(c.c||'not started')+'">'+
+          (c.c||'–')+(c.s.length?'<i class="gsrc"></i>':'')+'</button>';
+      });
+      cols+='</div>';
+    });
+    const scroll=document.createElement('div'); scroll.className='gscroll';
+    const wrap=document.createElement('div'); wrap.className='gwrap';
+    const inner=document.createElement('div'); inner.className='gcols';
+    inner.innerHTML=cols;
+    wrap.appendChild(inner); scroll.appendChild(wrap);
+    sheet.appendChild(fx); sheet.appendChild(scroll);
+    b.appendChild(sheet);
+    /* the fade promises more columns; the shadow says the ones you have are
+       sliding under the topics */
+    const fade=()=>{
+      scroll.classList.toggle('more',
+        wrap.scrollWidth-wrap.clientWidth-wrap.scrollLeft>4);
+      sheet.classList.toggle('slid',wrap.scrollLeft>2);
+    };
+    wrap.addEventListener('scroll',fade,{passive:true});
+    requestAnimationFrame(fade);
+    addEventListener('resize',fade,{passive:true});
+  }
+  const foot=document.createElement('div');
+  foot.className='gfoot';
+  foot.innerHTML='<button data-do="rename">Rename</button><button data-do="drop">Delete</button>';
+  b.appendChild(foot);
+}
+
+/* ---------- naming: a subject, a phase or a topic ---------- */
+function openName(kind,id,current){
+  gName={kind,id};
+  const t={subject:'Subject',phase:'Phase',topic:'Topic'}[kind];
+  $('#gndNameTitle').textContent=(id?'Edit ':'New ')+t.toLowerCase();
+  $('#gndNameIn').value=current||'';
+  $('#gndNameIn').placeholder = kind==='phase' ? 'First pass' :
+    kind==='topic' ? 'Chapter or theme' : 'Organic chemistry';
+  const sub=kind==='subject';
+  $('#gndColWrap').hidden=!sub;
+  if(sub){
+    const g=id?gById(id):null;
+    gColor = g ? g.color : THREADS[ground.length%THREADS.length];
+    paintGndColours();
+  }
+  $('#gndNameDelWrap').hidden=!id;
+  $('#gndNameDel').textContent='Delete '+t.toLowerCase(); $('#gndNameDel').dataset.armed='';
+  $('#scrim').classList.add('on','high'); $('#gndNameSheet').classList.add('on');
+  setTimeout(()=>$('#gndNameIn').focus(),260);
+}
+(function gndColours(){
+  const w=$('#gndColors');
+  THREADS.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='co'; b.style.setProperty('--c',c); b.dataset.c=c;
+    b.setAttribute('aria-label','Colour '+c);
+    w.appendChild(b);
+  });
+  w.addEventListener('click',e=>{
+    const b=e.target.closest('.co'); if(!b) return;
+    gColor=b.dataset.c; paintGndColours(); buzz(8);
+  });
+})();
+function paintGndColours(){
+  $$('#gndColors .co').forEach(b=>b.classList.toggle('on',b.dataset.c===gColor));
+}
+function closeName(){
+  $('#scrim').classList.remove('on','high'); $('#gndNameSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  gName=null;
+}
+$('#gndNameCancel').addEventListener('click',closeName);
+$('#gndNameSave').addEventListener('click',async()=>{
+  if(!gName) return;
+  const name=$('#gndNameIn').value.trim();
+  if(!name){ $('#gndNameIn').focus(); return; }
+  const {kind,id}=gName;
+  if(kind==='subject'){
+    if(id){ const g=gById(id); if(g){ g.name=name.slice(0,48); g.color=gColor; await gSave(g); } }
+    else{
+      const g=normGround({id:uid(),name,color:gColor,order:ground.length,created:Date.now()});
+      ground.push(g); await gSave(g); gSubj=g;
+    }
+  }else if(gSubj){
+    const list = kind==='phase' ? gSubj.phases : gSubj.topics;
+    const cap = kind==='phase' ? 28 : 60;
+    const row = id ? list.find(x=>x.id===id) : null;
+    if(row) row.name=name.slice(0,cap);
+    else list.push({id:uid(),name:name.slice(0,cap)});
+    await gSave(gSubj);
+  }
+  closeName(); renderGround(); renderSettings(); buzz(10);
+});
+$('#gndNameDel').addEventListener('click',async e=>{
+  const btn=e.currentTarget;
+  if(btn.dataset.armed!=='1'){ btn.dataset.armed='1'; btn.textContent='Tap again to delete'; buzz(14); return; }
+  if(!gName||!gName.id){ closeName(); return; }
+  const {kind,id}=gName;
+  if(kind==='subject'){
+    ground=ground.filter(x=>x.id!==id); await dbDel('ground',id);
+    for(const g of ground) await gSave(g);
+    gSubj=null;
+  }else if(gSubj){
+    if(kind==='phase') gSubj.phases=gSubj.phases.filter(x=>x.id!==id);
+    else gSubj.topics=gSubj.topics.filter(x=>x.id!==id);
+    /* the readings that hung off it go with it */
+    for(const k of Object.keys(gSubj.cells)){
+      const [tid,pid]=k.split('|');
+      if(tid===id||pid===id) delete gSubj.cells[k];
+    }
+    await gSave(gSubj);
+  }
+  closeName(); renderGround(); renderSettings(); toast('Deleted');
+});
+
+/* ---------- one reading ---------- */
+(function conf(){
+  const w=$('#gndConf');
+  for(let i=0;i<=10;i++){
+    const b=document.createElement('button');
+    b.className='confstep'; b.dataset.v=i; b.textContent=i;
+    b.setAttribute('aria-label','Sureness '+i+' of 10');
+    w.appendChild(b);
+  }
+  w.addEventListener('click',e=>{
+    const b=e.target.closest('.confstep'); if(!b) return;
+    gConf=+b.dataset.v; paintConf(); buzz(6);
+  });
+})();
+/* the sources: rows you add and remove, the way the pre-focus list works */
+let gSrcs=[];
+const normSrcs=a=>(a||[]).map(x=>String(x||'').trim().slice(0,120)).filter(Boolean).slice(0,12);
+function renderSrcEditor(){
+  const p=$('#gndSrcPanel');
+  if(typing(p)) return;                 /* never yank a line being written */
+  if(!gSrcs.length){
+    p.innerHTML='<div class="gxempty">No sources yet. Add the book, the lecture, the notes.</div>';
+    return;
+  }
+  p.innerHTML=gSrcs.map((t,i)=>
+    '<div class="gxrow" data-i="'+i+'">'+
+      '<input class="gxin" value="'+esc(t)+'" placeholder="Where you read it" maxlength="120" autocomplete="off">'+
+      '<button class="gxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('');
+}
+$('#gndSrcPanel').addEventListener('input',e=>{
+  const inp=e.target.closest('.gxin'); if(!inp) return;
+  const row=inp.closest('.gxrow'); if(!row) return;
+  gSrcs[+row.dataset.i]=inp.value;
+});
+$('#gndSrcPanel').addEventListener('click',e=>{
+  const del=e.target.closest('.gxdel'); if(!del) return;
+  const row=del.closest('.gxrow'); if(!row) return;
+  gSrcs.splice(+row.dataset.i,1);
+  renderSrcEditor(); buzz(12);
+});
+$('#gndSrcAdd').addEventListener('click',()=>{
+  gSrcs=gSrcs.concat('');
+  renderSrcEditor();
+  const rows=$$('#gndSrcPanel .gxrow'), last=rows[rows.length-1];
+  if(last) $('.gxin',last).focus();
+  buzz(8);
+});
+function paintConf(){
+  $$('#gndConf .confstep').forEach(b=>{
+    const v=+b.dataset.v;
+    const lit=v>0&&v<=gConf;
+    b.classList.toggle('lit',lit);
+    /* each step wears its own colour, not the colour of the choice */
+    b.style.background = lit ? confColor(v) : '';
+    b.style.color = lit ? confInk(v) : '';
+    b.classList.toggle('on',v===gConf);
+  });
+  $('#gndConfWord').textContent=CONF_WORD[gConf]||'';
+}
+function openCell(tid,pid){
+  if(!gSubj) return;
+  const tp=gSubj.topics.find(x=>x.id===tid), ph=gSubj.phases.find(x=>x.id===pid);
+  if(!tp||!ph) return;
+  gCellAt={t:tid,ph:pid};
+  const c=gCell(gSubj,tid,pid);
+  gConf=c.c; paintConf();
+  $('#gndCellTitle').textContent=tp.name;
+
+  gSrcs=c.s.slice();
+  renderSrcEditor();
+  $('#gndCellSheet').scrollTop=0;
+  $('#scrim').classList.add('on','high'); $('#gndCellSheet').classList.add('on');
+  buzz(HAPTIC.light);
+}
+function closeCell(){
+  $('#scrim').classList.remove('on','high'); $('#gndCellSheet').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+  gCellAt=null;
+}
+$('#gndCellCancel').addEventListener('click',closeCell);
+$('#gndCellSave').addEventListener('click',async()=>{
+  if(!gCellAt||!gSubj) return closeCell();
+  const k=GKEY(gCellAt.t,gCellAt.ph);
+  const src=normSrcs(gSrcs);
+  if(gConf||src.length) gSubj.cells[k]={c:gConf,s:src};
+  else delete gSubj.cells[k];          /* nothing said is not a reading */
+  await gSave(gSubj);
+  closeCell(); renderGround(); buzz(10);
+});
+
+/* ---------- one place all the taps on the page land ---------- */
+$('#gndAdd').addEventListener('click',()=>{
+  if(!gSubj) return openName('subject',null,'');
+  $('#scrim').classList.add('on','high'); $('#gndPickSheet').classList.add('on');
+  buzz(HAPTIC.light);
+});
+function closePick(){
+  $('#scrim').classList.remove('on','high'); $('#gndPickSheet').classList.remove('on');
+}
+$('#gndPickCancel').addEventListener('click',closePick);
+$('#gndPickSheet').addEventListener('click',e=>{
+  const r=e.target.closest('.pickrow'); if(!r) return;
+  closePick();
+  setTimeout(()=>openName(r.dataset.add,null,''),140);
+});
+$('#gndBody').addEventListener('click',e=>{
+  const sub=e.target.closest('.gsub');
+  if(sub && !gSubj){ gSubj=gById(sub.dataset.id); renderGround(); scrollTo(0,0); buzz(6); return; }
+  const add=e.target.closest('[data-add]');
+  if(add){ openName(add.dataset.add,null,''); return; }
+  const ph=e.target.closest('.gph');
+  if(ph && gSubj){
+    const row=gSubj.phases.find(x=>x.id===ph.dataset.ph);
+    if(row) openName('phase',row.id,row.name);
+    return;
+  }
+  const tp=e.target.closest('.gtop');
+  if(tp && gSubj){
+    const row=gSubj.topics.find(x=>x.id===tp.dataset.t);
+    if(row) openName('topic',row.id,row.name);
+    return;
+  }
+  const cell=e.target.closest('.gcell');
+  if(cell){ openCell(cell.dataset.t,cell.dataset.ph); return; }
+  const act=e.target.closest('[data-do]');
+  if(!act||!gSubj) return;
+  if(act.dataset.do==='rename'){ openName('subject',gSubj.id,gSubj.name); return; }
+  if(act.dataset.do==='drop'){
+    if(act.dataset.armed!=='1'){
+      act.dataset.armed='1'; act.classList.add('armed'); act.textContent='Tap again'; buzz(14);
+      setTimeout(()=>{ if(act.isConnected){
+        act.dataset.armed=''; act.classList.remove('armed'); act.textContent='Delete'; } },4000);
+      return;
+    }
+    dropSubject();
+  }
+});
+async function dropSubject(){
+  const g=gSubj; if(!g) return;
+  ground=ground.filter(x=>x.id!==g.id);
+  await dbDel('ground',g.id);
+  for(const x of ground) await gSave(x);
+  gSubj=null; renderGround(); renderSettings();
+  toast('Subject deleted'); buzz(12);
+}
+
 /* ---------- full screen: the whole tablet, nothing else on it ---------- */
 const fsRoot=()=>document.documentElement;
 const fsOn=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
@@ -6684,20 +7390,20 @@ function themeSweep(to,origin,atCover){
 }
 function renderSettings(){
   $$('#themeCtrl button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.theme));
-  $$('#accents .sw').forEach(b=>b.classList.toggle('on',b.dataset.c===S.accent));
   const locked=!!(S.visionLock&&S.visionLock.hash);
   $('#lockSw').classList.toggle('on',locked);
   $('#lockRow').hidden=!locked;
   $('#hapticSw').classList.toggle('on',S.haptics);
   $('#introSw').classList.toggle('on',S.intro!==false);
   $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+myNotes.length+' notes · '+
-    blocks.length+' sessions · '+vPosts().length+' posts'+
+    blocks.length+' sessions · '+ground.length+' subjects · '+vPosts().length+' posts'+
     (vPdfList().length?' · '+vPdfList().length+' PDFs':'');
   $('#cntHabits').textContent=partCount('habits');
   $('#cntNotes').textContent=partCount('notes');
   $('#cntPlan').textContent=partCount('plan');
   $('#cntVision').textContent=partCount('vision');
   $('#cntRecord').textContent=partCount('record');
+  $('#cntGround').textContent=partCount('ground');
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
   if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
@@ -6721,7 +7427,7 @@ $('#exportBtn').addEventListener('click',()=>{
     downloadJSON({
       app:'onwards', version:5, exported:new Date().toISOString(),
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
-      plans:[...plans.entries()], blocks, vision:visionItems,
+      plans:[...plans.entries()], blocks, vision:visionItems, ground,
       days:[...days.values()], settings:S
     },'onwards-'+TSTR+'.json');
     toast('Exported');
@@ -6732,13 +7438,15 @@ $('#exportBtn').addEventListener('click',()=>{
    A part file is an ordinary Onwards file carrying only its own slice, so a full
    backup works in these buttons too: it just takes the one part you asked for.
    Importing a part merges, it never clears — nothing else in the app is touched. */
-const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision',record:'Day records'};
+const PART_NAME={habits:'Habits and marks',notes:'Notes',plan:'Plan',vision:'Vision',
+  record:'Day records',ground:'Ground'};
 function partPayload(kind){
   if(kind==='habits') return {habits:allHabits,sets,records:[...recs],dividers:allDividers()};
   if(kind==='notes')  return {dnotes:myNotes};
   if(kind==='plan')   return {plans:[...plans.entries()],blocks};
   if(kind==='vision') return {vision:visionItems,profile:S.ig||null,northStar:S.northStar||''};
   if(kind==='record') return {days:[...days.values()]};
+  if(kind==='ground') return {ground};
   return {};
 }
 function partCount(kind){
@@ -6756,6 +7464,10 @@ function partCount(kind){
   if(kind==='record'){
     const r=recordedDays();
     return r.length+' day'+(r.length===1?'':'s')+' · '+r.reduce((n,x)=>n+x.done.length,0)+' logged';
+  }
+  if(kind==='ground'){
+    const t=ground.reduce((n,g)=>n+g.topics.length,0);
+    return ground.length+' subject'+(ground.length===1?'':'s')+' · '+t+' topic'+(t===1?'':'s');
   }
   return '';
 }
@@ -6826,6 +7538,16 @@ async function mergePart(kind,d){
     if(d.profile && typeof d.profile==='object'){ S.ig=Object.assign(ig(),d.profile); await saveSettings(); }
     else if(d.northStar && !(ig().bio||'').trim()){ ig().bio=d.northStar; await saveSettings(); }
   }
+  if(kind==='ground'){
+    for(const x of (d.ground||[])){
+      if(!x||!x.id) continue;
+      const g=normGround(x);
+      const i=ground.findIndex(y=>y.id===g.id);
+      if(i>=0) ground[i]=g; else ground.push(g);
+      await dbPut('ground',g); n++;
+    }
+    ground.sort((a,b)=>(a.order||0)-(b.order||0));
+  }
   if(kind==='record'){
     for(const x of (d.days||[])){
       if(!x||!x.date) continue;
@@ -6889,6 +7611,7 @@ $('#importFile').addEventListener('change',async e=>{
     plans=new Map(d.plans||[]);
     blocks=(d.blocks||[]).map(normSession);
     visionItems=d.vision||[];
+    ground=(d.ground||[]).map(normGround).sort((a,b)=>(a.order||0)-(b.order||0));
     days=new Map((d.days||[]).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
     const keepIntro=S.intro;
     const inSettings=d.settings||{};
@@ -6907,6 +7630,7 @@ $('#importFile').addEventListener('change',async e=>{
     for(const [k,text] of plans) await dbPut('plans',{key:k,date:k.slice(-10),text});
     for(const b of blocks) await dbPut('blocks',b);
     for(const v of visionItems) await dbPut('vision',v);
+    for(const g of ground) await dbPut('ground',g);
     for(const r of days.values()) await dbPut('days',r);
 
     await ensureSets(); await saveSettings(); cacheLook();
@@ -6925,7 +7649,7 @@ $('#resetBtn').addEventListener('click',async e=>{
   }
   await Promise.all(STORES.map(n=>dbClear(n)));
   allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[];
-  visionItems=[]; days=new Map();
+  visionItems=[]; days=new Map(); ground=[];
   S.seeded=false; S.activeSet=null; S.northStar=''; S.ig=null; S.visionLock=null; visionUnlocked=false;
   feedOn=false; arrangeOn=false; $('#vBody').classList.remove('feed');
   S.focusItems=null; S.breakResetAt=0; S.breakMins=DEFAULT_BREAK_MINS; S.dividers=[]; normalizeExtras(); focusChecks.clear();
@@ -7019,6 +7743,7 @@ async function loadAll(){
   legacyNotes=new Map((await dbAll('notes')).map(n=>[n.date,n.text]));
   myNotes=await dbAll('dnotes');
   visionItems=(await dbAll('vision')).sort((a,b)=>(a.order||0)-(b.order||0));
+  ground=(await dbAll('ground')).map(normGround).sort((a,b)=>(a.order||0)-(b.order||0));
   days=new Map((await dbAll('days')).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
   await migrateNotes();
   await migrateStudyHabits();
@@ -7116,6 +7841,10 @@ setInterval(checkRollover,60000);
    =========================================================== */
 /* topmost first — the two that sit above the scrim lead the list */
 const BACK_SHEETS=[
+  ['#gndPickSheet',closePick],
+  ['#gndCellSheet',closeCell],
+  ['#gndNameSheet',closeName],
+  ['#gndSheet',closeGround],
   ['#pauseSheet',closePauseSheet],
   ['#pinSheet',closePin],
   ['#divSheet',closeDivSheet],
