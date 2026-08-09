@@ -4598,6 +4598,29 @@ function normGoals(g){
     .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,120),done:x.done?1:0}))
     .filter(x=>x.text.trim());
 }
+/* One shape for a habit and for a note, used by every path that reads one in.
+   These were written out field by field in two different places, so anything
+   added later — the study flag and the hour its session opens — was quietly
+   dropped on the way back in, and a study habit came back an ordinary one. */
+function normHabit(h){
+  h=h||{};
+  const out={
+    id:h.id||uid(), setId:h.setId||null, name:String(h.name||'Habit').slice(0,60),
+    color:h.color||THREADS[0],
+    days:Array.isArray(h.days)&&h.days.length?h.days.map(Number).filter(d=>d>=0&&d<=6):[0,1,2,3,4,5,6],
+    order:Number(h.order)||0, start:h.start||TSTR, created:h.created||Date.now(),
+    study:!!h.study
+  };
+  if(out.study) out.stime=/^\d{2}:\d{2}$/.test(h.stime||'') ? h.stime : '09:00';
+  return out;
+}
+function normNote(n){
+  n=n||{};
+  const out={id:n.id||uid(), date:n.date||TSTR, title:String(n.title==null?'':n.title),
+             text:String(n.text==null?'':n.text), created:n.created||Date.now()};
+  if(n.edited) out.edited=n.edited;
+  return out;
+}
 /* one shape for a session, whether it came off the disk or out of a file */
 function normSession(b){
   b=b||{};
@@ -4624,8 +4647,13 @@ function habitSession(h,ds){
           created:Date.now(),ghost:true};
 }
 function sessionsOn(ds){
-  const own=blocks.filter(b=>b.date===ds&&!b.habitId);
   const fromHabits=studyHabitsOn(ds).map(h=>habitSession(h,ds));
+  const covered=new Set(fromHabits.map(x=>x.id));
+  /* Anything saved for this day that a habit is not already producing is still
+     shown. Without this a session imported from a file — or one left behind by
+     a habit you have since stopped marking as study — would be dropped from
+     the day while its goals sat in the database. */
+  const own=blocks.filter(b=>b.date===ds && !covered.has(b.id));
   return own.concat(fromHabits)
     .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
 }
@@ -6645,7 +6673,7 @@ function downloadJSON(data,name){
 $('#exportBtn').addEventListener('click',()=>{
   try{
     downloadJSON({
-      app:'dayflow', version:4, exported:new Date().toISOString(),
+      app:'dayflow', version:5, exported:new Date().toISOString(),
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
       plans:[...plans.entries()], blocks, vision:visionItems,
       days:[...days.values()], settings:S
@@ -6670,7 +6698,11 @@ function partPayload(kind){
 function partCount(kind){
   if(kind==='habits') return allHabits.length+' habits · '+recs.size+' marks';
   if(kind==='notes')  return myNotes.length+' note'+(myNotes.length===1?'':'s');
-  if(kind==='plan')   return plans.size+' day plans · '+blocks.length+' blocks';
+  if(kind==='plan'){
+    const st=blocks.filter(b=>b.habitId).length;
+    return plans.size+' day plan'+(plans.size===1?'':'s')+' · '+blocks.length+
+      ' session'+(blocks.length===1?'':'s')+(st?' ('+st+' from habits)':'');
+  }
   if(kind==='vision'){
     const c=vPosts().length, p=vPdfList().length;
     return c+' post'+(c===1?'':'s')+(p?' · '+p+' PDF'+(p===1?'':'s'):'');
@@ -6684,7 +6716,7 @@ function partCount(kind){
 function exportPart(kind){
   try{
     downloadJSON(Object.assign(
-      {app:'dayflow',version:4,part:kind,exported:new Date().toISOString()},
+      {app:'dayflow',version:5,part:kind,exported:new Date().toISOString()},
       partPayload(kind)),'dayflow-'+kind+'-'+TSTR+'.json');
     toast(PART_NAME[kind]+' exported');
   }catch(err){ console.error(err); toast('Export failed'); }
@@ -6695,9 +6727,7 @@ async function mergePart(kind,d){
     for(const st of (d.sets||[])) if(!sets.some(x=>x.id===st.id)){ sets.push(st); await dbPut('sets',st); }
     for(const h of (d.habits||[])){
       if(!h||!h.id) continue;
-      const hb={id:h.id,setId:h.setId,name:h.name||'Habit',color:h.color||THREADS[0],
-        days:Array.isArray(h.days)?h.days:[0,1,2,3,4,5,6],order:h.order||0,
-        start:h.start||TSTR,created:h.created||Date.now()};
+      const hb=normHabit(h);
       const i=allHabits.findIndex(x=>x.id===hb.id);
       if(i>=0) allHabits[i]=hb; else allHabits.push(hb);
       await dbPut('habits',hb); n++;
@@ -6721,7 +6751,7 @@ async function mergePart(kind,d){
   }
   if(kind==='notes'){
     for(const x of (d.dnotes||[])){
-      const nt={id:x.id||uid(),date:x.date||TSTR,title:x.title||'',text:x.text||'',created:x.created||Date.now()};
+      const nt=normNote(x);
       const i=myNotes.findIndex(y=>y.id===nt.id);
       if(i>=0) myNotes[i]=nt; else myNotes.push(nt);
       await dbPut('dnotes',nt); n++;
@@ -6801,14 +6831,10 @@ $('#importFile').addEventListener('change',async e=>{
     if(d.app!=='dayflow') throw new Error('not dayflow');
     await Promise.all(STORES.map(n=>dbClear(n)));
 
-    allHabits=(d.habits||[]).map(h=>({
-      id:h.id||uid(), setId:h.setId, name:h.name||'Habit', color:h.color||THREADS[0],
-      days:Array.isArray(h.days)?h.days:[0,1,2,3,4,5,6], order:h.order||0,
-      start:h.start||TSTR, created:h.created||Date.now()
-    }));
+    allHabits=(d.habits||[]).filter(h=>h&&h.id).map(normHabit);
     sets=d.sets||[];
     recs=new Set(d.records||[]);
-    myNotes=(d.dnotes||[]).map(n=>({id:n.id||uid(),date:n.date||TSTR,title:n.title||'',text:n.text||'',created:n.created||Date.now()}));
+    myNotes=(d.dnotes||[]).map(normNote);
     /* older exports kept one note per day in `notes` */
     (d.notes||[]).forEach(pair=>{
       const [date,text]=pair;
