@@ -72,8 +72,10 @@ button{background:none;border:0;padding:0;cursor:pointer}
   border-bottom:1px solid transparent;transition:border-color .3s;
 }
 .topbar.stuck{border-bottom-color:var(--line)}
-/* the name, and nothing beside it. The line height is what the icon buttons
-   used to set, so the bar stands exactly as tall as it did before. */
+/* the name in the middle, the buttons on the right. Both flanks take the same
+   width, so the name stays centred no matter how many buttons are showing. */
+.barside{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:2px}
+.barside.right{justify-content:flex-end}
 .topbar{justify-content:center;
   transform:translate3d(0,0,0);
   transition:transform .3s var(--ease),border-color .3s var(--ease)}
@@ -2598,7 +2600,16 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
 
 <div class="app">
   <header class="topbar" id="topbar">
+    <span class="barside"></span>
     <h1 class="wordmark">Onwards</h1>
+    <span class="barside right">
+      <button class="iconbtn fsbtn" id="fsBtn" aria-label="Full screen" hidden>
+        <svg viewBox="0 0 24 24" id="fsIcon"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+      </button>
+      <button class="iconbtn" id="themeBtn" aria-label="Switch theme">
+        <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </span>
   </header>
 
   <main>
@@ -2917,16 +2928,6 @@ html.igskin .topbar,html.igskin .fshead,html.igskin .stripwrap{will-change:trans
               <div class="seg-ctrl" id="themeCtrl">
                 <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="group" id="fsGroup" hidden>
-          <span class="eyebrow">Screen</span>
-          <div class="panel">
-            <div class="srow" id="fsRow">
-              <div class="t"><div class="n">Full screen</div>
-                <div class="d">Fills the screen and hides the browser's own bars.</div></div>
-              <button class="switch" id="fsSw" role="switch"></button>
             </div>
           </div>
         </div>
@@ -6511,6 +6512,7 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   const nowTheme=wantDark?'dark':resolvedTheme();
   const swap=()=>{
     visionDark=wantDark;
+    $('#themeBtn').hidden=wantDark;
     /* the profile carries its own bar, so the app's steps out of its way */
     document.querySelector('.app').classList.toggle('onvision',wantDark);
     applySettings();
@@ -6565,6 +6567,11 @@ addEventListener('scroll',()=>{
     S.accent=b.dataset.c; applySettings(); saveSettings(); renderSettings(); buzz(8);
   });
 })();
+$('#themeBtn').addEventListener('click',()=>{
+  visionDark=false;
+  S.theme = resolvedTheme()==='dark'?'light':'dark';
+  applySettings(); saveSettings(); renderSettings(); buzz(8);
+});
 $('#themeCtrl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   S.theme=b.dataset.t; applySettings(); saveSettings(); renderSettings();
@@ -6579,10 +6586,12 @@ function paintFs(){
     ? '<path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5"/>'
     : '<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>';
   const label=on?'Leave full screen':'Full screen';
-  /* the bar carries no icons now, so the switch in Appearance is the control */
-  const grp=$('#fsGroup'), sw=$('#fsSw');
-  if(grp) grp.hidden=!ok;
-  if(sw) sw.classList.toggle('on',on);
+  const b=$('#fsBtn');
+  if(b){
+    b.hidden=!ok; b.classList.toggle('live',on);
+    b.setAttribute('aria-label',label);
+    $('#fsIcon').innerHTML=icon;
+  }
   /* the session screen carries the same control */
   const t=$('#tFs');
   if(t){
@@ -6603,7 +6612,7 @@ async function toggleFs(){
   }catch(err){ toast('Your browser would not allow full screen'); }
   paintFs();
 }
-$('#fsSw').addEventListener('click',()=>{ toggleFs(); buzz(8); });
+$('#fsBtn').addEventListener('click',()=>{ toggleFs(); buzz(8); });
 /* Entering or leaving full screen rebuilds the compositing tree, and a blurred
    sticky bar can be left unpainted until something touches the page — which is
    why it came up blank until a tap. Dropping the blur for one frame forces
@@ -6642,6 +6651,9 @@ function applySettings(){
   const m=document.querySelector('meta[name=theme-color]');
   /* Study and Settings paint Instagram's white, so the status bar follows them
      there rather than staying on the app's own paper colour */
+  $('#themeIcon').innerHTML = t==='dark'
+    ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
   const ig=document.documentElement.classList.contains('igskin');
   if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000'
     : t==='dark' ? '#000000' : (ig?'#FFFFFF':'#F4F4F3'));
