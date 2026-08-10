@@ -943,7 +943,7 @@ button.tphead:active{background:var(--tint)}
   .boottitle .go{background-image:none;-webkit-text-fill-color:currentColor}
 }
 .bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;
-  background:linear-gradient(90deg,#4F5BF7,#8B3DF0 50%,#E0399B)}
+  background:#FFFFFF}
 .bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
   text-transform:uppercase;color:rgba(255,255,255,.36)}
 .bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
@@ -1934,11 +1934,13 @@ html.igskin #focusSheet .sheet-actions{margin-top:22px}
    One phase is shown at a time instead — chosen from a strip along the top —
    so a topic gets the whole width for its name and nothing is ever truncated.
    =========================================================== */
-/* the subject's headline, kept in a soft box like the run card on Home */
-.gbox{background:var(--ig-fill,#EFEFEF);border-radius:14px;padding:15px 16px 16px;margin-top:2px}
-.gbox .gsum{padding:0 0 12px}
-.gbox .gsbar{background:var(--bg,#fff)}
-.gbox .gmeta{padding:13px 0 0;font-size:13px}
+/* the subject's headline, kept in a soft box like the run card on Home.
+   Named for this page: `gbox` already belonged to the sub-goal tick on the
+   Study page, and taking it painted a card over every checkbox there. */
+.pgcard{background:var(--ig-fill,#EFEFEF);border-radius:14px;padding:15px 16px 16px;margin-top:2px}
+.pgcard .gsum{padding:0 0 12px}
+.pgcard .gsbar{background:var(--bg,#fff)}
+.pgcard .gmeta{padding:13px 0 0;font-size:13px}
 .gsum{display:flex;align-items:baseline;gap:9px;padding:0 0 12px}
 .gsum .gsbig{font-family:var(--ui);font-size:34px;font-weight:700;letter-spacing:-.045em;
   line-height:1}
@@ -2003,8 +2005,8 @@ html.igskin #focusSheet .sheet-actions{margin-top:22px}
 @media (min-width:700px) and (min-height:600px){
   .gsum .gsbig{font-size:40px}
   .gmeta{font-size:14.5px}
-  .gbox{padding:18px 19px 19px;border-radius:16px}
-  .gbox .gmeta{font-size:14px}
+  .pgcard{padding:18px 19px 19px;border-radius:16px}
+  .pgcard .gmeta{font-size:14px}
   .pgname{font-size:16.5px;min-width:150px}
   .pgcorner{min-width:150px;font-size:11.5px}
   .pgph{font-size:11.5px}
@@ -2648,6 +2650,99 @@ html.igskin #v-settings.active>*{animation:none}
 /* the blurred bars get a layer of their own, which is what keeps a tablet
    from dropping the whole composite while one of them is scrolling */
 html.igskin .topbar,html.igskin .stripwrap{will-change:transform}
+
+/* ===========================================================
+   UNIFORMITY — one set of parts, used everywhere
+   The pages had drifted: three kinds of summary card, four empty states,
+   headings at four sizes, press feedback on some rows and not others. This
+   settles each of those on a single answer so moving between Home, Study,
+   Portions and Settings feels like one app rather than four.
+   =========================================================== */
+html.igskin{
+  --ig-card:14px;          /* the one corner radius a card ever uses      */
+  --ig-rowmin:52px;        /* nothing tappable is shorter than this       */
+  --ig-gap:12px;           /* the step between stacked blocks             */
+}
+
+/* ---------- one card ---------- */
+html.igskin .run,html.igskin .pgcard{
+  background:var(--ig-fill);border:0;border-radius:var(--ig-card);
+  padding:15px 16px 16px}
+html.igskin .run{margin-top:18px;padding:13px 16px 14px}
+html.igskin .runbar,html.igskin .pgcard .gsbar{background:var(--bg);height:5px;border-radius:3px}
+
+/* ---------- one heading ---------- */
+html.igskin .subpage .group>.eyebrow,
+html.igskin #v-plan .psec .eyebrow,
+html.igskin .tphead .eyebrow,
+html.igskin .note-head .eyebrow,
+html.igskin .fsbody .field>.eyebrow,
+html.igskin .sheet .field>.eyebrow,
+html.igskin .fbhead .eyebrow{
+  font-family:var(--ui);font-size:17px;font-weight:700;letter-spacing:-.02em;
+  text-transform:none;color:var(--ink)}
+/* the one exception: the front page of Settings, which stays quiet and grey */
+html.igskin .smenu>.eyebrow,html.igskin #installGroup>.eyebrow{
+  font-size:15px;font-weight:400;color:var(--ink-2)}
+
+/* ---------- one empty state ---------- */
+html.igskin .empty,html.igskin .gempty,html.igskin #v-plan .empty,
+html.igskin #v-today .empty,html.igskin .subpage .empty{
+  border:0;border-radius:0;background:transparent;
+  padding:46px 12px;text-align:center;color:var(--ink-2)}
+html.igskin .empty h3,html.igskin .gempty h4,
+html.igskin #v-plan .empty h3,html.igskin #v-today .empty h3{
+  font-family:var(--ui);font-size:17px;font-weight:700;letter-spacing:-.02em;
+  color:var(--ink);margin:0 0 8px}
+html.igskin .empty p,html.igskin .gempty p,
+html.igskin #v-plan .empty p,html.igskin #v-today .empty p{
+  font-size:15px;line-height:1.45;margin:0 auto;max-width:32ch}
+html.igskin .gxempty,html.igskin .fxempty,html.igskin .rempty{
+  font-size:15px;color:var(--ink-2);line-height:1.45}
+
+/* ---------- one row ----------
+   Everything you can tap in a list answers the same way and is tall enough
+   to hit without looking. */
+html.igskin .smrow,html.igskin .hrowc,html.igskin .gsub,html.igskin .pgrow,
+html.igskin .ritem,html.igskin .fitem,html.igskin .pickrow,html.igskin .partrow,
+html.igskin .subpage .hrow,html.igskin .pblock,html.igskin .fbitem{
+  min-height:var(--ig-rowmin)}
+html.igskin .smrow:active,html.igskin .hrowc:active,html.igskin .pickrow:active{
+  background:var(--tint)}
+html.igskin .gsub:active,html.igskin .fitem:active,html.igskin .sgoal:active,
+html.igskin .btxt:active,html.igskin .pgname:active,html.igskin .pgph:active{opacity:.55}
+/* small round controls all shrink by the same amount */
+html.igskin .brkreset,html.igskin .spback,html.igskin .nsx,html.igskin .fsx,
+html.igskin .iconbtn,html.igskin .gndplus,html.igskin .addblock,html.igskin .sgnew,
+html.igskin .addrow .addbtn,html.igskin .gxdel,html.igskin .pbtn{
+  transition:background .16s var(--ease),transform .16s var(--ig-press),
+  color .16s var(--ease),opacity .16s var(--ease)}
+html.igskin .brkreset:active,html.igskin .gxdel:active,html.igskin .pbtn:active{transform:scale(.88)}
+/* a quiet control still needs a target you can hit */
+html.igskin .gfoot button,html.igskin .fbmini,html.igskin .dn-del,
+html.igskin #v-plan .todaybtn{min-height:36px;padding-inline:6px}
+
+/* ---------- one rhythm ---------- */
+html.igskin #v-plan .actrow,html.igskin #v-plan .brkrow{margin-bottom:var(--ig-gap)}
+html.igskin .subpage .group>.eyebrow,html.igskin .smenu>.eyebrow{padding:24px 0 8px}
+html.igskin .gmeta{padding:13px 0 0}
+html.igskin .pgwrap{margin-top:22px}
+html.igskin .pgkey{padding:22px 0 2px}
+html.igskin .gfoot{padding:32px 0 8px}
+
+/* ---------- one way of moving ----------
+   Only what changed moves, and it moves once. Nothing on these pages
+   animates on arrival, because a list that redraws on every tick would
+   then flicker its way through the day. */
+html.igskin .gsbar i,html.igskin .runbar i,html.igskin .gring .gfgc{
+  transition:width .55s var(--ig-slide),stroke-dashoffset .55s var(--ig-slide),
+  background .35s var(--ease)}
+html.igskin .pgcell,html.igskin .confstep,html.igskin .tick,html.igskin .bcheck{
+  transition:background .28s var(--ease),color .28s var(--ease),
+  box-shadow .24s var(--ease),transform .14s var(--ig-press)}
+html.igskin .phchip,html.igskin .dchip,html.igskin .preset,html.igskin .schip,
+html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
+  box-shadow .2s var(--ease),transform .14s var(--ig-press)}
 
 /* ---------- tablet: the same page, given the room ---------- */
 @media (min-width:700px) and (min-height:600px){
@@ -6958,15 +7053,18 @@ function renderGroundList(b){
   /* the whole shelf in one line, so the page opens with an answer */
   const all=ground.reduce((n,g)=>n+gScore(g),0)/ground.length;
   const pct=Math.round(all*100), tone=scoreColor(pct);
+  const box=document.createElement('div');
+  box.className='pgcard';
   const head=document.createElement('div');
   head.className='gsum';
   head.innerHTML='<span class="gsbig"'+(tone?' style="color:'+tone+'"':'')+'>'+pct+
     '%</span><span class="gsn">across '+ground.length+' subject'+(ground.length===1?'':'s')+'</span>';
-  b.appendChild(head);
+  box.appendChild(head);
   const hbar=document.createElement('div');
   hbar.className='gsbar';
   hbar.innerHTML='<i style="width:'+pct+'%'+(tone?';background:'+tone:'')+'"></i>';
-  b.appendChild(hbar);
+  box.appendChild(hbar);
+  b.appendChild(box);
   const list=document.createElement('div'); list.className='gsublist';
   ground.forEach(g=>{
     const pct=Math.round(gScore(g)*100), C=2*Math.PI*20;
@@ -6992,7 +7090,7 @@ function renderGroundSheet(b){
   const g=gSubj;
   const pct=Math.round(gScore(g)*100), tone=scoreColor(pct);
   const box=document.createElement('div');
-  box.className='gbox';
+  box.className='pgcard';
   const sum=document.createElement('div');
   sum.className='gsum';
   sum.innerHTML='<span class="gsbig"'+(tone?' style="color:'+tone+'"':'')+'>'+pct+
