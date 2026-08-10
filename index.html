@@ -60,7 +60,12 @@ input,textarea{user-select:text;-webkit-user-select:text}
 button{background:none;border:0;padding:0;cursor:pointer}
 .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 ::-webkit-scrollbar{width:0;height:0}
-:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
+/* only things you can actually operate take a focus ring. Left unscoped this
+   also outlined the body and the page containers, and the top edge of that
+   outline showed under the notch as a violet line. */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
+select:focus-visible,[tabindex]:focus-visible,[role="switch"]:focus-visible{
+  outline:2px solid var(--acc);outline-offset:2px;border-radius:6px}
 
 /* ---------- shell ---------- */
 .app{min-height:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
@@ -942,10 +947,7 @@ button.tphead:active{background:var(--tint)}
 @supports not ((-webkit-background-clip:text) or (background-clip:text)){
   .boottitle .go{background-image:none;-webkit-text-fill-color:currentColor}
 }
-.bootrule{display:block;width:96px;height:2px;border-radius:2px;margin:22px auto 0;
-  background:#FFFFFF}
-.bootname{margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.42em;text-indent:.42em;
-  text-transform:uppercase;color:rgba(255,255,255,.36)}
+
 .bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
   font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
@@ -1590,8 +1592,6 @@ button.tphead:active{background:var(--tint)}
   .vlock h3{margin-top:14px}
   .vlock .lockwhy{margin-bottom:16px}
   .boottitle{font-size:clamp(26px,7.4vh,40px)}
-  .bootrule{margin-top:14px}
-  .bootname{margin-top:12px}
 }
 
 /* ===========================================================
@@ -2128,7 +2128,15 @@ html.igskin .tpbody{transition:grid-template-rows .38s var(--ig-slide)}
 html.igskin .note-body{transition:grid-template-rows .38s var(--ig-slide)}
 
 /* keyboard users get the ring Instagram gives them */
-html.igskin :focus-visible{outline:2px solid var(--ig-blue);outline-offset:2px;border-radius:8px}
+html.igskin a:focus-visible,html.igskin button:focus-visible,
+html.igskin input:focus-visible,html.igskin textarea:focus-visible,
+html.igskin select:focus-visible,html.igskin [tabindex]:focus-visible,
+html.igskin [role="switch"]:focus-visible{
+  outline:2px solid var(--ig-blue);outline-offset:2px;border-radius:8px}
+/* and nothing that fills the page may ever draw one */
+html:focus,body:focus,.app:focus,main:focus,.view:focus,
+html:focus-visible,body:focus-visible,.app:focus-visible,
+main:focus-visible,.view:focus-visible{outline:none}
 
 @media (prefers-reduced-motion:reduce){
   html.igskin *,html.igskin *::before,html.igskin *::after{
@@ -2851,8 +2859,6 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
 <div id="boot">
   <div class="bootstage">
     <div class="boottitle" id="bootTitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
-    <i class="bootrule"></i>
-    <div class="bootname">ONWARDS</div>
   </div>
   <div class="bootskip">Tap to begin</div>
 </div>
