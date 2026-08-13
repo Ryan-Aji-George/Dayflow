@@ -902,6 +902,14 @@ button.tphead:active{background:var(--tint)}
   --ig-blue:#4F5BF7;--ig-fill:#1A1A1A}
 #applock[hidden]{display:none}
 #applock .vlock{min-height:100%;min-height:100dvh}
+/* The name carries the screen on its own. A ring, a heading and a line of
+   explanation were all saying "this is locked" alongside it, which left four
+   things competing and none of them reading as the mark. */
+#applock .alword{margin:0 0 34px;font-size:25px;font-size:clamp(21px,6.4vw,27px);
+  letter-spacing:.30em;text-indent:.30em;line-height:1.1;color:#F5F5F5}
+@media (min-width:700px) and (min-height:600px){
+  #applock .alword{font-size:30px;margin-bottom:40px}
+}
 /* nothing behind it moves while it is up */
 html.locked,html.locked body{overflow:hidden}
 
@@ -2784,6 +2792,52 @@ html.igskin .phchip,html.igskin .dchip,html.igskin .preset,html.igskin .schip,
 html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
   box-shadow .2s var(--ease),transform .14s var(--ig-press)}
 
+/* ---------- notes ---------- */
+html.igskin .notesrow{width:100%;display:flex;align-items:center;gap:14px;text-align:left;
+  min-height:56px;padding:14px 16px;margin:2px 0 18px;border:0;border-radius:var(--ig-card);
+  background:var(--ig-fill);transition:background .16s var(--ease)}
+html.igskin .notesrow:active{background:var(--cell)}
+html.igskin .nrico{width:24px;height:24px;flex:0 0 auto;display:grid;place-items:center;color:var(--ink)}
+html.igskin .nrico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+html.igskin .nrt{flex:1;min-width:0;font-size:16.5px;font-weight:600;letter-spacing:-.02em}
+html.igskin .nrn{font-family:var(--ui);font-size:14px;font-weight:500;color:var(--ink-2)}
+html.igskin .notesrow .go{width:13px;color:var(--ink-3);display:grid;place-items:center}
+html.igskin .notesrow .go svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+/* the cards keep the look they already had; only the chevron now points on */
+html.igskin #dnList{display:flex;flex-direction:column;gap:10px}
+html.igskin .dn{cursor:pointer}
+html.igskin .dn .chev{width:13px;height:13px;flex:0 0 auto;color:var(--ink-3);
+  fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html.igskin .dn:active{opacity:.6}
+
+/* one note: reading and writing are the same two fields, so nothing about
+   the page moves or lights up when you begin to type */
+html.igskin .nspage{padding-top:18px}
+html.igskin .nsfield{display:block;width:100%;border:0;outline:0;background:transparent;
+  color:var(--ink);padding:0;margin:0;font-family:inherit;resize:none;
+  -webkit-appearance:none;appearance:none;box-shadow:none;border-radius:0}
+html.igskin .nsfield:focus{outline:0;box-shadow:none;background:transparent}
+html.igskin .nstitle{font-family:var(--ui);font-size:24px;font-weight:700;
+  letter-spacing:-.033em;line-height:1.2;margin-bottom:14px}
+html.igskin .nsbody{font-size:16.5px;line-height:1.6;min-height:240px}
+html.igskin .nsfield::placeholder{color:var(--ink-3)}
+html.igskin .nsfield[readonly]{cursor:pointer}
+html.igskin .nsdone{margin-left:auto;background:transparent;border:0;padding:6px 2px;
+  font-family:var(--ui);font-size:15px;font-weight:600;color:var(--ig-blue)}
+html.igskin .nsdone:active{opacity:.5}
+html.igskin #noteSheet .fsbar h3{font-size:15px;font-weight:500;color:var(--ink-2);
+  letter-spacing:-.01em}
+html.igskin .nsfoot{padding:26px 0 8px}
+html.igskin .nsfoot .dn-del{background:transparent;border:0;padding:6px 2px;
+  font-family:var(--ui);font-size:14px;font-weight:500;color:var(--ink-3)}
+html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
+
+@media (min-width:700px) and (min-height:600px){
+  html.igskin .nstitle{font-size:28px}
+  html.igskin .nsbody{font-size:17.5px}
+}
+
 /* ---------- tablet: the same page, given the room ---------- */
 @media (min-width:700px) and (min-height:600px){
   html.igskin{--gut:24px}
@@ -2894,11 +2948,7 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
      opened, so nothing behind it is ever briefly visible. -->
 <div id="applock" hidden>
   <div class="vlock">
-    <div class="lockring">
-      <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
-    </div>
-    <h3>Onwards is locked</h3>
-    <p class="lockwhy">Enter your PIN to open it.</p>
+    <h1 class="wordmark alword">Onwards</h1>
     <input class="input pin" id="alPin" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off">
     <button class="btn" id="alGo">Unlock</button>
     <div class="vlock-err" id="alErr"></div>
@@ -2999,20 +3049,14 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
       </div>
 
       <div class="tcol" id="tMain">
+      <button class="notesrow" id="notesOpen">
+        <span class="nrico"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h4"/></svg></span>
+        <span class="nrt">Notes</span>
+        <span class="nrn" id="notesCount"></span>
+        <span class="go"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
+      </button>
       <div id="todayWrap"></div>
 
-      <section class="note" id="note">
-        <button class="note-head" id="noteToggle" aria-expanded="false">
-          <span class="eyebrow" id="noteLabel">Notes</span><span class="note-dot"></span>
-          <svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="note-body"><div class="note-inner">
-          <div class="note-pad">
-            <div class="dnlist" id="dnList"></div>
-            <button class="addnote" id="addNote">+ Add note</button>
-          </div>
-        </div></div>
-      </section>
       </div>
     </section>
 
@@ -3676,26 +3720,34 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
   <div class="pdfhint" id="pdfHint" hidden>—</div>
 </div>
 <!-- one note, opened on its own — reading first, writing on the next tap -->
-<div class="sheet" id="noteSheet">
-  <div class="grabber"></div>
-  <div class="nshead">
-    <h3 id="nsTitle">Note</h3>
-    <input class="nstin" id="nsTin" placeholder="Title" maxlength="60" autocomplete="off" hidden>
-    <span class="eyebrow" id="nsWhen">—</span>
-    <button class="nsx" id="nsClose" aria-label="Close">
-      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
-    </button>
-  </div>
-  <div class="ns-read" id="nsRead">
-    <div class="ns-text selectable" id="nsText"></div>
-    <div class="ns-hint" id="nsHint">Tap to write</div>
-  </div>
-  <div id="nsEdit" hidden>
-    <textarea class="dn-ta" id="nsTa" placeholder="Write it down"></textarea>
-    <div class="dn-foot">
-      <button class="dn-del" id="nsDelete">Delete</button>
-      <button class="dn-done" id="nsMain">Done</button>
+<!-- ===== NOTES — the list, on its own page ===== -->
+<div class="sheet fullsheet igpop" id="notesSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="notesBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3>Notes</h3>
+      <button class="gndplus" id="notesAdd" aria-label="New note"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
     </div>
+  </div>
+  <div class="fsbody">
+    <div class="dnlist" id="dnList"></div>
+  </div>
+</div>
+
+<!-- ===== one note, on its own page ===== -->
+<div class="sheet fullsheet igpop" id="noteSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="nsClose" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3 id="nsWhen">—</h3>
+      <button class="nsdone" id="nsMain" hidden>Done</button>
+    </div>
+  </div>
+  <div class="fsbody nspage" id="nsPage">
+    <!-- the two are the same shape, so switching between them shows nothing -->
+    <input class="nsfield nstitle" id="nsTin" placeholder="Title" maxlength="60" autocomplete="off" readonly>
+    <textarea class="nsfield nsbody" id="nsTa" placeholder="Write it down" readonly></textarea>
+    <div class="nsfoot"><button class="dn-del" id="nsDelete">Delete</button></div>
   </div>
 </div>
 
@@ -4111,10 +4163,7 @@ let restOpen=false, lastLevel=null;
 const MQ_TWO=matchMedia('(min-width:1000px) and (min-height:600px)');
 const MQ_TAB=matchMedia('(min-width:700px) and (min-height:600px)');
 function placeNote(){
-  const note=$('#note'), side=$('#tSide'), main=$('#tMain');
-  if(!note||!side||!main) return;
-  const home=MQ_TWO.matches?side:main;
-  if(note.parentElement!==home) home.appendChild(note);
+  /* notes are their own page now, so there is no panel to move */
 }
 MQ_TWO.addEventListener('change',()=>{ placeNote(); renderStreak(); });
 
@@ -4376,13 +4425,16 @@ $('#pdClose').addEventListener('click',closePerfect);
    =========================================================== */
 const sortedNotes=()=>myNotes.slice().sort((a,b)=>(b.created||0)-(a.created||0));
 function refreshNoteLabel(){
-  const arr=myNotes;
-  $('#noteLabel').textContent=arr.length?'Notes · '+arr.length:'Notes';
-  $('#note').classList.toggle('has',arr.some(n=>(n.title||'').trim()||(n.text||'').trim()));
+  const n=myNotes.filter(x=>(x.title||'').trim()||(x.text||'').trim()).length;
+  const c=$('#notesCount');
+  if(c) c.textContent = n ? String(n) : '';
 }
 function renderNotes(){
-  const list=$('#dnList'); list.innerHTML='';
-  sortedNotes().forEach(n=>list.appendChild(noteCard(n)));
+  const list=$('#dnList');
+  if(list){
+    list.innerHTML='';
+    sortedNotes().forEach(n=>list.appendChild(noteCard(n)));
+  }
   refreshNoteLabel();
 }
 function whenLabel(ds){
@@ -4391,122 +4443,74 @@ function whenLabel(ds){
   const d=parseDay(ds);
   return d.getDate()+' '+MN[d.getMonth()];
 }
+/* the card in the list is unchanged; only what a tap does has moved — it
+   opens the note on its own page rather than unfolding in place */
 function noteCard(n){
   const el=document.createElement('article');
   el.className='dn'; el.dataset.id=n.id;
   el.innerHTML=
     '<div class="dn-head"><div class="dn-title"></div><div class="dn-when"></div>'+
-      '<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>'+
-    '<div class="dn-read"><div class="dn-text selectable"></div></div>'+
-    '<div class="dn-edit" hidden>'+
-      '<input class="dn-tin" placeholder="Title" maxlength="60" autocomplete="off">'+
-      '<textarea class="dn-ta" placeholder="Write it down"></textarea>'+
-      '<div class="dn-foot"><button class="dn-del">Delete</button>'+
-      '<button class="dn-done">Done</button></div></div>';
-  const head=$('.dn-head',el), read=$('.dn-read',el), edit=$('.dn-edit',el);
-  const tin=$('.dn-tin',el), ta=$('.dn-ta',el);
-  const done=$('.dn-done',el), del=$('.dn-del',el);
-  let saveT=null;
-  const grow=()=>{ ta.style.height='auto'; ta.style.height=Math.max(96,ta.scrollHeight)+'px'; };
-  function paint(){
-    const t=(n.title||'').trim();
-    $('.dn-title',el).textContent=t||'Untitled';
-    $('.dn-title',el).classList.toggle('blank',!t);
-    $('.dn-when',el).textContent=whenLabel(n.date||TSTR).toUpperCase();
-    const body=(n.text||'').trim();
-    $('.dn-text',el).textContent=body||'Empty note';
-    $('.dn-text',el).classList.toggle('blank',!body);
-  }
-  async function save(){
-    const ti=tin.value, tx=ta.value;
-    if(n.title===ti && n.text===tx) return;
-    n.title=ti; n.text=tx; n.edited=Date.now();
-    await dbPut('dnotes',n);
-    paint(); refreshNoteLabel();
-  }
-  function openEdit(){
-    tin.value=n.title||''; ta.value=n.text||'';
-    read.hidden=true; edit.hidden=false;
-    el.classList.add('editing','open');
-    grow(); setTimeout(()=>ta.focus(),60);
-  }
-  async function closeEdit(){
-    clearTimeout(saveT); await save();
-    edit.hidden=true; read.hidden=false;
-    el.classList.remove('editing');
-    if(document.activeElement) document.activeElement.blur();
-    refreshNoteLabel();
-    anim(head,'rvf'); anim(read,'rvf');
-  }
-  /* on a tablet a note is opened on its own instead of unfolding in the list */
-  head.addEventListener('click',()=>{
-    if(MQ_TAB.matches){ openNoteSheet(n); return; }
-    /* the same height morph the editor uses, so a note unfolds rather than
-       snapping from three clamped lines to all of them */
-    morph(el,()=>el.classList.toggle('open'));
-    buzz(5);
-  });
-  read.addEventListener('click',()=>{
-    if(MQ_TAB.matches){ openNoteSheet(n); return; }
-    openEdit(); buzz(9);
-  });
-  ta.addEventListener('input',()=>{ grow(); clearTimeout(saveT); saveT=setTimeout(save,650); });
-  tin.addEventListener('input',()=>{ clearTimeout(saveT); saveT=setTimeout(save,650); });
-  done.addEventListener('mousedown',e=>e.preventDefault());
-  done.addEventListener('click',()=>{ closeEdit(); buzz(6); });
-  del.addEventListener('click',async()=>{
-    if(del.dataset.armed!=='1'){ del.dataset.armed='1'; del.textContent='Tap again to delete'; buzz(14); return; }
-    myNotes=myNotes.filter(x=>x.id!==n.id);
-    await dbDel('dnotes',n.id);
-    renderNotes(); renderSettings(); toast('Note deleted');
-  });
-  el.addEventListener('editnow',openEdit);
-  paint();
+      '<svg class="chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></div>'+
+    '<div class="dn-read"><div class="dn-text selectable"></div></div>';
+  const t=(n.title||'').trim();
+  $('.dn-title',el).textContent=t||'Untitled';
+  $('.dn-title',el).classList.toggle('untitled',!t);
+  $('.dn-when',el).textContent=whenLabel(n.date||TSTR).toUpperCase();
+  const body=(n.text||'').trim();
+  $('.dn-text',el).textContent=body||'Empty note';
+  $('.dn-text',el).classList.toggle('empty',!body);
+  el.addEventListener('click',()=>openNoteSheet(n));
   return el;
 }
-$('#addNote').addEventListener('click',async()=>{
+
+/* ---------- the notes, on a page of their own ---------- */
+function openNotes(){
+  $('#scrim').classList.add('on');
+  $('#notesSheet').classList.add('on');
+  renderNotes();
+  const b=$('.fsbody',$('#notesSheet')); if(b) b.scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeNotes(){
+  $('#scrim').classList.remove('on');
+  $('#notesSheet').classList.remove('on');
+}
+$('#notesOpen').addEventListener('click',openNotes);
+$('#notesBack').addEventListener('click',()=>{ closeNotes(); buzz(6); });
+$('#notesAdd').addEventListener('click',async()=>{
   const n={id:uid(),date:TSTR,title:'',text:'',created:Date.now()};
   myNotes.push(n); await dbPut('dnotes',n);
-  renderNotes();
-  if(MQ_TAB.matches){ openNoteSheet(n,true); buzz(8); return; }
-  const card=$('.dn[data-id="'+n.id+'"]');
-  if(card) card.dispatchEvent(new CustomEvent('editnow'));
-  buzz(8);
+  renderNotes(); openNoteSheet(n,true); buzz(8);
 });
 
-/* ---------- one note, opened on its own ----------
-   Reading comes first; the next tap on the text is what starts the writing.
-   =========================================================== */
+/* ---------- one note, on its own page ----------
+   Reading and writing use the same two fields. Nothing is swapped, framed or
+   highlighted when you start typing — the only thing that changes is whether
+   they will take a keystroke. */
 let nsNote=null, nsEditing=false, nsT=null;
 function nsGrow(){
   const ta=$('#nsTa');
-  ta.style.height='auto'; ta.style.height=Math.max(140,ta.scrollHeight)+'px';
+  ta.style.height='auto';
+  ta.style.height=Math.max(240,ta.scrollHeight)+'px';
 }
 function nsPaint(){
   if(!nsNote) return;
-  const t=(nsNote.title||'').trim();
-  $('#nsTitle').textContent=t||'Untitled';
   $('#nsTin').value=nsNote.title||'';
-  $('#nsWhen').textContent=whenLabel(nsNote.date||TSTR).toUpperCase();
-  const body=(nsNote.text||'').trim();
-  $('#nsText').textContent=body||'';
-  $('#nsHint').hidden=!!body;
+  $('#nsTa').value=nsNote.text||'';
+  $('#nsWhen').textContent=whenLabel(nsNote.date||TSTR);
+  nsGrow();
 }
 function nsMode(editing){
   nsEditing=!!editing;
-  $('#nsRead').hidden=nsEditing;
-  $('#nsEdit').hidden=!nsEditing;
-  $('#nsTitle').hidden=nsEditing;
-  $('#nsTin').hidden=!nsEditing;
+  $('#nsTin').readOnly=!nsEditing;
+  $('#nsTa').readOnly=!nsEditing;
+  $('#nsMain').hidden=!nsEditing;
   const d=$('#nsDelete'); d.dataset.armed=''; d.textContent='Delete';
-  if(nsEditing){
-    $('#nsTa').value=nsNote?nsNote.text||'':'';
-    nsGrow();
-    setTimeout(()=>$('#nsTa').focus(),80);
-  }else nsPaint();
+  if(nsEditing) setTimeout(()=>{ try{ $('#nsTa').focus(); }catch(e){} },40);
+  else if(document.activeElement) document.activeElement.blur();
 }
 async function nsSave(){
-  if(!nsNote||!nsEditing) return;
+  if(!nsNote) return;
   const ti=$('#nsTin').value, tx=$('#nsTa').value;
   if(nsNote.title===ti && nsNote.text===tx) return;
   nsNote.title=ti; nsNote.text=tx; nsNote.edited=Date.now();
@@ -4514,25 +4518,33 @@ async function nsSave(){
 }
 function openNoteSheet(n,startEditing){
   nsNote=n;
-  nsPaint();
-  nsMode(!!startEditing);
-  $('#scrim').classList.add('on'); $('#noteSheet').classList.add('on'); $('#noteSheet').scrollTop=0;
+  nsPaint(); nsMode(!!startEditing);
+  $('#scrim').classList.add('on');
+  $('#noteSheet').classList.add('on');
+  const b=$('.fsbody',$('#noteSheet')); if(b) b.scrollTop=0;
+  requestAnimationFrame(nsGrow);
   buzz(HAPTIC.light);
 }
 async function closeNoteSheet(){
   if(!$('#noteSheet').classList.contains('on')) return;
-  await nsSave();
-  $('#scrim').classList.remove('on'); $('#noteSheet').classList.remove('on');
+  clearTimeout(nsT); await nsSave();
+  $('#noteSheet').classList.remove('on');
+  /* the list is still open behind it, so the scrim only lifts with that */
+  if(!$('#notesSheet').classList.contains('on')) $('#scrim').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
   nsNote=null; nsEditing=false;
   renderNotes(); renderSettings();
 }
-$('#nsRead').addEventListener('click',()=>{ if(nsNote){ nsMode(true); buzz(9); } });
+/* a tap anywhere on the note starts the writing */
+$('#nsPage').addEventListener('click',e=>{
+  if(nsEditing || !nsNote) return;
+  if(e.target.closest('#nsDelete')) return;
+  nsMode(true); buzz(9);
+});
 $('#nsMain').addEventListener('mousedown',e=>e.preventDefault());
-/* Done puts the writing away and shows the note again, the way it does in the list */
 $('#nsMain').addEventListener('click',async()=>{
   if(!nsNote) return;
-  await nsSave(); nsMode(false); renderNotes(); buzz(6);
+  clearTimeout(nsT); await nsSave(); nsMode(false); renderNotes(); buzz(6);
 });
 $('#nsClose').addEventListener('click',closeNoteSheet);
 ['#nsTin','#nsTa'].forEach(sel=>{
@@ -4546,13 +4558,10 @@ $('#nsDelete').addEventListener('click',async e=>{
   if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; buzz(14); return; }
   const id=nsNote&&nsNote.id;
   clearTimeout(nsT); nsEditing=false; nsNote=null;
-  $('#scrim').classList.remove('on'); $('#noteSheet').classList.remove('on');
+  $('#noteSheet').classList.remove('on');
+  if(!$('#notesSheet').classList.contains('on')) $('#scrim').classList.remove('on');
   if(id){ myNotes=myNotes.filter(x=>x.id!==id); await dbDel('dnotes',id); }
   renderNotes(); renderSettings(); toast('Note deleted');
-});
-$('#noteToggle').addEventListener('click',()=>{
-  const n=$('#note'), open=n.classList.toggle('open');
-  $('#noteToggle').setAttribute('aria-expanded',open);
 });
 
 /* ===========================================================
@@ -8128,6 +8137,7 @@ const BACK_SHEETS=[
   ['#setSheet',closeSetSheet],
   ['#pdSheet',closePerfect],
   ['#noteSheet',closeNoteSheet],
+  ['#notesSheet',closeNotes],
   ['#focusSheet',closeFocus],
   ['#recSheet',closeRecord],
   ['#vSheet',closeVSheet],
