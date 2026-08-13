@@ -2818,11 +2818,35 @@ html.igskin .nsfield{display:block;width:100%;border:0;outline:0;background:tran
   color:var(--ink);padding:0;margin:0;font-family:inherit;resize:none;
   -webkit-appearance:none;appearance:none;box-shadow:none;border-radius:0}
 html.igskin .nsfield:focus{outline:0;box-shadow:none;background:transparent}
-html.igskin .nstitle{font-family:var(--ui);font-size:24px;font-weight:700;
-  letter-spacing:-.033em;line-height:1.2;margin-bottom:14px}
-html.igskin .nsbody{font-size:16.5px;line-height:1.6;min-height:240px}
+html.igskin .nstitle{font-family:var(--ui);font-size:30px;font-weight:700;
+  letter-spacing:-.038em;line-height:1.18;margin-bottom:16px}
+html.igskin .nsbody{font-size:16.5px;line-height:1.6;min-height:240px;
+  white-space:pre-wrap;word-break:break-word}
 html.igskin .nsfield::placeholder{color:var(--ink-3)}
-html.igskin .nsfield[readonly]{cursor:pointer}
+html.igskin .nsfield[readonly],html.igskin .nsbody[contenteditable="false"]{cursor:pointer}
+/* the body is a written field, so it shows its own prompt when empty */
+html.igskin .nsbody.blank::before{content:attr(data-ph);color:var(--ink-3)}
+/* what the marks look like — the same reading or writing, because it is
+   the same element either way */
+html.igskin .nsbody h3{font-family:var(--ui);font-size:19.5px;font-weight:700;
+  letter-spacing:-.025em;margin:18px 0 8px;line-height:1.3}
+html.igskin .nsbody h3:first-child{margin-top:0}
+html.igskin .nsbody ul,html.igskin .nsbody ol{margin:8px 0;padding-left:22px}
+html.igskin .nsbody li{margin:0 0 6px}
+html.igskin .nsbody b,html.igskin .nsbody strong{font-weight:700}
+html.igskin .nsbody u{text-decoration-color:var(--line-2)}
+/* the bar of marks */
+html.igskin .fmtbar{display:flex;gap:6px;margin:0 0 16px;overflow-x:auto;
+  scrollbar-width:none;padding-bottom:2px}
+html.igskin .fmtbar::-webkit-scrollbar{display:none}
+html.igskin .fmtbar[hidden]{display:none}
+html.igskin .fmtbar button{flex:0 0 auto;width:42px;height:38px;border:0;border-radius:10px;
+  background:var(--ig-fill);color:var(--ink);display:grid;place-items:center;
+  font-family:var(--ui);font-size:15px;
+  transition:background .16s var(--ease),transform .14s var(--ig-press)}
+html.igskin .fmtbar button:active{background:var(--cell);transform:scale(.9)}
+html.igskin .fmtbar svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
 html.igskin .nsdone{margin-left:auto;background:transparent;border:0;padding:6px 2px;
   font-family:var(--ui);font-size:15px;font-weight:600;color:var(--ig-blue)}
 html.igskin .nsdone:active{opacity:.5}
@@ -2834,8 +2858,10 @@ html.igskin .nsfoot .dn-del{background:transparent;border:0;padding:6px 2px;
 html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
 
 @media (min-width:700px) and (min-height:600px){
-  html.igskin .nstitle{font-size:28px}
+  html.igskin .nstitle{font-size:34px}
   html.igskin .nsbody{font-size:17.5px}
+  html.igskin .nsbody h3{font-size:21px}
+  html.igskin .fmtbar button{width:46px;height:42px}
 }
 
 /* ---------- tablet: the same page, given the room ---------- */
@@ -3746,7 +3772,15 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
   <div class="fsbody nspage" id="nsPage">
     <!-- the two are the same shape, so switching between them shows nothing -->
     <input class="nsfield nstitle" id="nsTin" placeholder="Title" maxlength="60" autocomplete="off" readonly>
-    <textarea class="nsfield nsbody" id="nsTa" placeholder="Write it down" readonly></textarea>
+    <div class="fmtbar" id="nsFmt" hidden>
+      <button data-f="h" aria-label="Heading"><b>H</b></button>
+      <button data-f="bold" aria-label="Bold"><b>B</b></button>
+      <button data-f="italic" aria-label="Italic"><i>I</i></button>
+      <button data-f="ul" aria-label="Bullet list"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/></svg></button>
+      <button data-f="ol" aria-label="Numbered list"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 5h1.5v4M3.6 18h2.6M3.6 15.6h2.2v2.4"/></svg></button>
+      <button data-f="clear" aria-label="Plain">✕</button>
+    </div>
+    <div class="nsfield nsbody" id="nsTa" data-ph="Write it down"></div>
     <div class="nsfoot"><button class="dn-del" id="nsDelete">Delete</button></div>
   </div>
 </div>
@@ -4425,7 +4459,7 @@ $('#pdClose').addEventListener('click',closePerfect);
    =========================================================== */
 const sortedNotes=()=>myNotes.slice().sort((a,b)=>(b.created||0)-(a.created||0));
 function refreshNoteLabel(){
-  const n=myNotes.filter(x=>(x.title||'').trim()||(x.text||'').trim()).length;
+  const n=myNotes.filter(x=>(x.title||'').trim()||noteToText(x.text)).length;
   const c=$('#notesCount');
   if(c) c.textContent = n ? String(n) : '';
 }
@@ -4456,7 +4490,7 @@ function noteCard(n){
   $('.dn-title',el).textContent=t||'Untitled';
   $('.dn-title',el).classList.toggle('untitled',!t);
   $('.dn-when',el).textContent=whenLabel(n.date||TSTR).toUpperCase();
-  const body=(n.text||'').trim();
+  const body=noteToText(n.text);
   $('.dn-text',el).textContent=body||'Empty note';
   $('.dn-text',el).classList.toggle('empty',!body);
   el.addEventListener('click',()=>openNoteSheet(n));
@@ -4483,38 +4517,98 @@ $('#notesAdd').addEventListener('click',async()=>{
   renderNotes(); openNoteSheet(n,true); buzz(8);
 });
 
+/* ---------- what a note's body may hold ----------
+   Only these tags survive, and never an attribute, so nothing a note carries
+   can ever become anything but text and marks. Notes written before any of
+   this existed are plain text and are read as exactly that. */
+const NOTE_TAGS=['B','STRONG','I','EM','U','H3','UL','OL','LI','BR','DIV','P'];
+function noteClean(html){
+  const box=document.createElement('div');
+  box.innerHTML=String(html==null?'':html);
+  const walk=el=>{
+    [...el.childNodes].forEach(n=>{
+      if(n.nodeType===3) return;                       /* text is always fine */
+      if(n.nodeType!==1){ n.remove(); return; }
+      if(NOTE_TAGS.indexOf(n.tagName)<0){
+        /* keep what it said, drop what it was */
+        while(n.firstChild) el.insertBefore(n.firstChild,n);
+        n.remove(); return;
+      }
+      [...n.attributes].forEach(a=>n.removeAttribute(a.name));
+      walk(n);
+    });
+  };
+  walk(box);
+  return box.innerHTML;
+}
+/* a body that has never been marked up is plain text and stays that way */
+const looksPlain=t=>!/<[a-z][\s\S]*>/i.test(String(t||''));
+function noteToHTML(t){
+  const v=String(t==null?'':t);
+  return looksPlain(v) ? esc(v).replace(/\n/g,'<br>') : noteClean(v);
+}
+const noteToText=h=>{
+  const box=document.createElement('div');
+  box.innerHTML=String(h==null?'':h);
+  return (box.textContent||'').replace(/\s+/g,' ').trim();
+};
+
 /* ---------- one note, on its own page ----------
    Reading and writing use the same two fields. Nothing is swapped, framed or
    highlighted when you start typing — the only thing that changes is whether
    they will take a keystroke. */
 let nsNote=null, nsEditing=false, nsT=null;
-function nsGrow(){
-  const ta=$('#nsTa');
-  ta.style.height='auto';
-  ta.style.height=Math.max(240,ta.scrollHeight)+'px';
-}
+function nsGrow(){}
 function nsPaint(){
   if(!nsNote) return;
   $('#nsTin').value=nsNote.title||'';
-  $('#nsTa').value=nsNote.text||'';
+  $('#nsTa').innerHTML=noteToHTML(nsNote.text);
+  $('#nsTa').classList.toggle('blank',!noteToText(nsNote.text));
   $('#nsWhen').textContent=whenLabel(nsNote.date||TSTR);
-  nsGrow();
 }
 function nsMode(editing){
   nsEditing=!!editing;
   $('#nsTin').readOnly=!nsEditing;
-  $('#nsTa').readOnly=!nsEditing;
+  $('#nsTa').setAttribute('contenteditable',nsEditing?'true':'false');
   $('#nsMain').hidden=!nsEditing;
+  $('#nsFmt').hidden=!nsEditing;
   const d=$('#nsDelete'); d.dataset.armed=''; d.textContent='Delete';
   if(nsEditing) setTimeout(()=>{ try{ $('#nsTa').focus(); }catch(e){} },40);
   else if(document.activeElement) document.activeElement.blur();
 }
 async function nsSave(){
   if(!nsNote) return;
-  const ti=$('#nsTin').value, tx=$('#nsTa').value;
+  const ti=$('#nsTin').value;
+  const tx=noteClean($('#nsTa').innerHTML);
   if(nsNote.title===ti && nsNote.text===tx) return;
   nsNote.title=ti; nsNote.text=tx; nsNote.edited=Date.now();
   await dbPut('dnotes',nsNote);
+  $('#nsTa').classList.toggle('blank',!noteToText(tx));
+}
+/* ---------- the marks ---------- */
+$('#nsFmt').addEventListener('mousedown',e=>e.preventDefault());
+$('#nsFmt').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b || !nsEditing) return;
+  $('#nsTa').focus();
+  const f=b.dataset.f;
+  try{
+    if(f==='bold')        document.execCommand('bold');
+    else if(f==='italic') document.execCommand('italic');
+    else if(f==='ul')     document.execCommand('insertUnorderedList');
+    else if(f==='ol')     document.execCommand('insertOrderedList');
+    else if(f==='h')      document.execCommand('formatBlock',false,
+                            nsInHeading()?'<div>':'<h3>');
+    else if(f==='clear'){ document.execCommand('removeFormat');
+                          document.execCommand('formatBlock',false,'<div>'); }
+  }catch(err){}
+  clearTimeout(nsT); nsT=setTimeout(nsSave,400);
+  buzz(6);
+});
+/* so the heading button turns a heading back off */
+function nsInHeading(){
+  let n=window.getSelection && getSelection().anchorNode;
+  while(n && n!==$('#nsTa')){ if(n.tagName==='H3') return true; n=n.parentNode; }
+  return false;
 }
 function openNoteSheet(n,startEditing){
   nsNote=n;
