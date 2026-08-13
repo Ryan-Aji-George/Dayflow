@@ -892,6 +892,19 @@ button.tphead:active{background:var(--tint)}
 .shake{animation:nope .34s ease}
 @keyframes nope{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
 
+/* ---------- the app lock ----------
+   The Vision lock, standing in front of the whole app. It reuses .vlock
+   whole; all it adds is the full-screen backdrop and the same palette
+   variables, which were scoped to the Vision page. */
+#applock{position:fixed;inset:0;z-index:98;background:#000;color:#F5F5F5;
+  color-scheme:dark;overflow-y:auto;
+  --ig-bg:#000;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
+  --ig-blue:#4F5BF7;--ig-fill:#1A1A1A}
+#applock[hidden]{display:none}
+#applock .vlock{min-height:100%;min-height:100dvh}
+/* nothing behind it moves while it is up */
+html.locked,html.locked body{overflow:hidden}
+
 /* ---------- viewer ---------- */
 .lightbox{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
   padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
@@ -2861,6 +2874,23 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
 </script>
 </head>
 <body>
+<!-- ===== THE APP LOCK =====
+     Stands in front of everything, on the same PIN the Vision page uses. It
+     is drawn before the app is rendered and asks again every time the app is
+     opened, so nothing behind it is ever briefly visible. -->
+<div id="applock" hidden>
+  <div class="vlock">
+    <div class="lockring">
+      <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
+    </div>
+    <h3>Onwards is locked</h3>
+    <p class="lockwhy">Enter your PIN to open it.</p>
+    <input class="input pin" id="alPin" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off">
+    <button class="btn" id="alGo">Unlock</button>
+    <div class="vlock-err" id="alErr"></div>
+  </div>
+</div>
+
 <div id="boot">
   <div class="bootstage">
     <div class="boottitle" id="bootTitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
@@ -3269,8 +3299,13 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
         <div class="group">
           <div class="panel">
             <div class="srow">
+              <div class="t"><div class="n">Lock the whole app</div>
+                <div class="d">Asks for your PIN every time you open Onwards.</div></div>
+              <button class="switch" id="appLockSw" role="switch"></button>
+            </div>
+            <div class="srow">
               <div class="t"><div class="n">Lock the Vision page</div>
-                </div>
+                <div class="d">Keeps the board behind the PIN on its own.</div></div>
               <button class="switch" id="lockSw" role="switch"></button>
             </div>
             <div class="btnrow" id="lockRow" hidden>
@@ -3870,7 +3905,7 @@ const dbClear=n=>hasStore(n)?wrap(store(n,'readwrite').clear()):Promise.resolve(
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map(), ground=[];
 let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
-       visionLock:null,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
+       visionLock:null,appLock:false,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
@@ -5854,6 +5889,48 @@ async function pinMatches(pin){
   if(!S.visionLock) return false;
   return (await pinHash(pin,S.visionLock.salt))===S.visionLock.hash;
 }
+/* ---------- the app lock ----------
+   The same PIN as the Vision page, standing in front of the whole app. It is
+   drawn before anything is rendered and asks again on every open, including
+   when the app is brought back from the background. */
+const hasPin=()=>!!(S.visionLock&&S.visionLock.hash);
+let pinThen=null;          /* what to switch on once a PIN has been set */
+const appLockOn=()=>!!(S.appLock&&hasPin());
+let appUnlocked=false;
+function showAppLock(){
+  const el=$('#applock');
+  if(!el) return;
+  el.hidden=false;
+  $('#alPin').value=''; $('#alErr').textContent='';
+  document.documentElement.classList.add('locked');
+  setTimeout(()=>{ try{ $('#alPin').focus(); }catch(e){} },120);
+}
+function hideAppLock(){
+  const el=$('#applock');
+  if(!el) return;
+  el.hidden=true;
+  document.documentElement.classList.remove('locked');
+  if(document.activeElement) document.activeElement.blur();
+}
+async function tryAppUnlock(){
+  const v=$('#alPin').value.trim();
+  if(!v){ $('#alPin').focus(); return; }
+  if(await pinMatches(v)){
+    appUnlocked=true; hideAppLock(); buzz(HAPTIC.done);
+  }else{
+    $('#alErr').textContent='That is not the PIN';
+    $('#alPin').value=''; $('#alPin').focus(); buzz([30,60,30]);
+    const f=$('#alPin');
+    f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
+  }
+}
+$('#alGo').addEventListener('click',tryAppUnlock);
+$('#alPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tryAppUnlock(); });
+/* leaving the app locks it again, so coming back always asks */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden && appLockOn()){ appUnlocked=false; }
+  else if(!document.hidden && appLockOn() && !appUnlocked) showAppLock();
+});
 /* the page has two stops past the lock: the door, and the profile behind it */
 let vStage='gate';
 function syncVisionLock(){
@@ -5911,12 +5988,16 @@ $('#pinSave').addEventListener('click',async()=>{
     if(a!==$('#pinB').value.trim()){ $('#pinErr').textContent='The two do not match'; return; }
     const salt=uid()+uid();
     S.visionLock={salt,hash:await pinHash(a,salt)};
+    if(pinThen==='applock'){ S.appLock=true; appUnlocked=true; }
+    pinThen=null;
     visionUnlocked=true; await saveSettings();
     closePin(); toast('Vision is locked'); buzz(10); return;
   }
   if(!await pinMatches(a)){ $('#pinErr').textContent='That PIN does not match'; buzz(20); return; }
   if(pinMode==='off'){
-    S.visionLock=null; visionUnlocked=false; await saveSettings();
+    /* without a PIN there is nothing to unlock with, so the app lock goes too */
+    S.visionLock=null; visionUnlocked=false; S.appLock=false; appUnlocked=false;
+    await saveSettings();
     closePin(); renderVision(); toast('Lock removed'); buzz(10);
   }else openPin('set');
 });
@@ -5925,6 +6006,18 @@ $('#lockSw').addEventListener('click',()=>{
   buzz(8);
 });
 $('#lockChange').addEventListener('click',()=>openPin('change'));
+$('#appLockSw').addEventListener('click',async()=>{
+  buzz(8);
+  if(!hasPin()){
+    /* there is nothing to lock with yet, so ask for the PIN first and turn
+       the app lock on as soon as one is set */
+    pinThen='applock'; openPin('set');
+    return;
+  }
+  S.appLock=!S.appLock;
+  await saveSettings(); renderSettings();
+  toast(S.appLock?'Onwards will ask for your PIN':'App lock off');
+});
 
 /* ===========================================================
    Vision board
@@ -7506,6 +7599,7 @@ function renderSettings(){
   $$('#themeCtrl button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.theme));
   const locked=!!(S.visionLock&&S.visionLock.hash);
   $('#lockSw').classList.toggle('on',locked);
+  $('#appLockSw').classList.toggle('on',appLockOn());
   $('#lockRow').hidden=!locked;
   $('#hapticSw').classList.toggle('on',S.haptics);
   $('#introSw').classList.toggle('on',S.intro!==false);
@@ -7765,6 +7859,7 @@ $('#resetBtn').addEventListener('click',async e=>{
   allHabits=[]; habits=[]; sets=[]; recs=new Set(); myNotes=[]; plans=new Map(); blocks=[];
   visionItems=[]; days=new Map(); ground=[];
   S.seeded=false; S.activeSet=null; S.northStar=''; S.ig=null; S.visionLock=null; visionUnlocked=false;
+  S.appLock=false; appUnlocked=false;
   feedOn=false; arrangeOn=false; $('#vBody').classList.remove('feed');
   S.focusItems=null; S.breakResetAt=0; S.breakMins=DEFAULT_BREAK_MINS; S.dividers=[]; normalizeExtras(); focusChecks.clear();
   closeSetPage();
@@ -8097,6 +8192,9 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
   }catch(err){ console.error('Onwards · seed',err); }
   try{
     document.documentElement.classList.add('igskin');
+    /* the lock goes up before a single row is drawn, so nothing behind it
+       is ever briefly on screen */
+    if(appLockOn()) showAppLock();
     applySettings(); cacheLook(); renderAll(); renderNotes();
     requestAnimationFrame(syncBarHeight);
     const saved=(await dbAll('meta')).find(m=>m.key==='timer');
