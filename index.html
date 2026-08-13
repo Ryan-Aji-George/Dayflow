@@ -896,7 +896,7 @@ button.tphead:active{background:var(--tint)}
    The Vision lock, standing in front of the whole app. It reuses .vlock
    whole; all it adds is the full-screen backdrop and the same palette
    variables, which were scoped to the Vision page. */
-#applock{position:fixed;inset:0;z-index:98;background:#000;color:#F5F5F5;
+#applock{position:fixed;inset:0;z-index:100;background:#000;color:#F5F5F5;
   color-scheme:dark;overflow-y:auto;
   --ig-bg:#000;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
   --ig-blue:#4F5BF7;--ig-fill:#1A1A1A}
@@ -963,6 +963,20 @@ html.locked,html.locked body{overflow:hidden}
   color:#8B3DF0}
 @supports not ((-webkit-background-clip:text) or (background-clip:text)){
   .boottitle .go{background-image:none;-webkit-text-fill-color:currentColor}
+}
+
+/* the welcome sits above the words, quieter than them, and fades in just
+   after so the two do not arrive at once */
+.bootwelcome{margin-bottom:26px;opacity:0;transform:translateY(6px);
+  animation:bwIn .5s var(--ease) .18s forwards}
+.bootwelcome[hidden]{display:none}
+@keyframes bwIn{to{opacity:1;transform:none}}
+.bwhi{display:block;font-family:var(--display);font-size:clamp(17px,5vw,21px);
+  font-weight:700;letter-spacing:-.03em;color:#F5F5F5}
+.bwsub{display:block;margin-top:7px;font-family:var(--ui);font-size:clamp(13px,3.6vw,15px);
+  font-weight:400;letter-spacing:-.01em;color:rgba(255,255,255,.56);line-height:1.4}
+@media (min-width:700px) and (min-height:600px){
+  .bootwelcome{margin-bottom:32px}
 }
 
 .bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
@@ -2893,6 +2907,10 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
 
 <div id="boot">
   <div class="bootstage">
+    <div class="bootwelcome" id="bootWelcome" hidden>
+      <span class="bwhi" id="bwHi"></span>
+      <span class="bwsub" id="bwSub"></span>
+    </div>
     <div class="boottitle" id="bootTitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
   </div>
   <div class="bootskip">Tap to begin</div>
@@ -2914,7 +2932,15 @@ html.igskin .day{transition:background .2s var(--ease),color .2s var(--ease),
       }
     }
   }catch(e){}
-  requestAnimationFrame(function(){document.getElementById('boot').classList.add('in');});
+  /* held back when the app is locked: the opening screen belongs after the
+     PIN, not behind it */
+  requestAnimationFrame(function(){
+    try{
+      var raw=localStorage.getItem('dayflow.applock');
+      if(raw==='1') return;
+    }catch(e){}
+    document.getElementById('boot').classList.add('in');
+  });
 })();
 </script>
 
@@ -5917,6 +5943,9 @@ async function tryAppUnlock(){
   if(!v){ $('#alPin').focus(); return; }
   if(await pinMatches(v)){
     appUnlocked=true; hideAppLock(); buzz(HAPTIC.done);
+    /* now the opening screen may play, with its welcome */
+    if($('#boot')) revealBoot();
+    else applySettings();      /* nothing left to show it on */
   }else{
     $('#alErr').textContent='That is not the PIN';
     $('#alPin').value=''; $('#alPin').focus(); buzz([30,60,30]);
@@ -7578,6 +7607,7 @@ function cacheLook(){
     localStorage.setItem('dayflow.accent',S.accent);
     if(!visionDark) localStorage.setItem('dayflow.theme',resolvedTheme());
     localStorage.setItem('dayflow.intro',JSON.stringify(introLines()));
+    localStorage.setItem('dayflow.applock',appLockOn()?'1':'0');
   }catch(e){}
 }
 const THEME_BG={dark:'#000000',light:'#F4F4F3'};
@@ -8163,17 +8193,82 @@ addEventListener('popstate',()=>{
   syncBackGuard();
 })();
 
+/* ---------- the welcome on the opening screen ----------
+   Said once, on the way in. The greeting follows the clock and the line
+   under it reports the day as it really stands, so it is worth reading
+   rather than being the same words every morning. */
+function greeting(){
+  const h=new Date().getHours();
+  if(h<5)  return 'Still up';
+  if(h<12) return 'Good morning';
+  if(h<17) return 'Good afternoon';
+  if(h<22) return 'Good evening';
+  return 'Late one';
+}
+function welcomeSub(){
+  if(!habits.length) return 'Add your first habit and today becomes something you can close out.';
+  const t=dayTally(TODAY);
+  const run=perfectRun();
+  if(!t.req) return 'Nothing is due today. It still counts on the board.';
+  const left=t.req-t.done;
+  if(left===0){
+    return run>1 ? 'Today is already closed. '+run+' days in a row.'
+                 : 'Today is already closed.';
+  }
+  const what=left+' habit'+(left===1?'':'s')+' still due';
+  return run>=2 ? what+' · '+run+' day run on the line' : what+' today';
+}
+function paintWelcome(){
+  const w=$('#bootWelcome'); if(!w) return;
+  const back=!!(allHabits.length||myNotes.length||recs.size);
+  /* a first run has nothing to welcome anyone back to */
+  $('#bwHi').textContent = back ? greeting() : 'Welcome';
+  $('#bwSub').textContent = welcomeSub();
+  w.hidden=false;
+}
+
 /* the opening */
-/* the screen opens out from the middle, the way the Vision board swaps over */
+/* The screen opens out from the middle, the way the Vision board swaps over.
+   It also holds itself on screen for a moment once shown: a stray tap, a held
+   Enter key, or the auto-dismiss landing early were all taking it away before
+   it could be read. Anything asking it to go during that moment is remembered
+   and honoured the instant the moment is up, so nothing is ever ignored. */
+const BOOT_HOLD=1400;
+/* whether it has been shown is its own flag, not the timestamp: a clock
+   reading of zero would otherwise look like "never shown" */
+let bootShown=false, bootShownAt=0, bootWanted=false;
+function revealBoot(){
+  const b=$('#boot');
+  if(!b || b.dataset.done || bootShown) return;
+  paintWelcome();
+  bootShown=true; bootShownAt=Date.now();
+  requestAnimationFrame(()=>b.classList.add('in'));
+}
 function endBoot(){
   const b=$('#boot'); if(!b || b.dataset.done) return;
+  /* not shown yet, or not shown for long enough */
+  const waited=bootShown?Date.now()-bootShownAt:0;
+  if(!bootShown || waited<BOOT_HOLD){
+    if(!bootWanted){
+      bootWanted=true;
+      setTimeout(endBoot,Math.max(60,BOOT_HOLD-waited));
+    }
+    return;
+  }
   b.dataset.done='1';
   b.classList.add('out');
   buzz(8);
   setTimeout(()=>{ b.remove(); applySettings(); },600);
 }
-$('#boot').addEventListener('click',()=>endBoot());
-addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) endBoot(); });
+/* Neither shortcut may fire while the lock is still up. Pressing Enter to
+   submit the PIN was reaching this handler and dismissing the opening screen
+   before it had been shown at all. */
+const bootReady=()=>!(appLockOn()&&!appUnlocked);
+$('#boot').addEventListener('click',()=>{ if(bootReady()) endBoot(); });
+addEventListener('keydown',e=>{
+  if(!bootReady()) return;
+  if($('#boot')&&(e.key==='Enter'||e.key===' ')) endBoot();
+});
 
 (async function boot(){
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8196,6 +8291,8 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
        is ever briefly on screen */
     if(appLockOn()) showAppLock();
     applySettings(); cacheLook(); renderAll(); renderNotes();
+    /* the welcome needs the day's figures, so it is written once they exist */
+    if(!appLockOn()) revealBoot();
     requestAnimationFrame(syncBarHeight);
     const saved=(await dbAll('meta')).find(m=>m.key==='timer');
     if(saved && saved.value && saved.value.kind==='break'){
@@ -8207,8 +8304,15 @@ addEventListener('keydown',e=>{ if($('#boot')&&(e.key==='Enter'||e.key===' ')) e
     console.error('Onwards · render',err);
     toast('Something failed to draw — your data is safe');
   }
-  /* the title screen holds until you tap it — nothing runs on a timer */
-  if(S.intro===false || reduced) setTimeout(endBoot,320);
+  /* The title screen holds until you tap it — nothing runs on a timer. The
+     one exception is when the opening is switched off, and even then it must
+     wait for the lock, or it counts down while the PIN is being typed. */
+  if(S.intro===false || reduced){
+    const go=()=>setTimeout(endBoot,320);
+    if(appLockOn()&&!appUnlocked){
+      const t=setInterval(()=>{ if(appUnlocked){ clearInterval(t); go(); } },200);
+    }else go();
+  }
 })();
 </script>
 </body>
