@@ -1,48 +1,47 @@
-/* Dayflow service worker — app shell cache + offline fallback */
-const VERSION = 'dayflow-v1';
-const SHELL = [
-  './', './index.html', './manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-512.png',
-  './icons/icon-maskable-512.png', './icons/apple-touch-icon-180.png'
-];
+/* Onwards — service worker.
+   A browser will only offer to install an app that has one of these with a
+   fetch handler, which is why the Install button never appeared. It also
+   keeps the app working with no connection: the page is served from the
+   cache first and refreshed in the background. Nothing here touches your
+   data — habits, sessions, notes and portions all live in IndexedDB on the
+   device and are never sent anywhere. */
+
+const CACHE = 'onwards-v1';
 
 self.addEventListener('install', e => {
+  self.skipWaiting();
   e.waitUntil(
-    caches.open(VERSION)
-      .then(c => c.addAll(SHELL))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(['./', './index.html']).catch(() => {}))
   );
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION && k !== VERSION + '-ext').map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
+/* The fetch handler is the part the browser insists on. Cached copy first so
+   the app opens instantly and offline; a fresh copy is fetched alongside and
+   stored for next time. */
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
+  if (req.method !== 'GET' || !req.url.startsWith('http')) return;
 
-  /* fonts and other cross-origin assets: serve cached, refresh in background */
-  if (url.origin !== location.origin) {
-    e.respondWith(caches.open(VERSION + '-ext').then(async cache => {
-      const hit = await cache.match(req);
-      const net = fetch(req).then(res => { if (res.ok) cache.put(req, res.clone()); return res; }).catch(() => hit);
-      return hit || net;
-    }));
-    return;
-  }
-
-  /* app shell: cache first, fall back to the shell for navigations */
   e.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then(res => {
-      const copy = res.clone();
-      caches.open(VERSION).then(c => c.put(req, copy));
-      return res;
-    }).catch(() => req.mode === 'navigate' ? caches.match('./index.html') : Response.error()))
+    caches.match(req).then(hit => {
+      const live = fetch(req)
+        .then(res => {
+          if (res && res.status === 200 && res.type === 'basic') {
+            const copy = res.clone();
+            caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => hit);          /* offline: fall back to whatever was kept */
+      return hit || live;
+    })
   );
 });
