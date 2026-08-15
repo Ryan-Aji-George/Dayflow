@@ -912,6 +912,15 @@ button.tphead:active{background:var(--tint)}
 }
 /* nothing behind it moves while it is up */
 html.locked,html.locked body{overflow:hidden}
+/* the way in is always dark, whatever the app's own theme happens to be —
+   the id makes these win over every themed rule the app carries */
+#applock .vlock .input{background:#262626;color:#F5F5F5;border:0;box-shadow:none}
+#applock .vlock .input:focus{background:#262626;box-shadow:inset 0 0 0 1.5px #3A3A3C}
+#applock .vlock .input::placeholder{color:#8E8E8E}
+#applock .vlock .btn{background:#4F5BF7;color:#fff;border:0}
+#applock .vlock .btn:active{background:#4048C8}
+#applock .vlock .lockring{background:#1C1C1E;box-shadow:none}
+#applock .vlock-err{color:#ED4956}
 
 /* ---------- viewer ---------- */
 .lightbox{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
@@ -948,47 +957,6 @@ html.locked,html.locked body{overflow:hidden}
   font-size:13.5px;font-weight:500;white-space:nowrap;box-shadow:0 14px 30px -16px rgba(0,0,0,.7);
   transition:all .34s var(--ease)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-
-/* ---------- the opening: it appears, it holds, it goes ---------- */
-#boot{position:fixed;inset:0;z-index:99;background:#000;display:grid;place-items:center;color-scheme:dark;
-  opacity:0;clip-path:circle(150% at 0% 0%);
-  transition:opacity .4s var(--ease),clip-path .55s cubic-bezier(.45,0,.15,1)}
-#boot.in{opacity:1}
-/* the circle is pinned to the very corner, so only its quarter falls on screen */
-#boot.out{clip-path:circle(0% at 0% 0%)}
-#boot.out .bootstage{opacity:0;transform:scale(.88) translate(-9%,-11%)}
-.bootstage{transition:opacity .28s var(--ease),transform .5s cubic-bezier(.45,0,.15,1)}
-#boot.gone{opacity:0;pointer-events:none}
-.bootskip{animation:skipPulse 2.6s var(--ease) infinite}
-@keyframes skipPulse{0%,100%{opacity:.34}50%{opacity:.85}}
-.bootstage{text-align:center;padding:0 24px}
-.boottitle{font-family:var(--display);font-weight:800;text-transform:uppercase;
-  font-size:clamp(32px,11.5vw,50px);line-height:1.04;letter-spacing:-.05em;color:#F5F5F5}
-/* the opening screen wears the mark's own gradient, so it is not something
-   to be chosen: it is the app's face and it always matches the icon */
-.boottitle .go{background-image:linear-gradient(96deg,#4F5BF7,#8B3DF0 48%,#E0399B);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  color:#8B3DF0}
-@supports not ((-webkit-background-clip:text) or (background-clip:text)){
-  .boottitle .go{background-image:none;-webkit-text-fill-color:currentColor}
-}
-
-/* the welcome sits above the words, quieter than them, and fades in just
-   after so the two do not arrive at once */
-.bootwelcome{margin-bottom:26px;opacity:0;transform:translateY(6px);
-  animation:bwIn .5s var(--ease) .18s forwards}
-.bootwelcome[hidden]{display:none}
-@keyframes bwIn{to{opacity:1;transform:none}}
-.bwhi{display:block;font-family:var(--display);font-size:clamp(17px,5vw,21px);
-  font-weight:700;letter-spacing:-.03em;color:#F5F5F5}
-.bwsub{display:block;margin-top:7px;font-family:var(--ui);font-size:clamp(13px,3.6vw,15px);
-  font-weight:400;letter-spacing:-.01em;color:rgba(255,255,255,.56);line-height:1.4}
-@media (min-width:700px) and (min-height:600px){
-  .bootwelcome{margin-bottom:32px}
-}
-
-.bootskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
 /* ---------- the run: a window of days you set in settings ---------- */
 .run{display:block;width:100%;text-align:left;margin:14px 0 0;padding:13px 15px;border-radius:var(--r-md);
@@ -1630,7 +1598,6 @@ html.locked,html.locked body{overflow:hidden}
   .vlock svg{width:26px;height:26px}
   .vlock h3{margin-top:14px}
   .vlock .lockwhy{margin-bottom:16px}
-  .boottitle{font-size:clamp(26px,7.4vh,40px)}
 }
 
 /* ===========================================================
@@ -2857,11 +2824,37 @@ html.igskin .nsfoot .dn-del{background:transparent;border:0;padding:6px 2px;
   font-family:var(--ui);font-size:14px;font-weight:500;color:var(--ink-3)}
 html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
 
+/* ---------- the note's tools ride the sticky head ----------
+   The bar of marks sits in the header rather than in the page, so it stays
+   under your thumb however far down a long note you have scrolled. Nothing
+   about what the buttons do has changed — only where they live. */
+html.igskin #noteSheet .fsbar{padding-bottom:8px}
+html.igskin #noteSheet .fmtbar{max-width:640px;margin:0 auto;padding:8px 0 10px;
+  align-items:center;gap:5px;border-top:1px solid var(--ig-hair)}
+html.igskin #noteSheet .fmtbar button{width:38px;height:36px;border-radius:9px}
+/* the mark you are standing in is filled in, the way a chosen chip is */
+html.igskin .fmtbar button.on{background:var(--ink);color:var(--bg)}
+html.igskin .fmtbar button.on svg{stroke:var(--bg)}
+html.igskin .fmtbar .fmtsep{flex:0 0 auto;width:1px;height:20px;align-self:center;
+  margin:0 3px;border-radius:1px;background:var(--line-2)}
+/* the marks the bar can now leave behind */
+html.igskin .nsbody blockquote{margin:10px 0;padding:1px 0 1px 14px;
+  border-left:3px solid var(--line-2);color:var(--ink-2)}
+html.igskin .nsbody s,html.igskin .nsbody strike,html.igskin .nsbody del{
+  text-decoration-color:var(--ink-3)}
+html.igskin .nsbody:focus{caret-color:var(--ig-blue)}
+/* the foot carries the count on the left and the quiet delete on the right */
+html.igskin .nsfoot{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:20px 0 8px;margin-top:24px;border-top:1px solid var(--ig-hair)}
+html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
+  letter-spacing:-.01em;color:var(--ink-3);min-height:18px}
+
 @media (min-width:700px) and (min-height:600px){
   html.igskin .nstitle{font-size:34px}
   html.igskin .nsbody{font-size:17.5px}
   html.igskin .nsbody h3{font-size:21px}
   html.igskin .fmtbar button{width:46px;height:42px}
+  html.igskin #noteSheet .fmtbar button{width:42px;height:40px}
 }
 
 /* ---------- tablet: the same page, given the room ---------- */
@@ -2964,6 +2957,8 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
   if(a && /^#[0-9A-Fa-f]{6}$/.test(a)) d.style.setProperty('--acc',a);
   var t=localStorage.getItem('dayflow.theme');
   if(t==='dark'||t==='light') d.dataset.theme=t;
+  /* the way in is always dark, whatever the app's own theme is set to */
+  if(localStorage.getItem('dayflow.applock')==='1') d.dataset.theme='dark';
 }catch(e){}})();
 </script>
 </head>
@@ -2980,45 +2975,6 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
     <div class="vlock-err" id="alErr"></div>
   </div>
 </div>
-
-<div id="boot">
-  <div class="bootstage">
-    <div class="bootwelcome" id="bootWelcome" hidden>
-      <span class="bwhi" id="bwHi"></span>
-      <span class="bwsub" id="bwSub"></span>
-    </div>
-    <div class="boottitle" id="bootTitle">Reset.<br>Rebuild.<br><span class="go">Dominate</span></div>
-  </div>
-  <div class="bootskip">Tap to begin</div>
-</div>
-<script>
-/* the words are cached alongside the accent so the first frame is already yours */
-(function(){
-  try{
-    var raw=localStorage.getItem('dayflow.intro');
-    if(raw){
-      var L=JSON.parse(raw);
-      if(Array.isArray(L)&&L.length){
-        var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){
-          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
-        var last=L.length-1;
-        document.getElementById('bootTitle').innerHTML=L.map(function(t,i){
-          return i===last?'<span class="go">'+esc(t)+'</span>':esc(t);
-        }).join('<br>');
-      }
-    }
-  }catch(e){}
-  /* held back when the app is locked: the opening screen belongs after the
-     PIN, not behind it */
-  requestAnimationFrame(function(){
-    try{
-      var raw=localStorage.getItem('dayflow.applock');
-      if(raw==='1') return;
-    }catch(e){}
-    document.getElementById('boot').classList.add('in');
-  });
-})();
-</script>
 
 <div class="app">
   <header class="topbar" id="topbar">
@@ -3255,11 +3211,6 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
           <span class="n">Appearance</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="smrow" data-sp="intro">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2.5v7"/><path d="m8.5 6 3.5-3.5L15.5 6"/><path d="M16 18a4 4 0 0 0-8 0"/><path d="M4.9 11.9 6.3 13.3M19.1 11.9 17.7 13.3M2 18h2M20 18h2M2.5 22h19"/></svg></span>
-          <span class="n">Opening screen</span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
-        </button>
         <button class="smrow" data-sp="privacy">
           <span class="ico"><svg viewBox="0 0 24 24"><rect x="3.5" y="10.5" width="17" height="11" rx="2.5"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg></span>
           <span class="n">Privacy</span>
@@ -3357,30 +3308,6 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
             <div class="srow">
               <div class="t"><div class="n">Haptics</div></div>
               <button class="switch" id="hapticSw" role="switch"></button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="subpage" id="sp-intro">
-        <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Opening screen</h2></div>
-        </header>
-        <div class="group">
-          <div class="panel">
-            <div class="srow">
-              <div class="t"><div class="n">Opening animation</div></div>
-              <button class="switch" id="introSw" role="switch"></button>
-            </div>
-          </div>
-        </div>
-        <div class="group">
-          <span class="eyebrow">Opening words</span>
-          <div class="panel">
-            <div style="padding:14px 16px">
-              <textarea class="input area" id="introText" placeholder="Reset.&#10;Rebuild.&#10;Dominate" maxlength="90" style="min-height:96px"></textarea>
-              
             </div>
           </div>
         </div>
@@ -3768,20 +3695,31 @@ html.igskin .nsfoot .dn-del:active{color:var(--ig-red)}
       <h3 id="nsWhen">—</h3>
       <button class="nsdone" id="nsMain" hidden>Done</button>
     </div>
+    <!-- the marks live in the head, so they stay put however far you scroll -->
+    <div class="fmtbar" id="nsFmt" hidden>
+      <button type="button" data-f="h" aria-label="Heading" title="Heading"><b>H</b></button>
+      <button type="button" data-f="bold" aria-label="Bold" title="Bold"><b>B</b></button>
+      <button type="button" data-f="italic" aria-label="Italic" title="Italic"><i>I</i></button>
+      <button type="button" data-f="underline" aria-label="Underline" title="Underline"><u>U</u></button>
+      <button type="button" data-f="strike" aria-label="Strikethrough" title="Strikethrough"><s>S</s></button>
+      <span class="fmtsep" aria-hidden="true"></span>
+      <button type="button" data-f="ul" aria-label="Bullet list" title="Bullet list"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/></svg></button>
+      <button type="button" data-f="ol" aria-label="Numbered list" title="Numbered list"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 5h1.5v4M3.6 18h2.6M3.6 15.6h2.2v2.4"/></svg></button>
+      <button type="button" data-f="quote" aria-label="Quote" title="Quote"><svg viewBox="0 0 24 24"><path d="M5 5v14"/><path d="M10 8h9M10 12h9M10 16h6"/></svg></button>
+      <span class="fmtsep" aria-hidden="true"></span>
+      <button type="button" data-f="undo" aria-label="Undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M4 8h10a5 5 0 0 1 0 10h-6"/><path d="m8 4-4 4 4 4"/></svg></button>
+      <button type="button" data-f="redo" aria-label="Redo" title="Redo"><svg viewBox="0 0 24 24"><path d="M20 8H10a5 5 0 0 0 0 10h6"/><path d="m16 4 4 4-4 4"/></svg></button>
+      <button type="button" data-f="clear" aria-label="Plain text" title="Clear formatting">✕</button>
+    </div>
   </div>
   <div class="fsbody nspage" id="nsPage">
     <!-- the two are the same shape, so switching between them shows nothing -->
     <input class="nsfield nstitle" id="nsTin" placeholder="Title" maxlength="60" autocomplete="off" readonly>
-    <div class="fmtbar" id="nsFmt" hidden>
-      <button data-f="h" aria-label="Heading"><b>H</b></button>
-      <button data-f="bold" aria-label="Bold"><b>B</b></button>
-      <button data-f="italic" aria-label="Italic"><i>I</i></button>
-      <button data-f="ul" aria-label="Bullet list"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/></svg></button>
-      <button data-f="ol" aria-label="Numbered list"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 5h1.5v4M3.6 18h2.6M3.6 15.6h2.2v2.4"/></svg></button>
-      <button data-f="clear" aria-label="Plain">✕</button>
-    </div>
     <div class="nsfield nsbody" id="nsTa" data-ph="Write it down"></div>
-    <div class="nsfoot"><button class="dn-del" id="nsDelete">Delete</button></div>
+    <div class="nsfoot">
+      <span class="nsmeta" id="nsMeta"></span>
+      <button class="dn-del" id="nsDelete">Delete</button>
+    </div>
   </div>
 </div>
 
@@ -4016,8 +3954,8 @@ const dbClear=n=>hasStore(n)?wrap(store(n,'readwrite').clear()):Promise.resolve(
 
 let allHabits=[], habits=[], sets=[], recs=new Set(), legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], days=new Map(), ground=[];
-let S={theme:'dark',accent:'#F2A93B',haptics:true,intro:true,seeded:false,activeSet:null,northStar:'',
-       visionLock:null,appLock:false,runStart:'',runEnd:'',introText:null,focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
+let S={theme:'dark',accent:'#F2A93B',haptics:true,seeded:false,activeSet:null,northStar:'',
+       visionLock:null,appLock:false,runStart:'',runEnd:'',focusItems:null,breakResetAt:0,breakMins:5,dividers:[]};
 let visionDark=false, visionUnlocked=false;
 
 function applySet(){ habits=allHabits.filter(h=>h.setId===S.activeSet).sort((a,b)=>a.order-b.order); }
@@ -4117,11 +4055,6 @@ function scheduleLabel(days){
   return days.slice().sort().map(d=>DN[d]).join(', ');
 }
 /* one record per day: what got finished, every break, and what you made of it */
-const DEFAULT_INTRO=['Reset.','Rebuild.','Dominate'];
-const introLines=()=>{
-  const L=Array.isArray(S.introText)?S.introText.filter(x=>String(x).trim()):[];
-  return L.length?L.slice(0,3):DEFAULT_INTRO;
-};
 function normDay(r){
   const done=(Array.isArray(r.done)?r.done:[]).map(x=>({
     id:x.id||uid(), text:x.text||'Study', timed:!!x.timed,
@@ -4521,7 +4454,7 @@ $('#notesAdd').addEventListener('click',async()=>{
    Only these tags survive, and never an attribute, so nothing a note carries
    can ever become anything but text and marks. Notes written before any of
    this existed are plain text and are read as exactly that. */
-const NOTE_TAGS=['B','STRONG','I','EM','U','H3','UL','OL','LI','BR','DIV','P'];
+const NOTE_TAGS=['B','STRONG','I','EM','U','S','STRIKE','DEL','H3','BLOCKQUOTE','UL','OL','LI','BR','DIV','P'];
 function noteClean(html){
   const box=document.createElement('div');
   box.innerHTML=String(html==null?'':html);
@@ -4556,25 +4489,109 @@ const noteToText=h=>{
 /* ---------- one note, on its own page ----------
    Reading and writing use the same two fields. Nothing is swapped, framed or
    highlighted when you start typing — the only thing that changes is whether
-   they will take a keystroke. */
-let nsNote=null, nsEditing=false, nsT=null;
+   they will take a keystroke, and whether the bar of marks is showing. */
+let nsNote=null, nsEditing=false, nsT=null, nsFlash=null;
 function nsGrow(){}
+const NS_BODY=()=>$('#nsTa');
+/* the caret goes where you tapped, or to the end when there is nowhere to aim */
+function nsCaretEnd(){
+  try{
+    const el=NS_BODY(), r=document.createRange();
+    r.selectNodeContents(el); r.collapse(false);
+    const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  }catch(e){}
+}
+function nsCaretAt(x,y){
+  const el=NS_BODY();
+  try{
+    let r=null;
+    if(document.caretRangeFromPoint) r=document.caretRangeFromPoint(x,y);
+    else if(document.caretPositionFromPoint){
+      const pos=document.caretPositionFromPoint(x,y);
+      if(pos){ r=document.createRange(); r.setStart(pos.offsetNode,pos.offset); r.collapse(true); }
+    }
+    if(r && el.contains(r.startContainer)){
+      const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    }else nsCaretEnd();
+  }catch(e){ nsCaretEnd(); }
+}
+/* is the caret standing inside one of these? */
+function nsInTag(tag){
+  const root=$('#nsTa');
+  let n=null;
+  try{ n=getSelection().anchorNode; }catch(e){}
+  while(n && n!==root){
+    if(n.nodeType===1 && n.tagName===tag) return true;
+    n=n.parentNode;
+  }
+  return false;
+}
+const nsInHeading=()=>nsInTag('H3');
+/* the bar lights up whatever the caret is already wearing */
+const NS_CMD={bold:'bold',italic:'italic',underline:'underline',strike:'strikeThrough',
+              ul:'insertUnorderedList',ol:'insertOrderedList'};
+function nsSyncFmt(){
+  const bar=$('#nsFmt'); if(!bar) return;
+  const live=nsEditing && document.activeElement===$('#nsTa');
+  $$('button',bar).forEach(b=>{
+    const f=b.dataset.f; let on=false;
+    if(live){
+      try{
+        if(NS_CMD[f]) on=!!document.queryCommandState(NS_CMD[f]);
+        else if(f==='h') on=nsInTag('H3');
+        else if(f==='quote') on=nsInTag('BLOCKQUOTE');
+      }catch(e){ on=false; }
+    }
+    b.classList.toggle('on',on);
+  });
+}
+/* how much you have written, and a word when it lands */
+function nsStat(msg){
+  const el=$('#nsMeta'); if(!el) return;
+  if(msg){
+    clearTimeout(nsFlash); el.textContent=msg;
+    nsFlash=setTimeout(()=>nsStat(),1200); return;
+  }
+  clearTimeout(nsFlash);
+  const t=nsNote ? noteToText($('#nsTa').innerHTML) : '';
+  const w=t ? t.split(/\s+/).filter(Boolean).length : 0;
+  el.textContent = w ? w+(w===1?' word':' words') : '';
+}
+function nsBlank(){
+  $('#nsTa').classList.toggle('blank',!noteToText($('#nsTa').innerHTML));
+}
 function nsPaint(){
   if(!nsNote) return;
   $('#nsTin').value=nsNote.title||'';
   $('#nsTa').innerHTML=noteToHTML(nsNote.text);
-  $('#nsTa').classList.toggle('blank',!noteToText(nsNote.text));
+  nsBlank(); nsStat();
   $('#nsWhen').textContent=whenLabel(nsNote.date||TSTR);
 }
-function nsMode(editing){
+function nsMode(editing,opt){
+  opt=opt||{};
   nsEditing=!!editing;
   $('#nsTin').readOnly=!nsEditing;
   $('#nsTa').setAttribute('contenteditable',nsEditing?'true':'false');
   $('#nsMain').hidden=!nsEditing;
   $('#nsFmt').hidden=!nsEditing;
   const d=$('#nsDelete'); d.dataset.armed=''; d.textContent='Delete';
-  if(nsEditing) setTimeout(()=>{ try{ $('#nsTa').focus(); }catch(e){} },40);
+  if(nsEditing){
+    /* marks are written as tags, never as inline styles: a style attribute
+       would be stripped on the way out and the mark would be lost */
+    try{ document.execCommand('styleWithCSS',false,false); }catch(e){}
+    setTimeout(()=>{
+      try{
+        if(opt.focus==='title'){ $('#nsTin').focus(); }
+        else{
+          $('#nsTa').focus();
+          if(opt.at) nsCaretAt(opt.at.x,opt.at.y); else nsCaretEnd();
+        }
+      }catch(e){}
+      nsSyncFmt();
+    },40);
+  }
   else if(document.activeElement) document.activeElement.blur();
+  nsSyncFmt();
 }
 async function nsSave(){
   if(!nsNote) return;
@@ -4583,7 +4600,7 @@ async function nsSave(){
   if(nsNote.title===ti && nsNote.text===tx) return;
   nsNote.title=ti; nsNote.text=tx; nsNote.edited=Date.now();
   await dbPut('dnotes',nsNote);
-  $('#nsTa').classList.toggle('blank',!noteToText(tx));
+  nsBlank(); nsStat('Saved');
 }
 /* ---------- the marks ---------- */
 $('#nsFmt').addEventListener('mousedown',e=>e.preventDefault());
@@ -4592,27 +4609,68 @@ $('#nsFmt').addEventListener('click',e=>{
   $('#nsTa').focus();
   const f=b.dataset.f;
   try{
-    if(f==='bold')        document.execCommand('bold');
-    else if(f==='italic') document.execCommand('italic');
-    else if(f==='ul')     document.execCommand('insertUnorderedList');
-    else if(f==='ol')     document.execCommand('insertOrderedList');
-    else if(f==='h')      document.execCommand('formatBlock',false,
-                            nsInHeading()?'<div>':'<h3>');
+    if(f==='bold')           document.execCommand('bold');
+    else if(f==='italic')    document.execCommand('italic');
+    else if(f==='underline') document.execCommand('underline');
+    else if(f==='strike')    document.execCommand('strikeThrough');
+    else if(f==='ul')        document.execCommand('insertUnorderedList');
+    else if(f==='ol')        document.execCommand('insertOrderedList');
+    else if(f==='undo')      document.execCommand('undo');
+    else if(f==='redo')      document.execCommand('redo');
+    else if(f==='h')         document.execCommand('formatBlock',false,
+                               nsInTag('H3')?'<div>':'<h3>');
+    else if(f==='quote')     document.execCommand('formatBlock',false,
+                               nsInTag('BLOCKQUOTE')?'<div>':'<blockquote>');
     else if(f==='clear'){ document.execCommand('removeFormat');
                           document.execCommand('formatBlock',false,'<div>'); }
   }catch(err){}
+  nsSyncFmt(); nsBlank(); nsStat();
   clearTimeout(nsT); nsT=setTimeout(nsSave,400);
   buzz(6);
 });
-/* so the heading button turns a heading back off */
-function nsInHeading(){
-  let n=window.getSelection && getSelection().anchorNode;
-  while(n && n!==$('#nsTa')){ if(n.tagName==='H3') return true; n=n.parentNode; }
-  return false;
-}
+/* whatever moves the caret repaints the bar */
+document.addEventListener('selectionchange',()=>{ if(nsEditing) nsSyncFmt(); });
+$('#nsTa').addEventListener('keyup',()=>{ if(nsEditing) nsSyncFmt(); });
+$('#nsTa').addEventListener('mouseup',()=>{ if(nsEditing) nsSyncFmt(); });
+/* the usual shortcuts still work, and what they do is still saved */
+$('#nsTa').addEventListener('keydown',e=>{
+  if(!nsEditing) return;
+  const mod=e.metaKey||e.ctrlKey;
+  if(mod && typeof e.key==='string' && 'biu'.indexOf(e.key.toLowerCase())>=0){
+    setTimeout(nsSyncFmt,0);
+    clearTimeout(nsT); nsT=setTimeout(nsSave,400);
+  }
+});
+/* anything pasted in arrives as plain text, so a note can never carry
+   somebody else's styling into the page */
+$('#nsTa').addEventListener('paste',e=>{
+  if(!nsEditing) return;
+  const cd=e.clipboardData||window.clipboardData;
+  if(!cd) return;
+  let txt='';
+  try{ txt=cd.getData('text/plain')||''; }catch(err){ return; }
+  e.preventDefault();
+  let done=false;
+  try{ done=document.execCommand('insertText',false,txt); }catch(err){}
+  if(!done){
+    try{
+      const sel=getSelection();
+      if(sel && sel.rangeCount){
+        const r=sel.getRangeAt(0); r.deleteContents();
+        r.insertNode(document.createTextNode(txt));
+        r.collapse(false); sel.removeAllRanges(); sel.addRange(r);
+      }
+    }catch(err){}
+  }
+  nsBlank(); nsStat();
+  clearTimeout(nsT); nsT=setTimeout(nsSave,400);
+});
 function openNoteSheet(n,startEditing){
   nsNote=n;
-  nsPaint(); nsMode(!!startEditing);
+  nsPaint();
+  /* a note with nothing in it yet wants its title first */
+  const empty=!(n.title||'').trim() && !noteToText(n.text);
+  nsMode(!!startEditing, startEditing&&empty ? {focus:'title'} : {focus:'body'});
   $('#scrim').classList.add('on');
   $('#noteSheet').classList.add('on');
   const b=$('.fsbody',$('#noteSheet')); if(b) b.scrollTop=0;
@@ -4621,19 +4679,22 @@ function openNoteSheet(n,startEditing){
 }
 async function closeNoteSheet(){
   if(!$('#noteSheet').classList.contains('on')) return;
-  clearTimeout(nsT); await nsSave();
+  clearTimeout(nsT); clearTimeout(nsFlash); await nsSave();
   $('#noteSheet').classList.remove('on');
   /* the list is still open behind it, so the scrim only lifts with that */
   if(!$('#notesSheet').classList.contains('on')) $('#scrim').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
   nsNote=null; nsEditing=false;
+  nsSyncFmt();
   renderNotes(); renderSettings();
 }
-/* a tap anywhere on the note starts the writing */
+/* a tap anywhere on the note starts the writing, with the caret where you put it */
 $('#nsPage').addEventListener('click',e=>{
   if(nsEditing || !nsNote) return;
   if(e.target.closest('#nsDelete')) return;
-  nsMode(true); buzz(9);
+  const inTitle=!!e.target.closest('#nsTin');
+  nsMode(true, inTitle ? {focus:'title'} : {focus:'body',at:{x:e.clientX,y:e.clientY}});
+  buzz(9);
 });
 $('#nsMain').addEventListener('mousedown',e=>e.preventDefault());
 $('#nsMain').addEventListener('click',async()=>{
@@ -4641,9 +4702,15 @@ $('#nsMain').addEventListener('click',async()=>{
   clearTimeout(nsT); await nsSave(); nsMode(false); renderNotes(); buzz(6);
 });
 $('#nsClose').addEventListener('click',closeNoteSheet);
+/* the title hands over to the body rather than doing nothing */
+$('#nsTin').addEventListener('keydown',e=>{
+  if(e.key!=='Enter' || !nsEditing) return;
+  e.preventDefault();
+  try{ $('#nsTa').focus(); nsCaretEnd(); }catch(err){}
+});
 ['#nsTin','#nsTa'].forEach(sel=>{
   $(sel).addEventListener('input',()=>{
-    if(sel==='#nsTa') nsGrow();
+    if(sel==='#nsTa'){ nsGrow(); nsBlank(); nsStat(); }
     clearTimeout(nsT); nsT=setTimeout(nsSave,650);
   });
 });
@@ -4651,7 +4718,7 @@ $('#nsDelete').addEventListener('click',async e=>{
   const b=e.currentTarget;
   if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; buzz(14); return; }
   const id=nsNote&&nsNote.id;
-  clearTimeout(nsT); nsEditing=false; nsNote=null;
+  clearTimeout(nsT); clearTimeout(nsFlash); nsEditing=false; nsNote=null;
   $('#noteSheet').classList.remove('on');
   if(!$('#notesSheet').classList.contains('on')) $('#scrim').classList.remove('on');
   if(id){ myNotes=myNotes.filter(x=>x.id!==id); await dbDel('dnotes',id); }
@@ -6032,6 +6099,8 @@ function showAppLock(){
   el.hidden=false;
   $('#alPin').value=''; $('#alErr').textContent='';
   document.documentElement.classList.add('locked');
+  /* the way in is always dark, whatever the app's own theme is */
+  try{ applySettings(); }catch(e){ document.documentElement.dataset.theme='dark'; }
   setTimeout(()=>{ try{ $('#alPin').focus(); }catch(e){} },120);
 }
 function hideAppLock(){
@@ -6040,15 +6109,14 @@ function hideAppLock(){
   el.hidden=true;
   document.documentElement.classList.remove('locked');
   if(document.activeElement) document.activeElement.blur();
+  try{ applySettings(); }catch(e){}
 }
 async function tryAppUnlock(){
   const v=$('#alPin').value.trim();
   if(!v){ $('#alPin').focus(); return; }
   if(await pinMatches(v)){
     appUnlocked=true; hideAppLock(); buzz(HAPTIC.done);
-    /* now the opening screen may play, with its welcome */
-    if($('#boot')) revealBoot();
-    else applySettings();      /* nothing left to show it on */
+    applySettings();           /* the app's own theme comes back */
   }else{
     $('#alErr').textContent='That is not the PIN';
     $('#alPin').value=''; $('#alPin').focus(); buzz([30,60,30]);
@@ -7117,7 +7185,7 @@ function showView(v){
    Nothing moved out of the app. The same panels, the same handlers, the same
    ids — only put one tap in, so the page you land on asks a single question. */
 let setPage=null;
-const SP_PAGES=['habits','focus','run','look','intro','privacy','parts','data'];
+const SP_PAGES=['habits','focus','run','look','privacy','parts','data'];
 function openSetPage(id){
   if(SP_PAGES.indexOf(id)<0) return;
   setPage=id;
@@ -7672,24 +7740,16 @@ function fsRepaint(){
 paintFs();
 
 $('#hapticSw').addEventListener('click',()=>{S.haptics=!S.haptics;saveSettings();renderSettings();if(S.haptics)buzz(HAPTIC.tick);});
-$('#introSw').addEventListener('click',()=>{S.intro=!S.intro;saveSettings();renderSettings();buzz(8);});
 $('#runStart').addEventListener('change',()=>{ S.runStart=$('#runStart').value||''; saveSettings(); renderToday(); });
 $('#runEnd').addEventListener('change',()=>{ S.runEnd=$('#runEnd').value||''; saveSettings(); renderToday(); });
 $('#runClear').addEventListener('click',()=>{
   S.runStart=''; S.runEnd=''; saveSettings(); renderSettings(); renderToday(); toast('Run cleared'); buzz(8);
 });
-let introT;
-$('#introText').addEventListener('input',()=>{
-  clearTimeout(introT);
-  introT=setTimeout(()=>{
-    const lines=$('#introText').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,3);
-    S.introText=lines.length?lines:null;
-    saveSettings(); cacheLook();
-  },500);
-});
 const resolvedTheme=()=>S.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S.theme;
+/* the PIN screen is its own place: it is always dark, whatever the app is set to */
+const appLockUp=()=>{ const el=document.getElementById('applock'); return !!(el && !el.hidden); };
 function applySettings(){
-  const t=visionDark?'dark':resolvedTheme();
+  const t=(appLockUp()||visionDark)?'dark':resolvedTheme();
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
   cacheLook();
@@ -7700,16 +7760,15 @@ function applySettings(){
      follows them there rather than staying on the app's own paper colour */
   const m=document.querySelector('meta[name=theme-color]');
   const ig=document.documentElement.classList.contains('igskin');
-  if(m) m.setAttribute('content', document.getElementById('boot') ? '#000000'
-    : t==='dark' ? '#000000' : (ig?'#FFFFFF':'#F4F4F3'));
+  if(m) m.setAttribute('content', t==='dark' ? '#000000' : (ig?'#FFFFFF':'#F4F4F3'));
 }
-/* the title screen paints before the database answers, so what it needs to look
+/* the first frame paints before the database answers, so what it needs to look
    right is mirrored into localStorage, which is there immediately */
 function cacheLook(){
   try{
     localStorage.setItem('dayflow.accent',S.accent);
-    if(!visionDark) localStorage.setItem('dayflow.theme',resolvedTheme());
-    localStorage.setItem('dayflow.intro',JSON.stringify(introLines()));
+    if(!visionDark && !appLockUp()) localStorage.setItem('dayflow.theme',resolvedTheme());
+    localStorage.removeItem('dayflow.intro');
     localStorage.setItem('dayflow.applock',appLockOn()?'1':'0');
   }catch(e){}
 }
@@ -7735,7 +7794,6 @@ function renderSettings(){
   $('#appLockSw').classList.toggle('on',appLockOn());
   $('#lockRow').hidden=!locked;
   $('#hapticSw').classList.toggle('on',S.haptics);
-  $('#introSw').classList.toggle('on',S.intro!==false);
   $('#dataStat').textContent=allHabits.length+' habits · '+recs.size+' marks · '+myNotes.length+' notes · '+
     blocks.length+' sessions · '+ground.length+' subjects · '+vPosts().length+' posts'+
     (vPdfList().length?' · '+vPdfList().length+' PDFs':'');
@@ -7747,7 +7805,6 @@ function renderSettings(){
   $('#cntGround').textContent=partCount('ground');
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
-  if(document.activeElement!==$('#introText')) $('#introText').value=introLines().join('\n');
   renderFocusSettings();
   renderInstall();
 }
@@ -7954,10 +8011,8 @@ $('#importFile').addEventListener('change',async e=>{
     visionItems=d.vision||[];
     ground=(d.ground||[]).map(normGround).sort((a,b)=>(a.order||0)-(b.order||0));
     days=new Map((d.days||[]).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
-    const keepIntro=S.intro;
     const inSettings=d.settings||{};
     S=Object.assign({},S,inSettings,{seeded:true});
-    if(S.intro===undefined) S.intro=keepIntro;
     /* the sets these belonged to have just been replaced, so dividers the file
        does not carry are dropped rather than left pointing at nothing */
     if(!Array.isArray(inSettings.dividers)) S.dividers=[];
@@ -8127,7 +8182,6 @@ async function loadAll(){
   await migrateStudyHabits();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
   if(s) S=Object.assign(S,s.value);
-  if(S.intro===undefined) S.intro=true;
   if(normalizeExtras()) await saveSettings();
   await ensureSets();
 }
@@ -8297,85 +8351,7 @@ addEventListener('popstate',()=>{
   syncBackGuard();
 })();
 
-/* ---------- the welcome on the opening screen ----------
-   Said once, on the way in. The greeting follows the clock and the line
-   under it reports the day as it really stands, so it is worth reading
-   rather than being the same words every morning. */
-function greeting(){
-  const h=new Date().getHours();
-  if(h<5)  return 'Still up';
-  if(h<12) return 'Good morning';
-  if(h<17) return 'Good afternoon';
-  if(h<22) return 'Good evening';
-  return 'Late one';
-}
-function welcomeSub(){
-  if(!habits.length) return 'Add your first habit and today becomes something you can close out.';
-  const t=dayTally(TODAY);
-  const run=perfectRun();
-  if(!t.req) return 'Nothing is due today. It still counts on the board.';
-  const left=t.req-t.done;
-  if(left===0){
-    return run>1 ? 'Today is already closed. '+run+' days in a row.'
-                 : 'Today is already closed.';
-  }
-  const what=left+' habit'+(left===1?'':'s')+' still due';
-  return run>=2 ? what+' · '+run+' day run on the line' : what+' today';
-}
-function paintWelcome(){
-  const w=$('#bootWelcome'); if(!w) return;
-  const back=!!(allHabits.length||myNotes.length||recs.size);
-  /* a first run has nothing to welcome anyone back to */
-  $('#bwHi').textContent = back ? greeting() : 'Welcome';
-  $('#bwSub').textContent = welcomeSub();
-  w.hidden=false;
-}
-
-/* the opening */
-/* The screen opens out from the middle, the way the Vision board swaps over.
-   It also holds itself on screen for a moment once shown: a stray tap, a held
-   Enter key, or the auto-dismiss landing early were all taking it away before
-   it could be read. Anything asking it to go during that moment is remembered
-   and honoured the instant the moment is up, so nothing is ever ignored. */
-const BOOT_HOLD=1400;
-/* whether it has been shown is its own flag, not the timestamp: a clock
-   reading of zero would otherwise look like "never shown" */
-let bootShown=false, bootShownAt=0, bootWanted=false;
-function revealBoot(){
-  const b=$('#boot');
-  if(!b || b.dataset.done || bootShown) return;
-  paintWelcome();
-  bootShown=true; bootShownAt=Date.now();
-  requestAnimationFrame(()=>b.classList.add('in'));
-}
-function endBoot(){
-  const b=$('#boot'); if(!b || b.dataset.done) return;
-  /* not shown yet, or not shown for long enough */
-  const waited=bootShown?Date.now()-bootShownAt:0;
-  if(!bootShown || waited<BOOT_HOLD){
-    if(!bootWanted){
-      bootWanted=true;
-      setTimeout(endBoot,Math.max(60,BOOT_HOLD-waited));
-    }
-    return;
-  }
-  b.dataset.done='1';
-  b.classList.add('out');
-  buzz(8);
-  setTimeout(()=>{ b.remove(); applySettings(); },600);
-}
-/* Neither shortcut may fire while the lock is still up. Pressing Enter to
-   submit the PIN was reaching this handler and dismissing the opening screen
-   before it had been shown at all. */
-const bootReady=()=>!(appLockOn()&&!appUnlocked);
-$('#boot').addEventListener('click',()=>{ if(bootReady()) endBoot(); });
-addEventListener('keydown',e=>{
-  if(!bootReady()) return;
-  if($('#boot')&&(e.key==='Enter'||e.key===' ')) endBoot();
-});
-
 (async function boot(){
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let loaded=false;
   try{
     db=await openDB();
@@ -8395,8 +8371,6 @@ addEventListener('keydown',e=>{
        is ever briefly on screen */
     if(appLockOn()) showAppLock();
     applySettings(); cacheLook(); renderAll(); renderNotes();
-    /* the welcome needs the day's figures, so it is written once they exist */
-    if(!appLockOn()) revealBoot();
     requestAnimationFrame(syncBarHeight);
     const saved=(await dbAll('meta')).find(m=>m.key==='timer');
     if(saved && saved.value && saved.value.kind==='break'){
@@ -8407,15 +8381,6 @@ addEventListener('keydown',e=>{
   }catch(err){
     console.error('Onwards · render',err);
     toast('Something failed to draw — your data is safe');
-  }
-  /* The title screen holds until you tap it — nothing runs on a timer. The
-     one exception is when the opening is switched off, and even then it must
-     wait for the lock, or it counts down while the PIN is being typed. */
-  if(S.intro===false || reduced){
-    const go=()=>setTimeout(endBoot,320);
-    if(appLockOn()&&!appUnlocked){
-      const t=setInterval(()=>{ if(appUnlocked){ clearInterval(t); go(); } },200);
-    }else go();
   }
 })();
 </script>
