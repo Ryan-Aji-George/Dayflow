@@ -2946,6 +2946,93 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
   html.igskin #v-plan .act .l{font-size:14px}
   html.igskin .sgoals,html.igskin .sgprog,html.igskin .sgadd{padding-left:0}
 }
+
+/* ===========================================================
+   TABLET, PART TWO — the room a tablet actually has.
+   Everything below is gated on tablet-sized viewports only
+   (width AND height together, so a phone on its side is never
+   caught), or on a fine pointer, which a phone never reports.
+   Nothing here touches the phone layout, the data, or the
+   Vision page.
+   =========================================================== */
+
+/* ---------- the bar says what it is ----------
+   There is room under the icons for a word, and a tablet is far enough
+   from the thumb that the icon alone is a guess. The labels were already
+   sized for this size of screen; they were simply never turned on. */
+@media (min-width:700px) and (min-height:600px){
+  .tab{flex-direction:column;gap:4px;padding:11px 0 10px}
+  .tab span{display:block;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.07em;text-transform:uppercase;line-height:1}
+  .tab svg{width:23px;height:23px}
+  /* the taller bar takes a little more clearance under the page */
+  .app{padding-bottom:calc(94px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(88px + env(safe-area-inset-bottom))}
+}
+/* standing up the side it is a rail, not a bar: the word sits under the
+   icon in the column and the page has no bottom edge to clear at all */
+@media (orientation:landscape) and (min-width:820px){
+  .tab{padding:12px 0;gap:5px}
+  .tab svg{width:25px;height:25px}
+  .tab span{font-size:9.5px;letter-spacing:.05em}
+  .app{padding-bottom:34px}
+  .toast{bottom:calc(30px + env(safe-area-inset-bottom))}
+}
+
+/* ---------- the day and the list, side by side, sooner ----------
+   The two columns were held back until 1000px, but the page itself stops
+   widening at 872px — so a tablet held upright was showing one tall column
+   of exactly the width that already carries two. Same rules, same measure,
+   just no longer waiting for a size the layout had already reached. */
+@media (min-width:800px) and (min-height:600px){
+  #v-today.active{position:relative;display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:34px;align-items:start}
+  #v-today.active::before{content:'';position:absolute;z-index:0;pointer-events:none;
+    top:26px;bottom:6px;left:calc(50% - .5px);width:1px;
+    background:linear-gradient(to bottom,transparent,var(--line) 9%,var(--line) 88%,transparent)}
+  #v-today .tcol{display:block;min-width:0}
+  #tMain{padding-top:24px}
+  #tSide .note{margin:24px 0 4px}
+}
+
+/* ---------- a big tablet held upright gets the width back ----------
+   Between 1000 and 1180 the page was still pinned to the phone-plus measure
+   while a hundred points sat empty either side. */
+@media (min-width:1000px) and (orientation:portrait){
+  .app{max-width:900px}
+  .tabbar{max-width:900px}
+  .sheet{width:min(680px,calc(100vw - 96px))}
+}
+
+/* ---------- perfect days: the months stand two abreast ----------
+   The card is wide enough here that a single column of calendars is one
+   long scroll for no reason. The tally stays across the top. */
+@media (min-width:700px) and (min-height:600px){
+  #pdBody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    column-gap:26px;align-items:start}
+  #pdBody .pdhead{grid-column:1 / -1}
+  #pdBody .mon{margin-bottom:20px}
+  #pdBody .mon h4{font-size:14px}
+}
+
+/* ---------- a tablet with a trackpad ----------
+   Only where the pointer is fine — which a phone never reports, so none of
+   this exists on touch. Everything is the shade the same control already
+   takes on press; nothing new is introduced. */
+@media (hover:hover) and (pointer:fine) and (min-width:700px){
+  .iconbtn:hover{background:var(--tint);color:var(--ink)}
+  .tab:not(.on):hover{color:var(--ink-2)}
+  .smrow:hover,.hrowc:hover,.notesrow:hover,button.tphead:hover,
+  .fitem:hover,.ritem:hover{background:var(--tint)}
+  .btn:hover{background:var(--surf-2);border-color:var(--line-2)}
+  .streak:hover,.hrow:hover,.act:hover,.schip:hover,
+  .preset:not(.on):hover,.dchip:not(.on):hover,.pcard:hover{border-color:var(--line-2)}
+  .addnote:hover{color:var(--ink);border-color:var(--ink-3)}
+  .dn:hover{border-color:var(--line-2)}
+  .todaybtn:hover,.addblock:hover,.dn-done:hover,.lnote-done:hover{filter:brightness(1.12)}
+  .spback:hover,.brkreset:hover{color:var(--ink)}
+}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
