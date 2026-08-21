@@ -1400,9 +1400,6 @@ html.locked,html.locked body{overflow:hidden}
   box-shadow:0 20px 36px -20px rgba(0,0,0,.6)}
 .subpage .hinfo .n{font-size:16.5px;font-weight:400;letter-spacing:-.012em}
 .subpage .hinfo .s{font-size:14px;color:var(--ink-3);margin-top:3px}
-.subpage .panel#fxPanel{background:transparent;border:0;border-radius:0;overflow:visible}
-.subpage .panel#fxPanel .fxrow{padding:3px 0;border-bottom:1px solid var(--line)}
-.subpage .panel#fxPanel .fxin{font-size:16.5px;height:42px}
 .subpage .fxempty{padding:14px 0;font-size:14.5px}
 .subpage .empty{margin-top:6px}
 .subpage textarea.area{background:var(--bg-2);border:0;border-radius:12px;font-size:16px}
@@ -1938,7 +1935,6 @@ html.igskin .subpage .swatches{padding:16px 0 8px;gap:13px}
 html.igskin .sw{width:30px;height:30px}
 html.igskin .swhelp{margin:0;padding:0 0 6px;font-size:15px;line-height:1.42;color:var(--ink-2)}
 /* the pre-focus list closes with a button of its own */
-html.igskin #focusSheet .sheet-actions{margin-top:22px}
 
 /* ===========================================================
    GROUND — the ground a subject covers
@@ -2515,9 +2511,6 @@ html.igskin .subpage .hrow.dragging{background:var(--ig-sheet);border-radius:12p
 html.igskin .subpage .hinfo .n{font-size:17px;font-weight:400;letter-spacing:-.015em}
 html.igskin .subpage .hinfo .s{font-size:14px;color:var(--ink-2);margin-top:3px}
 html.igskin .subpage .handle{color:var(--ink-3)}
-html.igskin .subpage .panel#fxPanel{background:transparent;border:0;border-radius:0}
-html.igskin .subpage .panel#fxPanel .fxrow{padding:4px 0;border-bottom:1px solid var(--ig-hair)}
-html.igskin .subpage .panel#fxPanel .fxin{font-size:17px;height:46px}
 html.igskin .subpage textarea.area{background:var(--ig-fill);border:0;border-radius:12px;font-size:16px}
 html.igskin .subpage .empty{border:0;padding:40px 8px;color:var(--ink-2)}
 html.igskin .subpage .empty h3{font-family:var(--ui);font-size:17px;font-weight:700}
@@ -3081,6 +3074,341 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
   .todaybtn:hover,.addblock:hover,.dn-done:hover,.lnote-done:hover{filter:brightness(1.12)}
   .spback:hover,.brkreset:hover{color:var(--ink)}
 }
+/* ===========================================================
+   HOME — rebuilt on Instagram's furniture
+   The page answers three things without being read: what day it is and how
+   much of it is left, why you are doing this, and where to go next. Nothing
+   here owns any data of its own; it only shows what the app already keeps.
+   =========================================================== */
+html.igskin #v-today{padding-left:var(--gut);padding-right:var(--gut)}
+html.igskin #v-today.active>*{animation:none}
+html.igskin #v-today{--display:var(--ui)}
+
+/* ---------- the hero ---------- */
+.hhero{padding:16px 0 2px}
+.hhero .hhrow{display:flex;align-items:center;gap:12px}
+.hhero .hhrow .day-name{flex:1;min-width:0}
+/* the run is the one number worth carrying at the top: it is the only thing
+   on the page you stand to lose by doing nothing today */
+.runpill{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;
+  padding:6px 11px 6px 9px;border-radius:999px;
+  background:color-mix(in srgb,var(--h-warm) 16%,transparent);
+  color:var(--h-warm)}
+.runpill svg{width:14px;height:14px;fill:currentColor;stroke:none}
+.runpill b{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.runpill span{font-size:11.5px;font-weight:600;opacity:.85}
+html.igskin .hhero .eyebrow{display:block;font-family:var(--ui);font-size:12px;font-weight:600;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+html.igskin .day-name{font-size:30px;font-weight:800;letter-spacing:-.035em;
+  line-height:1.06;margin:6px 0 0}
+html.igskin .day-name.wrapday{font-size:23px}
+/* ---------- the line you keep in front of you ---------- */
+.qcard{position:relative;margin:16px 0 0;padding:18px 18px 15px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--ig-blue) 13%,var(--ig-fill-2)),
+    color-mix(in srgb,var(--h-rose) 11%,var(--ig-fill-2)) 62%,
+    color-mix(in srgb,var(--h-warm) 12%,var(--ig-fill-2)));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 8%,transparent)}
+.qcard .qmark{position:absolute;top:12px;right:14px;width:34px;height:34px;
+  fill:var(--ink);stroke:none;opacity:.09}
+.qtext{margin:0;font-size:17px;font-weight:600;line-height:1.42;letter-spacing:-.015em;
+  color:var(--ink);white-space:pre-wrap;position:relative;z-index:1}
+.qfoot{display:flex;align-items:center;gap:10px;margin-top:12px;min-height:26px}
+.qwho{flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qnext{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  color:var(--ink-2);background:var(--tint);transition:transform .25s var(--spring),color .2s}
+.qnext:active{transform:rotate(-150deg) scale(.9);color:var(--ig-blue)}
+.qnext svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- where to go ---------- */
+/* Home was legible but flat. These are the app's own thread colours, used at
+   low strength on the icon chips only: enough for the eye to tell the doors
+   apart at a glance, not enough to turn the page into a toy. */
+:root{
+  --h-blue:#4C86D4; --h-violet:#8A6FD6; --h-warm:#DE8C42;
+  --h-green:#2BA396; --h-rose:#C25E93;
+  --rec-a:#4F5BF7; --rec-b:#8A6FD6;
+}
+html[data-theme="dark"]{
+  --h-blue:#6FA3E8; --h-violet:#A48BEE; --h-warm:#EDA65F;
+  --h-green:#3FBFB1; --h-rose:#DB79AC;
+  --rec-a:#8E96FF; --rec-b:#C3A6FF;
+}
+.qact{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:16px 0 0}
+.qa{display:flex;align-items:center;gap:11px;text-align:left;padding:13px 13px;
+  border-radius:14px;background:var(--ig-fill);color:var(--ink);
+  transition:transform .18s var(--spring),background .2s}
+.qa:active{transform:scale(.97);background:var(--cell)}
+.qai{flex:0 0 auto;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--qc,var(--ink)) 15%,transparent);
+  color:var(--qc,var(--ink))}
+#qaRecord{--qc:var(--ig-blue)}
+#qaStudy {--qc:var(--h-blue)}
+#qaVision{--qc:var(--h-violet)}
+#notesOpen{--qc:var(--h-warm)}
+#qaGround{--qc:var(--h-green)}
+.qai svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.qat{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.qat b{font-size:14.5px;font-weight:700;letter-spacing:-.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qat i{font-style:normal;font-size:12px;font-weight:400;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* the record is the same tile as the rest, given the whole width because it
+   is the one you reach for most */
+.qa.wide{grid-column:1 / -1;padding:16px 14px}
+.qa.wide .qai{width:40px;height:40px}
+.qa.wide .qai svg{width:22px;height:22px}
+.qa.wide .qat b{font-size:16.5px;font-weight:800;letter-spacing:-.03em}
+.qa.wide .qat i{font-size:13px}
+.qa.wide{position:relative;z-index:1}
+.qadone{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:var(--h-green);color:#fff}
+.qadone svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.8;
+  stroke-linecap:round;stroke-linejoin:round}
+/* the bar runs along the bottom edge of the tile itself, so the day's
+   progress reads as part of the button rather than another widget under it */
+.qa.wide{overflow:hidden}
+.recbar{position:absolute;left:0;right:0;bottom:0;height:5px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
+.recbar i{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--rec-a),var(--rec-b));
+  transition:width .55s var(--ease)}
+.recbar.full i{background:var(--h-green)}
+
+/* ---------- the pictures ----------
+   A rail you push sideways, the way a feed moves. Each one snaps into place;
+   the order is shuffled on every open so the greeting keeps changing. */
+.hrail{margin:14px calc(var(--gut) * -1) 2px;position:relative}
+.hrtrack{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:0 var(--gut);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hrtrack::-webkit-scrollbar{display:none}
+.hrcard{flex:0 0 76%;scroll-snap-align:center;position:relative;aspect-ratio:5/3;
+  border-radius:16px;overflow:hidden;background:var(--ig-fill);
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+.hrcard img{width:100%;height:100%;object-fit:cover;display:block}
+.hrcard::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.34),transparent 46%)}
+@media (min-width:700px){.hrcard{flex-basis:46%}}
+
+/* the pictures, in settings */
+.hrgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.hrcell{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;
+  background:var(--ig-fill)}
+.hrcell img{width:100%;height:100%;object-fit:cover;display:block}
+.hrx{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(0,0,0,.6);color:#fff}
+.hrx svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;
+  stroke-linecap:round}
+.hrempty{grid-column:1 / -1;padding:16px 0;font-size:14.5px;color:var(--ink-2)}
+
+/* ---------- a heading over each graph ---------- */
+.gsec{margin:24px 0 0}
+.gtitle{display:flex;align-items:center;gap:9px;margin:0 0 10px;
+  font-size:17px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.gtitle::before{content:'';flex:0 0 auto;width:4px;height:17px;border-radius:2px;
+  background:var(--gc,var(--ig-blue))}
+html.igskin .gtitle{font-family:var(--ui)}
+.gtitle span{font-size:12px;font-weight:500;letter-spacing:0;color:var(--ink-3);
+  margin-left:auto;flex:0 0 auto}
+
+/* ---------- the grind check, over the week ---------- */
+.gcard{display:block;width:100%;text-align:left;margin:0;padding:15px 16px 13px;
+  border-radius:16px;background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair);
+  transition:transform .18s var(--spring)}
+html[data-theme="dark"] .gcard{box-shadow:inset 0 0 0 1px var(--line)}
+.gcard:active{transform:scale(.99)}
+.gctop{display:flex;align-items:flex-start;gap:12px}
+.gct{flex:1;min-width:0}
+html.igskin .gct .eyebrow{font-family:var(--ui);font-size:12px;font-weight:600;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.gcbig{display:flex;align-items:baseline;gap:7px;margin-top:5px}
+.gcbig b{font-size:27px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+.gcbig span{font-size:12.5px;color:var(--ink-2)}
+.gcrun{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:1px;
+  padding:5px 11px;border-radius:11px;background:var(--tint)}
+.gcrun b{font-size:17px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
+.gcrun.hot b{color:var(--ig-blue)}
+.gcrun span{font-size:10.5px;font-weight:500;color:var(--ink-3)}
+.gcbars{display:flex;align-items:flex-end;gap:6px;height:84px;margin:14px 0 0}
+.gbcol{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.gbtrack{width:100%;flex:1;border-radius:6px;background:var(--cell);
+  display:flex;align-items:flex-end;overflow:hidden}
+.gbfill{display:block;width:100%;border-radius:6px;background:var(--ink-3);
+  transition:height .5s var(--ease),background .3s}
+.gbcol.hit .gbfill{background:var(--ig-blue)}
+.gbcol.today .gbtrack{box-shadow:0 0 0 1.5px var(--ink)}
+.gbl{font-size:10px;font-weight:600;color:var(--ink-3);letter-spacing:0}
+.gbcol.today .gbl{color:var(--ink)}
+.gcfoot{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:12.5px;color:var(--ink-3)}
+.gcfoot b{color:var(--ink);font-weight:700}
+.gcfoot .right{margin-left:auto}
+
+/* ---------- the streak grid, on Instagram's card ---------- */
+html.igskin .streak{margin:0 0 26px;padding:15px 16px 13px;border-radius:16px;
+  background:var(--ig-fill-2);border:0;box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"].igskin .streak{box-shadow:inset 0 0 0 1px var(--line)}
+html.igskin .streak.clean{box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
+html.igskin .sfoot{font-size:12.5px}
+html.igskin .sfoot b{font-weight:700}
+html.igskin .run{border-radius:12px;background:var(--ig-fill);border:0;margin-top:16px}
+
+/* two columns once there is room for them */
+@media (min-width:700px) and (min-height:600px){
+  .qact{grid-template-columns:repeat(3,1fr)}
+  .qa.wide{grid-column:1 / -1}
+}
+@media (min-width:1000px) and (min-height:600px){
+  .hhring,.hhring .ring{width:112px;height:112px}
+  .qtext{font-size:19px}
+}
+
+/* ===========================================================
+   HABITS — ticked off from the record
+   =========================================================== */
+.habrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  padding:14px 14px;margin:0 0 22px;border-radius:14px;background:var(--ig-fill);
+  color:var(--ink);transition:transform .18s var(--spring),background .2s}
+.habrow:active{transform:scale(.98);background:var(--cell)}
+.hbi{flex:0 0 auto;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  background:var(--tint)}
+.hbi svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.hbt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hbt b{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.hbt i{font-style:normal;font-size:12.5px;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbn{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ink-2);
+  padding:4px 10px;border-radius:9px;background:var(--tint)}
+.hbn.full{background:var(--ig-blue);color:#fff}
+.hbg{flex:0 0 auto;opacity:.55}
+.hbg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+
+.habn{flex:0 0 auto;font-size:14px;font-weight:700;color:var(--ink-2)}
+.habprog{height:4px;border-radius:2px;background:var(--cell);overflow:hidden;margin:2px 0 20px}
+.habprog i{display:block;height:100%;width:0;border-radius:2px;background:var(--ig-blue);
+  transition:width .45s var(--ease)}
+.hsec{margin:0 0 22px}
+.hsec>.eyebrow{display:block;margin-bottom:11px}
+html.igskin .hsec>.eyebrow{font-family:var(--ui);font-size:15px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+.hitem{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  padding:12px 0;position:relative;color:var(--ink);
+  transition:opacity .25s var(--ease)}
+.hitem::after{content:'';position:absolute;left:37px;right:0;bottom:0;height:1px;
+  background:var(--ig-hair)}
+.hsec .hitem:last-child::after{display:none}
+.hbox{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1.8px var(--line-2);color:transparent;
+  transition:background .2s var(--ease),box-shadow .2s var(--ease),color .2s,transform .2s var(--spring)}
+.hbox svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.hitem.on .hbox{background:var(--ig-blue);box-shadow:none;color:#fff}
+.hitem:active .hbox{transform:scale(.86)}
+.hitem .hl{flex:1;min-width:0;font-size:15px;font-weight:500;letter-spacing:-.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hitem.on .hl{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.hitem .hc{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--c,var(--ink-3))}
+.hitem.rest{opacity:.5}
+.hitem.rest .hbox{box-shadow:inset 0 0 0 1.8px var(--ig-hair)}
+.hitem .hr{flex:0 0 auto;font-size:11.5px;font-weight:600;color:var(--ink-3)}
+.hdivrow{display:flex;align-items:center;gap:10px;padding:14px 0 8px}
+.hdivrow span{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3);flex:0 0 auto}
+.hdivrow i{flex:1;height:1px;background:var(--ig-hair)}
+
+
+/* ===========================================================
+   GRIND CHECK — the prompt itself
+   It sits above every sheet in the app, because it has to be able to reach
+   you wherever you are. Nothing behind it is touched or closed.
+   =========================================================== */
+.grask{position:fixed;inset:0;z-index:98;display:none;align-items:flex-end;
+  justify-content:center;padding:0;background:rgba(0,0,0,.62);
+  opacity:0;transition:opacity .28s var(--ease)}
+.grask.on{display:flex;opacity:1}
+@media (min-width:640px){.grask{align-items:center;padding:24px}}
+.grbox{width:100%;max-width:460px;background:var(--ig-sheet);color:var(--ink);
+  border-radius:20px 20px 0 0;padding:20px var(--gut) calc(20px + env(safe-area-inset-bottom));
+  transform:translateY(14px);transition:transform .32s var(--ig-slide,cubic-bezier(.22,.9,.28,1))}
+.grask.on .grbox{transform:none}
+@media (min-width:640px){.grbox{border-radius:20px;padding-bottom:20px}}
+.grtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+html.igskin .grtop .eyebrow{flex:1;font-family:var(--ui);font-size:12px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.grclock{position:relative;flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center}
+.grclock i{position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(var(--ig-blue) calc(var(--p,1)*360deg),var(--cell) 0)}
+.grclock i::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--ig-sheet)}
+.grclock span{position:relative;z-index:1;font-size:12px;font-weight:700;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.grask.late .grclock i{background:conic-gradient(var(--ig-red) calc(var(--p,1)*360deg),var(--cell) 0)}
+.grask.late .grclock span{color:var(--ig-red)}
+.grbox h3{margin:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-.028em;line-height:1.25}
+.grlevel{margin-bottom:20px}
+html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink);margin-bottom:11px}
+.grsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grstep{display:flex;flex-direction:column;align-items:center;gap:3px;padding:13px 6px;
+  border-radius:13px;background:var(--ig-fill);color:var(--ink);
+  transition:transform .18s var(--spring),background .2s,color .2s}
+.grstep:active{transform:scale(.95)}
+.grstep b{font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.grstep span{font-size:10.5px;font-weight:500;color:var(--ink-2);text-align:center;line-height:1.25}
+.grstep.on{background:var(--ig-blue);color:#fff}
+.grstep.on span{color:rgba(255,255,255,.85)}
+.gracts{display:flex;gap:9px}
+.gracts .btn{flex:1;height:50px;border-radius:12px;font-size:16px;font-weight:600;
+  background:var(--ig-fill);color:var(--ink);border:0}
+.gracts .btn:active{background:var(--cell)}
+.gracts .btn:last-child{background:var(--ig-blue);color:#fff}
+.gracts .btn:last-child:active{background:var(--ig-blue-2)}
+
+/* ---------- the hours, in settings ---------- */
+.grwrow{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--ig-hair)}
+.grwrow:last-child{border-bottom:0}
+.grwrow .input{flex:1;min-width:0;height:44px}
+.grwrow .to{flex:0 0 auto;font-size:13px;color:var(--ink-2)}
+.grwdel{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+  color:var(--ink-3);transition:background .2s,color .2s}
+.grwdel:active{background:var(--tint);color:var(--ig-red)}
+.grwdel svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.grwempty,.qxempty{padding:16px 0;font-size:14.5px;color:var(--ink-2);line-height:1.45}
+
+/* ---------- your lines, in settings ---------- */
+.qxrow{display:flex;align-items:flex-start;gap:9px;padding:11px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.qxrow:last-child{border-bottom:0}
+.qxf{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.qxf .input{width:100%}
+.qxf textarea.input{min-height:74px}
+.qxdel{flex:0 0 auto;width:32px;height:32px;margin-top:8px;border-radius:50%;
+  display:grid;place-items:center;color:var(--ink-3);transition:background .2s,color .2s}
+.qxdel:active{background:var(--tint);color:var(--ig-red)}
+.qxdel svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ===========================================================
+   ONE CELL — read first, edited only when asked
+   =========================================================== */
+.cellwhere{margin:-10px 0 22px;font-size:13px;font-weight:500;color:var(--ink-3);
+  text-align:center}
+#gndCellEditWrap{margin-top:9px}
+#gndCellEditWrap .btn{width:100%}
+.confword{margin:11px 0 0;font-size:14px;font-weight:600;color:var(--ink-2);text-align:center}
+.srcview{display:flex;flex-direction:column}
+.srcline{display:flex;align-items:flex-start;gap:10px;padding:11px 0;
+  border-bottom:1px solid var(--ig-hair);font-size:15px;line-height:1.4}
+.srcline:last-child{border-bottom:0}
+.srcline i{flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--ink-3);
+  margin-top:8px}
+.srcline span{flex:1;min-width:0;word-break:break-word}
+.srcnone{padding:12px 0;font-size:14.5px;color:var(--ink-3)}
+
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -3130,69 +3458,103 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
   </header>
 
   <main>
-    <!-- ===== TODAY ===== -->
+    <!-- ===== TODAY =====
+         The first thing you see. It answers three things in one screen: what
+         day it is and how much of it is left, why you are doing this at all,
+         and where to go next. Everything you can act on is one tap away. -->
     <section class="view active" id="v-today">
       <div class="tcol" id="tSide">
-      <div class="head">
-        <span class="eyebrow" id="heroEyebrow">—</span>
-        <h2 class="day-name" id="heroDate">—</h2>
+
+      <!-- the day leads the page -->
+      <div class="hhero">
+        <span class="eyebrow" id="heroEyebrow">&mdash;</span>
+        <div class="hhrow">
+          <h2 class="day-name" id="heroDate">&mdash;</h2>
+          <span class="runpill" id="runPill" hidden>
+            <svg viewBox="0 0 24 24"><path d="M12 3s5.5 4.2 5.5 9a5.5 5.5 0 0 1-11 0c0-1.6.6-3 1.4-4.2.3 1.3 1.2 2.2 2.2 2.2 1.4 0 2-1.2 2-2.7C12.1 5.9 12 4.4 12 3z"/></svg>
+            <b id="runPillN">0</b><span>day run</span>
+          </span>
+        </div>
         <div class="run" id="runCard" hidden>
-          <div class="runtop"><span class="n" id="runN">—</span><span class="r" id="runR">—</span></div>
+          <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
           <div class="runbar"><i id="runFill"></i></div>
         </div>
-        <div class="prog">
-          <div class="ringwrap">
-            <svg class="ring" viewBox="0 0 120 120">
-              <circle class="rbg" cx="60" cy="60" r="52"></circle>
-              <circle class="rfg" cx="60" cy="60" r="52" id="ringFg"></circle>
-            </svg>
-            <div class="ringtxt"><b id="ringN">0</b><span id="ringD">of 0</span></div>
-          </div>
-          <div class="progside">
-            <div class="pline" id="pLine">—</div>
-            <div class="psub" id="pSub"></div>
-          </div>
-        </div>
       </div>
 
-      <div class="desk" id="deskCard">
-        <div class="dktop">
-          <div class="dkt">
-            <span class="eyebrow">Desk time</span>
-            <div class="dkclock" id="deskClock">0:00:00</div>
-            <div class="dksub" id="deskSub">Tap to start</div>
-          </div>
-          <button class="dkbtn" id="deskBtn" aria-label="Start the clock">
-            <svg class="py" viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z"/></svg>
-            <svg class="pz" viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1.4"/><rect x="13.5" y="5" width="4" height="14" rx="1.4"/></svg>
+      <!-- what you are doing it for, in your own pictures. Shuffled, so the
+           one that greets you is rarely the one you saw last time. -->
+      <div class="hrail" id="heroRail" hidden>
+        <div class="hrtrack" id="hrTrack"></div>
+      </div>
+
+      <!-- the line you keep in front of you -->
+      <div class="qcard" id="quoteCard">
+        <svg class="qmark" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5C6.9 7.9 5.5 10 5.5 12.6c0 .4 0 .8.1 1.1A3 3 0 1 0 9 12.2c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6zM19 6.5c-2.6 1.4-4 3.5-4 6.1 0 .4 0 .8.1 1.1a3 3 0 1 0 3.4-1.5c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6z"/></svg>
+        <p class="qtext" id="quoteText">&mdash;</p>
+        <div class="qfoot">
+          <span class="qwho" id="quoteWho"></span>
+          <button class="qnext" id="quoteNext" aria-label="Another line">
+            <svg viewBox="0 0 24 24"><path d="M3.6 12a8.4 8.4 0 1 1 2.7 6.2"/><path d="M3.3 19.1v-4.4h4.4"/></svg>
           </button>
         </div>
-        <div class="dkbars" id="deskBars"></div>
-        <div class="dkfoot">
-          <span><b id="deskWeek">0m</b> this week</span>
-          <span class="right"><b id="deskAvg">0m</b> a day</span>
-        </div>
       </div>
 
-      <button class="streak" id="streakCard">
-        <div class="sgrid" id="sGrid"></div>
-        <div class="sfoot">
-          <span><b id="sPerfect">0</b> perfect days</span>
-          <span class="right"><b id="sRun">0</b> in a row
-            <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
-        </div>
-      </button>
+      <!-- everywhere else, one tap away. The record leads it. -->
+      <div class="qact">
+        <button class="qa wide" id="qaRecord">
+          <span class="qai"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+          <span class="qat"><b>Record the day</b><i id="qaRecordSub">Tick the habits, write what you got done</i></span>
+          <span class="qadone" id="qaRecordDone" hidden><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+          <span class="recbar" id="recBar"><i id="recBarFill"></i></span>
+        </button>
+
+        <button class="qa" id="qaStudy">
+          <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg></span>
+          <span class="qat"><b>Study</b><i id="qaStudySub">Sessions</i></span>
+        </button>
+        <button class="qa" id="qaVision">
+          <span class="qai"><svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg></span>
+          <span class="qat"><b>Vision</b><i>Why you started</i></span>
+        </button>
+        <button class="qa" id="notesOpen">
+          <span class="qai"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h4"/></svg></span>
+          <span class="qat"><b>Notes</b><i id="notesCount">&mdash;</i></span>
+        </button>
+        <button class="qa" id="qaGround">
+          <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>
+          <span class="qat"><b>Portions</b><i>Ground covered</i></span>
+        </button>
       </div>
 
-      <div class="tcol" id="tMain">
-      <button class="notesrow" id="notesOpen">
-        <span class="nrico"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h4"/></svg></span>
-        <span class="nrt">Notes</span>
-        <span class="nrn" id="notesCount"></span>
-        <span class="go"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
-      </button>
-      <div id="todayWrap"></div>
+      <!-- the grind check: how honest the week has been -->
+      <div class="gsec">
+        <h3 class="gtitle">How hard you worked<span>Last 7 days</span></h3>
+        <button class="gcard" id="grindCard">
+          <div class="gctop">
+            <div class="gct">
+              <div class="gcbig"><b id="grindPct">&mdash;</b><span id="grindPctSub">this week</span></div>
+            </div>
+            <div class="gcrun"><b id="grindRun">0</b><span>day run</span></div>
+          </div>
+          <div class="gcbars" id="grindBars"></div>
+          <div class="gcfoot">
+            <span><b id="grindToday">0</b> of <b id="grindTodayN">0</b> today</span>
+            <span class="right" id="grindState">Off</span>
+          </div>
+        </button>
+      </div>
 
+      <div class="gsec" style="--gc:var(--h-warm)">
+        <h3 class="gtitle">Every day you kept<span>This year</span></h3>
+        <button class="streak" id="streakCard">
+          <div class="sgrid" id="sGrid"></div>
+          <div class="sfoot">
+            <span><b id="sPerfect">0</b> perfect days</span>
+            <span class="right"><b id="sRun">0</b> in a row
+              <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
+          </div>
+        </button>
+      </div>
       </div>
     </section>
 
@@ -3348,19 +3710,24 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
           <span class="n">Habits &amp; dividers</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="smrow" data-sp="focus">
-          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6"/></svg></span>
-          <span class="n">Pre-focus checklist</span>
+        <button class="smrow" data-sp="hero">
+          <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 17 4.5-4.5L12 16l3-2.5 5 4.5"/></svg></span>
+          <span class="n">Home pictures</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="quote">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M9.5 6.5C6.9 7.9 5.5 10 5.5 12.6c0 .4 0 .8.1 1.1A3 3 0 1 0 9 12.2c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6zM19 6.5c-2.6 1.4-4 3.5-4 6.1 0 .4 0 .8.1 1.1a3 3 0 1 0 3.4-1.5c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6z"/></svg></span>
+          <span class="n">Your lines</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
+        <button class="smrow" data-sp="grind">
+          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.4"/></svg></span>
+          <span class="n">Grind check</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="dayst">
           <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></span>
           <span class="n">When your day starts</span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
-        </button>
-        <button class="smrow" data-sp="desk">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 19.5v-6.2M20.5 19.5v-6.2"/><path d="M2.5 13.3h19"/><path d="M6 13.3V8.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4.8"/></svg></span>
-          <span class="n">Desk time</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="run">
@@ -3414,21 +3781,6 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
         </div>
       </section>
 
-      <section class="subpage" id="sp-focus">
-        <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Pre-focus</h2></div>
-        </header>
-        
-        <div class="group">
-          <div class="panel" id="fxPanel"></div>
-          <div style="display:flex;gap:8px;margin-top:9px">
-            <button class="btn ghost" id="fxAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
-            <button class="btn ghost" id="fxReset">Defaults</button>
-          </div>
-        </div>
-      </section>
-
       <section class="subpage" id="sp-run">
         <header class="sphead">
           <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
@@ -3474,25 +3826,87 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
         </div>
       </section>
 
-      <section class="subpage" id="sp-desk">
+      <section class="subpage" id="sp-hero">
         <header class="sphead">
           <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Desk time</h2></div>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Home pictures</h2></div>
         </header>
         <div class="group">
           <div class="panel">
             <div class="srow">
-              <div class="t"><div class="n" id="deskStat">&mdash;</div>
-                <div class="d">The clock on Today can be started and paused, never zeroed. That is what these are for.</div></div>
-            </div>
-            <div class="btnrow">
-              <button class="btn ghost" id="deskResetDay">Clear today</button>
-            </div>
-            <div class="btnrow" style="border-bottom:0">
-              <button class="btn ghost" id="deskClearAll">Clear the whole log</button>
+              <div class="t"><div class="n">Show them on Home</div></div>
+              <button class="switch" id="hrSw" role="switch"></button>
             </div>
           </div>
-          <p class="hint">Desk time is kept on its own. Clearing it leaves every habit, mark, note and session exactly as it is.</p>
+        </div>
+        <div class="group">
+          <span class="eyebrow" id="hrCount">Pictures</span>
+          <div class="hrgrid" id="hrGrid"></div>
+          <div style="display:flex;gap:8px;margin-top:11px">
+            <button class="btn ghost" id="hrAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add pictures</button>
+          </div>
+          <input type="file" id="hrFile" accept="image/*" multiple hidden>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-quote">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Your lines</h2></div>
+        </header>
+        <div class="group">
+          <div class="panel" id="qxPanel"></div>
+          <div style="display:flex;gap:8px;margin-top:9px">
+            <button class="btn ghost" id="qxAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a line</button>
+          </div>
+          <div class="panel" style="margin-top:14px">
+            <div class="srow">
+              <div class="t"><div class="n">How it picks</div></div>
+              <div class="seg-ctrl" id="qModeCtrl">
+                <button data-q="day">One a day</button><button data-q="open">Every open</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-grind">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Grind check</h2></div>
+        </header>
+        <div class="group">
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Ask me if I am working hard</div></div>
+              <button class="switch" id="grSw" role="switch"></button>
+            </div>
+            <div class="srow">
+              <div class="t"><div class="n">Ask every</div></div>
+              <div class="numbox"><input class="numin" id="grEvery" type="number" min="1" max="240" step="1" inputmode="numeric"><span class="u">min</span></div>
+            </div>
+            <div class="srow">
+              <div class="t"><div class="n">Answer within</div></div>
+              <div class="numbox"><input class="numin" id="grWindow" type="number" min="10" max="600" step="5" inputmode="numeric"><span class="u">sec</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="eyebrow">Hours</span>
+          <div class="panel" id="grWinPanel"></div>
+          <div style="display:flex;gap:8px;margin-top:9px">
+            <button class="btn ghost" id="grWinAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a stretch</button>
+          </div>
+        </div>
+        <div class="group">
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n" id="grStat">&mdash;</div></div>
+            </div>
+            <div class="btnrow" style="border-bottom:0">
+              <button class="btn ghost" id="grClear">Clear the grind log</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -3955,22 +4369,6 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
   </div>
 </div>
 
-<div class="sheet" id="focusSheet">
-  <div class="grabber"></div>
-  <h3>Pre-focus</h3>
-  <div class="fask" id="focusAsk" hidden>
-    <p id="focusAskTxt">—</p>
-    <div class="row">
-      <button class="alt" id="focusClear">Clear them</button>
-      <button id="focusKeep">Continue</button>
-    </div>
-  </div>
-  <div class="flist" id="focusList"></div>
-  <div class="sheet-actions">
-    <button class="btn" id="focusDone">Done</button>
-  </div>
-</div>
-
 <div class="sheet" id="pauseSheet">
   <div class="grabber"></div>
   <h3>Why the break?</h3>
@@ -4055,20 +4453,22 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
 <div class="sheet igpop" id="gndCellSheet">
   <div class="grabber"></div>
   <h3 id="gndCellTitle">Topic</h3>
+  <div class="cellwhere" id="gndCellWhere">&mdash;</div>
   <div class="field">
-    <span class="eyebrow">How sure are you</span>
     <div class="confrow" id="gndConf"></div>
-    <p class="hint" id="gndConfWord">Not started</p>
+    <p class="confword" id="gndConfWord">Not started</p>
   </div>
   <div class="field">
     <span class="eyebrow">Sources</span>
-    <div class="panel" id="gndSrcPanel"></div>
-    <button class="btn ghost" id="gndSrcAdd" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a source</button>
+    <div class="srcview" id="gndSrcView"></div>
+    <div class="panel" id="gndSrcPanel" hidden></div>
+    <button class="btn ghost" id="gndSrcAdd" style="margin-top:9px" hidden><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a source</button>
   </div>
-  <div class="sheet-actions">
+  <div class="sheet-actions" id="gndCellActs" hidden>
     <button class="btn ghost" id="gndCellCancel">Cancel</button>
     <button class="btn" id="gndCellSave">Save</button>
   </div>
+  <div id="gndCellEditWrap"><button class="btn ghost" id="gndCellEdit">Edit sources</button></div>
 </div>
 
 <div class="sheet fullsheet" id="recSheet">
@@ -4082,20 +4482,18 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
     <div class="stripflat"><div class="daystrip" id="recStrip"></div></div>
   </div>
   <div class="fsbody">
+  <button class="habrow" id="recHabitsOpen">
+    <span class="hbi"><svg viewBox="0 0 24 24"><path d="m3 7 2 2 4-4"/><path d="m3 17 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/></svg></span>
+    <span class="hbt"><b>Habits</b><i id="recHabitsSub">&mdash;</i></span>
+    <span class="hbn" id="recHabitsN">0/0</span>
+    <span class="hbg"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
+  </button>
   <div class="field">
     <span class="eyebrow">Completed</span>
     <div class="rlist" id="recDone"></div>
     <div class="addrow">
       <input class="input" id="recAdd" placeholder="What you finished" maxlength="90" autocomplete="off">
       <button class="addbtn" id="recAddBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-    </div>
-  </div>
-  <div class="field">
-    <span class="eyebrow">Unplanned</span>
-    <div class="rlist" id="recExtra"></div>
-    <div class="addrow">
-      <input class="input" id="recAddX" placeholder="Something you did that was not planned" maxlength="90" autocomplete="off">
-      <button class="addbtn" id="recAddXBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
     </div>
   </div>
   <div class="field" id="recPauseWrap">
@@ -4107,14 +4505,57 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
     <textarea class="input area" id="recFeedback" placeholder="What slipped, and what to change tomorrow." maxlength="1200"></textarea>
   </div>
   <button class="btn ghost fbopen" id="recFeedbackAll">All feedback</button>
-  <!-- every day you have written up, opened in place — never a sheet on a sheet -->
-  <div class="field fball" id="recFbWrap" hidden>
-    <div class="fbhead">
-      <span class="eyebrow" id="recFbTitle">All feedback</span>
+  </div>
+</div>
+
+<!-- ===== ALL FEEDBACK — its own page, opened over the record ===== -->
+<div class="sheet fullsheet igpop" id="fbSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="fbBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3 id="recFbTitle">All feedback</h3>
       <button class="fbmini" id="recFbCopy">Copy all</button>
     </div>
-    <div id="recFbBody"></div>
   </div>
+  <div class="fsbody"><div id="recFbBody"></div></div>
+</div>
+
+<!-- ===== HABITS — ticked off from the record, on its own page ===== -->
+<div class="sheet fullsheet igpop" id="habSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="habBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3 id="habWhen">Habits</h3>
+      <span class="habn" id="habCount">0/0</span>
+    </div>
+  </div>
+  <div class="fsbody">
+    <div class="habprog"><i id="habFill"></i></div>
+    <div id="habWrap"></div>
+  </div>
+</div>
+
+<!-- ===== GRIND CHECK =====
+     Rides above every page and every sheet, because the whole point is that it
+     can reach you wherever you are. It never touches what is underneath. -->
+<div class="grask" id="grAsk">
+  <div class="grbox">
+    <div class="grtop">
+      <span class="eyebrow">Grind check</span>
+      <div class="grclock"><i id="grRing"></i><span id="grLeft">60</span></div>
+    </div>
+    <h3 id="grQ">Are you working hard right now?</h3>
+    <div class="grlevel" id="grLevel" hidden>
+      <div class="grsteps">
+        <button class="grstep" data-l="1"><b>1</b><span>Ticking over</span></button>
+        <button class="grstep" data-l="2"><b>2</b><span>Properly on it</span></button>
+        <button class="grstep" data-l="3"><b>3</b><span>Flat out</span></button>
+      </div>
+    </div>
+    <div class="gracts" id="grActs">
+      <button class="btn ghost" id="grNo">No</button>
+      <button class="btn" id="grYes">Yes</button>
+    </div>
   </div>
 </div>
 
@@ -4133,12 +4574,13 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
    forgotten in the upgrade — which is exactly how `ground` came to be asked
    for on a database that had never been told to make it. */
 const STORE_KEYS={habits:'id',records:'key',notes:'date',meta:'key',plans:'key',
-  sets:'id',dnotes:'id',vision:'id',blocks:'id',days:'date',ground:'id',study:'date'};
+  sets:'id',dnotes:'id',vision:'id',blocks:'id',days:'date',ground:'id',study:'date',
+  grind:'date',hero:'id'};
 const DB_NAME='dayflow', STORES=Object.keys(STORE_KEYS);
 /* Raised whenever a store is added. Nothing already saved is touched: the
    upgrade only creates what is missing and leaves every existing store, and
    everything in it, exactly as it was. */
-const DB_VERSION=9;
+const DB_VERSION=11;
 let db=null;
 function openDB(){
   return new Promise((res,rej)=>{
@@ -4343,7 +4785,6 @@ function anim(el,cls){
 /* ===========================================================
    Today — only today, nothing else to scroll through
    =========================================================== */
-const RING_C=326.7;              /* 2 * PI * r, with r = 52 */
 /* the record reaches back as far as its own card is wide, so a square is the
    same size on every screen and the row always ends flush with the edge */
 const SQ_CELL=19.5;
@@ -4452,18 +4893,6 @@ async function deskRollover(){
   D.date=TSTR;
   await deskSaveState();
 }
-async function deskToggle(){
-  if(D.running){
-    await deskBank();
-    D.running=false;
-    buzz(HAPTIC.untick);
-  }else{
-    D.running=true; D.since=Date.now(); D.date=TSTR; deskFlushed=Date.now();
-    buzz(HAPTIC.tick);
-  }
-  await deskSaveState();
-  deskLoop(); renderDesk();
-}
 function deskLoop(){
   clearInterval(deskTick); deskTick=null;
   if(!D.running) return;
@@ -4500,42 +4929,11 @@ function deskWeek(){
 }
 const deskTotal=()=>[...deskDays.values()].reduce((n,v)=>n+v,0)
   + (D.running ? Math.max(0,Date.now()-D.since) : 0);
-function renderDesk(){
-  const card=$('#deskCard');
-  if(!card) return;
-  card.classList.toggle('live',!!D.running);
-  paintDeskClock();
-  const btn=$('#deskBtn');
-  btn.classList.toggle('on',!!D.running);
-  btn.setAttribute('aria-label',D.running?'Pause the clock':'Start the clock');
-  const week=deskWeek(), total=week.reduce((n,x)=>n+x.ms,0);
-  const peak=Math.max(1,...week.map(x=>x.ms));
-  $('#deskBars').innerHTML=week.map(x=>
-    '<div class="dbcol'+(x.today?' today':'')+'">'+
-      '<div class="dbtrack"><i class="dbfill" style="height:'+
-        (x.ms? Math.max(7,Math.round(100*x.ms/peak)) : 0)+'%"></i></div>'+
-      '<span class="dbl">'+chipDay(x.d.getDay())+'</span>'+
-    '</div>').join('');
-  $('#deskWeek').textContent=fmtDeskShort(total);
-  const sat=week.filter(x=>x.ms>0).length;
-  $('#deskAvg').textContent=sat?fmtDeskShort(total/sat):'0m';
-  $('#deskSub').textContent = D.running ? 'Running'
-    : (deskLive(TSTR) ? 'Paused' : 'Tap to start');
-}
-/* clearing, which is only ever reached from Settings */
-async function deskResetToday(){
-  if(D.running){ D.running=false; await deskSaveState(); deskLoop(); }
-  await deskWrite(TSTR,0);
-  renderDesk(); renderSettings();
-}
-async function deskClearAll(){
-  D={running:false,since:0,date:''};
-  await deskSaveState(); deskLoop();
-  deskDays=new Map();
-  await dbClear('study');
-  renderDesk(); renderSettings();
-}
-$('#deskBtn').addEventListener('click',()=>{ deskToggle(); });
+/* The clock's card has left Home and its panel has left Settings, so there is
+   nothing to draw. The log underneath is untouched: every millisecond already
+   recorded is still in the `study` store, still counted, and still carried in
+   the export. Restoring the card is a matter of putting this body back. */
+function renderDesk(){}
 
 /* the stretch of days you set in settings, counted off at the top */
 function renderRun(){
@@ -4561,146 +4959,299 @@ function renderToday(){
   const t=dayTally(TODAY), dow=TODAY.getDay();
   placeNote();
   renderRun();
-  renderDesk();
-  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase()+
-    (sets.length>1&&activeSet()?' · '+activeSet().name.toUpperCase():'');
+  /* the date, and nothing beside it */
+  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase();
   $('#heroDate').textContent=dayFull(dow);
   $('#heroDate').classList.toggle('wrapday',dayShifted());
 
-  const p=t.req? t.done/t.req : (t.live?1:0);
-  $('#ringFg').style.strokeDashoffset=RING_C*(1-p);
-  $('#ringN').textContent=t.req?t.done:'—';
-  $('#ringD').textContent=t.req?('of '+t.req):(t.live?'rest day':'no habits');
+  /* where the day stands is said once, under the record button */
+  const left=t.req-t.done, all=t.req>0&&left===0;
+  $('#qaRecordSub').textContent = !t.live ? 'Add your habits and start the day'
+    : !t.req ? 'Rest day \u00B7 write up what you did'
+    : all ? 'All '+t.req+' done \u00B7 write up the day'
+    : t.done+' of '+t.req+' habits ticked';
+  $('#qaRecordDone').hidden=!all;
+  /* the bar under the tile fills as the day does */
+  const bar=$('#recBar');
+  bar.hidden=!t.req;
+  bar.classList.toggle('full',all);
+  $('#recBarFill').style.width=(t.req? 100*t.done/t.req : 0)+'%';
 
-  const left=t.req-t.done;
-  let line,sub;
-  if(!t.live){ line='Start here'; sub='Add a habit and today becomes something you can close out.'; }
-  else if(!t.req){ line='Rest day'; sub='Nothing is due. Today still counts on the board.'; }
-  else if(left===0){ line='Day closed'; sub='Everything due today is ticked off.'; }
-  else{ line=left+' left'; sub='Clear them and today fills in below.'; }
-  $('#pLine').textContent=line;
-  $('#pSub').textContent=sub;
+  /* the run, carried beside the date */
+  const run=perfectRun(), pill=$('#runPill');
+  pill.hidden=run<1;
+  $('#runPillN').textContent=run;
+  const sess=sessionsOn(TSTR), sdone=sess.filter(sessionDone).length;
+  $('#qaStudySub').textContent = sess.length ? sdone+' of '+sess.length+' sessions' : 'No sessions yet';
+
+  renderQuote();
+  renderGrindCard();
   renderStreak();
+}
 
-  const wrap=$('#todayWrap'); wrap.innerHTML='';
-  if(!habits.length){
-    wrap.innerHTML='<div class="empty"><h3>No habits yet</h3>'+
-      '<p>Add two or three you actually want to keep. Today\'s list is built from them.</p></div>';
+/* true only when the caret is actually inside a field in this panel: a list
+   must never redraw itself out from under someone who is typing in it */
+function typing(p){
+  if(!p) return false;
+  const a=document.activeElement;
+  return !!(a && p.contains(a) && (a.tagName==='INPUT'||a.tagName==='TEXTAREA'));
+}
+
+/* ===========================================================
+   THE LINE — a quote of your own, kept where you will see it
+   The list lives in settings alongside everything else, so nothing new is
+   stored and no existing record is touched by any of this.
+   =========================================================== */
+const FALLBACK_QUOTES=[
+  {text:'The work is the only thing that argues back.',author:''},
+  {text:'You do not rise to the level of your goals. You fall to the level of your systems.',author:'James Clear'},
+  {text:'Discipline is choosing between what you want now and what you want most.',author:''},
+  {text:'It is not that we have little time, but more that we waste a good deal of it.',author:'Seneca'},
+  {text:'Nobody cares. Work harder.',author:''},
+  {text:'Small things done daily beat big things done once.',author:''}
+];
+const quoteList=()=>Array.isArray(S.quotes)?S.quotes:[];
+const liveQuotes=()=>{
+  const mine=quoteList().filter(q=>(q.text||'').trim());
+  return mine.length?mine:FALLBACK_QUOTES;
+};
+const makeQuote=(t,a)=>({id:uid(),text:t||'',author:a||''});
+/* a saved list that arrived malformed is tidied before anything reads it */
+function normalizeQuotes(){
+  let changed=false;
+  if(!Array.isArray(S.quotes)){ S.quotes=[]; changed=true; }
+  else{
+    const was=JSON.stringify(S.quotes);
+    S.quotes=S.quotes.filter(x=>x&&typeof x==='object').map(x=>({
+      id:x.id||uid(),
+      text:String(x.text==null?'':x.text).slice(0,400),
+      author:String(x.author==null?'':x.author).slice(0,80)}));
+    if(JSON.stringify(S.quotes)!==was) changed=true;
+  }
+  if(S.quoteMode!=='open' && S.quoteMode!=='day'){ S.quoteMode='day'; changed=true; }
+  return changed;
+}
+/* One a day picks by the date, so the same line stands all day and changes of
+   its own accord tomorrow. Every open simply shuffles. */
+let quoteNudge=0;
+function currentQuote(){
+  const list=liveQuotes();
+  if(!list.length) return null;
+  if(S.quoteMode==='open') return list[Math.floor(Math.random()*list.length)];
+  const seed=Math.floor(TODAY.getTime()/86400000)+quoteNudge;
+  return list[((seed%list.length)+list.length)%list.length];
+}
+function renderQuote(){
+  const card=$('#quoteCard'); if(!card) return;
+  const q=currentQuote();
+  if(!q){ card.hidden=true; return; }
+  card.hidden=false;
+  $('#quoteText').textContent=(q.text||'').trim();
+  const who=(q.author||'').trim();
+  $('#quoteWho').textContent = who ? '\u2014 '+who : '';
+  $('#quoteNext').hidden = liveQuotes().length<2;
+}
+/* Home is the page you land on, so getting anywhere from it is one tap.
+   The record is the one you reach for most, so it is the big one. */
+const goTab=v=>{ const t=$('.tab[data-v="'+v+'"]'); if(t) t.click(); };
+$('#qaRecord').addEventListener('click',()=>{ openRecord(TSTR); });
+$('#qaStudy').addEventListener('click',()=>{ goTab('plan'); buzz(HAPTIC.light); });
+$('#qaVision').addEventListener('click',()=>{ goTab('vision'); buzz(HAPTIC.light); });
+$('#qaGround').addEventListener('click',()=>{ openGround(); });
+
+$('#quoteNext').addEventListener('click',()=>{
+  quoteNudge++;
+  const el=$('#quoteText');
+  el.style.transition='none'; el.style.opacity='0'; el.style.transform='translateY(5px)';
+  renderQuote();
+  requestAnimationFrame(()=>{
+    el.style.transition='opacity .3s var(--ease),transform .3s var(--ease)';
+    el.style.opacity=''; el.style.transform='';
+  });
+  buzz(HAPTIC.light);
+});
+
+/* the same list, built in settings */
+let qxT=null;
+function renderQuoteSettings(){
+  const p=$('#qxPanel'); if(!p) return;
+  if(typing(p)) return;
+  $$('#qModeCtrl button').forEach(b=>b.classList.toggle('on',b.dataset.q===S.quoteMode));
+  const items=quoteList();
+  if(!items.length){
+    p.innerHTML='<div class="qxempty">No lines yet</div>';
     return;
   }
-  const live=habits.filter(h=>stateOf(h,TSTR,dow)!=='na');
-  const todo=live.filter(h=>stateOf(h,TSTR,dow)==='todo');
-  const done=live.filter(h=>stateOf(h,TSTR,dow)==='done');
-  const rest=live.filter(h=>stateOf(h,TSTR,dow)==='auto');
-
-  if(todo.length) wrap.appendChild(panel('To do',todo,'todo-set','todo'));
-  if(done.length) wrap.appendChild(panel('Done',done,'done-set','on'));
-  if(rest.length) wrap.appendChild(panel('Not due today',rest,'rest-set','rest',true));
+  p.innerHTML=items.map(q=>
+    '<div class="qxrow" data-i="'+esc(q.id)+'">'+
+      '<span class="qxf">'+
+        '<textarea class="input area qxtext" placeholder="The line" maxlength="400">'+esc(q.text)+'</textarea>'+
+        '<input class="input qxwho" value="'+esc(q.author)+'" placeholder="Who said it (optional)" maxlength="80" autocomplete="off">'+
+      '</span>'+
+      '<button class="qxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('');
 }
-/* one card holds a whole state; the habits are rows inside it */
-function panel(label,list,cls,mode,collapsible){
-  const el=document.createElement('section');
-  const shut=collapsible&&!restOpen;
-  el.className='tpanel '+cls+(shut?' shut':'');
-  const head=document.createElement(collapsible?'button':'div');
-  head.className='tphead';
-  head.innerHTML='<span class="eyebrow">'+esc(label)+'</span><span class="cnt">'+list.length+'</span>'+
-    (collapsible?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'');
-  el.appendChild(head);
-  /* the rows stay in the page so opening and shutting can actually animate */
-  const body=document.createElement('div'); body.className='tpbody';
-  const inner=document.createElement('div'); inner.className='tpinner';
-  /* a divider heads whichever habits follow it and land in this card. One with
-     nothing after it here is simply not drawn, so no card ever ends on a label
-     with nothing under it. */
-  const here=new Set(list.map(h=>h.id));
+$('#qxPanel').addEventListener('input',e=>{
+  const row=e.target.closest('.qxrow'); if(!row) return;
+  const q=quoteList().find(x=>x.id===row.dataset.i); if(!q) return;
+  if(e.target.classList.contains('qxtext')) q.text=e.target.value;
+  else if(e.target.classList.contains('qxwho')) q.author=e.target.value;
+  clearTimeout(qxT);
+  qxT=setTimeout(()=>{ saveSettings(); renderQuote(); },550);
+});
+$('#qxPanel').addEventListener('click',async e=>{
+  const del=e.target.closest('.qxdel'); if(!del) return;
+  const row=del.closest('.qxrow'); if(!row) return;
+  S.quotes=quoteList().filter(x=>x.id!==row.dataset.i);
+  await saveSettings();
+  renderQuoteSettings(); renderQuote(); buzz(12); toast('Line removed');
+});
+$('#qxAdd').addEventListener('click',async()=>{
+  S.quotes=[...quoteList(),makeQuote('','')];
+  await saveSettings();
+  renderQuoteSettings();
+  const rows=$$('#qxPanel .qxrow'), last=rows[rows.length-1];
+  if(last) $('.qxtext',last).focus();
+  buzz(8);
+});
+$('#qModeCtrl').addEventListener('click',async e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  S.quoteMode=b.dataset.q;
+  await saveSettings();
+  renderQuoteSettings(); renderQuote(); buzz(8);
+});
+
+/* ===========================================================
+   HABITS — ticked off from the record, on a page of its own
+   The marks themselves are the same records the app has always kept, under
+   the same keys. All that has changed is where the tick is made, and that a
+   day other than today can now be put right.
+   =========================================================== */
+function habitsFor(ds){
+  const d=parseDay(ds), dow=d.getDay();
+  return habits.map(h=>({h,st:stateOf(h,ds,dow)})).filter(x=>x.st!=='na');
+}
+function habitTallyOn(ds){
+  const list=habitsFor(ds);
+  const req=list.filter(x=>x.st!=='auto').length;
+  const done=list.filter(x=>recs.has(key(x.h,ds))).length;
+  return {req,done,live:list.length};
+}
+function paintHabitRow(){
+  const row=$('#recHabitsOpen'); if(!row) return;
+  const t=habitTallyOn(recDay);
+  const n=$('#recHabitsN');
+  n.textContent=t.done+'/'+t.req;
+  n.classList.toggle('full',t.req>0&&t.done===t.req);
+  $('#recHabitsSub').textContent = !t.live ? 'No habits in this set'
+    : !t.req ? 'Nothing due \u00B7 rest day'
+    : t.done===t.req ? 'All done'
+    : (t.req-t.done)+' still to tick off';
+}
+function openHabits(){
+  renderHabitSheet();
+  $('#scrim').classList.add('on');
+  $('#habSheet').classList.add('on');
+  const b=$('.fsbody',$('#habSheet')); if(b) b.scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeHabits(){
+  $('#habSheet').classList.remove('on');
+  /* the record is still open underneath, so the scrim only lifts with that */
+  if(!$('#recSheet').classList.contains('on')) $('#scrim').classList.remove('on');
+  paintHabitRow();
+}
+function renderHabitSheet(){
+  const ds=recDay, t=habitTallyOn(ds);
+  $('#habWhen').textContent=recLabel(ds);
+  $('#habCount').textContent=t.done+'/'+t.req;
+  $('#habFill').style.width=(t.req? 100*t.done/t.req : 0)+'%';
+
+  const wrap=$('#habWrap'); wrap.innerHTML='';
+  if(!habits.length){
+    wrap.innerHTML='<div class="rempty">No habits in this set yet. Add them in Settings.</div>';
+    return;
+  }
+  const list=habitsFor(ds);
+  const todo=list.filter(x=>x.st!=='auto'&&!recs.has(key(x.h,ds)));
+  const done=list.filter(x=>x.st!=='auto'&&recs.has(key(x.h,ds)));
+  const rest=list.filter(x=>x.st==='auto');
+  if(todo.length) wrap.appendChild(habSection('To do',todo,ds,false));
+  if(done.length) wrap.appendChild(habSection('Done',done,ds,false));
+  if(rest.length) wrap.appendChild(habSection('Not due',rest,ds,true));
+}
+function habSection(label,items,ds,rest){
+  const sec=document.createElement('section');
+  sec.className='hsec';
+  sec.innerHTML='<span class="eyebrow">'+esc(label)+'</span>';
+  /* a divider heads whichever habits follow it and land in this section; one
+     with nothing under it here is simply not drawn */
+  const here=new Map(items.map(x=>[x.h.id,x]));
   let pending=null;
   orderedList().forEach(it=>{
     if(it.kind==='d'){ pending=it.ref; return; }
-    if(!here.has(it.ref.id)) return;
-    if(pending){ inner.appendChild(dividerRow(pending)); pending=null; }
-    inner.appendChild(habitRow(it.ref,mode));
+    const x=here.get(it.ref.id); if(!x) return;
+    if(pending){
+      const lbl=(pending.label||'').trim();
+      if(lbl){
+        const d=document.createElement('div');
+        d.className='hdivrow';
+        d.innerHTML='<span>'+esc(lbl)+'</span><i></i>';
+        sec.appendChild(d);
+      }
+      pending=null;
+    }
+    sec.appendChild(habRow(x,ds,rest));
   });
-  body.appendChild(inner); el.appendChild(body);
-  return el;
+  return sec;
 }
-function dividerRow(d){
-  const lbl=(d.label||'').trim();
-  const el=document.createElement('div');
-  el.className='hdiv'+(lbl?'':' bare');
-  el.innerHTML=(lbl?'<span class="lbl">'+esc(lbl)+'</span>':'')+'<i class="rule"></i>';
-  return el;
-}
-function habitRow(h,mode){
+function habRow(x,ds,rest){
+  const on=recs.has(key(x.h,ds));
   const b=document.createElement('button');
-  b.className='hrowc '+mode; b.dataset.h=h.id; b.style.setProperty('--c',h.color);
-  b.innerHTML='<i class="bar"></i><div class="hn">'+esc(h.name)+'</div>'+
-    '<span class="tick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>';
+  b.className='hitem'+(on?' on':'')+(rest?' rest':'');
+  b.dataset.h=x.h.id;
+  b.style.setProperty('--c',x.h.color);
+  b.innerHTML='<span class="hbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
+    '<span class="hl">'+esc(x.h.name)+'</span>'+
+    (rest?'<span class="hr">Rest</span>':'<i class="hc"></i>');
   return b;
 }
-$('#todayWrap').addEventListener('click',e=>{
-  const head=e.target.closest('.tphead');
-  if(head){
-    const pan=head.closest('.tpanel');
-    if(!pan || !pan.classList.contains('rest-set')) return;   /* To do and Done never fold */
-    restOpen=!restOpen;
-    pan.classList.toggle('shut',!restOpen);
-    buzz(5);
-    return;
-  }
-  const card=e.target.closest('.hrowc'); if(!card) return;
-  const h=habits.find(x=>x.id===card.dataset.h); if(!h) return;
-  if(!h.days.includes(TODAY.getDay())){
-    toast(dayShifted() ? 'Not due on '+dayShort(TODAY.getDay())+' days'
-                       : 'Not due on '+DN[TODAY.getDay()]+'s');
+$('#recHabitsOpen').addEventListener('click',openHabits);
+$('#habBack').addEventListener('click',()=>{ closeHabits(); buzz(6); });
+$('#habWrap').addEventListener('click',e=>{
+  const b=e.target.closest('.hitem'); if(!b) return;
+  const h=habits.find(x=>x.id===b.dataset.h); if(!h) return;
+  const ds=recDay;
+  if(ds>TSTR){ toast('That day has not happened yet'); buzz(HAPTIC.light); return; }
+  const d=parseDay(ds);
+  if(!h.days.includes(d.getDay())){
+    toast(dayShifted() ? 'Not due on '+dayShort(d.getDay())+' days'
+                       : 'Not due on '+DN[d.getDay()]+'s');
     buzz(HAPTIC.light); return;
   }
-  toggleHabit(h,card);
+  toggleHabitOn(h,ds,b);
 });
+/* the one place a habit is marked. The record it writes is the same shape and
+   the same key it has always been, so every day already logged still reads. */
 let flipBusy=false;
-async function toggleHabit(h,card){
+async function toggleHabitOn(h,ds,card){
   if(flipBusy) return;
-  const k=key(h,TSTR), was=dayTally(TODAY), marking=!recs.has(k);
+  flipBusy=true;
+  const k=key(h,ds), d=parseDay(ds);
+  const was=dayTally(d), marking=!recs.has(k);
   if(marking) recs.add(k); else recs.delete(k);
   card.classList.toggle('on',marking);
-  card.classList.toggle('todo',!marking);
   buzz(marking?HAPTIC.tick:HAPTIC.untick);
-  const now=dayTally(TODAY);
-  if(marking) await dbPut('records',{key:k,habitId:h.id,date:TSTR,done:1,ts:Date.now()});
+  const now=dayTally(d);
+  if(marking) await dbPut('records',{key:k,habitId:h.id,date:ds,done:1,ts:Date.now()});
   else await dbDel('records',k);
-  if(now.perfect && !was.perfect){ toast('Perfect day · everything due is done'); buzz(HAPTIC.done); }
-  flipBusy=true;
-  setTimeout(()=>{ reflowToday(h.id); renderPlan(); },250);
-}
-/* the card slides down into Done, and climbs back up when you undo it */
-function reflowToday(movedId){
-  const wrap=$('#todayWrap');
-  const before=new Map();
-  $$('.hrowc',wrap).forEach(c=>before.set(c.dataset.h,c.getBoundingClientRect().top));
-  const h0=wrap.offsetHeight;
-  renderToday();
-  const h1=wrap.offsetHeight;
-  if(Math.abs(h1-h0)>1){
-    wrap.style.overflow='hidden'; wrap.style.height=h0+'px';
-    void wrap.offsetHeight;
-    wrap.style.transition='height .52s cubic-bezier(.22,.9,.28,1)';
-    wrap.style.height=h1+'px';
-    setTimeout(()=>{ wrap.style.height=''; wrap.style.overflow=''; wrap.style.transition=''; },580);
-  }
-  $$('.hrowc',wrap).forEach(c=>{
-    const b=before.get(c.dataset.h); if(b==null) return;
-    const d=b-c.getBoundingClientRect().top;
-    if(Math.abs(d)<1) return;
-    c.style.transition='none';
-    c.style.transform='translateY('+d+'px)';
-    if(c.dataset.h===movedId) c.style.zIndex='2';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      c.style.transition='transform .52s cubic-bezier(.22,.9,.28,1)';
-      c.style.transform='translateY(0)';
-    }));
-    setTimeout(()=>{ c.style.transition=''; c.style.transform=''; c.style.zIndex=''; },620);
-  });
-  setTimeout(()=>{ flipBusy=false; },440);
+  if(now.perfect && !was.perfect){ toast('Perfect day \u00B7 everything due is done'); buzz(HAPTIC.done); }
+  /* let the tick land before the list reshuffles under the finger */
+  setTimeout(()=>{
+    renderHabitSheet(); paintHabitRow();
+    renderToday(); renderPlan(); renderSettings();
+    flipBusy=false;
+  },260);
 }
 
 /* ===========================================================
@@ -4755,7 +5306,7 @@ const sortedNotes=()=>myNotes.slice().sort((a,b)=>(b.created||0)-(a.created||0))
 function refreshNoteLabel(){
   const n=myNotes.filter(x=>(x.title||'').trim()||noteToText(x.text)).length;
   const c=$('#notesCount');
-  if(c) c.textContent = n ? String(n) : '';
+  if(c) c.textContent = n ? (n+' saved') : 'Nothing yet';
 }
 function renderNotes(){
   const list=$('#dnList');
@@ -5281,6 +5832,7 @@ function closeSheet(){
   if(document.activeElement) document.activeElement.blur();
 }
 $('#scrim').addEventListener('click',()=>{
+  if(grOpen) return;
   if($('#pauseSheet').classList.contains('on')) return;
   /* Close the layer on top and nothing else. This used to be a hand-written
      list of closers, so any sheet added later — the Ground ones — simply
@@ -5385,29 +5937,11 @@ function buildNote(host,o){
 /* ===========================================================
    Study — a day note, the break, and the sessions on the day
    =========================================================== */
-/* the list is yours to change in Settings; these are only what a fresh install starts with */
-const DEFAULT_FOCUS=['Phone out of reach','Water within reach','Desk and screen clear',
-  'Tabs and notifications closed','Materials open and ready','One target for this session'];
-const makeFocus=t=>({id:uid(),text:t});
-/* the ticks live in memory for the session only — nothing about them is stored */
-let focusChecks=new Set(), focusAsk=false;
-const focusItems=()=>Array.isArray(S.focusItems)?S.focusItems:[];
-const activeFocus=()=>focusItems().filter(x=>(x.text||'').trim());
-function pruneFocusChecks(){
-  const live=new Set(activeFocus().map(x=>x.id));
-  [...focusChecks].forEach(id=>{ if(!live.has(id)) focusChecks.delete(id); });
-}
-/* a checklist that was never touched takes the defaults; one you emptied stays empty */
+/* a saved setting that arrived malformed is tidied before anything reads it.
+   S.focusItems is deliberately left alone: the checklist is gone from the app,
+   and quietly deleting what someone once wrote is not ours to do. */
 function normalizeExtras(){
   let changed=false;
-  if(!Array.isArray(S.focusItems)){
-    S.focusItems=DEFAULT_FOCUS.map(makeFocus); changed=true;
-  }else{
-    const before=JSON.stringify(S.focusItems);
-    S.focusItems=S.focusItems.filter(x=>x&&typeof x==='object')
-      .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,70)}));
-    if(JSON.stringify(S.focusItems)!==before) changed=true;
-  }
   if(typeof S.breakResetAt!=='number' || !isFinite(S.breakResetAt)){ S.breakResetAt=0; changed=true; }
   /* how long a break runs is the user's to set; it is only ever remembered */
   const bm=Math.round(Number(S.breakMins));
@@ -5423,6 +5957,8 @@ function normalizeExtras(){
       order:(typeof x.order==='number'&&isFinite(x.order))?x.order:0}));
     if(JSON.stringify(S.dividers)!==was) changed=true;
   }
+  if(normalizeQuotes()) changed=true;
+  if(normalizeGrind()) changed=true;
   return changed;
 }
 
@@ -5454,107 +5990,6 @@ async function resetBreakCount(){
   paintBreakCount(); buzz([14,40,14]);
   toast('Count back to zero · the breaks stay on the record');
 }
-
-function openFocus(){
-  focusAsk=focusChecks.size>0;
-  renderFocus();
-  $('#scrim').classList.add('on'); $('#focusSheet').classList.add('on'); $('#focusSheet').scrollTop=0;
-  buzz(HAPTIC.light);
-}
-function closeFocus(){
-  $('#scrim').classList.remove('on'); $('#focusSheet').classList.remove('on');
-  renderPlan();
-}
-function renderFocus(){
-  pruneFocusChecks();
-  $('#focusAsk').hidden=!focusAsk;
-  if(focusAsk) $('#focusAskTxt').textContent='You left '+focusChecks.size+' of these ticked from before.';
-  const l=$('#focusList'); l.innerHTML='';
-  const items=activeFocus();
-  if(!items.length){
-    l.innerHTML='<div class="rempty">Nothing on the list yet. Build it in Settings, under Pre-focus checklist.</div>';
-    return;
-  }
-  items.forEach(it=>{
-    const b=document.createElement('button');
-    b.className='fitem'+(focusChecks.has(it.id)?' on':'');
-    b.dataset.i=it.id;
-    b.innerHTML='<span class="fbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
-      '<span class="l">'+esc(it.text)+'</span>';
-    l.appendChild(b);
-  });
-}
-$('#focusList').addEventListener('click',e=>{
-  const b=e.target.closest('.fitem'); if(!b) return;
-  const id=b.dataset.i;
-  if(focusChecks.has(id)) focusChecks.delete(id); else focusChecks.add(id);
-  b.classList.toggle('on',focusChecks.has(id));
-  focusAsk=false; $('#focusAsk').hidden=true;
-  buzz(HAPTIC.light);
-});
-$('#focusKeep').addEventListener('click',()=>{ focusAsk=false; $('#focusAsk').hidden=true; buzz(6); });
-$('#focusClear').addEventListener('click',()=>{ focusChecks.clear(); focusAsk=false; renderFocus(); buzz(10); });
-$('#focusDone').addEventListener('click',()=>{ closeFocus(); buzz(8); });
-
-/* the same list, built in settings */
-let fxT=null;
-/* true only when the caret is actually inside a field in this panel */
-function typing(p){
-  const a=document.activeElement;
-  return !!(a && p.contains(a) && (a.tagName==='INPUT'||a.tagName==='TEXTAREA'));
-}
-function renderFocusSettings(){
-  const p=$('#fxPanel'); if(!p) return;
-  /* only a field being typed in is worth protecting — a button that was just
-     tapped is not, or removing a row would never redraw the list */
-  if(typing(p)) return;
-  const items=focusItems();
-  if(!items.length){
-    p.innerHTML='<div class="fxempty">Nothing on the list. Add the checks you want in front of you before a session.</div>';
-    return;
-  }
-  p.innerHTML=items.map(it=>
-    '<div class="fxrow" data-i="'+esc(it.id)+'">'+
-      '<input class="fxin" value="'+esc(it.text)+'" placeholder="What to check" maxlength="70" autocomplete="off">'+
-      '<button class="fxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
-    '</div>').join('');
-}
-$('#fxPanel').addEventListener('input',e=>{
-  const inp=e.target.closest('.fxin'); if(!inp) return;
-  const row=inp.closest('.fxrow'); if(!row) return;
-  const it=focusItems().find(x=>x.id===row.dataset.i); if(!it) return;
-  it.text=inp.value;
-  clearTimeout(fxT); fxT=setTimeout(()=>{ saveSettings(); },550);
-});
-$('#fxPanel').addEventListener('click',async e=>{
-  const del=e.target.closest('.fxdel'); if(!del) return;
-  const row=del.closest('.fxrow'); if(!row) return;
-  const id=row.dataset.i;
-  S.focusItems=focusItems().filter(x=>x.id!==id);
-  focusChecks.delete(id);
-  await saveSettings();
-  renderFocusSettings(); buzz(12); toast('Item removed');
-});
-$('#fxAdd').addEventListener('click',async()=>{
-  S.focusItems=[...focusItems(),makeFocus('')];
-  await saveSettings();
-  renderFocusSettings();
-  const rows=$$('#fxPanel .fxrow'), last=rows[rows.length-1];
-  if(last) $('.fxin',last).focus();
-  buzz(8);
-});
-$('#fxReset').addEventListener('click',async e=>{
-  const b=e.currentTarget;
-  if(b.dataset.armed!=='1'){
-    b.dataset.armed='1'; b.textContent='Tap again to restore'; buzz(14);
-    setTimeout(()=>{ b.dataset.armed=''; b.textContent='Defaults'; },4000);
-    return;
-  }
-  b.dataset.armed=''; b.textContent='Defaults';
-  S.focusItems=DEFAULT_FOCUS.map(makeFocus); focusChecks.clear();
-  await saveSettings();
-  renderFocusSettings(); toast('Checklist restored'); buzz(10);
-});
 
 let planDay=TSTR;
 const planKeyDay=d=>'d:'+d;
@@ -5772,14 +6207,9 @@ function renderPlan(){
   const wrapB=document.createElement('div'); wrapB.className='pcol pcol-b';
   host.appendChild(wrap); host.appendChild(wrapB);
 
-  pruneFocusChecks();
   const acts=document.createElement('div');
   acts.className='actrow';
   acts.innerHTML=
-    '<button class="act'+(focusChecks.size?' lit':'')+'" id="btnFocus">'+
-      '<svg viewBox="0 0 24 24"><path d="m4 12.5 4 4 8-9"/><path d="M20 7v10a3 3 0 0 1-3 3H7"/></svg>'+
-      '<span class="l">Pre-focus</span>'+
-      (focusChecks.size?'<span class="tag">'+focusChecks.size+'/'+activeFocus().length+'</span>':'')+'</button>'+
     '<button class="act" id="btnRecord">'+
       '<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>'+
       '<span class="l">Record</span></button>';
@@ -5863,7 +6293,6 @@ $('#dayStrip').addEventListener('click',e=>{
 });
 $('#planWrap').addEventListener('click',async e=>{
   if(e.target.closest('#btnRecord')){ openRecord(planDay<=TSTR?planDay:TSTR); return; }
-  if(e.target.closest('#btnFocus')){ openFocus(); return; }
   if(e.target.closest('#brkReset')){ resetBreakCount(); return; }
   if(e.target.closest('#btnBreak')){
     if(T){ toast('A break is already running'); buzz(HAPTIC.light); return; }
@@ -6252,9 +6681,11 @@ function openRecord(ds){
   buzz(HAPTIC.light);
 }
 function closeRecord(){
+  $('#fbSheet').classList.remove('on');
+  $('#habSheet').classList.remove('on');
+  fbOpen=false;
   $('#scrim').classList.remove('on'); $('#recSheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
-  closeFeedback();
 }
 function recLabel(ds){
   if(ds===TSTR) return 'Today';
@@ -6291,11 +6722,11 @@ function renderRecord(){
     if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
   });
 
+  /* Unplanned is gone as a heading. Anything already filed under it is not
+     hidden or dropped — it simply sits in the one list with everything else. */
   const all=(r&&r.done)||[];
-  fillList($('#recDone'),all.filter(x=>x.kind!=='unplanned'),
-    'Nothing yet. Finish a session, or write in what you got through.');
-  fillList($('#recExtra'),all.filter(x=>x.kind==='unplanned'),
-    'Anything you got done that was not on the plan goes here.');
+  fillList($('#recDone'),all,'');
+  paintHabitRow();
 
   const pauses=(r&&r.pauses)||[];
   $('#recPauseWrap').hidden=!pauses.length;
@@ -6316,7 +6747,10 @@ function renderRecord(){
 }
 function fillList(host,items,emptyMsg){
   host.innerHTML='';
-  if(!items.length){ host.innerHTML='<div class="rempty">'+esc(emptyMsg)+'</div>'; return; }
+  if(!items.length){
+    host.innerHTML = emptyMsg ? '<div class="rempty">'+esc(emptyMsg)+'</div>' : '';
+    return;
+  }
   items.forEach(x=>{
     const el=document.createElement('div');
     el.className='ritem'+(x.timed?' timed':'');
@@ -6343,14 +6777,12 @@ $('#recStrip').addEventListener('click',e=>{
 $('#recX').addEventListener('click',closeRecord);
 async function addFromField(inputId,kind){
   const el=$(inputId), text=el.value.trim();
-  if(!text){ el.focus(); toast('Write what you finished'); return; }
+  if(!text){ el.focus(); return; }
   await addCompletion(recDay,text,false,kind);
   el.value=''; renderRecord(); renderSettings(); buzz(10);
 }
 $('#recAddBtn').addEventListener('click',()=>addFromField('#recAdd','planned'));
-$('#recAddXBtn').addEventListener('click',()=>addFromField('#recAddX','unplanned'));
 $('#recAdd').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#recAddBtn').click(); });
-$('#recAddX').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#recAddXBtn').click(); });
 $('#recSheet').addEventListener('click',async e=>{
   const d=e.target.closest('[data-del]');
   if(d){
@@ -6381,8 +6813,9 @@ $('#recFeedback').addEventListener('input',()=>{
 let fbOpen=false;
 function closeFeedback(){
   fbOpen=false;
-  const w=$('#recFbWrap'); if(w) w.hidden=true;
-  const all=$('#recFeedbackAll'); if(all) all.textContent='All feedback';
+  $('#fbSheet').classList.remove('on');
+  /* the record is still open underneath, so the scrim only lifts with that */
+  if(!$('#recSheet').classList.contains('on')) $('#scrim').classList.remove('on');
 }
 function feedbackDays(){ return recordedDays().filter(r=>(r.feedback||'').trim()); }
 function renderFeedback(){
@@ -6411,13 +6844,14 @@ $('#recFbBody').addEventListener('click',async e=>{
   if(r){ r.feedback=''; await saveDay(ds); }
   renderFeedback(); renderRecord(); renderSettings(); toast('Deleted');
 });
+$('#fbBack').addEventListener('click',()=>{ closeFeedback(); buzz(6); });
 $('#recFeedbackAll').addEventListener('click',()=>{
-  fbOpen=!fbOpen;
-  const w=$('#recFbWrap');
-  $('#recFeedbackAll').textContent=fbOpen?'Hide feedback':'All feedback';
-  if(!fbOpen){ closeFeedback(); buzz(6); return; }
-  w.hidden=false; renderFeedback(); buzz(8);
-  requestAnimationFrame(()=>w.scrollIntoView({block:'nearest',behavior:'smooth'}));
+  fbOpen=true;
+  renderFeedback();
+  $('#scrim').classList.add('on');
+  $('#fbSheet').classList.add('on');
+  const b=$('.fsbody',$('#fbSheet')); if(b) b.scrollTop=0;
+  buzz(HAPTIC.light);
 });
 async function copyText(str,el){
   if(!str){ toast('Nothing to copy'); return; }
@@ -7551,7 +7985,7 @@ function showView(v){
    Nothing moved out of the app. The same panels, the same handlers, the same
    ids — only put one tap in, so the page you land on asks a single question. */
 let setPage=null;
-const SP_PAGES=['habits','focus','dayst','desk','run','look','privacy','parts','data'];
+const SP_PAGES=['habits','hero','quote','grind','dayst','run','look','privacy','parts','data'];
 function openSetPage(id){
   if(SP_PAGES.indexOf(id)<0) return;
   setPage=id;
@@ -7592,6 +8026,7 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
     document.querySelector('.app').classList.toggle('onvision',wantDark);
     applySettings();
     showView(v);
+    if(v==='today') renderHeroRail();
   };
   if(wasTheme!==nowTheme) themeSweep(nowTheme,t,swap); else swap();
   buzz(6);
@@ -7921,6 +8356,8 @@ $('#gndNameDel').addEventListener('click',async e=>{
   w.addEventListener('click',e=>{
     const b=e.target.closest('.confstep'); if(!b) return;
     gConf=+b.dataset.v; paintConf(); buzz(6);
+    /* while editing it rides along with the rest and lands on Save */
+    if(!gCellEdit) saveConfNow();
   });
 })();
 /* the sources: rows you add and remove, the way the pre-focus list works */
@@ -7930,7 +8367,7 @@ function renderSrcEditor(){
   const p=$('#gndSrcPanel');
   if(typing(p)) return;                 /* never yank a line being written */
   if(!gSrcs.length){
-    p.innerHTML='<div class="gxempty">No sources yet. Add the book, the lecture, the notes.</div>';
+    p.innerHTML='<div class="gxempty">No sources yet</div>';
     return;
   }
   p.innerHTML=gSrcs.map((t,i)=>
@@ -7969,6 +8406,40 @@ function paintConf(){
   });
   $('#gndConfWord').textContent=CONF_WORD[gConf]||'';
 }
+/* The cell opens as something to read. Sureness is live either way, because
+   that is the one thing the cell is usually opened to change; the sources are
+   a list until Edit is tapped, and only then does anything appear that can
+   remove or rewrite them. */
+let gCellEdit=false;
+function setCellMode(on){
+  gCellEdit=!!on;
+  $('#gndSrcView').hidden=gCellEdit;
+  $('#gndSrcPanel').hidden=!gCellEdit;
+  $('#gndSrcAdd').hidden=!gCellEdit;
+  /* Save and Cancel take the foot while editing; the Edit button steps aside */
+  $('#gndCellActs').hidden=!gCellEdit;
+  $('#gndCellEditWrap').hidden=gCellEdit;
+  if(gCellEdit) renderSrcEditor(); else renderSrcView();
+}
+/* the sources as they read when you are not touching them */
+function renderSrcView(){
+  const v=$('#gndSrcView');
+  const list=normSrcs(gSrcs);
+  v.innerHTML = list.length
+    ? list.map(t=>'<div class="srcline"><i></i><span>'+esc(t)+'</span></div>').join('')
+    : '<div class="srcnone">No sources yet</div>';
+}
+/* sureness is written the moment it is tapped, so the cell can be opened,
+   answered and shut without ever meeting a Save button */
+async function saveConfNow(){
+  if(!gCellAt||!gSubj) return;
+  const k=GKEY(gCellAt.t,gCellAt.ph);
+  const kept=normSrcs((gSubj.cells[k]||{}).s||[]);
+  if(gConf||kept.length) gSubj.cells[k]={c:gConf,s:kept};
+  else delete gSubj.cells[k];
+  await gSave(gSubj);
+  renderGround();
+}
 function openCell(tid,pid){
   if(!gSubj) return;
   const tp=gSubj.topics.find(x=>x.id===tid), ph=gSubj.phases.find(x=>x.id===pid);
@@ -7977,9 +8448,10 @@ function openCell(tid,pid){
   const c=gCell(gSubj,tid,pid);
   gConf=c.c; paintConf();
   $('#gndCellTitle').textContent=tp.name;
+  $('#gndCellWhere').textContent=ph.name;
 
   gSrcs=c.s.slice();
-  renderSrcEditor();
+  setCellMode(false);
   $('#gndCellSheet').scrollTop=0;
   $('#scrim').classList.add('on','high'); $('#gndCellSheet').classList.add('on');
   buzz(HAPTIC.light);
@@ -7987,17 +8459,30 @@ function openCell(tid,pid){
 function closeCell(){
   $('#scrim').classList.remove('on','high'); $('#gndCellSheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
-  gCellAt=null;
+  gCellAt=null; gCellEdit=false;
 }
-$('#gndCellCancel').addEventListener('click',closeCell);
-$('#gndCellSave').addEventListener('click',async()=>{
-  if(!gCellAt||!gSubj) return closeCell();
+/* Edit opens the list up; Save at the foot puts it away again */
+$('#gndCellEdit').addEventListener('click',()=>{
+  setCellMode(true); buzz(HAPTIC.light);
+});
+$('#gndCellCancel').addEventListener('click',()=>{
+  /* what was typed is dropped; the cell goes back to what is on the record */
+  if(gCellAt&&gSubj) gSrcs=normSrcs((gSubj.cells[GKEY(gCellAt.t,gCellAt.ph)]||{}).s||[]);
+  setCellMode(false); buzz(8);
+});
+async function commitCell(){
+  if(!gCellAt||!gSubj) return;
   const k=GKEY(gCellAt.t,gCellAt.ph);
   const src=normSrcs(gSrcs);
+  gSrcs=src.slice();
   if(gConf||src.length) gSubj.cells[k]={c:gConf,s:src};
   else delete gSubj.cells[k];          /* nothing said is not a reading */
   await gSave(gSubj);
-  closeCell(); renderGround(); buzz(10);
+  renderGround();
+}
+$('#gndCellSave').addEventListener('click',async()=>{
+  await commitCell();
+  setCellMode(false); buzz(10);
 });
 /* ---------- one place all the taps on the page land ---------- */
 $('#gndAdd').addEventListener('click',()=>{
@@ -8141,16 +8626,6 @@ function armed(b,label,fn){
   b.dataset.armed=''; b.textContent=label;
   fn();
 }
-$('#deskResetDay').addEventListener('click',e=>{
-  armed(e.currentTarget,'Clear today',async()=>{
-    await deskResetToday(); toast('Today cleared'); buzz(8);
-  });
-});
-$('#deskClearAll').addEventListener('click',e=>{
-  armed(e.currentTarget,'Clear the whole log',async()=>{
-    await deskClearAll(); toast('Desk time cleared'); buzz(8);
-  });
-});
 $('#runStart').addEventListener('change',()=>{ S.runStart=$('#runStart').value||''; saveSettings(); renderToday(); });
 $('#runEnd').addEventListener('change',()=>{ S.runEnd=$('#runEnd').value||''; saveSettings(); renderToday(); });
 $('#runClear').addEventListener('click',()=>{
@@ -8219,14 +8694,12 @@ function renderSettings(){
   $('#dayStartNow').textContent = dayShifted()
     ? dsAt+' to '+dsAt+' the next day \u2014 today reads '+dayShort(TODAY.getDay())+'.'
     : 'Midnight to midnight \u2014 the ordinary day.';
-  const dTotal=deskTotal(), dDays=[...deskDays.keys()].length;
-  $('#deskStat').textContent = dTotal
-    ? fmtDeskShort(dTotal)+' logged across '+dDays+' day'+(dDays===1?'':'s')
-    : 'Nothing logged yet';
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
   relabelDayButtons();
-  renderFocusSettings();
+  renderHeroSettings();
+  renderQuoteSettings();
+  renderGrindSettings();
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
@@ -8248,6 +8721,8 @@ $('#exportBtn').addEventListener('click',()=>{
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
       plans:[...plans.entries()], blocks, vision:visionItems, ground,
       days:[...days.values()], study:[...deskDays.entries()].map(([date,ms])=>({date,ms})),
+      grind:[...grindDays.entries()].map(([date,checks])=>({date,checks})),
+      hero:heroPics,
       settings:S
     },'onwards-'+TSTR+'.json');
     toast('Exported');
@@ -8437,12 +8912,16 @@ $('#importFile').addEventListener('change',async e=>{
        log is left empty rather than guessed at */
     deskDays=new Map((d.study||[]).filter(x=>x&&x.date&&x.ms>0).map(x=>[x.date,Math.round(x.ms)]));
     D={running:false,since:0,date:''}; deskLoop();
+    /* likewise a file written before the grind check existed carries none */
+    grindDays=new Map((d.grind||[]).filter(x=>x&&x.date)
+      .map(x=>[x.date,(Array.isArray(x.checks)?x.checks:[]).filter(c=>c&&typeof c==='object')]));
+    heroPics=(d.hero||[]).filter(x=>x&&x.src);
     const inSettings=d.settings||{};
     S=Object.assign({},S,inSettings,{seeded:true});
     /* the sets these belonged to have just been replaced, so dividers the file
        does not carry are dropped rather than left pointing at nothing */
     if(!Array.isArray(inSettings.dividers)) S.dividers=[];
-    normalizeExtras(); focusChecks.clear();
+    normalizeExtras();
     closeSetPage();
 
     for(const st of sets) await dbPut('sets',st);
@@ -8455,6 +8934,8 @@ $('#importFile').addEventListener('change',async e=>{
     for(const g of ground) await dbPut('ground',g);
     for(const r of days.values()) await dbPut('days',r);
     for(const [date,ms] of deskDays) await dbPut('study',{date,ms});
+    for(const [date,checks] of grindDays) await dbPut('grind',{date,checks});
+    for(const h of heroPics) await dbPut('hero',h);
     await deskSaveState();
 
     await ensureSets(); await saveSettings(); cacheLook();
@@ -8480,7 +8961,7 @@ $('#resetBtn').addEventListener('click',async e=>{
   S.seeded=false; S.activeSet=null; S.northStar=''; S.ig=null; S.visionLock=null; visionUnlocked=false;
   S.appLock=false; appUnlocked=false;
   feedOn=false; arrangeOn=false; $('#vBody').classList.remove('feed');
-  S.focusItems=null; S.breakResetAt=0; S.breakMins=DEFAULT_BREAK_MINS; S.dividers=[]; normalizeExtras(); focusChecks.clear();
+  S.breakResetAt=0; S.breakMins=DEFAULT_BREAK_MINS; S.dividers=[]; normalizeExtras();
   closeSetPage();
   await seed(); await saveSettings();
   b.dataset.armed=''; b.textContent='Erase all data';
@@ -8610,6 +9091,9 @@ async function loadAll(){
   ground=(await dbAll('ground')).map(normGround).sort((a,b)=>(a.order||0)-(b.order||0));
   days=new Map((await dbAll('days')).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
   deskDays=new Map((await dbAll('study')).filter(x=>x&&x.date&&x.ms>0).map(x=>[x.date,Math.round(x.ms)]));
+  grindDays=new Map((await dbAll('grind')).filter(x=>x&&x.date)
+    .map(x=>[x.date,(Array.isArray(x.checks)?x.checks:[]).filter(c=>c&&typeof c==='object')]));
+  heroPics=(await dbAll('hero')).filter(x=>x&&x.src).sort((a,b)=>(a.created||0)-(b.created||0));
   await migrateNotes();
   await migrateStudyHabits();
   const s=(await dbAll('meta')).find(m=>m.key==='settings');
@@ -8696,7 +9180,7 @@ async function seed(){
   applySet();
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderToday(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
+function renderAll(){ renderToday(); renderHeroRail(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
 
 function checkRollover(){
   const d=logicalDay(new Date()), t=ymd(d);
@@ -8711,6 +9195,380 @@ document.addEventListener('visibilitychange',()=>{
   else{ checkRollover(); syncVisionLock(); deskRollover(); renderDesk(); }
 });
 setInterval(checkRollover,60000);
+
+
+/* ===========================================================
+   HOME PICTURES — what you are doing it for, in your own hands
+   A rail you push sideways. The order is shuffled every time Home is built,
+   so the one that greets you is rarely the one you saw last time. The
+   pictures are yours: they are stored on the device, in a store of their own,
+   and nothing else in the app reads or writes them.
+   =========================================================== */
+let heroPics=[];
+const heroOn=()=>S.heroOn!==false;      /* on unless it has been turned off */
+let heroOrder=[];
+
+/* Fisher-Yates, so every arrangement is as likely as every other */
+function shuffled(a){
+  const out=a.slice();
+  for(let i=out.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [out[i],out[j]]=[out[j],out[i]];
+  }
+  return out;
+}
+function renderHeroRail(){
+  const rail=$('#heroRail'); if(!rail) return;
+  if(!heroOn() || !heroPics.length){ rail.hidden=true; $('#hrTrack').innerHTML=''; return; }
+  rail.hidden=false;
+  heroOrder=shuffled(heroPics);
+  $('#hrTrack').innerHTML=heroOrder.map(h=>
+    '<div class="hrcard"><img src="'+esc(h.src)+'" alt="" loading="lazy"></div>').join('');
+  $('#hrTrack').scrollLeft=0;
+}
+/* ---------- the pictures, in settings ---------- */
+function renderHeroSettings(){
+  const sw=$('#hrSw'); if(!sw) return;
+  sw.classList.toggle('on',heroOn());
+  $('#hrCount').textContent = heroPics.length
+    ? heroPics.length+' picture'+(heroPics.length===1?'':'s') : 'Pictures';
+  const g=$('#hrGrid');
+  g.innerHTML = heroPics.length ? heroPics.map(h=>
+    '<div class="hrcell" data-i="'+esc(h.id)+'">'+
+      '<img src="'+esc(h.src)+'" alt="" loading="lazy">'+
+      '<button class="hrx" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('')
+    : '<div class="hrempty">No pictures yet</div>';
+}
+$('#hrSw').addEventListener('click',async()=>{
+  S.heroOn=!heroOn();
+  await saveSettings();
+  renderHeroSettings(); renderHeroRail(); buzz(10);
+});
+$('#hrAdd').addEventListener('click',()=>$('#hrFile').click());
+$('#hrFile').addEventListener('change',async e=>{
+  const files=[...(e.target.files||[])];
+  e.target.value='';
+  if(!files.length) return;
+  let bad=0;
+  for(const f of files){
+    try{
+      const {src}=await shrinkImage(f,1400,.82);
+      const pic={id:uid(),src,created:Date.now()};
+      heroPics.push(pic);
+      await dbPut('hero',pic);
+    }catch(err){ bad++; }
+  }
+  renderHeroSettings(); renderHeroRail(); buzz(10);
+  toast(bad? bad+' could not be read' : 'Added');
+});
+$('#hrGrid').addEventListener('click',async e=>{
+  const x=e.target.closest('.hrx'); if(!x) return;
+  const cell=x.closest('.hrcell'); if(!cell) return;
+  const id=cell.dataset.i;
+  heroPics=heroPics.filter(h=>h.id!==id);
+  await dbDel('hero',id);
+  renderHeroSettings(); renderHeroRail(); buzz(12); toast('Removed');
+});
+
+/* ===========================================================
+   GRIND CHECK — the app asking whether you actually are working
+   Inside the hours you set, and no more often than you say, a prompt comes up
+   wherever you are: yes or no, and how hard. Leave it and it answers itself,
+   the wrong way, which is the whole point of it.
+
+   Every answer lands in a store of its own, one row a day. No habit, mark,
+   note, plan, session or record is read or written by any of this.
+   =========================================================== */
+let grindDays=new Map();          /* 'YYYY-MM-DD' -> [{at,ans,level}] */
+let grTick=null, grDeadline=0, grLevel=0, grOpen=false, grNextAt=0;
+
+const GRIND_DEF={on:false,every:15,windows:[],answerSecs:60};
+const grindCfg=()=>(S.grind&&typeof S.grind==='object')?S.grind:GRIND_DEF;
+const grindOn=()=>!!grindCfg().on;
+const grindEvery=()=>{ const n=Math.round(Number(grindCfg().every)); return (isFinite(n)&&n>0)?Math.min(240,n):15; };
+const grindSecs=()=>{ const n=Math.round(Number(grindCfg().answerSecs)); return (isFinite(n)&&n>=10)?Math.min(600,n):60; };
+const grindWindows=()=>Array.isArray(grindCfg().windows)?grindCfg().windows:[];
+
+/* a saved setting that arrived malformed is tidied before anything reads it */
+function normalizeGrind(){
+  let changed=false;
+  if(!S.grind || typeof S.grind!=='object'){ S.grind=Object.assign({},GRIND_DEF); changed=true; }
+  const g=S.grind, was=JSON.stringify(g);
+  g.on=!!g.on;
+  const ev=Math.round(Number(g.every)); g.every=(isFinite(ev)&&ev>0)?Math.min(240,ev):15;
+  const an=Math.round(Number(g.answerSecs)); g.answerSecs=(isFinite(an)&&an>=10)?Math.min(600,an):60;
+  g.windows=(Array.isArray(g.windows)?g.windows:[]).filter(w=>w&&typeof w==='object').map(w=>({
+    id:w.id||uid(), from:validHM(w.from)||'09:00', to:validHM(w.to)||'12:00'}));
+  if(JSON.stringify(g)!==was) changed=true;
+  return changed;
+}
+function validHM(v){
+  const m=/^(\d{1,2}):(\d{2})$/.exec(String(v||''));
+  if(!m) return null;
+  const H=Number(m[1]), M=Number(m[2]);
+  if(H<0||H>23||M<0||M>59) return null;
+  return pad(H)+':'+pad(M);
+}
+const hm2min=v=>{ const m=validHM(v); if(!m) return 0; const [H,M]=m.split(':').map(Number); return H*60+M; };
+/* a stretch that runs past midnight simply wraps, so 22:00 to 02:00 works */
+function inWindows(now){
+  const mins=now.getHours()*60+now.getMinutes();
+  return grindWindows().some(w=>{
+    const a=hm2min(w.from), b=hm2min(w.to);
+    return a===b ? false : (a<b ? (mins>=a&&mins<b) : (mins>=a||mins<b));
+  });
+}
+
+/* ---------- the log ---------- */
+const grindChecks=ds=>grindDays.get(ds)||[];
+async function grindWrite(ds,checks){
+  if(checks.length){ grindDays.set(ds,checks); await dbPut('grind',{date:ds,checks}); }
+  else{ grindDays.delete(ds); await dbDel('grind',ds); }
+}
+async function grindLog(ans,level){
+  const ds=TSTR;
+  const checks=grindChecks(ds).concat({at:Date.now(),ans:ans?1:0,level:ans?(level||1):0});
+  await grindWrite(ds,checks);
+  renderGrindCard(); renderSettings();
+}
+const grindDayStat=ds=>{
+  const c=grindChecks(ds);
+  const yes=c.filter(x=>x.ans).length;
+  const load=c.reduce((n,x)=>n+(x.ans?(x.level||1):0),0);
+  return {n:c.length,yes,load,pct:c.length?Math.round(100*yes/c.length):0};
+};
+/* a day counts as held if you were asked at all and said yes more often than not */
+const grindHeld=ds=>{ const t=grindDayStat(ds); return t.n>0 && t.yes*2>=t.n; };
+function grindRun(){
+  let n=0, d=TODAY;
+  if(!grindHeld(ymd(d))) d=addDays(d,-1);
+  for(let i=0;i<400;i++){
+    if(grindHeld(ymd(d))) n++; else break;
+    d=addDays(d,-1);
+  }
+  return n;
+}
+function grindWeek(){
+  const out=[];
+  for(let i=6;i>=0;i--){
+    const d=addDays(TODAY,-i), ds=ymd(d);
+    out.push(Object.assign({d,ds,today:ds===TSTR,held:grindHeld(ds)},grindDayStat(ds)));
+  }
+  return out;
+}
+
+/* ---------- the card on Home ---------- */
+function renderGrindCard(){
+  const card=$('#grindCard'); if(!card) return;
+  const week=grindWeek();
+  const asked=week.reduce((n,x)=>n+x.n,0), yes=week.reduce((n,x)=>n+x.yes,0);
+  const pct=asked?Math.round(100*yes/asked):0;
+  $('#grindPct').textContent = asked ? pct+'%' : '\u2014';
+  $('#grindPctSub').textContent = asked ? 'working hard this week' : 'nothing logged yet';
+  const run=grindRun();
+  $('#grindRun').textContent=run;
+  $('.gcrun',card).classList.toggle('hot',run>0);
+
+  /* the bar is how much of each day you held, so an honest short day still
+     reads as a full one — it is the answer that counts, not the count */
+  $('#grindBars').innerHTML=week.map(x=>
+    '<div class="gbcol'+(x.today?' today':'')+(x.held?' hit':'')+'">'+
+      '<span class="gbtrack"><i class="gbfill" style="height:'+
+        (x.n? Math.max(8,x.pct) : 0)+'%"></i></span>'+
+      '<span class="gbl">'+chipDay(x.d.getDay())+'</span>'+
+    '</div>').join('');
+
+  const td=grindDayStat(TSTR);
+  $('#grindToday').textContent=td.yes;
+  $('#grindTodayN').textContent=td.n;
+  $('#grindState').textContent = !grindOn() ? 'Off'
+    : !grindWindows().length ? 'No hours set'
+    : inWindows(new Date()) ? 'Watching now'
+    : 'Outside your hours';
+}
+$('#grindCard').addEventListener('click',()=>{
+  const t=$('.tab[data-v="settings"]'); if(t) t.click();
+  requestAnimationFrame(()=>openSetPage('grind'));
+  buzz(HAPTIC.light);
+});
+
+/* ---------- the prompt ---------- */
+function grindAsk(){
+  if(grOpen) return;
+  grOpen=true; grLevel=0;
+  grDeadline=Date.now()+grindSecs()*1000;
+  const box=$('#grAsk');
+  $('#grQ').textContent='Are you working hard right now?';
+  $('#grLevel').hidden=true;
+  $$('#grLevel .grstep').forEach(b=>b.classList.remove('on'));
+  $('#grNo').textContent='No';
+  $('#grYes').textContent='Yes';
+  $('#grYes').disabled=false;
+  box.classList.remove('late');
+  box.classList.add('on');
+  paintGrindClock();
+  clearInterval(grTick);
+  grTick=setInterval(paintGrindClock,250);
+  buzz([18,60,18]);
+}
+function paintGrindClock(){
+  const total=grindSecs()*1000;
+  const leftMs=Math.max(0,grDeadline-Date.now());
+  const secs=Math.ceil(leftMs/1000);
+  $('#grLeft').textContent=secs;
+  $('#grRing').style.setProperty('--p',String(leftMs/total));
+  $('#grAsk').classList.toggle('late',leftMs<=10000);
+  if(leftMs<=0) grindTimeout();
+}
+/* no answer inside the minute is an answer: it was not a hard-working moment */
+async function grindTimeout(){
+  if(!grOpen) return;
+  closeGrindAsk();
+  await grindLog(false,0);
+  scheduleGrind();
+  toast('Grind check missed \u00B7 marked as not working hard');
+  buzz([30,60,30]);
+}
+function closeGrindAsk(){
+  grOpen=false;
+  clearInterval(grTick); grTick=null;
+  $('#grAsk').classList.remove('on');
+}
+$('#grNo').addEventListener('click',async()=>{
+  if(!grOpen) return;
+  closeGrindAsk();
+  await grindLog(false,0);
+  scheduleGrind();
+  toast('Logged \u00B7 get back to it');
+  buzz(HAPTIC.untick);
+});
+/* Yes asks the one follow-up question, on the same prompt and the same clock */
+$('#grYes').addEventListener('click',async()=>{
+  if(!grOpen) return;
+  if(!grLevel){
+    $('#grQ').textContent='Good. How hard?';
+    $('#grLevel').hidden=false;
+    $('#grYes').textContent='Log it';
+    $('#grYes').disabled=true;
+    buzz(HAPTIC.tick);
+    return;
+  }
+  const lvl=grLevel;
+  closeGrindAsk();
+  await grindLog(true,lvl);
+  scheduleGrind();
+  toast('Logged \u00B7 level '+lvl);
+  buzz(HAPTIC.done);
+});
+$('#grLevel').addEventListener('click',e=>{
+  const b=e.target.closest('.grstep'); if(!b) return;
+  grLevel=Number(b.dataset.l)||0;
+  $$('#grLevel .grstep').forEach(x=>x.classList.toggle('on',x===b));
+  $('#grYes').disabled=false;
+  buzz(HAPTIC.light);
+});
+
+/* ---------- when the next one comes ----------
+   One timer, checked every ten seconds, so a phone that slept through the
+   moment is asked as soon as it is back rather than being asked six times. */
+function scheduleGrind(){
+  grNextAt=Date.now()+grindEvery()*60000;
+}
+function grindPulse(){
+  if(!grindOn() || grOpen) return;
+  if(!grindWindows().length) return;
+  const now=new Date();
+  if(!inWindows(now)){ grNextAt=0; return; }   /* outside the hours the clock waits */
+  if(!grNextAt){ scheduleGrind(); return; }    /* just stepped inside: give it one interval */
+  if(Date.now()>=grNextAt) grindAsk();
+}
+setInterval(grindPulse,10000);
+/* coming back to the app is the moment worth checking, not a moment to skip */
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) grindPulse(); });
+
+/* ---------- settings ---------- */
+let grT=null;
+function renderGrindSettings(){
+  const sw=$('#grSw'); if(!sw) return;
+  sw.classList.toggle('on',grindOn());
+  const ev=$('#grEvery'), an=$('#grWindow');
+  if(document.activeElement!==ev) ev.value=grindEvery();
+  if(document.activeElement!==an) an.value=grindSecs();
+  const p=$('#grWinPanel');
+  if(!typing(p)){
+    const ws=grindWindows();
+    p.innerHTML = ws.length ? ws.map(w=>
+      '<div class="grwrow" data-i="'+esc(w.id)+'">'+
+        '<input class="input grfrom" type="time" step="300" value="'+esc(w.from)+'">'+
+        '<span class="to">to</span>'+
+        '<input class="input grto" type="time" step="300" value="'+esc(w.to)+'">'+
+        '<button class="grwdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+      '</div>').join('')
+      : '<div class="grwempty">No hours set</div>';
+  }
+  const total=[...grindDays.values()].reduce((n,c)=>n+c.length,0);
+  const dn=grindDays.size;
+  $('#grStat').textContent = total
+    ? total+' check'+(total===1?'':'s')+' across '+dn+' day'+(dn===1?'':'s')
+    : 'Nothing logged yet';
+}
+$('#grSw').addEventListener('click',async()=>{
+  S.grind=Object.assign({},grindCfg(),{on:!grindOn()});
+  await saveSettings();
+  if(grindOn()) scheduleGrind(); else { grNextAt=0; if(grOpen) closeGrindAsk(); }
+  renderGrindSettings(); renderGrindCard(); buzz(10);
+  toast(grindOn()?'Grind check on':'Grind check off');
+});
+function grNum(el,keyName,lo,hi){
+  clearTimeout(grT);
+  grT=setTimeout(async()=>{
+    let v=Math.round(Number(el.value));
+    if(!isFinite(v)) return;
+    v=Math.max(lo,Math.min(hi,v));
+    S.grind=Object.assign({},grindCfg(),{[keyName]:v});
+    await saveSettings();
+    if(keyName==='every') scheduleGrind();
+    renderGrindCard();
+  },600);
+}
+$('#grEvery').addEventListener('input',e=>grNum(e.target,'every',1,240));
+$('#grWindow').addEventListener('input',e=>grNum(e.target,'answerSecs',10,600));
+$('#grEvery').addEventListener('blur',()=>renderGrindSettings());
+$('#grWindow').addEventListener('blur',()=>renderGrindSettings());
+$('#grWinAdd').addEventListener('click',async()=>{
+  S.grind=Object.assign({},grindCfg(),
+    {windows:[...grindWindows(),{id:uid(),from:'09:00',to:'12:00'}]});
+  await saveSettings();
+  renderGrindSettings(); renderGrindCard(); buzz(8);
+});
+$('#grWinPanel').addEventListener('change',async e=>{
+  const row=e.target.closest('.grwrow'); if(!row) return;
+  const ws=grindWindows().map(w=>{
+    if(w.id!==row.dataset.i) return w;
+    const from=validHM($('.grfrom',row).value)||w.from;
+    const to=validHM($('.grto',row).value)||w.to;
+    return {id:w.id,from,to};
+  });
+  S.grind=Object.assign({},grindCfg(),{windows:ws});
+  await saveSettings();
+  renderGrindCard();
+});
+$('#grWinPanel').addEventListener('click',async e=>{
+  const del=e.target.closest('.grwdel'); if(!del) return;
+  const row=del.closest('.grwrow'); if(!row) return;
+  S.grind=Object.assign({},grindCfg(),
+    {windows:grindWindows().filter(w=>w.id!==row.dataset.i)});
+  await saveSettings();
+  renderGrindSettings(); renderGrindCard(); buzz(12); toast('Stretch removed');
+});
+$('#grClear').addEventListener('click',e=>{
+  armed(e.currentTarget,'Clear the grind log',async()=>{
+    grindDays=new Map();
+    await dbClear('grind');
+    renderGrindCard(); renderGrindSettings(); toast('Grind log cleared'); buzz(8);
+  });
+});
 
 /* ===========================================================
    The back gesture — Android's button, the edge swipe, a mouse's
@@ -8735,7 +9593,8 @@ const BACK_SHEETS=[
   ['#pdSheet',closePerfect],
   ['#noteSheet',closeNoteSheet],
   ['#notesSheet',closeNotes],
-  ['#focusSheet',closeFocus],
+  ['#habSheet',closeHabits],
+  ['#fbSheet',closeFeedback],
   ['#recSheet',closeRecord],
   ['#vSheet',closeVSheet],
   ['#igEditSheet',closeIgEdit],
@@ -8743,6 +9602,9 @@ const BACK_SHEETS=[
   ['#docSheet',closeDocs]
 ];
 function topLayer(){
+  /* the grind check is the one thing back cannot dismiss: leaving it is an
+     answer, and it has to be given on its own clock rather than by a swipe */
+  if(grOpen) return ()=>{};
   if($('#pdfBox').classList.contains('on')) return closePdf;
   if($('#vBox').classList.contains('on')) return closeLightbox;
   for(const [sel,fn] of BACK_SHEETS){
@@ -8793,7 +9655,7 @@ addEventListener('popstate',()=>{
   if(typeof MutationObserver!=='function') return;
   const mo=new MutationObserver(()=>syncBackGuard());
   const opts={attributes:true,attributeFilter:['class','hidden']};
-  ['#pdfBox','#vBox','#timerWrap','#v-vision','#v-settings','#vBody','#vGate','#igGrid']
+  ['#pdfBox','#vBox','#timerWrap','#grAsk','#v-vision','#v-settings','#vBody','#vGate','#igGrid']
     .concat(BACK_SHEETS.map(x=>x[0]))
     .forEach(sel=>{ const el=$(sel); if(el) mo.observe(el,opts); });
   $$('.tab').forEach(t=>mo.observe(t,opts));
