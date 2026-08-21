@@ -3185,13 +3185,13 @@ html[data-theme="dark"]{
 .hrtrack{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
   padding:0 var(--gut);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hrtrack::-webkit-scrollbar{display:none}
-.hrcard{flex:0 0 76%;scroll-snap-align:center;position:relative;aspect-ratio:5/3;
+.hrcard{flex:0 0 66%;scroll-snap-align:center;position:relative;aspect-ratio:4/5;
   border-radius:16px;overflow:hidden;background:var(--ig-fill);
   box-shadow:inset 0 0 0 1px var(--ig-hair)}
 .hrcard img{width:100%;height:100%;object-fit:cover;display:block}
 .hrcard::after{content:'';position:absolute;inset:0;
   background:linear-gradient(to top,rgba(0,0,0,.34),transparent 46%)}
-@media (min-width:700px){.hrcard{flex-basis:46%}}
+@media (min-width:700px){.hrcard{flex-basis:34%}}
 
 /* the pictures, in settings */
 .hrgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
