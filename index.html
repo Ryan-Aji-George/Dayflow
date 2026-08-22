@@ -3166,27 +3166,6 @@ html[data-theme="dark"]{
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .qat i{font-style:normal;font-size:12px;font-weight:400;color:var(--ink-2);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* the record is the same tile as the rest, given the whole width because it
-   is the one you reach for most */
-.qa.wide{grid-column:1 / -1;padding:16px 14px}
-.qa.wide .qai{width:40px;height:40px}
-.qa.wide .qai svg{width:22px;height:22px}
-.qa.wide .qat b{font-size:16.5px;font-weight:800;letter-spacing:-.03em}
-.qa.wide .qat i{font-size:13px}
-.qa.wide{position:relative;z-index:1}
-.qadone{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
-  background:var(--h-green);color:#fff}
-.qadone svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.8;
-  stroke-linecap:round;stroke-linejoin:round}
-/* the bar runs along the bottom edge of the tile itself, so the day's
-   progress reads as part of the button rather than another widget under it */
-.qa.wide{overflow:hidden}
-.recbar{position:absolute;left:0;right:0;bottom:0;height:5px;
-  background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
-.recbar i{display:block;height:100%;width:0;
-  background:linear-gradient(90deg,var(--rec-a),var(--rec-b));
-  transition:width .55s var(--ease)}
-.recbar.full i{background:var(--h-green)}
 
 /* ---------- the pictures ----------
    A rail you push sideways, the way a feed moves. Each one snaps into place;
@@ -3232,38 +3211,6 @@ html[data-theme="dark"]{
 html.igskin .gtitle{font-family:var(--ui)}
 .gtitle span{font-size:12px;font-weight:500;letter-spacing:0;color:var(--ink-3);
   margin-left:auto;flex:0 0 auto}
-
-/* ---------- the grind check, over the week ---------- */
-.gcard{display:block;width:100%;text-align:left;margin:0;padding:15px 16px 13px;
-  border-radius:16px;background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair);
-  transition:transform .18s var(--spring)}
-html[data-theme="dark"] .gcard{box-shadow:inset 0 0 0 1px var(--line)}
-.gcard:active{transform:scale(.99)}
-.gctop{display:flex;align-items:flex-start;gap:12px}
-.gct{flex:1;min-width:0}
-html.igskin .gct .eyebrow{font-family:var(--ui);font-size:12px;font-weight:600;
-  letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
-.gcbig{display:flex;align-items:baseline;gap:7px;margin-top:5px}
-.gcbig b{font-size:27px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
-.gcbig span{font-size:12.5px;color:var(--ink-2)}
-.gcrun{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:1px;
-  padding:5px 11px;border-radius:11px;background:var(--tint)}
-.gcrun b{font-size:17px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
-.gcrun.hot b{color:var(--ig-blue)}
-.gcrun span{font-size:10.5px;font-weight:500;color:var(--ink-3)}
-.gcbars{display:flex;align-items:flex-end;gap:6px;height:84px;margin:14px 0 0}
-.gbcol{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
-.gbtrack{width:100%;flex:1;border-radius:6px;background:var(--cell);
-  display:flex;align-items:flex-end;overflow:hidden}
-.gbfill{display:block;width:100%;border-radius:6px;background:var(--ink-3);
-  transition:height .5s var(--ease),background .3s}
-.gbcol.hit .gbfill{background:var(--ig-blue)}
-.gbcol.today .gbtrack{box-shadow:0 0 0 1.5px var(--ink)}
-.gbl{font-size:10px;font-weight:600;color:var(--ink-3);letter-spacing:0}
-.gbcol.today .gbl{color:var(--ink)}
-.gcfoot{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:12.5px;color:var(--ink-3)}
-.gcfoot b{color:var(--ink);font-weight:700}
-.gcfoot .right{margin-left:auto}
 
 /* ---------- the streak grid, on Instagram's card ---------- */
 html.igskin .streak{margin:0 0 26px;padding:15px 16px 13px;border-radius:16px;
@@ -3338,64 +3285,6 @@ html.igskin .hsec>.eyebrow{font-family:var(--ui);font-size:15px;font-weight:700;
   color:var(--ink-3);flex:0 0 auto}
 .hdivrow i{flex:1;height:1px;background:var(--ig-hair)}
 
-
-/* ===========================================================
-   GRIND CHECK — the prompt itself
-   It sits above every sheet in the app, because it has to be able to reach
-   you wherever you are. Nothing behind it is touched or closed.
-   =========================================================== */
-.grask{position:fixed;inset:0;z-index:98;display:none;align-items:flex-end;
-  justify-content:center;padding:0;background:rgba(0,0,0,.62);
-  opacity:0;transition:opacity .28s var(--ease)}
-.grask.on{display:flex;opacity:1}
-@media (min-width:640px){.grask{align-items:center;padding:24px}}
-.grbox{width:100%;max-width:460px;background:var(--ig-sheet);color:var(--ink);
-  border-radius:20px 20px 0 0;padding:20px var(--gut) calc(20px + env(safe-area-inset-bottom));
-  transform:translateY(14px);transition:transform .32s var(--ig-slide,cubic-bezier(.22,.9,.28,1))}
-.grask.on .grbox{transform:none}
-@media (min-width:640px){.grbox{border-radius:20px;padding-bottom:20px}}
-.grtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-html.igskin .grtop .eyebrow{flex:1;font-family:var(--ui);font-size:12px;font-weight:600;
-  letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
-.grclock{position:relative;flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center}
-.grclock i{position:absolute;inset:0;border-radius:50%;
-  background:conic-gradient(var(--ig-blue) calc(var(--p,1)*360deg),var(--cell) 0)}
-.grclock i::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--ig-sheet)}
-.grclock span{position:relative;z-index:1;font-size:12px;font-weight:700;
-  font-variant-numeric:tabular-nums;color:var(--ink)}
-.grask.late .grclock i{background:conic-gradient(var(--ig-red) calc(var(--p,1)*360deg),var(--cell) 0)}
-.grask.late .grclock span{color:var(--ig-red)}
-.grbox h3{margin:0 0 20px;font-size:21px;font-weight:700;letter-spacing:-.028em;line-height:1.25}
-.grlevel{margin-bottom:20px}
-html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px;font-weight:700;
-  letter-spacing:-.02em;text-transform:none;color:var(--ink);margin-bottom:11px}
-.grsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.grstep{display:flex;flex-direction:column;align-items:center;gap:3px;padding:13px 6px;
-  border-radius:13px;background:var(--ig-fill);color:var(--ink);
-  transition:transform .18s var(--spring),background .2s,color .2s}
-.grstep:active{transform:scale(.95)}
-.grstep b{font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.grstep span{font-size:10.5px;font-weight:500;color:var(--ink-2);text-align:center;line-height:1.25}
-.grstep.on{background:var(--ig-blue);color:#fff}
-.grstep.on span{color:rgba(255,255,255,.85)}
-.gracts{display:flex;gap:9px}
-.gracts .btn{flex:1;height:50px;border-radius:12px;font-size:16px;font-weight:600;
-  background:var(--ig-fill);color:var(--ink);border:0}
-.gracts .btn:active{background:var(--cell)}
-.gracts .btn:last-child{background:var(--ig-blue);color:#fff}
-.gracts .btn:last-child:active{background:var(--ig-blue-2)}
-
-/* ---------- the hours, in settings ---------- */
-.grwrow{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid var(--ig-hair)}
-.grwrow:last-child{border-bottom:0}
-.grwrow .input{flex:1;min-width:0;height:44px}
-.grwrow .to{flex:0 0 auto;font-size:13px;color:var(--ink-2)}
-.grwdel{flex:0 0 auto;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
-  color:var(--ink-3);transition:background .2s,color .2s}
-.grwdel:active{background:var(--tint);color:var(--ig-red)}
-.grwdel svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round}
-.grwempty,.qxempty{padding:16px 0;font-size:14.5px;color:var(--ink-2);line-height:1.45}
 
 /* ---------- your lines, in settings ---------- */
 .qxrow{display:flex;align-items:flex-start;gap:9px;padding:11px 0;
@@ -3489,6 +3378,90 @@ html[data-theme="dark"] .hwtint{opacity:.34}
     color-mix(in srgb,var(--wash,var(--h-rose)) 9%,var(--ig-fill-2)) 60%,
     var(--ig-fill-2))}
 
+/* ===========================================================
+   RECORD THE DAY — the card that is also the list
+   The button and what it has already collected are one thing. The rows use
+   the record's own ticked-off look, so opening the record feels like walking
+   into the same list rather than a different screen. Empty, it shows the
+   shape of a first row instead of an apology.
+   =========================================================== */
+.rcard{display:block;width:100%;text-align:left;margin:16px 0 0;
+  padding:15px 16px 4px;border-radius:16px;overflow:hidden;
+  background:var(--ig-fill-2);color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);
+  transition:transform .18s var(--spring),background .2s}
+html[data-theme="dark"] .rcard{box-shadow:inset 0 0 0 1px var(--line)}
+.rcard:active{transform:scale(.99)}
+.rchead{display:flex;align-items:center;gap:13px}
+.rci{flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--ig-blue) 15%,transparent);color:var(--ig-blue)}
+.rci svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.rct{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rct b{font-size:17px;font-weight:800;letter-spacing:-.03em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rct i{font-style:normal;font-size:13px;font-weight:500;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qadone{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:var(--h-green);color:#fff}
+.qadone svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.8;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* the day filling up, right under its own heading */
+.recbar{display:block;height:4px;margin:13px 0 0;border-radius:2px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
+.recbar i{display:block;height:100%;width:0;border-radius:2px;
+  background:linear-gradient(90deg,var(--rec-a),var(--rec-b));
+  transition:width .55s var(--ease)}
+.recbar.full i{background:var(--h-green)}
+
+.winwrap{display:block;margin-top:14px}
+.wineye{display:flex;align-items:center;gap:7px;
+  font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3)}
+.wineye i{font-style:normal;min-width:18px;height:18px;padding:0 6px;border-radius:6px;
+  display:grid;place-items:center;background:var(--h-green);color:#fff;
+  font-size:11px;font-weight:800;letter-spacing:0}
+.rcard.nowins .wineye i{display:none}
+.winlist{display:flex;flex-direction:column;margin-top:4px}
+.winrow,.winnone{display:flex;align-items:center;gap:11px;padding:10px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.winlist>:last-child{border-bottom:0}
+.wintick{flex:0 0 auto;width:21px;height:21px;border-radius:50%;
+  display:grid;place-items:center;background:var(--h-green);color:#fff}
+.wintick svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+/* the empty row is the outline of a real one, waiting to be filled */
+.wintick.ghost{background:transparent;color:var(--ink-3);
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.wint{flex:1;min-width:0;font-size:14.5px;font-weight:500;line-height:1.35;
+  color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.winnone .wint{color:var(--ink-3)}
+.winmore{padding:9px 0 1px 32px;font-size:12.5px;color:var(--ink-3)}
+
+.winfoot{display:flex;align-items:center;gap:8px;margin-top:2px;padding:12px 0 12px;
+  border-top:1px solid var(--ig-hair);
+  font-size:13.5px;font-weight:700;color:var(--ig-blue)}
+.winfoot span{flex:1;min-width:0}
+.winfoot svg{flex:0 0 auto;width:15px;height:15px;fill:none;stroke:currentColor;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* a session put aside, and the way back */
+.pgone{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:11px 13px;
+  border-radius:12px;background:var(--ig-fill);font-size:13.5px;color:var(--ink-2)}
+.pgone span{flex:1;min-width:0}
+.pgone button{flex:0 0 auto;padding:6px 12px;border-radius:9px;font-size:13px;
+  font-weight:600;color:var(--ig-blue);background:var(--tint)}
+
+/* the note a subject carries */
+.gnote{margin:20px 0 8px}
+.gnote>.eyebrow{display:block;margin-bottom:9px}
+.gnotebox{width:100%;min-height:104px;padding:13px 14px;border-radius:14px;
+  background:var(--ig-fill);color:var(--ink);border:0;resize:vertical;
+  font:inherit;font-size:15px;line-height:1.5}
+.gnotebox::placeholder{color:var(--ink-3)}
+.gnotebox:focus{outline:0;box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
+
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -3558,24 +3531,7 @@ html[data-theme="dark"] .hwtint{opacity:.34}
       </div>
       <div class="tcol" id="tSide">
 
-      <!-- the day leads the page -->
-      <div class="hhero">
-        <span class="eyebrow" id="heroEyebrow">&mdash;</span>
-        <div class="hhrow">
-          <h2 class="day-name" id="heroDate">&mdash;</h2>
-          <span class="runpill" id="runPill" hidden>
-            <svg viewBox="0 0 24 24"><path d="M12 3s5.5 4.2 5.5 9a5.5 5.5 0 0 1-11 0c0-1.6.6-3 1.4-4.2.3 1.3 1.2 2.2 2.2 2.2 1.4 0 2-1.2 2-2.7C12.1 5.9 12 4.4 12 3z"/></svg>
-            <b id="runPillN">0</b><span>day run</span>
-          </span>
-        </div>
-        <div class="run" id="runCard" hidden>
-          <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
-          <div class="runbar"><i id="runFill"></i></div>
-        </div>
-      </div>
-
-      <!-- what you are doing it for, in your own pictures. Shuffled, so the
-           one that greets you is rarely the one you saw last time. -->
+      <!-- the picture leads: it is the reason, before anything asks anything -->
       <div class="hrail" id="heroRail" hidden>
         <div class="hrtrack" id="hrTrack"></div>
       </div>
@@ -3584,20 +3540,35 @@ html[data-theme="dark"] .hwtint{opacity:.34}
       <div class="qcard" id="quoteCard">
         <svg class="qmark" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5C6.9 7.9 5.5 10 5.5 12.6c0 .4 0 .8.1 1.1A3 3 0 1 0 9 12.2c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6zM19 6.5c-2.6 1.4-4 3.5-4 6.1 0 .4 0 .8.1 1.1a3 3 0 1 0 3.4-1.5c-.5 0-.9.1-1.3.3.3-1.5 1.2-2.7 2.7-3.6z"/></svg>
         <p class="qtext" id="quoteText">&mdash;</p>
-        <div class="qfoot">
-          <span class="qwho" id="quoteWho"></span>
-        </div>
+        <div class="qfoot"><span class="qwho" id="quoteWho"></span></div>
       </div>
 
-      <!-- everywhere else, one tap away. The record leads it. -->
-      <div class="qact">
-        <button class="qa wide" id="qaRecord">
-          <span class="qai"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
-          <span class="qat"><b>Record the day</b><i id="qaRecordSub">Tick the habits, write what you got done</i></span>
-          <span class="qadone" id="qaRecordDone" hidden><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
-          <span class="recbar" id="recBar"><i id="recBarFill"></i></span>
-        </button>
+      <!-- how far through the stretch you are -->
+      <div class="run" id="runCard" hidden>
+        <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
+        <div class="runbar"><i id="runFill"></i></div>
+      </div>
 
+      <!-- The record, with today already open inside it. What you have put
+           down and the way to put down more are the same card, because they
+           are the same thing: the list is the invitation. -->
+      <button class="rcard" id="qaRecord">
+        <span class="rchead">
+          <span class="rci"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+          <span class="rct"><b>Record the day</b><i id="qaRecordSub">Tick the habits, write what you got done</i></span>
+          <span class="qadone" id="qaRecordDone" hidden><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+        </span>
+        <span class="recbar" id="recBar"><i id="recBarFill"></i></span>
+        <span class="winwrap">
+          <span class="wineye">Done today<i id="winCount">&mdash;</i></span>
+          <span class="winlist" id="winList"></span>
+        </span>
+        <span class="winfoot"><span id="winNudge">&mdash;</span>
+          <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
+      </button>
+
+      <!-- everywhere else, one tap away -->
+      <div class="qact">
         <button class="qa" id="qaStudy">
           <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg></span>
           <span class="qat"><b>Study</b><i id="qaStudySub">Sessions</i></span>
@@ -3613,24 +3584,6 @@ html[data-theme="dark"] .hwtint{opacity:.34}
         <button class="qa" id="qaGround">
           <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>
           <span class="qat"><b>Portions</b><i>Ground covered</i></span>
-        </button>
-      </div>
-
-      <!-- the grind check: how honest the week has been -->
-      <div class="gsec">
-        <h3 class="gtitle">How hard you worked<span>Last 7 days</span></h3>
-        <button class="gcard" id="grindCard">
-          <div class="gctop">
-            <div class="gct">
-              <div class="gcbig"><b id="grindPct">&mdash;</b><span id="grindPctSub">this week</span></div>
-            </div>
-            <div class="gcrun"><b id="grindRun">0</b><span>day run</span></div>
-          </div>
-          <div class="gcbars" id="grindBars"></div>
-          <div class="gcfoot">
-            <span><b id="grindToday">0</b> of <b id="grindTodayN">0</b> today</span>
-            <span class="right" id="grindState">Off</span>
-          </div>
         </button>
       </div>
 
@@ -3810,11 +3763,6 @@ html[data-theme="dark"] .hwtint{opacity:.34}
           <span class="n">Your lines</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
-        <button class="smrow" data-sp="grind">
-          <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.4"/></svg></span>
-          <span class="n">Grind check</span>
-          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
-        </button>
         <button class="smrow" data-sp="dayst">
           <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></span>
           <span class="n">When your day starts</span>
@@ -3955,46 +3903,6 @@ html[data-theme="dark"] .hwtint{opacity:.34}
               <div class="seg-ctrl" id="qModeCtrl">
                 <button data-q="day">One a day</button><button data-q="open">Every open</button>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="subpage" id="sp-grind">
-        <header class="sphead">
-          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Grind check</h2></div>
-        </header>
-        <div class="group">
-          <div class="panel">
-            <div class="srow">
-              <div class="t"><div class="n">Ask me if I am working hard</div></div>
-              <button class="switch" id="grSw" role="switch"></button>
-            </div>
-            <div class="srow">
-              <div class="t"><div class="n">Ask every</div></div>
-              <div class="numbox"><input class="numin" id="grEvery" type="number" min="1" max="240" step="1" inputmode="numeric"><span class="u">min</span></div>
-            </div>
-            <div class="srow">
-              <div class="t"><div class="n">Answer within</div></div>
-              <div class="numbox"><input class="numin" id="grWindow" type="number" min="10" max="600" step="5" inputmode="numeric"><span class="u">sec</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="group">
-          <span class="eyebrow">Hours</span>
-          <div class="panel" id="grWinPanel"></div>
-          <div style="display:flex;gap:8px;margin-top:9px">
-            <button class="btn ghost" id="grWinAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a stretch</button>
-          </div>
-        </div>
-        <div class="group">
-          <div class="panel">
-            <div class="srow">
-              <div class="t"><div class="n" id="grStat">&mdash;</div></div>
-            </div>
-            <div class="btnrow" style="border-bottom:0">
-              <button class="btn ghost" id="grClear">Clear the grind log</button>
             </div>
           </div>
         </div>
@@ -4625,30 +4533,6 @@ html[data-theme="dark"] .hwtint{opacity:.34}
   </div>
 </div>
 
-<!-- ===== GRIND CHECK =====
-     Rides above every page and every sheet, because the whole point is that it
-     can reach you wherever you are. It never touches what is underneath. -->
-<div class="grask" id="grAsk">
-  <div class="grbox">
-    <div class="grtop">
-      <span class="eyebrow">Grind check</span>
-      <div class="grclock"><i id="grRing"></i><span id="grLeft">60</span></div>
-    </div>
-    <h3 id="grQ">Are you working hard right now?</h3>
-    <div class="grlevel" id="grLevel" hidden>
-      <div class="grsteps">
-        <button class="grstep" data-l="1"><b>1</b><span>Ticking over</span></button>
-        <button class="grstep" data-l="2"><b>2</b><span>Properly on it</span></button>
-        <button class="grstep" data-l="3"><b>3</b><span>Flat out</span></button>
-      </div>
-    </div>
-    <div class="gracts" id="grActs">
-      <button class="btn ghost" id="grNo">No</button>
-      <button class="btn" id="grYes">Yes</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -4665,7 +4549,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
    for on a database that had never been told to make it. */
 const STORE_KEYS={habits:'id',records:'key',notes:'date',meta:'key',plans:'key',
   sets:'id',dnotes:'id',vision:'id',blocks:'id',days:'date',ground:'id',study:'date',
-  grind:'date',hero:'id'};
+  hero:'id'};
 const DB_NAME='dayflow', STORES=Object.keys(STORE_KEYS);
 /* Raised whenever a store is added. Nothing already saved is touched: the
    upgrade only creates what is missing and leaves every existing store, and
@@ -4835,6 +4719,10 @@ async function saveDay(ds){
   const r=days.get(ds); if(!r) return;
   if(dayEmpty(r)){ days.delete(ds); await dbDel('days',ds); }
   else{ r.updated=Date.now(); await dbPut('days',r); }
+  /* what Home shows of today comes from this record, so it is repainted
+     here — at the one point every change passes through — rather than at
+     each caller, where the next one added would forget */
+  if(ds===TSTR && typeof renderWins==='function') renderWins();
 }
 async function addCompletion(ds,text,timed,kind){
   const r=dayRec(ds);
@@ -5046,14 +4934,9 @@ function renderRun(){
 }
 
 function renderToday(){
-  const t=dayTally(TODAY), dow=TODAY.getDay();
+  const t=dayTally(TODAY);
   placeNote();
   renderRun();
-  /* the date, and nothing beside it */
-  $('#heroEyebrow').textContent=TODAY.getDate()+' '+FULLMON[TODAY.getMonth()].toUpperCase();
-  $('#heroDate').textContent=dayFull(dow);
-  $('#heroDate').classList.toggle('wrapday',dayShifted());
-
   /* where the day stands is said once, under the record button */
   const left=t.req-t.done, all=t.req>0&&left===0;
   $('#qaRecordSub').textContent = !t.live ? 'Add your habits and start the day'
@@ -5067,17 +4950,51 @@ function renderToday(){
   bar.classList.toggle('full',all);
   $('#recBarFill').style.width=(t.req? 100*t.done/t.req : 0)+'%';
 
-  /* the run, carried beside the date */
-  const run=perfectRun(), pill=$('#runPill');
-  pill.hidden=run<1;
-  $('#runPillN').textContent=run;
   const sess=sessionsOn(TSTR), sdone=sess.filter(sessionDone).length;
   $('#qaStudySub').textContent = sess.length ? sdone+' of '+sess.length+' sessions' : 'No sessions yet';
 
   renderQuote();
-  renderGrindCard();
+  renderWins();
   renderStreak();
 }
+
+/* ===========================================================
+   DONE TODAY — what you have actually put down
+   The same list the record keeps, shown back to you. It is not a summary at
+   the end of the day; it is here to be added to, so it always opens the
+   record and it always says what the next one would make.
+   =========================================================== */
+function renderWins(){
+  const card=$('#qaRecord'); if(!card) return;   /* the list lives on the record card now */
+  const r=days.get(TSTR);
+  const done=((r&&r.done)||[]).filter(x=>x&&(x.text||'').trim());
+  const t=dayTally(TODAY);
+  const n=done.length;
+
+  $('#winCount').textContent = n ? String(n) : '';
+  card.classList.toggle('nowins',!n);
+
+  const list=$('#winList');
+  if(!n){
+    /* an empty list should read as a beginning, not as a failure */
+    list.innerHTML='<span class="winnone">'+
+      '<span class="wintick ghost"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>'+
+      '<span class="wint">The first one goes here</span></span>';
+  }else{
+    /* the newest first, because the last thing you did is the thing that
+       makes you want to do another */
+    const show=done.slice(-4).reverse();
+    list.innerHTML=show.map(x=>
+      '<span class="winrow">'+
+        '<span class="wintick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
+        '<span class="wint">'+esc(x.text)+'</span></span>').join('')+
+      (n>show.length? '<span class="winmore">and '+(n-show.length)+' more</span>' : '');
+  }
+
+  /* one line, and it only ever asks for the next one */
+  $('#winNudge').textContent = !n ? 'Put the first one down' : 'Make it '+(n+1);
+}
+
 
 /* true only when the caret is actually inside a field in this panel: a list
    must never redraw itself out from under someone who is typing in it */
@@ -5910,7 +5827,6 @@ function closeSheet(){
   if(document.activeElement) document.activeElement.blur();
 }
 $('#scrim').addEventListener('click',()=>{
-  if(grOpen) return;
   if($('#pauseSheet').classList.contains('on')) return;
   /* Close the layer on top and nothing else. This used to be a hand-written
      list of closers, so any sheet added later — the Ground ones — simply
@@ -6036,7 +5952,6 @@ function normalizeExtras(){
     if(JSON.stringify(S.dividers)!==was) changed=true;
   }
   if(normalizeQuotes()) changed=true;
-  if(normalizeGrind()) changed=true;
   return changed;
 }
 
@@ -6185,6 +6100,14 @@ function habitSession(h,ds){
   return {id,date:ds,time:h.stime||'09:00',title:h.name,habitId:h.id,goals:[],done:0,
           created:Date.now(),ghost:true};
 }
+/* A session a habit produces can be put aside for one day without touching
+   the habit: the day's copy is saved carrying a flag, and the flag is all
+   that is removed to bring it back. The habit, its marks and every other day
+   are left exactly as they were. */
+const sessionHidden=s=>!!(s&&s.hidden);
+function hiddenSessionsOn(ds){
+  return studyHabitsOn(ds).map(h=>habitSession(h,ds)).filter(sessionHidden);
+}
 function sessionsOn(ds){
   const fromHabits=studyHabitsOn(ds).map(h=>habitSession(h,ds));
   const covered=new Set(fromHabits.map(x=>x.id));
@@ -6192,8 +6115,8 @@ function sessionsOn(ds){
      shown. Without this a session imported from a file — or one left behind by
      a habit you have since stopped marking as study — would be dropped from
      the day while its goals sat in the database. */
-  const own=blocks.filter(b=>b.date===ds && !covered.has(b.id));
-  return own.concat(fromHabits)
+  const own=blocks.filter(b=>b.date===ds && !covered.has(b.id) && !sessionHidden(b));
+  return own.concat(fromHabits.filter(x=>!sessionHidden(x)))
     .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
 }
 function findSession(id){
@@ -6334,6 +6257,16 @@ function renderPlan(){
     e.innerHTML='<h3>No sessions</h3><p>Tap + to open one, or mark a habit as a study habit in Settings and it will bring its own.</p>';
     wrapB.appendChild(e);
   }else list.forEach(s=>wrapB.appendChild(sessionCard(s,isToday)));
+
+  /* anything a habit would have brought today but has been put aside, with
+     the way back — otherwise it would be gone with no sign it ever existed */
+  hiddenSessionsOn(planDay).forEach(s=>{
+    const row=document.createElement('div');
+    row.className='pgone';
+    row.innerHTML='<span>'+esc((s.title||'Session').trim())+' \u00B7 removed from this day</span>'+
+      '<button data-id="'+esc(s.id)+'">Restore</button>';
+    wrapB.appendChild(row);
+  });
 }
 function sessionCard(s,isToday){
   const t=fmtTime(s.time||'09:00');
@@ -6426,6 +6359,10 @@ $('#planWrap').addEventListener('click',async e=>{
     return;
   }
   if(e.target.closest('.btxt')) openBlockSheet(s);
+});
+$('#planWrap').addEventListener('click',e=>{
+  const b=e.target.closest('.pgone button'); if(!b) return;
+  restoreSession(b.dataset.id);
 });
 /* the enter key does what the + beside it does */
 $('#planWrap').addEventListener('keydown',e=>{
@@ -6710,8 +6647,10 @@ function openBlockSheet(s){
     ? 'Tick every one of these off and the habit ticks itself off.'
     : 'Tick every one of these off and the session is finished.';
   $('#bTime').value=bStart; renderGoalEditor();
-  $('#bDeleteWrap').hidden=!s||fromHabit;
-  $('#bDelete').textContent='Delete session'; $('#bDelete').dataset.armed='';
+  /* a habit's session is not deleted, only taken off this one day */
+  $('#bDeleteWrap').hidden=!s;
+  $('#bDelete').textContent=fromHabit?'Remove from this day':'Delete session';
+  $('#bDelete').dataset.armed='';
   $('#scrim').classList.add('on'); $('#blockSheet').classList.add('on'); $('#blockSheet').scrollTop=0;
   buzz(HAPTIC.light);
 }
@@ -6741,12 +6680,35 @@ $('#bSave').addEventListener('click',async()=>{
 });
 $('#bDelete').addEventListener('click',async e=>{
   const btn=e.currentTarget;
-  if(btn.dataset.armed!=='1'){ btn.dataset.armed='1'; btn.textContent='Tap again to delete'; buzz(14); return; }
-  const id=bEditing&&bEditing.id;
+  const s=bEditing;
+  const fromHabit=!!(s&&s.habitId);
+  if(btn.dataset.armed!=='1'){
+    btn.dataset.armed='1';
+    btn.textContent=fromHabit?'Tap again to remove':'Tap again to delete';
+    buzz(14); return;
+  }
+  const id=s&&s.id;
   closeBlockSheet();
-  if(id){ blocks=blocks.filter(x=>x.id!==id); await dbDel('blocks',id); }
-  renderPlan(); renderSettings(); toast('Session deleted');
+  if(fromHabit){
+    /* the habit is untouched: only this day's copy is put aside, and the
+       goals already written on it are kept for when it comes back */
+    s.hidden=1;
+    await landSession(s);
+    renderPlan(); renderSettings(); renderToday();
+    toast('Removed from this day');
+  }else if(id){
+    blocks=blocks.filter(x=>x.id!==id); await dbDel('blocks',id);
+    renderPlan(); renderSettings(); renderToday(); toast('Session deleted');
+  }
 });
+/* bringing one back, from the row the day shows while it is away */
+async function restoreSession(id){
+  const s=findSession(id); if(!s) return;
+  delete s.hidden;
+  await landSession(s);
+  renderPlan(); renderSettings(); renderToday();
+  toast('Session restored'); buzz(10);
+}
 
 /* ===========================================================
    The record — what got done, what broke, what you made of it
@@ -8063,7 +8025,7 @@ function showView(v){
    Nothing moved out of the app. The same panels, the same handlers, the same
    ids — only put one tap in, so the page you land on asks a single question. */
 let setPage=null;
-const SP_PAGES=['habits','hero','quote','grind','dayst','run','look','privacy','parts','data'];
+const SP_PAGES=['habits','hero','quote','dayst','run','look','privacy','parts','data'];
 function openSetPage(id){
   if(SP_PAGES.indexOf(id)<0) return;
   setPage=id;
@@ -8331,11 +8293,30 @@ function renderGroundSheet(b){
     b.appendChild(key);
   }
 
+  /* somewhere to put what the grid cannot hold: what the paper asked last
+     year, which chapter the lecturer skipped, what to come back to. It is
+     kept on the subject itself, so it travels with it in the export. */
+  const note=document.createElement('div');
+  note.className='gnote';
+  note.innerHTML='<span class="eyebrow">Notes</span>'+
+    '<textarea class="gnotebox" id="gndNote" placeholder="Anything worth remembering about this subject" '+
+    'maxlength="4000"></textarea>';
+  b.appendChild(note);
+  const nb=$('#gndNote',note);
+  nb.value=g.note||'';
+  nb.addEventListener('input',()=>{
+    g.note=nb.value;
+    clearTimeout(gNoteT);
+    gNoteT=setTimeout(()=>gSave(g),600);      /* written a moment after typing stops */
+  });
+  nb.addEventListener('blur',()=>{ clearTimeout(gNoteT); gSave(g); });
+
   const foot=document.createElement('div');
   foot.className='gfoot';
   foot.innerHTML='<button data-do="rename">Rename</button><button data-do="drop">Delete</button>';
   b.appendChild(foot);
 }
+let gNoteT=null;
 
 /* ---------- naming: a subject, a phase or a topic ---------- */
 function openName(kind,id,current){
@@ -8777,7 +8758,6 @@ function renderSettings(){
   relabelDayButtons();
   renderHeroSettings();
   renderQuoteSettings();
-  renderGrindSettings();
   renderInstall();
 }
 matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S.theme==='auto')applySettings();});
@@ -8799,7 +8779,6 @@ $('#exportBtn').addEventListener('click',()=>{
       habits:allHabits, sets, records:[...recs], dnotes:myNotes,
       plans:[...plans.entries()], blocks, vision:visionItems, ground,
       days:[...days.values()], study:[...deskDays.entries()].map(([date,ms])=>({date,ms})),
-      grind:[...grindDays.entries()].map(([date,checks])=>({date,checks})),
       hero:heroPics,
       settings:S
     },'onwards-'+TSTR+'.json');
@@ -8990,9 +8969,6 @@ $('#importFile').addEventListener('change',async e=>{
        log is left empty rather than guessed at */
     deskDays=new Map((d.study||[]).filter(x=>x&&x.date&&x.ms>0).map(x=>[x.date,Math.round(x.ms)]));
     D={running:false,since:0,date:''}; deskLoop();
-    /* likewise a file written before the grind check existed carries none */
-    grindDays=new Map((d.grind||[]).filter(x=>x&&x.date)
-      .map(x=>[x.date,(Array.isArray(x.checks)?x.checks:[]).filter(c=>c&&typeof c==='object')]));
     heroPics=(d.hero||[]).filter(x=>x&&x.src);
     const inSettings=d.settings||{};
     S=Object.assign({},S,inSettings,{seeded:true});
@@ -9012,7 +8988,6 @@ $('#importFile').addEventListener('change',async e=>{
     for(const g of ground) await dbPut('ground',g);
     for(const r of days.values()) await dbPut('days',r);
     for(const [date,ms] of deskDays) await dbPut('study',{date,ms});
-    for(const [date,checks] of grindDays) await dbPut('grind',{date,checks});
     for(const h of heroPics) await dbPut('hero',h);
     await deskSaveState();
 
@@ -9169,8 +9144,6 @@ async function loadAll(){
   ground=(await dbAll('ground')).map(normGround).sort((a,b)=>(a.order||0)-(b.order||0));
   days=new Map((await dbAll('days')).filter(x=>x&&x.date).map(x=>[x.date,normDay(x)]));
   deskDays=new Map((await dbAll('study')).filter(x=>x&&x.date&&x.ms>0).map(x=>[x.date,Math.round(x.ms)]));
-  grindDays=new Map((await dbAll('grind')).filter(x=>x&&x.date)
-    .map(x=>[x.date,(Array.isArray(x.checks)?x.checks:[]).filter(c=>c&&typeof c==='object')]));
   heroPics=(await dbAll('hero')).filter(x=>x&&x.src).sort((a,b)=>(a.created||0)-(b.created||0));
   await migrateNotes();
   await migrateStudyHabits();
@@ -9561,305 +9534,6 @@ $('#hrGrid').addEventListener('click',async e=>{
 });
 
 /* ===========================================================
-   GRIND CHECK — the app asking whether you actually are working
-   Inside the hours you set, and no more often than you say, a prompt comes up
-   wherever you are: yes or no, and how hard. Leave it and it answers itself,
-   the wrong way, which is the whole point of it.
-
-   Every answer lands in a store of its own, one row a day. No habit, mark,
-   note, plan, session or record is read or written by any of this.
-   =========================================================== */
-let grindDays=new Map();          /* 'YYYY-MM-DD' -> [{at,ans,level}] */
-let grTick=null, grDeadline=0, grLevel=0, grOpen=false, grNextAt=0;
-
-const GRIND_DEF={on:false,every:15,windows:[],answerSecs:60};
-const grindCfg=()=>(S.grind&&typeof S.grind==='object')?S.grind:GRIND_DEF;
-const grindOn=()=>!!grindCfg().on;
-const grindEvery=()=>{ const n=Math.round(Number(grindCfg().every)); return (isFinite(n)&&n>0)?Math.min(240,n):15; };
-const grindSecs=()=>{ const n=Math.round(Number(grindCfg().answerSecs)); return (isFinite(n)&&n>=10)?Math.min(600,n):60; };
-const grindWindows=()=>Array.isArray(grindCfg().windows)?grindCfg().windows:[];
-
-/* a saved setting that arrived malformed is tidied before anything reads it */
-function normalizeGrind(){
-  let changed=false;
-  if(!S.grind || typeof S.grind!=='object'){ S.grind=Object.assign({},GRIND_DEF); changed=true; }
-  const g=S.grind, was=JSON.stringify(g);
-  g.on=!!g.on;
-  const ev=Math.round(Number(g.every)); g.every=(isFinite(ev)&&ev>0)?Math.min(240,ev):15;
-  const an=Math.round(Number(g.answerSecs)); g.answerSecs=(isFinite(an)&&an>=10)?Math.min(600,an):60;
-  g.windows=(Array.isArray(g.windows)?g.windows:[]).filter(w=>w&&typeof w==='object').map(w=>({
-    id:w.id||uid(), from:validHM(w.from)||'09:00', to:validHM(w.to)||'12:00'}));
-  if(JSON.stringify(g)!==was) changed=true;
-  return changed;
-}
-function validHM(v){
-  const m=/^(\d{1,2}):(\d{2})$/.exec(String(v||''));
-  if(!m) return null;
-  const H=Number(m[1]), M=Number(m[2]);
-  if(H<0||H>23||M<0||M>59) return null;
-  return pad(H)+':'+pad(M);
-}
-const hm2min=v=>{ const m=validHM(v); if(!m) return 0; const [H,M]=m.split(':').map(Number); return H*60+M; };
-/* a stretch that runs past midnight simply wraps, so 22:00 to 02:00 works */
-function inWindows(now){
-  const mins=now.getHours()*60+now.getMinutes();
-  return grindWindows().some(w=>{
-    const a=hm2min(w.from), b=hm2min(w.to);
-    return a===b ? false : (a<b ? (mins>=a&&mins<b) : (mins>=a||mins<b));
-  });
-}
-
-/* ---------- the log ---------- */
-const grindChecks=ds=>grindDays.get(ds)||[];
-async function grindWrite(ds,checks){
-  if(checks.length){ grindDays.set(ds,checks); await dbPut('grind',{date:ds,checks}); }
-  else{ grindDays.delete(ds); await dbDel('grind',ds); }
-}
-async function grindLog(ans,level){
-  const ds=TSTR;
-  const checks=grindChecks(ds).concat({at:Date.now(),ans:ans?1:0,level:ans?(level||1):0});
-  await grindWrite(ds,checks);
-  renderGrindCard(); renderSettings();
-}
-const grindDayStat=ds=>{
-  const c=grindChecks(ds);
-  const yes=c.filter(x=>x.ans).length;
-  const load=c.reduce((n,x)=>n+(x.ans?(x.level||1):0),0);
-  return {n:c.length,yes,load,pct:c.length?Math.round(100*yes/c.length):0};
-};
-/* a day counts as held if you were asked at all and said yes more often than not */
-const grindHeld=ds=>{ const t=grindDayStat(ds); return t.n>0 && t.yes*2>=t.n; };
-function grindRun(){
-  let n=0, d=TODAY;
-  if(!grindHeld(ymd(d))) d=addDays(d,-1);
-  for(let i=0;i<400;i++){
-    if(grindHeld(ymd(d))) n++; else break;
-    d=addDays(d,-1);
-  }
-  return n;
-}
-function grindWeek(){
-  const out=[];
-  for(let i=6;i>=0;i--){
-    const d=addDays(TODAY,-i), ds=ymd(d);
-    out.push(Object.assign({d,ds,today:ds===TSTR,held:grindHeld(ds)},grindDayStat(ds)));
-  }
-  return out;
-}
-
-/* ---------- the card on Home ---------- */
-function renderGrindCard(){
-  const card=$('#grindCard'); if(!card) return;
-  const week=grindWeek();
-  const asked=week.reduce((n,x)=>n+x.n,0), yes=week.reduce((n,x)=>n+x.yes,0);
-  const pct=asked?Math.round(100*yes/asked):0;
-  $('#grindPct').textContent = asked ? pct+'%' : '\u2014';
-  $('#grindPctSub').textContent = asked ? 'working hard this week' : 'nothing logged yet';
-  const run=grindRun();
-  $('#grindRun').textContent=run;
-  $('.gcrun',card).classList.toggle('hot',run>0);
-
-  /* the bar is how much of each day you held, so an honest short day still
-     reads as a full one — it is the answer that counts, not the count */
-  $('#grindBars').innerHTML=week.map(x=>
-    '<div class="gbcol'+(x.today?' today':'')+(x.held?' hit':'')+'">'+
-      '<span class="gbtrack"><i class="gbfill" style="height:'+
-        (x.n? Math.max(8,x.pct) : 0)+'%"></i></span>'+
-      '<span class="gbl">'+chipDay(x.d.getDay())+'</span>'+
-    '</div>').join('');
-
-  const td=grindDayStat(TSTR);
-  $('#grindToday').textContent=td.yes;
-  $('#grindTodayN').textContent=td.n;
-  $('#grindState').textContent = !grindOn() ? 'Off'
-    : !grindWindows().length ? 'No hours set'
-    : inWindows(new Date()) ? 'Watching now'
-    : 'Outside your hours';
-}
-$('#grindCard').addEventListener('click',()=>{
-  const t=$('.tab[data-v="settings"]'); if(t) t.click();
-  requestAnimationFrame(()=>openSetPage('grind'));
-  buzz(HAPTIC.light);
-});
-
-/* ---------- the prompt ---------- */
-function grindAsk(){
-  if(grOpen) return;
-  grOpen=true; grLevel=0;
-  grDeadline=Date.now()+grindSecs()*1000;
-  const box=$('#grAsk');
-  $('#grQ').textContent='Are you working hard right now?';
-  $('#grLevel').hidden=true;
-  $$('#grLevel .grstep').forEach(b=>b.classList.remove('on'));
-  $('#grNo').textContent='No';
-  $('#grYes').textContent='Yes';
-  $('#grYes').disabled=false;
-  box.classList.remove('late');
-  box.classList.add('on');
-  paintGrindClock();
-  clearInterval(grTick);
-  grTick=setInterval(paintGrindClock,250);
-  buzz([18,60,18]);
-}
-function paintGrindClock(){
-  const total=grindSecs()*1000;
-  const leftMs=Math.max(0,grDeadline-Date.now());
-  const secs=Math.ceil(leftMs/1000);
-  $('#grLeft').textContent=secs;
-  $('#grRing').style.setProperty('--p',String(leftMs/total));
-  $('#grAsk').classList.toggle('late',leftMs<=10000);
-  if(leftMs<=0) grindTimeout();
-}
-/* no answer inside the minute is an answer: it was not a hard-working moment */
-async function grindTimeout(){
-  if(!grOpen) return;
-  closeGrindAsk();
-  await grindLog(false,0);
-  scheduleGrind();
-  toast('Grind check missed \u00B7 marked as not working hard');
-  buzz([30,60,30]);
-}
-function closeGrindAsk(){
-  grOpen=false;
-  clearInterval(grTick); grTick=null;
-  $('#grAsk').classList.remove('on');
-}
-$('#grNo').addEventListener('click',async()=>{
-  if(!grOpen) return;
-  closeGrindAsk();
-  await grindLog(false,0);
-  scheduleGrind();
-  toast('Logged \u00B7 get back to it');
-  buzz(HAPTIC.untick);
-});
-/* Yes asks the one follow-up question, on the same prompt and the same clock */
-$('#grYes').addEventListener('click',async()=>{
-  if(!grOpen) return;
-  if(!grLevel){
-    $('#grQ').textContent='Good. How hard?';
-    $('#grLevel').hidden=false;
-    $('#grYes').textContent='Log it';
-    $('#grYes').disabled=true;
-    buzz(HAPTIC.tick);
-    return;
-  }
-  const lvl=grLevel;
-  closeGrindAsk();
-  await grindLog(true,lvl);
-  scheduleGrind();
-  toast('Logged \u00B7 level '+lvl);
-  buzz(HAPTIC.done);
-});
-$('#grLevel').addEventListener('click',e=>{
-  const b=e.target.closest('.grstep'); if(!b) return;
-  grLevel=Number(b.dataset.l)||0;
-  $$('#grLevel .grstep').forEach(x=>x.classList.toggle('on',x===b));
-  $('#grYes').disabled=false;
-  buzz(HAPTIC.light);
-});
-
-/* ---------- when the next one comes ----------
-   One timer, checked every ten seconds, so a phone that slept through the
-   moment is asked as soon as it is back rather than being asked six times. */
-function scheduleGrind(){
-  grNextAt=Date.now()+grindEvery()*60000;
-}
-function grindPulse(){
-  if(!grindOn() || grOpen) return;
-  if(!grindWindows().length) return;
-  const now=new Date();
-  if(!inWindows(now)){ grNextAt=0; return; }   /* outside the hours the clock waits */
-  if(!grNextAt){ scheduleGrind(); return; }    /* just stepped inside: give it one interval */
-  if(Date.now()>=grNextAt) grindAsk();
-}
-setInterval(grindPulse,10000);
-/* coming back to the app is the moment worth checking, not a moment to skip */
-document.addEventListener('visibilitychange',()=>{ if(!document.hidden) grindPulse(); });
-
-/* ---------- settings ---------- */
-let grT=null;
-function renderGrindSettings(){
-  const sw=$('#grSw'); if(!sw) return;
-  sw.classList.toggle('on',grindOn());
-  const ev=$('#grEvery'), an=$('#grWindow');
-  if(document.activeElement!==ev) ev.value=grindEvery();
-  if(document.activeElement!==an) an.value=grindSecs();
-  const p=$('#grWinPanel');
-  if(!typing(p)){
-    const ws=grindWindows();
-    p.innerHTML = ws.length ? ws.map(w=>
-      '<div class="grwrow" data-i="'+esc(w.id)+'">'+
-        '<input class="input grfrom" type="time" step="300" value="'+esc(w.from)+'">'+
-        '<span class="to">to</span>'+
-        '<input class="input grto" type="time" step="300" value="'+esc(w.to)+'">'+
-        '<button class="grwdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
-      '</div>').join('')
-      : '<div class="grwempty">No hours set</div>';
-  }
-  const total=[...grindDays.values()].reduce((n,c)=>n+c.length,0);
-  const dn=grindDays.size;
-  $('#grStat').textContent = total
-    ? total+' check'+(total===1?'':'s')+' across '+dn+' day'+(dn===1?'':'s')
-    : 'Nothing logged yet';
-}
-$('#grSw').addEventListener('click',async()=>{
-  S.grind=Object.assign({},grindCfg(),{on:!grindOn()});
-  await saveSettings();
-  if(grindOn()) scheduleGrind(); else { grNextAt=0; if(grOpen) closeGrindAsk(); }
-  renderGrindSettings(); renderGrindCard(); buzz(10);
-  toast(grindOn()?'Grind check on':'Grind check off');
-});
-function grNum(el,keyName,lo,hi){
-  clearTimeout(grT);
-  grT=setTimeout(async()=>{
-    let v=Math.round(Number(el.value));
-    if(!isFinite(v)) return;
-    v=Math.max(lo,Math.min(hi,v));
-    S.grind=Object.assign({},grindCfg(),{[keyName]:v});
-    await saveSettings();
-    if(keyName==='every') scheduleGrind();
-    renderGrindCard();
-  },600);
-}
-$('#grEvery').addEventListener('input',e=>grNum(e.target,'every',1,240));
-$('#grWindow').addEventListener('input',e=>grNum(e.target,'answerSecs',10,600));
-$('#grEvery').addEventListener('blur',()=>renderGrindSettings());
-$('#grWindow').addEventListener('blur',()=>renderGrindSettings());
-$('#grWinAdd').addEventListener('click',async()=>{
-  S.grind=Object.assign({},grindCfg(),
-    {windows:[...grindWindows(),{id:uid(),from:'09:00',to:'12:00'}]});
-  await saveSettings();
-  renderGrindSettings(); renderGrindCard(); buzz(8);
-});
-$('#grWinPanel').addEventListener('change',async e=>{
-  const row=e.target.closest('.grwrow'); if(!row) return;
-  const ws=grindWindows().map(w=>{
-    if(w.id!==row.dataset.i) return w;
-    const from=validHM($('.grfrom',row).value)||w.from;
-    const to=validHM($('.grto',row).value)||w.to;
-    return {id:w.id,from,to};
-  });
-  S.grind=Object.assign({},grindCfg(),{windows:ws});
-  await saveSettings();
-  renderGrindCard();
-});
-$('#grWinPanel').addEventListener('click',async e=>{
-  const del=e.target.closest('.grwdel'); if(!del) return;
-  const row=del.closest('.grwrow'); if(!row) return;
-  S.grind=Object.assign({},grindCfg(),
-    {windows:grindWindows().filter(w=>w.id!==row.dataset.i)});
-  await saveSettings();
-  renderGrindSettings(); renderGrindCard(); buzz(12); toast('Stretch removed');
-});
-$('#grClear').addEventListener('click',e=>{
-  armed(e.currentTarget,'Clear the grind log',async()=>{
-    grindDays=new Map();
-    await dbClear('grind');
-    renderGrindCard(); renderGrindSettings(); toast('Grind log cleared'); buzz(8);
-  });
-});
-
-/* ===========================================================
    The back gesture — Android's button, the edge swipe, a mouse's
    fourth key. One guard entry sits in history whenever there is
    something to close, and back closes the top thing instead of
@@ -9891,9 +9565,6 @@ const BACK_SHEETS=[
   ['#docSheet',closeDocs]
 ];
 function topLayer(){
-  /* the grind check is the one thing back cannot dismiss: leaving it is an
-     answer, and it has to be given on its own clock rather than by a swipe */
-  if(grOpen) return ()=>{};
   if($('#pdfBox').classList.contains('on')) return closePdf;
   if($('#vBox').classList.contains('on')) return closeLightbox;
   for(const [sel,fn] of BACK_SHEETS){
@@ -9944,7 +9615,7 @@ addEventListener('popstate',()=>{
   if(typeof MutationObserver!=='function') return;
   const mo=new MutationObserver(()=>syncBackGuard());
   const opts={attributes:true,attributeFilter:['class','hidden']};
-  ['#pdfBox','#vBox','#timerWrap','#grAsk','#v-vision','#v-settings','#vBody','#vGate','#igGrid']
+  ['#pdfBox','#vBox','#timerWrap','#v-vision','#v-settings','#vBody','#vGate','#igGrid']
     .concat(BACK_SHEETS.map(x=>x[0]))
     .forEach(sel=>{ const el=$(sel); if(el) mo.observe(el,opts); });
   $$('.tab').forEach(t=>mo.observe(t,opts));
