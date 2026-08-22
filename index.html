@@ -3082,6 +3082,23 @@ html.igskin .nsmeta{font-family:var(--ui);font-size:13px;font-weight:500;
    =========================================================== */
 html.igskin #v-today{padding-left:var(--gut);padding-right:var(--gut)}
 html.igskin #v-today.active>*{animation:none}
+
+/* ---------- motion ----------
+   Home is the page you land on, so it should arrive rather than appear. Each
+   band lifts into place in turn on opening, and the ones further down do the
+   same as they are scrolled to. The class is put on by script, so if any of
+   this fails the page is simply there, in full, with nothing hidden. */
+@media (prefers-reduced-motion:no-preference){
+  #tSide.reveal>*{opacity:0;transform:translateY(16px);
+    transition:opacity .5s var(--ease),transform .62s var(--spring);
+    transition-delay:var(--d,0ms)}
+  #tSide.reveal>*.inview{opacity:1;transform:none}
+  /* the picture arrives with a little more weight than the rest */
+  #tSide.reveal>.hrail{transform:translateY(22px) scale(.97)}
+  #tSide.reveal>.hrail.inview{transform:none}
+  /* and the colour behind it fades up with it */
+  .hwash,.hwtop{transition:opacity .8s var(--ease) .1s,background .8s var(--ease)}
+}
 html.igskin #v-today{--display:var(--ui)}
 
 /* ---------- the hero ---------- */
@@ -3174,20 +3191,26 @@ html[data-theme="dark"]{
 /* ---------- the pictures ----------
    A rail you push sideways, the way a feed moves. Each one snaps into place;
    the order is shuffled on every open so the greeting keeps changing. */
-.hrail{margin:14px calc(var(--gut) * -1) 2px;position:relative}
+.hrail{margin:10px calc(var(--gut) * -1) 0;position:relative}
 /* the side padding is exactly half the room left over by a card, so a card
    snapped to the centre sits dead centre — and the first one does too */
-.hrtrack{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:0 calc((100% - var(--hr-card,70%)) / 2);
+.hrtrack{display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:0 calc((100% - var(--hr-card,100%)) / 2);
   scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hrtrack::-webkit-scrollbar{display:none}
+/* A full-bleed band, taller than it is wide. The cap keeps it from running
+   away on a tall or wide screen, where 4:5 of the whole width would be more
+   picture than page. */
 .hrcard{flex:0 0 100%;scroll-snap-align:center;position:relative;aspect-ratio:4/5;
-  border-radius:16px;overflow:hidden;background:var(--ig-fill);
-  box-shadow:inset 0 0 0 1px var(--ig-hair)}
-.hrcard img{width:100%;height:100%;object-fit:cover;display:block}
-.hrcard::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.34),transparent 46%)}
-@media (min-width:700px){.hrail{--hr-card:40%}}
+  max-height:64vh;border-radius:0;overflow:hidden;background:transparent}
+/* The top and bottom edges dissolve instead of ending on a line. What lies
+   behind is the same picture, blurred and tinted, which itself fades out to
+   the app's background — so the band melts into the page rather than being
+   pasted onto it. The sides stay hard, because they are the screen edges. */
+.hrcard img{width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 15%,#000 84%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 15%,#000 84%,transparent 100%)}
+@media (min-width:700px){.hrail{--hr-card:100%}}
 
 /* the pictures, in settings */
 .hrgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
@@ -3412,10 +3435,10 @@ html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px
    behind and scrolling back to the top brings it with you, at no cost to
    the scroller. Nothing here is interactive.
    =========================================================== */
-#v-today{position:relative;isolation:isolate}
+#v-today{position:relative;isolation:isolate;overflow-x:clip}
 .hwash{position:absolute;z-index:0;pointer-events:none;overflow:hidden;
-  left:calc(var(--gut) * -1);right:calc(var(--gut) * -1);
-  top:var(--wash-top,0px);height:640px;
+  left:0;right:0;
+  top:var(--wash-top,0px);height:var(--wash-h,640px);
   opacity:0;transition:opacity .65s var(--ease);
   -webkit-mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%);
   mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%)}
@@ -3427,7 +3450,7 @@ html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px
    through it rather than stopping at its edge. Kept deliberately faint: this
    sits under the date, never over it. */
 .hwtop{position:absolute;z-index:0;pointer-events:none;
-  left:calc(var(--gut) * -1);right:calc(var(--gut) * -1);
+  left:0;right:0;
   top:calc((104px + env(safe-area-inset-top)) * -1);
   height:calc(var(--wash-top,0px) + 104px + env(safe-area-inset-top) + 160px);
   background:linear-gradient(to bottom,
@@ -5115,6 +5138,8 @@ function renderQuote(){
   $('#quoteText').textContent=(q.text||'').trim();
   const who=(q.author||'').trim();
   $('#quoteWho').textContent = who ? '\u2014 '+who : '';
+  /* a longer line makes a taller card, and the wash ends at its foot */
+  requestAnimationFrame(placeWash);
 }
 /* Home is the page you land on, so getting anywhere from it is one tap.
    The record is the one you reach for most, so it is the big one. */
@@ -8079,7 +8104,7 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
     document.querySelector('.app').classList.toggle('onvision',wantDark);
     applySettings();
     showView(v);
-    if(v==='today') renderHeroRail();
+    if(v==='today'){ renderHeroRail(); armReveal(); }
   };
   if(wasTheme!==nowTheme) themeSweep(nowTheme,t,swap); else swap();
   buzz(6);
@@ -9381,12 +9406,66 @@ function jumpTo(i){
 }
 /* the wash begins where the picture begins, so the date above it is left
    on the plain background */
+/* The colour belongs to the picture and the line under it, and stops there.
+   Below that the page is itself: the record button, the doors and the graphs
+   are read, not admired, and a tint over them only makes them harder to read.
+   Both edges are measured off the real elements, using offsets rather than
+   rectangles so a reveal animation part-way through cannot skew them. */
 function placeWash(){
-  const rail=$('#heroRail'), w=$('#hWash');
-  if(!rail||!w) return;
-  $('#v-today').style.setProperty('--wash-top',(rail.offsetTop||0)+'px');
+  const rail=$('#heroRail'), w=$('#hWash'), q=$('#quoteCard'), col=$('#tSide'), v=$('#v-today');
+  if(!rail||!w||!col||!v) return;
+  const base=col.offsetTop||0;
+  const top=base+(rail.offsetTop||0);
+  v.style.setProperty('--wash-top',top+'px');
+  const end=q && !q.hidden
+    ? base+q.offsetTop+q.offsetHeight+2
+    : top+640;
+  v.style.setProperty('--wash-h',Math.max(260,end-top)+'px');
 }
 addEventListener('resize',()=>{ placeWash(); },{passive:true});
+
+/* ---------- the page arriving ----------
+   Each band of Home lifts into place: the ones already on screen in a quick
+   stagger as it opens, the ones below as they are scrolled to. An observer
+   does the work, so nothing is measured on every scroll frame.
+
+   The hiding is applied by this script and only once it is certain it can
+   also un-hide: without a working observer the class is never added and the
+   page renders plainly and completely. */
+let revealIO=null;
+function armReveal(){
+  const col=$('#tSide'); if(!col) return;
+  const bands=[...col.children];
+  if(!bands.length) return;
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(still || typeof IntersectionObserver!=='function'){
+    col.classList.remove('reveal');
+    bands.forEach(b=>b.classList.add('inview'));
+    return;
+  }
+  if(revealIO) revealIO.disconnect();
+  col.classList.add('reveal');
+  /* the opening stagger only applies to what is on screen to begin with */
+  const fold=innerHeight;
+  let seen=0;
+  bands.forEach(b=>{
+    b.classList.remove('inview');
+    const onScreen=b.getBoundingClientRect().top<fold;
+    b.style.setProperty('--d',(onScreen? Math.min(seen++,5)*70 : 0)+'ms');
+  });
+  revealIO=new IntersectionObserver((entries,obs)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      e.target.classList.add('inview');
+      obs.unobserve(e.target);        /* it only ever arrives once */
+    });
+  },{rootMargin:'0px 0px -8% 0px',threshold:.06});
+  requestAnimationFrame(()=>bands.forEach(b=>revealIO.observe(b)));
+  /* a band that never trips the observer must not be left invisible */
+  setTimeout(()=>bands.forEach(b=>b.classList.add('inview')),2600);
+}
+/* it runs on opening and each time Home is returned to */
+addEventListener('DOMContentLoaded',armReveal);
 function clearWash(){
   $('#hWash').classList.remove('on');
   $('#hWashTop').classList.remove('on');
