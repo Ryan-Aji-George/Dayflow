@@ -3097,7 +3097,7 @@ html.igskin #v-today.active>*{animation:none}
   #tSide.reveal>.hrail{transform:translateY(22px) scale(.97)}
   #tSide.reveal>.hrail.inview{transform:none}
   /* and the colour behind it fades up with it */
-  .hwash,.hwtop{transition:opacity .8s var(--ease) .1s,background .8s var(--ease)}
+  .hwash{transition:opacity .8s var(--ease) .1s,background .8s var(--ease)}
 }
 html.igskin #v-today{--display:var(--ui)}
 
@@ -3187,8 +3187,10 @@ html[data-theme="dark"]{
    the app's background — so the band melts into the page rather than being
    pasted onto it. The sides stay hard, because they are the screen edges. */
 .hrcard img{width:100%;height:100%;object-fit:cover;display:block;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 15%,#000 84%,transparent 100%);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 15%,#000 84%,transparent 100%)}
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 58%,
+    rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 58%,
+    rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%)}
 @media (min-width:700px){.hrail{--hr-card:100%}}
 
 /* the pictures, in settings */
@@ -3327,29 +3329,11 @@ html.igskin .hsec>.eyebrow{font-family:var(--ui);font-size:15px;font-weight:700;
 #v-today{position:relative;isolation:isolate;overflow-x:clip}
 .hwash{position:absolute;z-index:0;pointer-events:none;overflow:hidden;
   left:0;right:0;
-  top:var(--wash-top,0px);height:var(--wash-h,640px);
+  top:0;height:var(--wash-h,640px);
   opacity:0;transition:opacity .65s var(--ease);
-  -webkit-mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%);
-  mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%)}
+  -webkit-mask-image:linear-gradient(#000 0,#000 62%,rgba(0,0,0,.62) 80%,transparent 100%);
+  mask-image:linear-gradient(#000 0,#000 62%,rgba(0,0,0,.62) 80%,transparent 100%)}
 .hwash.on{opacity:1}
-
-/* It runs from above the top bar down to where the picture starts, and
-   strengthens as it goes, so it meets the wash proper without a seam. The
-   top bar is translucent and blurs what is behind it, so the colour carries
-   through it rather than stopping at its edge. Kept deliberately faint: this
-   sits under the date, never over it. */
-.hwtop{position:absolute;z-index:0;pointer-events:none;
-  left:0;right:0;
-  top:calc((104px + env(safe-area-inset-top)) * -1);
-  height:calc(var(--wash-top,0px) + 104px + env(safe-area-inset-top) + 160px);
-  background:linear-gradient(to bottom,
-    color-mix(in srgb,var(--wash,transparent) 40%,transparent) 0,
-    var(--wash,transparent) calc(100% - 160px),
-    transparent 100%);
-  opacity:0;transition:opacity .65s var(--ease),background .8s var(--ease)}
-.hwtop.on{opacity:.17}
-html[data-theme="dark"] .hwtop.on{opacity:.24}
-@media (prefers-reduced-motion:reduce){ .hwtop{transition:opacity .2s} }
 .hwimg{position:absolute;left:-14%;top:-14%;width:128%;height:128%;
   object-fit:cover;opacity:0;
   filter:blur(52px) saturate(190%);transform:scale(1.06);
@@ -3456,11 +3440,19 @@ html[data-theme="dark"] .rcard{box-shadow:inset 0 0 0 1px var(--line)}
 /* the note a subject carries */
 .gnote{margin:20px 0 8px}
 .gnote>.eyebrow{display:block;margin-bottom:9px}
-.gnotebox{width:100%;min-height:104px;padding:13px 14px;border-radius:14px;
-  background:var(--ig-fill);color:var(--ink);border:0;resize:vertical;
-  font:inherit;font-size:15px;line-height:1.5}
+/* it grows with what is written in it, so there is never a scrollbar inside
+   a box inside a page that already scrolls */
+.gnotebox{width:100%;min-height:96px;padding:13px 14px;border-radius:14px;
+  background:var(--ig-fill);color:var(--ink);border:0;resize:none;overflow:hidden;
+  font:inherit;font-size:15px;line-height:1.5;display:block}
 .gnotebox::placeholder{color:var(--ink-3)}
-.gnotebox:focus{outline:0;box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
+/* One ring, not two. The skin's own outline is set on `html.igskin textarea`,
+   which outranks a bare class, so it has to be answered at the same weight
+   or the field draws its inset ring inside an outline as well. */
+html.igskin textarea.gnotebox:focus,
+html.igskin textarea.gnotebox:focus-visible,
+textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
+  box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
 
 </style>
 <script>
@@ -3520,10 +3512,6 @@ html[data-theme="dark"] .rcard{box-shadow:inset 0 0 0 1px var(--line)}
            of the page: a blurred copy of it, tinted, fading out before the
            fold. Scroll past and the page is itself again; come back and it
            returns with the picture. It is decoration only and takes no taps. -->
-      <!-- the same colour carried up over the date and the top bar, but as
-           colour only: no picture, no blur, and weak enough that the day and
-           everything beside it read exactly as they do on the plain page. -->
-      <div class="hwtop" id="hWashTop" aria-hidden="true"></div>
       <div class="hwash" id="hWash" aria-hidden="true">
         <img class="hwimg" id="hWashA" alt="">
         <img class="hwimg" id="hWashB" alt="">
@@ -5040,13 +5028,35 @@ function normalizeQuotes(){
 }
 /* One a day picks by the date, so the same line stands all day and changes of
    its own accord tomorrow. Every open simply shuffles. */
+let quotePick=null;      /* set only when you ask for another by tapping */
 function currentQuote(){
   const list=liveQuotes();
   if(!list.length) return null;
+  if(quotePick!=null) return list[((quotePick%list.length)+list.length)%list.length];
   if(S.quoteMode==='open') return list[Math.floor(Math.random()*list.length)];
   const seed=Math.floor(TODAY.getTime()/86400000);
   return list[((seed%list.length)+list.length)%list.length];
 }
+/* Tapping the card turns to another line, at random but never the one already
+   showing — landing on the same words would read as nothing having happened. */
+function nextQuote(){
+  const list=liveQuotes();
+  if(list.length<2) return;
+  const now=currentQuote();
+  let i=list.indexOf(now);
+  let n=i;
+  while(n===i) n=Math.floor(Math.random()*list.length);
+  quotePick=n;
+  const el=$('#quoteText'), who=$('#quoteWho');
+  [el,who].forEach(x=>{ if(!x) return;
+    x.style.transition='none'; x.style.opacity='0'; x.style.transform='translateY(6px)'; });
+  renderQuote();
+  requestAnimationFrame(()=>[el,who].forEach(x=>{ if(!x) return;
+    x.style.transition='opacity .32s var(--ease),transform .32s var(--ease)';
+    x.style.opacity=''; x.style.transform=''; }));
+  buzz(HAPTIC.light);
+}
+$('#quoteCard').addEventListener('click',nextQuote);
 function renderQuote(){
   const card=$('#quoteCard'); if(!card) return;
   const q=currentQuote();
@@ -8304,12 +8314,17 @@ function renderGroundSheet(b){
   b.appendChild(note);
   const nb=$('#gndNote',note);
   nb.value=g.note||'';
+  /* height follows the text: measured from nothing each time, or it could
+     only ever grow */
+  const grow=()=>{ nb.style.height='auto'; nb.style.height=nb.scrollHeight+'px'; };
   nb.addEventListener('input',()=>{
+    grow();
     g.note=nb.value;
     clearTimeout(gNoteT);
     gNoteT=setTimeout(()=>gSave(g),600);      /* written a moment after typing stops */
   });
   nb.addEventListener('blur',()=>{ clearTimeout(gNoteT); gSave(g); });
+  requestAnimationFrame(grow);
 
   const foot=document.createElement('div');
   foot.className='gfoot';
@@ -9388,12 +9403,13 @@ function placeWash(){
   const rail=$('#heroRail'), w=$('#hWash'), q=$('#quoteCard'), col=$('#tSide'), v=$('#v-today');
   if(!rail||!w||!col||!v) return;
   const base=col.offsetTop||0;
-  const top=base+(rail.offsetTop||0);
-  v.style.setProperty('--wash-top',top+'px');
+  /* the wash starts at the top of the page and ends under the quote: the
+     picture sits inside it rather than on top of it, so there is no edge
+     between the two to notice */
   const end=q && !q.hidden
     ? base+q.offsetTop+q.offsetHeight+2
-    : top+640;
-  v.style.setProperty('--wash-h',Math.max(260,end-top)+'px');
+    : base+(rail.offsetTop||0)+640;
+  v.style.setProperty('--wash-h',Math.max(260,end)+'px');
 }
 addEventListener('resize',()=>{ placeWash(); },{passive:true});
 
@@ -9441,7 +9457,6 @@ function armReveal(){
 addEventListener('DOMContentLoaded',armReveal);
 function clearWash(){
   $('#hWash').classList.remove('on');
-  $('#hWashTop').classList.remove('on');
   $$('.hwimg').forEach(i=>i.classList.remove('on'));
   $('#v-today').style.removeProperty('--wash');
   hrLive=-1; hrN=0;
@@ -9462,7 +9477,6 @@ async function setLive(i){
   next.classList.add('on');
   prev.classList.remove('on');
   $('#hWash').classList.add('on');
-  $('#hWashTop').classList.add('on');
 
   const tint=await tintOf(pic);
   /* a slow swipe can land somewhere else while the colour is being worked
