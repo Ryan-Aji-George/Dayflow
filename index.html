@@ -3111,7 +3111,7 @@ html.igskin .day-name.wrapday{font-size:23px}
   box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 8%,transparent)}
 .qcard .qmark{position:absolute;top:12px;right:14px;width:34px;height:34px;
   fill:var(--ink);stroke:none;opacity:.09}
-.qtext{margin:0;font-size:20px;font-weight:600;line-height:1.38;letter-spacing:-.02em;
+.qtext{margin:0;font-size:17px;font-weight:600;line-height:1.42;letter-spacing:-.015em;
   color:var(--ink);white-space:pre-wrap;position:relative;z-index:1}
 .qfoot{display:flex;align-items:center;gap:10px;margin-top:14px}
 .qwho{flex:1;min-width:0;font-size:15px;font-weight:700;letter-spacing:-.015em;
@@ -3175,16 +3175,19 @@ html[data-theme="dark"]{
    A rail you push sideways, the way a feed moves. Each one snaps into place;
    the order is shuffled on every open so the greeting keeps changing. */
 .hrail{margin:14px calc(var(--gut) * -1) 2px;position:relative}
+/* the side padding is exactly half the room left over by a card, so a card
+   snapped to the centre sits dead centre — and the first one does too */
 .hrtrack{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:0 var(--gut);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  padding:0 calc((100% - var(--hr-card,70%)) / 2);
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hrtrack::-webkit-scrollbar{display:none}
-.hrcard{flex:0 0 66%;scroll-snap-align:center;position:relative;aspect-ratio:4/5;
+.hrcard{flex:0 0 100%;scroll-snap-align:center;position:relative;aspect-ratio:4/5;
   border-radius:16px;overflow:hidden;background:var(--ig-fill);
   box-shadow:inset 0 0 0 1px var(--ig-hair)}
 .hrcard img{width:100%;height:100%;object-fit:cover;display:block}
 .hrcard::after{content:'';position:absolute;inset:0;
   background:linear-gradient(to top,rgba(0,0,0,.34),transparent 46%)}
-@media (min-width:700px){.hrcard{flex-basis:34%}}
+@media (min-width:700px){.hrail{--hr-card:40%}}
 
 /* the pictures, in settings */
 .hrgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
@@ -3254,7 +3257,7 @@ html.igskin .run{border-radius:12px;background:var(--ig-fill);border:0;margin-to
   .qa.wide{grid-column:1 / -1}
 }
 @media (min-width:1000px) and (min-height:600px){
-  .qtext{font-size:22px}
+  .qtext{font-size:19px}
 }
 
 /* ===========================================================
@@ -3401,6 +3404,68 @@ html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px
 .srcline span{flex:1;min-width:0;word-break:break-word}
 .srcnone{padding:12px 0;font-size:14.5px;color:var(--ink-3)}
 
+/* ===========================================================
+   THE WASH — the picture's colour, over the top of Home
+   A blurred copy of whichever picture is at the front of the rail, tinted
+   with the colour pulled out of it and masked away before the fold. It sits
+   in the page rather than fixed to the screen, so scrolling down leaves it
+   behind and scrolling back to the top brings it with you, at no cost to
+   the scroller. Nothing here is interactive.
+   =========================================================== */
+#v-today{position:relative;isolation:isolate}
+.hwash{position:absolute;z-index:0;pointer-events:none;overflow:hidden;
+  left:calc(var(--gut) * -1);right:calc(var(--gut) * -1);
+  top:var(--wash-top,0px);height:640px;
+  opacity:0;transition:opacity .65s var(--ease);
+  -webkit-mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%);
+  mask-image:linear-gradient(transparent 0,#000 160px,#000 46%,rgba(0,0,0,.5) 73%,transparent 100%)}
+.hwash.on{opacity:1}
+
+/* It runs from above the top bar down to where the picture starts, and
+   strengthens as it goes, so it meets the wash proper without a seam. The
+   top bar is translucent and blurs what is behind it, so the colour carries
+   through it rather than stopping at its edge. Kept deliberately faint: this
+   sits under the date, never over it. */
+.hwtop{position:absolute;z-index:0;pointer-events:none;
+  left:calc(var(--gut) * -1);right:calc(var(--gut) * -1);
+  top:calc((104px + env(safe-area-inset-top)) * -1);
+  height:calc(var(--wash-top,0px) + 104px + env(safe-area-inset-top) + 160px);
+  background:linear-gradient(to bottom,
+    color-mix(in srgb,var(--wash,transparent) 40%,transparent) 0,
+    var(--wash,transparent) calc(100% - 160px),
+    transparent 100%);
+  opacity:0;transition:opacity .65s var(--ease),background .8s var(--ease)}
+.hwtop.on{opacity:.17}
+html[data-theme="dark"] .hwtop.on{opacity:.24}
+@media (prefers-reduced-motion:reduce){ .hwtop{transition:opacity .2s} }
+.hwimg{position:absolute;left:-14%;top:-14%;width:128%;height:128%;
+  object-fit:cover;opacity:0;
+  filter:blur(52px) saturate(190%);transform:scale(1.06);
+  transition:opacity .75s var(--ease),transform 1.2s var(--ease)}
+.hwimg.on{opacity:.55;transform:scale(1)}
+html[data-theme="dark"] .hwimg.on{opacity:.42}
+.hwtint{position:absolute;inset:0;background:var(--wash,transparent);
+  opacity:.26;mix-blend-mode:soft-light;transition:background .8s var(--ease)}
+html[data-theme="dark"] .hwtint{opacity:.34}
+.tcol{position:relative;z-index:1}
+
+/* the rail: only the one at the front is in focus. The rest sit back,
+   blurred, until they are swiped into place. */
+.hrcard{filter:blur(10px) saturate(115%);opacity:.5;transform:scale(.9);
+  transition:filter .5s var(--ease),opacity .5s var(--ease),transform .5s var(--spring)}
+.hrcard.live{filter:none;opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .hrcard{filter:none;opacity:.72;transform:none;transition:opacity .2s}
+  .hwimg,.hwash{transition:opacity .2s}
+}
+
+/* the quote takes its colour from the picture too, so the top of the page
+   reads as one thing rather than a tinted header over an unrelated card */
+.qcard{background:linear-gradient(135deg,
+    color-mix(in srgb,var(--wash,var(--ig-blue)) 16%,var(--ig-fill-2)),
+    color-mix(in srgb,var(--wash,var(--h-rose)) 9%,var(--ig-fill-2)) 60%,
+    var(--ig-fill-2))}
+
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -3455,6 +3520,19 @@ html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px
          day it is and how much of it is left, why you are doing this at all,
          and where to go next. Everything you can act on is one tap away. -->
     <section class="view active" id="v-today">
+      <!-- the picture at the front of the rail throws its colour over the top
+           of the page: a blurred copy of it, tinted, fading out before the
+           fold. Scroll past and the page is itself again; come back and it
+           returns with the picture. It is decoration only and takes no taps. -->
+      <!-- the same colour carried up over the date and the top bar, but as
+           colour only: no picture, no blur, and weak enough that the day and
+           everything beside it read exactly as they do on the plain page. -->
+      <div class="hwtop" id="hWashTop" aria-hidden="true"></div>
+      <div class="hwash" id="hWash" aria-hidden="true">
+        <img class="hwimg" id="hWashA" alt="">
+        <img class="hwimg" id="hWashB" alt="">
+        <span class="hwtint"></span>
+      </div>
       <div class="tcol" id="tSide">
 
       <!-- the day leads the page -->
@@ -9192,15 +9270,172 @@ function shuffled(a){
   }
   return out;
 }
+/* The colour the page takes is pulled out of the picture itself: the average
+   of a small sample, then pushed up in saturation so a muted photograph still
+   gives the page something to work with. It is worked out once per picture
+   and kept on the record, so the rail never recomputes it while scrolling. */
+function pickTint(src){
+  return new Promise(res=>{
+    const im=new Image();
+    im.onerror=()=>res(null);
+    im.onload=()=>{
+      try{
+        const n=24, c=document.createElement('canvas');
+        c.width=c.height=n;
+        const x=c.getContext('2d',{willReadFrequently:true});
+        x.drawImage(im,0,0,n,n);
+        const d=x.getImageData(0,0,n,n).data;
+        let r=0,g=0,b=0,k=0;
+        for(let i=0;i<d.length;i+=4){
+          if(d[i+3]<8) continue;                 /* skip anything transparent */
+          r+=d[i]; g+=d[i+1]; b+=d[i+2]; k++;
+        }
+        if(!k) return res(null);
+        res(vivid(r/k,g/k,b/k));
+      }catch(e){ res(null); }                    /* a tainted canvas is not fatal */
+    };
+    im.src=src;
+  });
+}
+/* an average is nearly always muddy, so it is taken round through HSL and
+   given a floor on saturation and a sane lightness before it is used */
+function vivid(r,g,b){
+  r/=255; g/=255; b/=255;
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b), l=(mx+mn)/2;
+  let h=0,sat=0;
+  if(mx!==mn){
+    const d=mx-mn;
+    sat=l>.5? d/(2-mx-mn) : d/(mx+mn);
+    if(mx===r) h=((g-b)/d+(g<b?6:0));
+    else if(mx===g) h=(b-r)/d+2;
+    else h=(r-g)/d+4;
+    h/=6;
+  }
+  const S=Math.min(.82,Math.max(.46,sat));
+  return 'hsl('+Math.round(h*360)+' '+Math.round(S*100)+'% 52%)';
+}
+async function tintOf(pic){
+  if(pic.tint) return pic.tint;
+  const t=await pickTint(pic.src);
+  if(t){ pic.tint=t; try{ await dbPut('hero',pic); }catch(e){} }
+  return t;
+}
+
+/* ---------- the loop ----------
+   The pictures are laid out three times over. You start in the middle copy,
+   so there is always something to the left of the one you are looking at,
+   including the very first. Whenever a swipe settles in the outer copy the
+   scroller is moved silently by one full set, which puts you back in the
+   middle at the identical picture — so the rail never ends in either
+   direction and never shows a seam. */
+let hrLive=-1, hwFlip=false, hrN=0, hrJump=false;
 function renderHeroRail(){
   const rail=$('#heroRail'); if(!rail) return;
-  if(!heroOn() || !heroPics.length){ rail.hidden=true; $('#hrTrack').innerHTML=''; return; }
+  if(!heroOn() || !heroPics.length){
+    rail.hidden=true; $('#hrTrack').innerHTML='';
+    clearWash();
+    return;
+  }
   rail.hidden=false;
   heroOrder=shuffled(heroPics);
-  $('#hrTrack').innerHTML=heroOrder.map(h=>
-    '<div class="hrcard"><img src="'+esc(h.src)+'" alt="" loading="lazy"></div>').join('');
-  $('#hrTrack').scrollLeft=0;
+  hrN=heroOrder.length;
+  const card=h=>'<div class="hrcard"><img src="'+esc(h.src)+'" alt="" loading="lazy"></div>';
+  /* one picture cannot loop against itself, so it is simply shown */
+  const runs=hrN>1 ? [...heroOrder,...heroOrder,...heroOrder] : heroOrder;
+  $('#hrTrack').innerHTML=runs.map(card).join('');
+  hrLive=-1;
+  /* Nothing can be measured until the cards have actually been laid out, and
+     on a slower device the first frame is too early: the pictures decode
+     after it and the row settles a little differently. So it is centred on
+     the next frame, and again once the middle picture has loaded. */
+  const start=hrN>1?hrN:0;
+  const settle=()=>{ jumpTo(start); setLive(start); placeWash(); };
+  requestAnimationFrame(()=>requestAnimationFrame(settle));
+  const first=$$('#hrTrack .hrcard img')[start];
+  if(first && !first.complete) first.addEventListener('load',settle,{once:true});
 }
+/* where the scroller has to sit for card i to be dead centre */
+function centreOf(i){
+  const t=$('#hrTrack'), c=$$('#hrTrack .hrcard')[i];
+  if(!t||!c) return null;
+  return Math.max(0,c.offsetLeft-(t.clientWidth-c.offsetWidth)/2);
+}
+/* which card is nearest the centre right now */
+function nearestCard(){
+  const t=$('#hrTrack'), cards=$$('#hrTrack .hrcard');
+  if(!cards.length) return 0;
+  const mid=t.scrollLeft+t.clientWidth/2;
+  let best=0, dist=Infinity;
+  cards.forEach((c,i)=>{
+    const d=Math.abs((c.offsetLeft+c.offsetWidth/2)-mid);
+    if(d<dist){ dist=d; best=i; }
+  });
+  return best;
+}
+function jumpTo(i){
+  const t=$('#hrTrack'), x=centreOf(i);
+  if(x==null) return;
+  hrJump=true;
+  t.scrollLeft=x;
+  requestAnimationFrame(()=>{ hrJump=false; });
+}
+/* the wash begins where the picture begins, so the date above it is left
+   on the plain background */
+function placeWash(){
+  const rail=$('#heroRail'), w=$('#hWash');
+  if(!rail||!w) return;
+  $('#v-today').style.setProperty('--wash-top',(rail.offsetTop||0)+'px');
+}
+addEventListener('resize',()=>{ placeWash(); },{passive:true});
+function clearWash(){
+  $('#hWash').classList.remove('on');
+  $('#hWashTop').classList.remove('on');
+  $$('.hwimg').forEach(i=>i.classList.remove('on'));
+  $('#v-today').style.removeProperty('--wash');
+  hrLive=-1; hrN=0;
+}
+/* whichever card is at the front comes into focus and hands its colour to
+   the page; the one leaving fades out under it rather than cutting */
+async function setLive(i){
+  if(i===hrLive) return;
+  hrLive=i;
+  const cards=$$('#hrTrack .hrcard');
+  cards.forEach((c,n)=>c.classList.toggle('live',n===i));
+  const pic=heroOrder[hrN? ((i%hrN)+hrN)%hrN : 0]; if(!pic) return;
+
+  const next=hwFlip? $('#hWashA') : $('#hWashB');
+  const prev=hwFlip? $('#hWashB') : $('#hWashA');
+  hwFlip=!hwFlip;
+  next.src=pic.src;
+  next.classList.add('on');
+  prev.classList.remove('on');
+  $('#hWash').classList.add('on');
+  $('#hWashTop').classList.add('on');
+
+  const tint=await tintOf(pic);
+  /* a slow swipe can land somewhere else while the colour is being worked
+     out, so it is only applied if this picture is still the one in front */
+  const now=heroOrder[hrN? ((hrLive%hrN)+hrN)%hrN : 0];
+  if(tint && now===pic) $('#v-today').style.setProperty('--wash',tint);
+}
+/* the rail drives everything; nothing polls */
+let hrT=null;
+$('#hrTrack').addEventListener('scroll',()=>{
+  if(hrJump) return;                    /* our own silent move, not a swipe */
+  clearTimeout(hrT);
+  hrT=setTimeout(()=>{
+    if(!hrN) return;
+    let i=nearestCard();
+    if(hrN>1){
+      /* drifted into an outer copy: step back to the same picture in the
+         middle one. The scroller does not move on screen, so the swipe
+         reads as continuous. */
+      if(i<hrN){ i+=hrN; jumpTo(i); }
+      else if(i>=hrN*2){ i-=hrN; jumpTo(i); }
+    }
+    setLive(i);
+  },110);
+},{passive:true});
 /* ---------- the pictures, in settings ---------- */
 function renderHeroSettings(){
   const sw=$('#hrSw'); if(!sw) return;
