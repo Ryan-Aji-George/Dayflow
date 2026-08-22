@@ -6049,8 +6049,11 @@ function normGround(g){
     if(conf||src.length) cells[k]={c:conf,s:src};
   }
   const col=/^#[0-9A-Fa-f]{6}$/.test(g.color||'') ? g.color : THREADS[0];
+  /* This rebuilds the subject field by field rather than copying it, so
+     anything not named here is dropped on load — the note included. */
   return {id:g.id||uid(), name:String(g.name||'Subject').slice(0,48), color:col,
           scale:MAXC, order:Number(g.order)||0, created:g.created||Date.now(),
+          note:String(g.note==null?'':g.note).slice(0,4000),
           phases, topics, cells};
 }
 const gCell=(g,t,ph)=>g.cells[GKEY(t,ph)]||{c:0,s:[]};
