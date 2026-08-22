@@ -3103,7 +3103,7 @@ html.igskin .day-name{font-size:30px;font-weight:800;letter-spacing:-.035em;
   line-height:1.06;margin:6px 0 0}
 html.igskin .day-name.wrapday{font-size:23px}
 /* ---------- the line you keep in front of you ---------- */
-.qcard{position:relative;margin:16px 0 0;padding:18px 18px 15px;border-radius:16px;overflow:hidden;
+.qcard{position:relative;margin:16px 0 0;padding:20px 18px 17px;border-radius:16px;overflow:hidden;
   background:linear-gradient(135deg,
     color-mix(in srgb,var(--ig-blue) 13%,var(--ig-fill-2)),
     color-mix(in srgb,var(--h-rose) 11%,var(--ig-fill-2)) 62%,
@@ -3111,18 +3111,11 @@ html.igskin .day-name.wrapday{font-size:23px}
   box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 8%,transparent)}
 .qcard .qmark{position:absolute;top:12px;right:14px;width:34px;height:34px;
   fill:var(--ink);stroke:none;opacity:.09}
-.qtext{margin:0;font-size:17px;font-weight:600;line-height:1.42;letter-spacing:-.015em;
+.qtext{margin:0;font-size:20px;font-weight:600;line-height:1.38;letter-spacing:-.02em;
   color:var(--ink);white-space:pre-wrap;position:relative;z-index:1}
-.qfoot{display:flex;align-items:center;gap:10px;margin-top:12px;min-height:26px}
-.qwho{flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--ink-2);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.qnext{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
-  color:var(--ink-2);background:var(--tint);transition:transform .25s var(--spring),color .2s}
-.qnext:active{transform:rotate(-150deg) scale(.9);color:var(--ig-blue)}
-.qnext svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round}
-
-/* ---------- where to go ---------- */
+.qfoot{display:flex;align-items:center;gap:10px;margin-top:14px}
+.qwho{flex:1;min-width:0;font-size:15px;font-weight:700;letter-spacing:-.015em;
+  color:var(--ink-2);line-height:1.35;overflow-wrap:break-word}
 /* Home was legible but flat. These are the app's own thread colours, used at
    low strength on the icon chips only: enough for the eye to tell the doors
    apart at a glance, not enough to turn the page into a toy. */
@@ -3261,8 +3254,7 @@ html.igskin .run{border-radius:12px;background:var(--ig-fill);border:0;margin-to
   .qa.wide{grid-column:1 / -1}
 }
 @media (min-width:1000px) and (min-height:600px){
-  .hhring,.hhring .ring{width:112px;height:112px}
-  .qtext{font-size:19px}
+  .qtext{font-size:22px}
 }
 
 /* ===========================================================
@@ -3493,9 +3485,6 @@ html.igskin .grlevel .eyebrow{display:block;font-family:var(--ui);font-size:15px
         <p class="qtext" id="quoteText">&mdash;</p>
         <div class="qfoot">
           <span class="qwho" id="quoteWho"></span>
-          <button class="qnext" id="quoteNext" aria-label="Another line">
-            <svg viewBox="0 0 24 24"><path d="M3.6 12a8.4 8.4 0 1 1 2.7 6.2"/><path d="M3.3 19.1v-4.4h4.4"/></svg>
-          </button>
         </div>
       </div>
 
@@ -5033,12 +5022,11 @@ function normalizeQuotes(){
 }
 /* One a day picks by the date, so the same line stands all day and changes of
    its own accord tomorrow. Every open simply shuffles. */
-let quoteNudge=0;
 function currentQuote(){
   const list=liveQuotes();
   if(!list.length) return null;
   if(S.quoteMode==='open') return list[Math.floor(Math.random()*list.length)];
-  const seed=Math.floor(TODAY.getTime()/86400000)+quoteNudge;
+  const seed=Math.floor(TODAY.getTime()/86400000);
   return list[((seed%list.length)+list.length)%list.length];
 }
 function renderQuote(){
@@ -5049,7 +5037,6 @@ function renderQuote(){
   $('#quoteText').textContent=(q.text||'').trim();
   const who=(q.author||'').trim();
   $('#quoteWho').textContent = who ? '\u2014 '+who : '';
-  $('#quoteNext').hidden = liveQuotes().length<2;
 }
 /* Home is the page you land on, so getting anywhere from it is one tap.
    The record is the one you reach for most, so it is the big one. */
@@ -5058,18 +5045,6 @@ $('#qaRecord').addEventListener('click',()=>{ openRecord(TSTR); });
 $('#qaStudy').addEventListener('click',()=>{ goTab('plan'); buzz(HAPTIC.light); });
 $('#qaVision').addEventListener('click',()=>{ goTab('vision'); buzz(HAPTIC.light); });
 $('#qaGround').addEventListener('click',()=>{ openGround(); });
-
-$('#quoteNext').addEventListener('click',()=>{
-  quoteNudge++;
-  const el=$('#quoteText');
-  el.style.transition='none'; el.style.opacity='0'; el.style.transform='translateY(5px)';
-  renderQuote();
-  requestAnimationFrame(()=>{
-    el.style.transition='opacity .3s var(--ease),transform .3s var(--ease)';
-    el.style.opacity=''; el.style.transform='';
-  });
-  buzz(HAPTIC.light);
-});
 
 /* the same list, built in settings */
 let qxT=null;
