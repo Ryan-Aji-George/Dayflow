@@ -3454,6 +3454,45 @@ html.igskin textarea.gnotebox:focus-visible,
 textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
   box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
 
+/* ---------- a divider among the sub-goals ----------
+   It is a row in the same list that is never ticked: a heading for whatever
+   follows it, dragged wherever it belongs. On the card it reads as a rule
+   with a label; in the editor it is a field like any other.
+   =========================================================== */
+.gxrow{display:flex;align-items:center;gap:8px}
+.gxgrip{flex:0 0 auto;width:26px;height:30px;display:grid;place-items:center;
+  color:var(--ink-3);touch-action:none;cursor:grab}
+.gxgrip svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round}
+.gxrow.dragging{position:relative;z-index:6;opacity:.97}
+.gxrow.isdiv .gxin{font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  font-size:12.5px;color:var(--ink-2)}
+.sgdiv{display:flex;align-items:center;gap:9px;padding:12px 0 6px}
+.sgdiv span{flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.sgdiv i{flex:1;height:1px;background:var(--ig-hair)}
+
+/* ---------- the rail ----------
+   One column pinned to the left edge, from under the top bar to above the
+   tab bar, filling as the sub-tasks of the running session are ticked off.
+   It is a reading, not a control, so it never takes a tap.
+   =========================================================== */
+.trail{position:fixed;left:0;z-index:45;width:8px;
+  top:0;bottom:0;
+  border-radius:0;
+  background:color-mix(in srgb,var(--ink) 15%,transparent);
+  pointer-events:none;opacity:0;transition:opacity .4s var(--ease)}
+.trail.on{opacity:1}
+/* it fills downwards, the same way the list of tasks runs */
+.trail i{position:absolute;left:0;right:0;top:0;height:0;
+  border-radius:0;
+  background:linear-gradient(var(--rec-a),var(--rec-b));
+  box-shadow:0 0 14px -2px color-mix(in srgb,var(--rec-a) 65%,transparent);
+  transition:height .5s var(--ease)}
+
+/* the day keeps clear of the rail, so no card sits under the bar */
+html.igskin #v-plan{padding-left:calc(var(--gut) + 8px)}
+
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -4014,6 +4053,7 @@ textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
     </section>
   </main>
 
+  <div class="trail" id="taskRail" aria-hidden="true"><i id="taskRailFill"></i></div>
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M3 10.2a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15 21v-7.5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1V21"/></svg><span>Today</span></button>
     <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Study</span></button>
@@ -4084,7 +4124,8 @@ textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
   <div class="field">
     <span class="eyebrow">Sub-goals</span>
     <div class="panel" id="gxPanel"></div>
-    <button class="btn ghost" id="gxAdd" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add sub-goal</button>
+    <button class="btn ghost" id="gxAddDiv"><svg viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></svg>Add a divider</button>
+      <button class="btn ghost" id="gxAdd" style="margin-top:9px"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add sub-goal</button>
     <p class="hint" id="gxHint">Tick every one of these off and the session is finished.</p>
   </div>
   <div class="sheet-actions">
@@ -6010,9 +6051,17 @@ const dayHasSomething=ds=>plans.has(planKeyDay(ds))||blocks.some(b=>b.date===ds)
    is already the record, so an untouched day stays empty. */
 function normGoals(g){
   return (Array.isArray(g)?g:[]).filter(x=>x&&typeof x==='object')
-    .map(x=>({id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,120),done:x.done?1:0}))
+    .map(x=>{
+      const o={id:x.id||uid(),text:String(x.text==null?'':x.text).slice(0,120),done:x.done?1:0};
+      /* a divider is a row in the same list that is never ticked. Anything
+         saved before this has no flag and stays an ordinary sub-goal. */
+      if(x.div) { o.div=1; o.done=0; }
+      return o;
+    })
     .filter(x=>x.text.trim());
 }
+const isDiv=g=>!!(g&&g.div);
+const realGoals=list=>(list||[]).filter(g=>!isDiv(g));
 /* ---------- Ground: the ground a subject covers ----------
    A subject holds phases (the passes you make over it) and topics (what it is
    made of). Where a topic meets a phase there is one reading: how sure you
@@ -6121,6 +6170,15 @@ const sessionHidden=s=>!!(s&&s.hidden);
 function hiddenSessionsOn(ds){
   return studyHabitsOn(ds).map(h=>habitSession(h,ds)).filter(sessionHidden);
 }
+/* Sessions were ordered straight off the clock, so a day that begins at 4am
+   put a 1am session first — before things that come hours earlier in the day
+   as it is actually lived. Minutes are measured from the day's own start
+   instead, wrapping past midnight, so the running order matches the day. */
+function slotOf(hhmm){
+  const m=/^(\d{1,2}):(\d{2})$/.exec(String(hhmm||'00:00'));
+  const mins=m ? (Number(m[1])%24)*60+(Number(m[2])%60) : 0;
+  return ((mins-dayStartMins())%1440+1440)%1440;
+}
 function sessionsOn(ds){
   const fromHabits=studyHabitsOn(ds).map(h=>habitSession(h,ds));
   const covered=new Set(fromHabits.map(x=>x.id));
@@ -6130,7 +6188,7 @@ function sessionsOn(ds){
      the day while its goals sat in the database. */
   const own=blocks.filter(b=>b.date===ds && !covered.has(b.id) && !sessionHidden(b));
   return own.concat(fromHabits.filter(x=>!sessionHidden(x)))
-    .sort((a,b)=>(a.time||'').localeCompare(b.time||'')||(a.created||0)-(b.created||0));
+    .sort((a,b)=>(slotOf(a.time)-slotOf(b.time))||(a.created||0)-(b.created||0));
 }
 function findSession(id){
   const saved=blocks.find(b=>b.id===id);
@@ -6161,7 +6219,7 @@ async function setHabitMark(h,ds,on){
 /* the whole point of the sub-goals: clear them all and the thing above them
    closes itself, whether that is a plain session or the habit behind one */
 async function syncSessionGoals(s){
-  const g=s.goals||[];
+  const g=realGoals(s.goals);
   if(!g.length) return false;
   const all=g.every(x=>x.done);
   const h=sessionHabit(s);
@@ -6280,10 +6338,47 @@ function renderPlan(){
       '<button data-id="'+esc(s.id)+'">Restore</button>';
     wrapB.appendChild(row);
   });
+  paintTaskRail();
 }
+
+/* ===========================================================
+   THE RAIL — how much of the running session is done
+   It follows the session with the latest start time that has already begun,
+   and hands over the moment a later one starts. What it measures is the
+   sub-tasks ticked off inside that session, not the clock: a session is
+   closed by its list, so the list is what the bar should show.
+   =========================================================== */
+function railSession(){
+  const list=sessionsOn(TSTR).map(x=>({s:x,at:slotOf(x.time)}));
+  if(!list.length) return null;
+  const now=((new Date().getHours()*60+new Date().getMinutes())-dayStartMins()+1440)%1440;
+  /* The latest one that has begun. A session with no sub-tasks has nothing
+     to report, so the rail keeps to the latest one that does rather than
+     emptying itself the moment a bare session starts. */
+  const begun=list.filter(x=>x.at<=now).sort((a,b)=>b.at-a.at);
+  const withList=begun.find(x=>realGoals(x.s.goals).length);
+  if(withList) return withList.s;
+  if(begun[0]) return begun[0].s;
+  const ahead=list.sort((a,b)=>a.at-b.at);
+  return (ahead.find(x=>realGoals(x.s.goals).length)||ahead[0]).s;
+}
+function paintTaskRail(){
+  const rail=$('#taskRail'), fill=$('#taskRailFill');
+  if(!rail||!fill) return;
+  const tab=$('.tab.on');
+  const onPlan=tab && tab.dataset.v==='plan';
+  const s=onPlan? railSession() : null;
+  const goals=s? realGoals(s.goals) : [];
+  if(!goals.length){ rail.classList.remove('on'); fill.style.height='0%'; return; }
+
+  const hit=goals.filter(g=>g.done).length;
+  rail.classList.add('on');
+  fill.style.height=(100*hit/goals.length)+'%';
+}
+addEventListener('resize',()=>paintTaskRail(),{passive:true});
 function sessionCard(s,isToday){
   const t=fmtTime(s.time||'09:00');
-  const goals=s.goals||[], hit=goals.filter(g=>g.done).length;
+  const goals=s.goals||[], real=realGoals(goals), hit=real.filter(g=>g.done).length;
   const fin=sessionDone(s);
   const el=document.createElement('div');
   el.className='pblock'+(fin?' done':''); el.dataset.id=s.id;
@@ -6298,11 +6393,13 @@ function sessionCard(s,isToday){
         '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
     '</div>'+
     (goals.length
-      ? '<div class="sgoals">'+goals.map(g=>
+      ? '<div class="sgoals">'+goals.map(g=> isDiv(g)
+        ? '<div class="sgdiv"><span>'+esc(g.text)+'</span><i></i></div>'
+        : 
           '<button class="sgoal'+(g.done?' on':'')+'" data-g="'+esc(g.id)+'">'+
             '<span class="gbox"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
             '<span class="gl">'+esc(g.text)+'</span></button>').join('')+'</div>'+
-        '<div class="sgprog'+(hit===goals.length?' full':'')+'">'+hit+' of '+goals.length+' done</div>'
+        '<div class="sgprog'+(real.length&&hit===real.length?' full':'')+'">'+hit+' of '+real.length+' done</div>'
       : '')+
     '<div class="sgadd">'+
       '<input class="input sgin" placeholder="Add a sub-goal" maxlength="120" autocomplete="off">'+
@@ -6613,8 +6710,10 @@ function renderGoalEditor(){
     return;
   }
   p.innerHTML=bGoals.map(g=>
-    '<div class="gxrow" data-i="'+esc(g.id)+'">'+
-      '<input class="gxin" value="'+esc(g.text)+'" placeholder="What to finish" maxlength="120" autocomplete="off">'+
+    '<div class="gxrow'+(isDiv(g)?' isdiv':'')+'" data-i="'+esc(g.id)+'" draggable="false">'+
+      '<span class="gxgrip" aria-label="Drag"><svg viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></svg></span>'+
+      '<input class="gxin" value="'+esc(g.text)+'" placeholder="'+
+        (isDiv(g)?'Heading':'What to finish')+'" maxlength="120" autocomplete="off">'+
       '<button class="gxdel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
     '</div>').join('');
 }
@@ -6636,6 +6735,58 @@ $('#gxAdd').addEventListener('click',()=>{
   if(last) $('.gxin',last).focus();
   buzz(8);
 });
+/* a divider goes in the same list, so it can sit anywhere among the
+   sub-goals and be dragged about with them */
+$('#gxAddDiv').addEventListener('click',()=>{
+  bGoals=bGoals.concat({id:uid(),text:'',done:0,div:1});
+  renderGoalEditor();
+  const rows=$$('#gxPanel .gxrow'), last=rows[rows.length-1];
+  if(last) $('.gxin',last).focus();
+  buzz(8);
+});
+/* dragging a row — a sub-goal or a divider — to any point in the list */
+(function initGoalDrag(){
+  const list=$('#gxPanel'); if(!list) return;
+  let drag=null;
+  list.addEventListener('pointerdown',e=>{
+    const grip=e.target.closest('.gxgrip'); if(!grip) return;
+    const item=grip.closest('.gxrow'); if(!item) return;
+    const rows=$$('.gxrow',list);
+    drag={item,rows,idx:rows.indexOf(item),cur:rows.indexOf(item),
+          step:item.offsetHeight+6,y0:e.clientY};
+    item.classList.add('dragging');
+    try{ grip.setPointerCapture(e.pointerId); }catch(err){}
+    buzz(9); e.preventDefault();
+  });
+  list.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const dy=e.clientY-drag.y0;
+    drag.item.style.transform='translateY('+dy+'px)';
+    const ni=Math.max(0,Math.min(drag.rows.length-1,Math.round(dy/drag.step)+drag.idx));
+    if(ni!==drag.cur){
+      drag.cur=ni; buzz(5);
+      drag.rows.forEach((r,i)=>{
+        if(r===drag.item) return;
+        let off=0;
+        if(drag.idx<ni && i>drag.idx && i<=ni) off=-drag.step;
+        else if(drag.idx>ni && i>=ni && i<drag.idx) off=drag.step;
+        r.style.transform = off?'translateY('+off+'px)':'';
+      });
+    }
+  });
+  const end=()=>{
+    if(!drag) return;
+    const {rows,idx,cur}=drag; drag=null;
+    rows.forEach(r=>{ r.style.transform=''; r.classList.remove('dragging'); });
+    if(cur!==idx){
+      const [moved]=bGoals.splice(idx,1);
+      bGoals.splice(cur,0,moved);
+      renderGoalEditor(); buzz(8);
+    }
+  };
+  list.addEventListener('pointerup',end);
+  list.addEventListener('pointercancel',end);
+})();
 
 function openBlockSheet(s){
   bEditing=s||null;
@@ -6722,6 +6873,7 @@ async function restoreSession(id){
   renderPlan(); renderSettings(); renderToday();
   toast('Session restored'); buzz(10);
 }
+
 
 /* ===========================================================
    The record — what got done, what broke, what you made of it
@@ -8080,6 +8232,7 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
     applySettings();
     showView(v);
     if(v==='today'){ renderHeroRail(); armReveal(); }
+    paintTaskRail();
   };
   if(wasTheme!==nowTheme) themeSweep(nowTheme,t,swap); else swap();
   buzz(6);
@@ -9600,12 +9753,42 @@ function topLayer(){
   return null;                       /* nothing left: back leaves, as it should */
 }
 let backGuard=false, backBusy=false;
-/* a page opened straight off the disk can be refused pushState. A hash still
-   makes a history entry there, and back pops it the same way. */
+/* A page served from a file or a content:// provider can be refused
+   pushState. It was already falling back to a hash, but it trusted the call
+   rather than checking it: where pushState throws only sometimes, or throws
+   silently after appearing to work, the guard was recorded as pushed when no
+   history entry existed. Back then left the app instead of closing the sheet.
+
+   Both routes are now verified against history, and which one was used is
+   remembered so the right one can be undone. */
+let guardKind='';                  /* '', 'state' or 'hash' */
+/* Writing to location.hash raises a popstate of its own, and moving off it
+   again raises another. Both look exactly like the user pressing back, so
+   the guard used to cancel itself the instant it was laid down. Anything we
+   do to history ourselves is marked and skipped. */
+let ourMove=0;
+const markOurMove=()=>{ ourMove++; setTimeout(()=>{ ourMove=Math.max(0,ourMove-1); },60); };
 function pushGuard(){
-  try{ history.pushState({df:1},''); return true; }catch(err){}
-  try{ location.hash='dayflow'; return true; }catch(err){}
+  try{
+    history.pushState({df:1},'');
+    if(history.state && history.state.df){ guardKind='state'; return true; }
+  }catch(err){}
+  try{
+    const was=location.hash;
+    markOurMove();
+    location.hash='onwards';
+    if(location.hash!==was){ guardKind='hash'; return true; }
+  }catch(err){}
+  guardKind='';
   return false;
+}
+/* undoing it has to match how it was made, or a hash guard is left behind in
+   the bar and the next back does nothing visible */
+function popGuard(){
+  const kind=guardKind; guardKind='';
+  if(!kind) return;
+  markOurMove();
+  try{ history.back(); }catch(err){}
 }
 function syncBackGuard(){
   if(backBusy) return;
@@ -9616,15 +9799,25 @@ function syncBackGuard(){
   }else{
     /* the last layer was closed by its own button, so the guard is spent */
     backGuard=false;
-    try{ history.back(); }catch(err){}
+    popGuard();
   }
 }
-addEventListener('popstate',()=>{
-  backGuard=false; backBusy=true;
+function backPressed(){
+  if(ourMove){ return; }           /* our own doing, not a press */
+  backGuard=false; guardKind=''; backBusy=true;
   const fn=topLayer();
   if(fn){ try{ fn(); buzz(6); }catch(err){ console.error('Onwards · back',err); } }
   /* let the close settle before the watcher is allowed near history again */
   setTimeout(()=>{ backBusy=false; syncBackGuard(); },0);
+}
+addEventListener('popstate',backPressed);
+/* A hash guard is popped as a hashchange, and on some builds without a
+   popstate beside it. Without this the fallback made an entry that nothing
+   ever listened for, which is the same as having no guard at all. */
+addEventListener('hashchange',()=>{
+  if(backBusy||ourMove) return;
+  if(location.hash) return;        /* going in, not coming back */
+  backPressed();
 });
 /* what is open is written in the DOM already, so the guard reads it there
    rather than asking every open and close in the app to report in */
