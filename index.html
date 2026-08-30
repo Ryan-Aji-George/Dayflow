@@ -3460,10 +3460,14 @@ textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
    with a label; in the editor it is a field like any other.
    =========================================================== */
 .gxrow{display:flex;align-items:center;gap:8px}
-.gxgrip{flex:0 0 auto;width:26px;height:30px;display:grid;place-items:center;
-  color:var(--ink-3);touch-action:none;cursor:grab}
-.gxgrip svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+.gxgrip{flex:0 0 auto;width:34px;height:40px;display:grid;place-items:center;
+  border-radius:9px;background:var(--tint);color:var(--ink-2);
+  touch-action:none;cursor:grab;transition:background .2s,color .2s}
+.gxgrip:active{background:var(--ig-blue);color:#fff;cursor:grabbing}
+.gxgrip svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;
   stroke-linecap:round}
+/* while a row is being carried, nothing under the finger may scroll */
+#gxPanel.dragging{touch-action:none}
 .gxrow.dragging{position:relative;z-index:6;opacity:.97}
 .gxrow.isdiv .gxin{font-weight:700;letter-spacing:.04em;text-transform:uppercase;
   font-size:12.5px;color:var(--ink-2)}
@@ -3472,27 +3476,569 @@ textarea.gnotebox:focus,textarea.gnotebox:focus-visible{outline:none;
   text-transform:uppercase;color:var(--ink-3)}
 .sgdiv i{flex:1;height:1px;background:var(--ig-hair)}
 
-/* ---------- the rail ----------
-   One column pinned to the left edge, from under the top bar to above the
-   tab bar, filling as the sub-tasks of the running session are ticked off.
-   It is a reading, not a control, so it never takes a tap.
+
+
+/* ===========================================================
+   EVERYTHING DONE — the running total, and the page of it
+   The grid is the same idea as the streak board, but counting things
+   finished rather than habits kept: a year at a glance, darkest where the
+   day was fullest. It reads the day records the app already keeps, so it
+   stores nothing of its own.
    =========================================================== */
-.trail{position:fixed;right:0;z-index:45;width:8px;
-  top:0;bottom:0;
-  border-radius:0;
-  background:color-mix(in srgb,var(--ink) 15%,transparent);
-  pointer-events:none;opacity:0;transition:opacity .4s var(--ease)}
-.trail.on{opacity:1}
-/* it fills downwards, the same way the list of tasks runs */
-.trail i{position:absolute;left:0;right:0;top:0;height:0;
-  border-radius:0;
-  background:linear-gradient(var(--rec-a),var(--rec-b));
-  box-shadow:0 0 14px -2px color-mix(in srgb,var(--rec-a) 65%,transparent);
-  transition:height .5s var(--ease)}
+.wingrid{display:flex;flex-wrap:wrap;gap:3px;margin:13px 0 4px}
+.wgd{width:9px;height:9px;border-radius:2px;background:var(--cell)}
+.wgd.l1{background:color-mix(in srgb,var(--h-green) 28%,var(--cell))}
+.wgd.l2{background:color-mix(in srgb,var(--h-green) 52%,var(--cell))}
+.wgd.l3{background:color-mix(in srgb,var(--h-green) 76%,var(--cell))}
+.wgd.l4{background:var(--h-green)}
+.wgd.today{box-shadow:0 0 0 1.5px var(--ink)}
+.winmoreRow{display:block;margin-top:10px;padding:9px 0;text-align:center;
+  border-radius:10px;background:var(--tint);
+  font-size:13px;font-weight:700;color:var(--ink-2)}
 
-/* the day keeps clear of the rail, so no card sits under the bar */
-html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
+.donen{flex:0 0 auto;font-size:14px;font-weight:700;color:var(--ink-2)}
+/* the page opens on the number, because the number is the point */
+.donehero{padding:6px 0 22px;text-align:center}
+.dhbig{display:flex;align-items:baseline;justify-content:center;gap:9px}
+.dhbig b{font-size:54px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--ink)}
+.dhbig span{font-size:14px;font-weight:600;color:var(--ink-2)}
+.dhline{margin-top:9px;font-size:14.5px;font-weight:600;color:var(--h-green)}
+.dhstats{display:flex;justify-content:center;gap:10px;margin-top:16px}
+.dhstats span{flex:1;display:flex;flex-direction:column;gap:2px;padding:10px 6px;
+  border-radius:12px;background:var(--ig-fill);
+  font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.dhstats b{font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+/* adding one is the first thing on the page, not the last */
+.doneadd{display:flex;gap:9px;align-items:center;margin:0 0 22px}
+.doneadd .input{flex:1;min-width:0}
+.dsec{margin:0 0 22px}
+.dsec>.eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+html.igskin .dsec>.eyebrow{font-family:var(--ui);font-size:15px;font-weight:700;
+  letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+.dsec>.eyebrow i{font-style:normal;font-size:12px;font-weight:600;color:var(--ink-3);
+  margin-left:auto}
+.drow{display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.dsec .drow:last-child{border-bottom:0}
+.dtick{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:grid;
+  place-items:center;background:var(--h-green);color:#fff}
+.dtick svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.dtx{flex:1;min-width:0;font-size:15px;font-weight:500;line-height:1.35;color:var(--ink);
+  word-break:break-word}
+.ddel{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;
+  place-items:center;color:var(--ink-3)}
+.ddel svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round}
+.dnone{padding:26px 0;text-align:center}
+.dnone b{display:block;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.dnone span{font-size:14px;color:var(--ink-2)}
 
+/* ===========================================================
+   WHERE YOU STAND — the gap, on Home
+   =========================================================== */
+.gapcard{display:block;width:100%;text-align:left;padding:16px;border-radius:16px;
+  background:var(--ig-fill-2);color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);transition:transform .18s var(--spring)}
+html[data-theme="dark"] .gapcard{box-shadow:inset 0 0 0 1px var(--line)}
+.gapcard:active{transform:scale(.99)}
+.gaptop{display:flex;align-items:center;gap:14px}
+.gapbig{flex:0 0 auto;display:flex;align-items:baseline}
+.gapbig b{font-size:42px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--ink)}
+.gapbig i{font-style:normal;font-size:17px;font-weight:700;color:var(--ink-3);margin-left:2px}
+.gapt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.gapt span{font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.gapt em{font-style:normal;font-size:12.5px;line-height:1.35;color:var(--ink-2)}
+/* the bar carries a mark for how much of the run is spent, so the ground
+   covered and the time gone can be read against each other at a glance */
+.gapbar{position:relative;height:8px;margin:15px 0 0;border-radius:4px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:visible}
+.gapbar i{display:block;height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--rec-a),var(--h-green));
+  transition:width .7s var(--ease)}
+.gapbar u{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:1px;
+  background:var(--ink);opacity:.65;text-decoration:none}
+.gapsubs{display:flex;flex-direction:column;gap:1px;margin-top:14px}
+.gsrow{display:flex;align-items:center;gap:9px;padding:8px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.gapsubs .gsrow:last-child{border-bottom:0}
+.gsrow i{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--c,var(--ink-3))}
+.gsrow b{flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gsrow em{flex:0 0 auto;font-style:normal;font-size:13px;font-weight:700;
+  color:var(--ink-2);font-variant-numeric:tabular-nums}
+.gapfoot{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;
+  border-top:1px solid var(--ig-hair);
+  font-size:13.5px;font-weight:700;color:var(--h-green)}
+.gapfoot span{flex:1;min-width:0}
+.gapfoot svg{flex:0 0 auto;width:15px;height:15px;fill:none;stroke:currentColor;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- the board, given room to breathe ---------- */
+.wingrid{display:flex;flex-wrap:wrap;gap:3.5px;margin:15px 0 6px;
+  padding:12px;border-radius:12px;
+  background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.wgd{width:10px;height:10px;border-radius:2.5px;background:var(--cell)}
+.wgd.today{box-shadow:0 0 0 1.5px var(--ink);position:relative}
+
+/* ---------- Show everything ---------- */
+.winmoreRow{display:block;margin-top:14px;padding:12px 0;text-align:center;
+  border-radius:12px;background:var(--ig-fill);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);
+  font-size:13.5px;font-weight:700;color:var(--ink)}
+html[data-theme="dark"] .winmoreRow{box-shadow:inset 0 0 0 1px var(--line)}
+
+/* ---------- the green tile on the record's own rows ---------- */
+.hbi.green{background:color-mix(in srgb,var(--h-green) 16%,transparent);color:var(--h-green)}
+
+/* ---------- the done page ---------- */
+.donehero{padding:4px 0 24px;text-align:center}
+.dhring{padding:22px 16px 20px;border-radius:18px;
+  background:linear-gradient(160deg,
+    color-mix(in srgb,var(--h-green) 14%,var(--ig-fill-2)),var(--ig-fill-2) 70%);
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .dhring{box-shadow:inset 0 0 0 1px var(--line)}
+.dhbig{display:flex;align-items:baseline;justify-content:center;gap:9px}
+.dhbig b{font-size:62px;font-weight:800;letter-spacing:-.055em;line-height:1;color:var(--ink)}
+.dhbig span{font-size:14px;font-weight:600;color:var(--ink-2)}
+.dhline{margin-top:10px;font-size:14.5px;font-weight:700;color:var(--h-green)}
+.dhline.hot{color:var(--h-warm)}
+.dhstats{display:flex;gap:9px;margin-top:9px}
+.dhstats span{flex:1;display:flex;flex-direction:column;gap:2px;padding:12px 6px;
+  border-radius:13px;background:var(--ig-fill);
+  font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.dhstats span.best{background:color-mix(in srgb,var(--h-warm) 11%,var(--ig-fill))}
+.dhstats span.best b{color:var(--h-warm)}
+.dhstats b{font-size:21px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.doneadd{display:flex;gap:9px;align-items:center;margin:0 0 24px}
+.doneadd .input{flex:1;min-width:0;height:50px}
+.dnone{padding:34px 0;text-align:center}
+.dnoneT{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 14px;
+  border-radius:50%;color:var(--ink-3);
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.dnoneT svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round}
+.dnone b{display:block;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.dnone span{display:block;font-size:14px;line-height:1.5;color:var(--ink-2);
+  max-width:270px;margin:0 auto}
+
+/* ---------- the sheets, given consistent room ---------- */
+#doneSheet .fsbody,#habSheet .fsbody,#fbSheet .fsbody{padding-bottom:40px}
+#recSheet .habrow{margin-bottom:14px}
+#recSheet .habrow:last-of-type{margin-bottom:24px}
+
+
+/* ===========================================================
+   HOME BELOW THE LINE
+   Instagram separates with a hairline and whitespace, not by stacking
+   rounded boxes. Every section here sits flat against the page with a rule
+   between, headings live in a bar with a blue action on the right, and the
+   only raised surfaces left are the two that are genuinely buttons.
+   =========================================================== */
+#tSide>section{padding:22px 0;border-top:1px solid var(--ig-hair)}
+#tSide>section:first-of-type{border-top:0}
+.secbar{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.secbar h3{margin:0;font-size:16px;font-weight:700;letter-spacing:-.022em;color:var(--ink)}
+html.igskin .secbar h3{font-family:var(--ui)}
+.secnote{margin-left:auto;font-size:12.5px;color:var(--ink-3)}
+.seeall{margin-left:auto;padding:4px 0;font-size:13.5px;font-weight:600;color:var(--ig-blue)}
+.seeall:active{opacity:.55}
+
+/* ---------- where you stand ---------- */
+.standtop{display:flex;align-items:center;gap:18px}
+.standpct{position:relative;flex:0 0 auto;width:84px;height:84px}
+.spring{width:84px;height:84px;transform:rotate(-90deg)}
+.spring circle{fill:none;stroke-width:7;stroke-linecap:round}
+.spbg{stroke:color-mix(in srgb,var(--ink) 12%,transparent)}
+.spfg{stroke:var(--h-green);stroke-dasharray:226.2;stroke-dashoffset:226.2;
+  transition:stroke-dashoffset .9s var(--ease),stroke .4s}
+.stand.behind .spfg{stroke:var(--h-warm)}
+.spnum{position:absolute;inset:0;display:flex;align-items:baseline;justify-content:center}
+.spnum b{font-size:26px;font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+.spnum i{font-style:normal;font-size:12px;font-weight:700;color:var(--ink-3);margin-left:1px}
+.standnums{flex:1;min-width:0;display:flex;gap:0}
+.standnums .igstat{flex:1;min-width:0;align-items:flex-start;gap:1px}
+.standnums .igstat b{font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.standnums .igstat span{font-size:12px;color:var(--ink-3);letter-spacing:0}
+.standhead{margin:18px 0 0;font-size:20px;font-weight:800;letter-spacing:-.035em;
+  line-height:1.2;color:var(--ink)}
+html.igskin .standhead{font-family:var(--ui)}
+.stand.behind .standhead{color:var(--h-warm)}
+.standsub{margin:7px 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+/* the fill is the ground covered; the mark on top is the clock */
+.standbar{position:relative;height:6px;margin:16px 0 0;border-radius:3px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent)}
+.standbar i{display:block;height:100%;border-radius:3px;background:var(--h-green);
+  transition:width .9s var(--ease),background .4s}
+.stand.behind .standbar i{background:var(--h-warm)}
+.standbar u{position:absolute;top:-5px;bottom:-5px;width:2px;border-radius:1px;
+  background:var(--ink);text-decoration:none}
+.standlegend{display:flex;gap:10px;margin-top:9px;font-size:12px;color:var(--ink-3)}
+.standlegend span:last-child{margin-left:auto}
+
+/* ---------- the subject rail ---------- */
+.srtrack{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;
+  margin:0 calc(var(--gut) * -1);padding:2px var(--gut)}
+.srtrack::-webkit-scrollbar{display:none}
+.srsub{flex:0 0 auto;width:72px;display:flex;flex-direction:column;align-items:center;gap:7px}
+.srsub:active{opacity:.6}
+.srring{position:relative;width:66px;height:66px;border-radius:50%;display:grid;
+  place-items:center;
+  background:conic-gradient(var(--c) var(--p,0deg),
+    color-mix(in srgb,var(--ink) 12%,transparent) 0)}
+.srin{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  background:var(--bg);color:var(--ink);
+  font-size:20px;font-weight:800;letter-spacing:-.03em}
+.srn{max-width:72px;font-size:12px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srp{margin-top:-4px;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+
+/* ---------- chapter by chapter ---------- */
+.chrow{display:flex;align-items:center;gap:12px;padding:11px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.chlist .chrow:last-child{border-bottom:0}
+.chl{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.chl b{font-size:14.5px;font-weight:600;letter-spacing:-.015em;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chl i{font-style:normal;font-size:11.5px;color:var(--ink-3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chbar{flex:0 0 84px;height:5px;border-radius:3px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
+.chbar u{display:block;height:100%;border-radius:3px;background:var(--c,var(--ink-3));
+  text-decoration:none;transition:width .6s var(--ease)}
+.chp{flex:0 0 38px;text-align:right;font-size:13px;font-weight:700;
+  color:var(--ink-2);font-variant-numeric:tabular-nums}
+.chp.full{color:var(--h-green)}
+.chmore{width:100%;margin-top:14px;padding:11px 0;border-radius:10px;
+  background:var(--ig-fill);font-size:13.5px;font-weight:600;color:var(--ink)}
+.chmore:active{opacity:.6}
+
+/* ---------- where else to go ---------- */
+.gosec{padding-top:8px}
+.gorow{width:100%;gap:16px;color:var(--ink)}
+.gorow .gon{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
+  font-size:15.5px;font-weight:500;letter-spacing:-.012em}
+.gorow .gon i{font-style:normal;font-size:12.5px;color:var(--ink-3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gochev{width:17px!important;height:17px!important;stroke-width:2.2!important;opacity:.35}
+
+/* the two things here that really are buttons keep their surface */
+.rcard{margin:0}
+html.igskin .streak{margin:0}
+
+/* ---------- the stand block, after the headline and bar came out ----------
+   The ring was 84px against three stats that needed the rest of the row, so
+   the first number ran under it. The ring is smaller now, the row can wrap,
+   and every stat is allowed to shrink instead of overflowing. */
+.standpct{width:72px;height:72px}
+.spring{width:72px;height:72px}
+.spring circle{stroke-width:6}
+.spnum b{font-size:22px}
+.spnum i{font-size:11px}
+.standtop{gap:16px;flex-wrap:nowrap}
+.standnums{gap:12px}
+.standnums .igstat{min-width:0;flex:1 1 0}
+.standnums .igstat b{font-size:17px;white-space:nowrap}
+.standnums .igstat span{font-size:11.5px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.standsub{margin:16px 0 0;font-size:15px;font-weight:600;line-height:1.45;color:var(--ink)}
+.stand.behind .standsub{color:var(--h-warm)}
+@media (max-width:359px){
+  .standtop{flex-wrap:wrap}
+  .standnums{flex:1 1 100%}
+}
+
+/* ---------- the countdown strip, above the picture ---------- */
+html.igskin .run{margin:2px 0 0;padding:12px 14px;border-radius:12px;
+  background:var(--ig-fill);border:0}
+html.igskin .run .runtop{margin-bottom:9px}
+
+/* ---------- the board of things finished, on the habits board's own grid ---------- */
+.wingrid.sgrid{display:grid;gap:3px;margin:15px 0 4px;padding:0;background:none}
+.wingrid.sgrid .sq{width:auto;height:auto;border-radius:2.5px}
+/* it counts things finished rather than habits kept, so it takes the green */
+html.igskin .wingrid .sq.l1,.wingrid .sq.l1{background:color-mix(in srgb,var(--h-green) 30%,var(--ig-fill))}
+html.igskin .wingrid .sq.l2,.wingrid .sq.l2{background:color-mix(in srgb,var(--h-green) 55%,var(--ig-fill))}
+html.igskin .wingrid .sq.l3,.wingrid .sq.l3{background:color-mix(in srgb,var(--h-green) 78%,var(--ig-fill))}
+html.igskin .wingrid .sq.l4,.wingrid .sq.l4{background:var(--h-green)}
+html.igskin .wingrid .sq.today,.wingrid .sq.today{box-shadow:0 0 0 1.5px var(--ink)}
+html.igskin .wingrid .sq.today.l4{box-shadow:0 0 0 1.5px var(--h-green)}
+
+
+/* ===========================================================
+   THE RING — the number sits in the middle of it
+   `align-items: baseline` aligned the number's baseline to the top of the
+   box, which put it over the stroke. Centred as a block instead, with the
+   per-cent riding its cap height rather than being a second baseline item.
+   =========================================================== */
+.spnum{position:absolute;inset:0;display:grid;place-items:center}
+.spnum b{font-size:23px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+.spnum i{display:none}
+.spnum b::after{content:'%';font-size:12px;font-weight:700;color:var(--ink-3);
+  margin-left:1px;vertical-align:super;letter-spacing:0}
+.spfg{stroke:var(--ig-blue)}
+.stand.behind .spfg{stroke:var(--ig-blue)}
+
+/* ---------- the progress block, given room ---------- */
+.standpct{width:78px;height:78px}
+.spring{width:78px;height:78px}
+.spring circle{stroke-width:6.5}
+.stand{padding-top:24px!important;padding-bottom:26px!important}
+.standtop{gap:20px;align-items:center}
+.standnums{gap:14px}
+.standnums .igstat{gap:3px}
+.standnums .igstat b{font-size:18px;line-height:1}
+.standnums .igstat span{font-size:11.5px;line-height:1.2}
+
+/* ---------- every subject: all of them, pushed sideways ---------- */
+.subrail{padding-bottom:24px!important}
+.srtrack{gap:18px;padding:2px var(--gut) 4px;scroll-snap-type:none;
+  -webkit-overflow-scrolling:touch}
+.srsub{width:76px}
+.srring{width:68px;height:68px}
+.srin{width:58px;height:58px;font-size:21px}
+
+/* ===========================================================
+   RECORD THE DAY — a card like the others, with the accent on the marks
+   The whole tile went indigo, which was more than was asked for. It is back
+   to the app's card surface; only the ticks, the bar and the count carry
+   the accent, which is what the green used to be doing.
+   =========================================================== */
+.rcard{background:var(--ig-fill-2);color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .rcard{box-shadow:inset 0 0 0 1px var(--line)}
+.rcard .rci{background:color-mix(in srgb,var(--ig-blue) 15%,transparent);color:var(--ig-blue)}
+.rcard .rct b{color:var(--ink)}
+.rcard .rct i{color:var(--ink-2)}
+.rcard .recbar{background:color-mix(in srgb,var(--ink) 12%,transparent)}
+.rcard .recbar i{background:var(--ig-blue)}
+.rcard .recbar.full i{background:var(--ig-blue)}
+.rcard .wineye{color:var(--ink-3)}
+.rcard .wineye i{background:var(--ig-blue);color:#fff}
+.rcard .winrow,.rcard .winnone{border-bottom-color:var(--ig-hair)}
+.rcard .wint{color:var(--ink)}
+.rcard .winnone .wint{color:var(--ink-3)}
+/* what used to be green is the accent now */
+.rcard .wintick{background:var(--ig-blue);color:#fff}
+.rcard .wintick.ghost{background:transparent;color:var(--ink-3);
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.rcard .winfoot{border-top-color:var(--ig-hair);color:var(--ig-blue)}
+.rcard .qadone{background:var(--ig-blue);color:#fff}
+html.igskin .rcard .wingrid .sq.l1,.rcard .wingrid .sq.l1{background:color-mix(in srgb,var(--ig-blue) 30%,var(--ig-fill))}
+html.igskin .rcard .wingrid .sq.l2,.rcard .wingrid .sq.l2{background:color-mix(in srgb,var(--ig-blue) 55%,var(--ig-fill))}
+html.igskin .rcard .wingrid .sq.l3,.rcard .wingrid .sq.l3{background:color-mix(in srgb,var(--ig-blue) 78%,var(--ig-fill))}
+html.igskin .rcard .wingrid .sq.l4,.rcard .wingrid .sq.l4{background:var(--ig-blue)}
+html.igskin .rcard .wingrid .sq.today,.rcard .wingrid .sq.today{box-shadow:0 0 0 1.5px var(--ink)}
+
+/* ===========================================================
+   THE RECORD AND ITS PAGES — Home's furniture, on every one of them
+   Bold section headings, hairlines between rows, one accent, the same
+   spacing. Only appearance changes; every control does what it did.
+   =========================================================== */
+#recSheet .fsbody,#doneSheet .fsbody,#habSheet .fsbody,#fbSheet .fsbody{padding-top:20px}
+#recSheet .field{margin-bottom:26px}
+html.igskin #recSheet .field>.eyebrow,
+html.igskin #doneSheet .field>.eyebrow,
+html.igskin #habSheet .hsec>.eyebrow,
+html.igskin #doneSheet .dsec>.eyebrow{font-family:var(--ui);font-size:16px;font-weight:700;
+  letter-spacing:-.022em;text-transform:none;color:var(--ink)}
+
+/* the doors at the top of the record */
+.habrow{background:var(--ig-fill-2);border-radius:14px;
+  box-shadow:inset 0 0 0 1px var(--ig-hair);margin-bottom:12px}
+html[data-theme="dark"] .habrow{box-shadow:inset 0 0 0 1px var(--line)}
+.habrow .hbi,.habrow .hbi.green{background:color-mix(in srgb,var(--ig-blue) 15%,transparent);
+  color:var(--ig-blue)}
+.habrow .hbn{background:var(--tint);color:var(--ink-2)}
+.habrow .hbn.full{background:var(--ig-blue);color:#fff}
+.habrow .hbt b{font-size:16px;letter-spacing:-.022em}
+
+/* the habits page */
+#habSheet .habprog{height:5px;border-radius:3px;margin-bottom:24px}
+.habprog i{background:var(--ig-blue)}
+.hitem{padding:13px 0}
+.hitem.on .hbox{background:var(--ig-blue)}
+.habn{font-size:15px;font-weight:700;color:var(--ink-2)}
+
+/* the everything-done page */
+#doneSheet .dhring{background:linear-gradient(160deg,
+  color-mix(in srgb,var(--ig-blue) 13%,var(--ig-fill-2)),var(--ig-fill-2) 70%)}
+.dhline{color:var(--ig-blue)}
+.dhline.hot{color:var(--h-warm)}
+.dtick{background:var(--ig-blue)}
+.dhstats span.best b{color:var(--h-warm)}
+.doneadd .input{height:52px;border-radius:14px}
+.dnoneT{color:var(--ig-blue);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ig-blue) 40%,transparent)}
+
+/* the feedback page */
+#fbSheet .fbday{border-bottom:1px solid var(--ig-hair)}
+#recSheet .input.area,#fbSheet .input{border-radius:14px}
+
+/* ===========================================================
+   STUDY AND PORTIONS — the same structure, their own colours
+   Portions keeps every colour it has: the whole page is a colour scale and
+   recolouring it would destroy the reading.
+   =========================================================== */
+.pblock{border-radius:16px}
+#v-plan .sgprog.full{color:var(--ig-blue)}
+.gxgrip{background:var(--tint);color:var(--ink-2)}
+.gxgrip:active{background:var(--ig-blue);color:#fff}
+html.igskin #v-plan .phead h2,html.igskin #gndSheet h3{letter-spacing:-.03em}
+/* the subject pages take Home's headings and hairlines, not its colours */
+html.igskin #gndSheet .gnote>.eyebrow{font-family:var(--ui);font-size:16px;font-weight:700;
+  letter-spacing:-.022em;text-transform:none;color:var(--ink)}
+#gndSheet .pgcard{border-radius:16px}
+.gsum .gsbig{letter-spacing:-.04em}
+
+/* ===========================================================
+   THE THINGS THAT WERE MEASURABLY WRONG
+   =========================================================== */
+/* the countdown was 2px off the quote */
+html.igskin .run{margin:20px 0 0}
+
+/* the last row of a section already has its own padding; the section was
+   adding 22px more on top of it before the next hairline */
+.gosec{padding-bottom:4px!important}
+.gosec .gorow:last-child{border-bottom:0}
+
+/* `.dnone span{display:block}` was matching the icon too and knocking it
+   out of its own circle. Named directly so it keeps its centring. */
+.dnone .dnoneT{display:grid;place-items:center}
+
+/* ===========================================================
+   EVERYTHING DONE — Home's page, not the habits page
+   The habits page is a checklist: a bar and rows you tick. This one is a
+   count that should keep going up, so it takes Home's shape instead — the
+   number first, the stat row from a profile header, then the list.
+   =========================================================== */
+#doneSheet .donehero{padding:6px 0 24px;text-align:left;border-bottom:1px solid var(--ig-hair)}
+#doneSheet .dhring{display:none}
+.dhnum{display:flex;align-items:baseline;gap:10px}
+.dhnum b{font-size:64px;font-weight:800;letter-spacing:-.055em;line-height:1;color:var(--ink)}
+.dhnum span{font-size:15px;font-weight:600;color:var(--ink-2)}
+#doneSheet .dhline{margin:10px 0 0;font-size:15px;font-weight:700;
+  letter-spacing:-.02em;color:var(--ig-blue)}
+#doneSheet .dhline.hot{color:var(--h-warm)}
+/* the stats sit on hairlines like a profile, not in four boxes */
+.donestats{display:flex;gap:0;margin-top:22px}
+.donestats .igstat{flex:1;min-width:0;align-items:flex-start;gap:2px;
+  padding-left:14px;border-left:1px solid var(--ig-hair)}
+.donestats .igstat:first-child{padding-left:0;border-left:0}
+.donestats .igstat b{font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.donestats .igstat span{font-size:11px;color:var(--ink-3);letter-spacing:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.donestats .igstat.best b{color:var(--h-warm)}
+#doneSheet .doneadd{margin:22px 0 26px}
+/* the day's list, headed the way Home heads a section */
+html.igskin #doneSheet .dsec>.eyebrow{font-family:var(--ui);font-size:16px;font-weight:700;
+  letter-spacing:-.022em;text-transform:none;color:var(--ink);
+  padding-bottom:12px;border-bottom:1px solid var(--ig-hair);margin-bottom:4px}
+#doneSheet .dsec>.eyebrow i{font-size:13px;font-weight:600;color:var(--ink-3)}
+#doneSheet .drow{padding:14px 0}
+#doneSheet .dtx{font-size:15.5px;font-weight:500}
+/* the empty state, sized so the plus sits in the middle of its ring */
+.dnone{padding:40px 0}
+.dnone .dnoneT{width:52px;height:52px;margin:0 auto 16px;border-radius:50%;
+  color:var(--ig-blue);
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ig-blue) 40%,transparent)}
+.dnone .dnoneT svg{width:22px;height:22px;display:block;fill:none;stroke:currentColor;
+  stroke-width:2.2;stroke-linecap:round}
+
+/* ===========================================================
+   ONE ACCENT, ONE TICK
+   The warm tone is gone: everything that was orange is the app's indigo.
+   And a completed thing is marked the way the study page marks one — ink on
+   the page, so it flips with the theme and never competes with the accent.
+   =========================================================== */
+#doneSheet .dhline,#doneSheet .dhline.hot,
+#habSheet .dhline,#habSheet .dhline.hot{color:var(--ig-blue)}
+.donestats .igstat.best b{color:var(--ig-blue)}
+.dhstats span.best{background:color-mix(in srgb,var(--ig-blue) 11%,var(--ig-fill))}
+.dhstats span.best b{color:var(--ig-blue)}
+
+/* the tick: black on white by day, white on black by night */
+#doneSheet .dtick{background:var(--ink);color:var(--bg)}
+.rcard .wintick{background:var(--ink);color:var(--bg)}
+.rcard .wintick.ghost{background:transparent;color:var(--ink-3);
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.hitem.on .hbox{background:var(--ink);color:var(--bg)}
+.habrow .hbn.full{background:var(--ink);color:var(--bg)}
+
+/* ===========================================================
+   THE HABITS PAGE — the same header the completed page carries
+   =========================================================== */
+#habSheet .habhero{padding:6px 0 24px;text-align:left;border-bottom:1px solid var(--ig-hair)}
+#habSheet .habprog{height:5px;border-radius:3px;margin:22px 0 24px}
+#habSheet .habprog i{background:var(--ink)}
+#habSheet .hsec{margin-bottom:26px}
+
+/* ===========================================================
+   HOME — the countdown now sits inside the reading it qualifies
+   =========================================================== */
+html.igskin #standSec .run{margin:22px 0 0;padding:13px 14px;border-radius:12px;
+  background:var(--ig-fill);border:0}
+html.igskin #standSec .run .runtop{margin-bottom:9px}
+#standSec .runbar i{background:var(--ig-blue)}
+
+/* ===========================================================
+   NOTES — the list and the page, on Home's furniture
+   The rows were floating tiles with their own gaps; they are hairline rows
+   now, with the title carrying the weight and the date sitting under it.
+   =========================================================== */
+#notesSheet .fsbody,#noteSheet .fsbody{padding-top:16px}
+.dnlist{display:flex;flex-direction:column;gap:0}
+html.igskin .dnlist{gap:0}
+.dnlist>*{border-bottom:1px solid var(--ig-hair)}
+.dnlist>*:last-child{border-bottom:0}
+html.igskin .dnote{background:transparent;border:0;border-radius:0;
+  padding:15px 2px;box-shadow:none}
+html.igskin .dnote:active{background:var(--tint)}
+html.igskin .dnote .dnt{font-size:16px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+html.igskin .dnote .dnd,html.igskin .dnote .dnw{font-size:12.5px;color:var(--ink-3)}
+html.igskin .dnote .dnp{font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+/* the editor: room to write, and the marks bar clear of the text */
+#noteSheet .fmtbar{padding:8px var(--gut);gap:4px}
+#noteSheet .nsbody{padding-top:6px}
+#noteSheet .nstitle{font-size:23px;font-weight:800;letter-spacing:-.03em;
+  line-height:1.25;padding:6px 0 4px}
+#noteSheet .nsedit,#noteSheet [contenteditable]{font-size:16px;line-height:1.62;
+  color:var(--ink)}
+.nsdone{padding:7px 13px;border-radius:9px;font-size:14px;font-weight:600;
+  color:#fff;background:var(--ig-blue)}
+.nsdone:active{opacity:.75}
+
+/* ===========================================================
+   EVERY ADD BUTTON, THE SAME ONE
+   The plus was indigo in some places and a bordered square in others. It is
+   ink everywhere now — black on white by day, white on black by night — so
+   the one action that means "add another" always looks the same, and the
+   accent is left to mean progress rather than buttons.
+   =========================================================== */
+html.igskin .gndplus,
+html.igskin .sgnew,
+html.igskin .addrow .addbtn,
+html.igskin .addbtn,
+html.igskin .doneadd .addbtn,
+html.igskin #settingsAdd,
+html.igskin .setadd,
+.gndplus,.addbtn,.sgnew{
+  background:var(--ink);color:var(--bg);border:0;box-shadow:none}
+html.igskin .gndplus:active,
+html.igskin .sgnew:active,
+html.igskin .addrow .addbtn:active,
+html.igskin .addbtn:active,
+.gndplus:active,.addbtn:active,.sgnew:active{
+  background:var(--ink);color:var(--bg);opacity:.72;transform:scale(.92)}
+/* the round ones keep their shape, only the colour changes */
+html.igskin .addbtn{border-radius:50%;width:44px;height:44px}
+html.igskin .doneadd .addbtn{width:46px;height:46px}
+
+/* the "add" chips and rows in settings follow the same rule as the round
+   plus buttons: ink, not accent */
+html.igskin .schip.add,.schip.add{color:var(--ink);
+  background:transparent;border:0;
+  box-shadow:inset 0 0 0 1.5px var(--line-2)}
+html.igskin .schip.add:active,.schip.add:active{background:var(--tint);opacity:.8}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -3570,52 +4116,89 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
         <div class="qfoot"><span class="qwho" id="quoteWho"></span></div>
       </div>
 
-      <!-- how far through the stretch you are -->
-      <div class="run" id="runCard" hidden>
-        <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
-        <div class="runbar"><i id="runFill"></i></div>
-      </div>
+      <!-- ============================================================
+           BELOW THE LINE — where you actually are.
+           Built on the furniture the app already uses for Instagram: the
+           three-stat profile header, the story rail, and rows separated by
+           hairlines. One question per section, in order: how far along am
+           I, which subject is worst, which chapters, what about today,
+           where else can I go.
+           ============================================================ -->
 
-      <!-- The record, with today already open inside it. What you have put
-           down and the way to put down more are the same card, because they
-           are the same thing: the list is the invitation. -->
-      <button class="rcard" id="qaRecord">
-        <span class="rchead">
-          <span class="rci"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
-          <span class="rct"><b>Record the day</b><i id="qaRecordSub">Tick the habits, write what you got done</i></span>
-          <span class="qadone" id="qaRecordDone" hidden><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
-        </span>
-        <span class="recbar" id="recBar"><i id="recBarFill"></i></span>
-        <span class="winwrap">
-          <span class="wineye">Done today<i id="winCount">&mdash;</i></span>
-          <span class="winlist" id="winList"></span>
-        </span>
-        <span class="winfoot"><span id="winNudge">&mdash;</span>
-          <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
-      </button>
+      <section class="stand" id="standSec">
+        <div class="standtop">
+          <div class="standpct">
+            <svg class="spring" viewBox="0 0 84 84" aria-hidden="true">
+              <circle class="spbg" cx="42" cy="42" r="36"></circle>
+              <circle class="spfg" cx="42" cy="42" r="36" id="standRing"></circle>
+            </svg>
+            <span class="spnum"><b id="standPct">0</b><i>%</i></span>
+          </div>
+          <div class="igstats standnums">
+            <span class="igstat"><b id="standLeft">0</b><span>to cover</span></span>
+            <span class="igstat"><b id="standDays">&mdash;</b><span>days left</span></span>
+            <span class="igstat"><b id="standToday">0</b><span>done today</span></span>
+          </div>
+        </div>
+        <!-- the countdown belongs with the reading it qualifies, so it sits
+             inside the same block rather than behind a rule of its own -->
+        <div class="run" id="runCard" hidden>
+          <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
+          <div class="runbar"><i id="runFill"></i></div>
+        </div>
+      </section>
 
-      <!-- everywhere else, one tap away -->
-      <div class="qact">
-        <button class="qa" id="qaStudy">
-          <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg></span>
-          <span class="qat"><b>Study</b><i id="qaStudySub">Sessions</i></span>
-        </button>
-        <button class="qa" id="qaVision">
-          <span class="qai"><svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg></span>
-          <span class="qat"><b>Vision</b><i>Why you started</i></span>
-        </button>
-        <button class="qa" id="notesOpen">
-          <span class="qai"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h4"/></svg></span>
-          <span class="qat"><b>Notes</b><i id="notesCount">&mdash;</i></span>
-        </button>
-        <button class="qa" id="qaGround">
-          <span class="qai"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>
-          <span class="qat"><b>Portions</b><i>Ground covered</i></span>
-        </button>
-      </div>
+      <section class="subrail" id="subRail" hidden>
+        <div class="secbar"><h3>Every subject</h3>
+          <button class="seeall" id="subAll">See all</button></div>
+        <div class="srtrack" id="srTrack"></div>
+      </section>
 
-      <div class="gsec" style="--gc:var(--h-warm)">
-        <h3 class="gtitle">Every day you kept<span>This year</span></h3>
+      <section class="daysec">
+        <div class="secbar"><h3>Today</h3>
+          <button class="seeall" id="winMore" hidden>Show all</button></div>
+        <button class="rcard" id="qaRecord">
+          <span class="rchead">
+            <span class="rci"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+            <span class="rct"><b>Record the day</b><i id="qaRecordSub">Tick the habits, write what you got done</i></span>
+            <span class="qadone" id="qaRecordDone" hidden><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+          </span>
+          <span class="recbar" id="recBar"><i id="recBarFill"></i></span>
+          <span class="wingrid sgrid" id="winGrid"></span>
+          <span class="winwrap">
+            <span class="wineye">Done today<i id="winCount">&mdash;</i></span>
+            <span class="winlist" id="winList"></span>
+          </span>
+          <span class="winfoot"><span id="winNudge">&mdash;</span>
+            <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
+        </button>
+      </section>
+
+      <section class="gosec">
+        <button class="igrow gorow" id="qaStudy">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg>
+          <span class="gon">Study<i id="qaStudySub">Sessions</i></span>
+          <svg class="gochev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+        <button class="igrow gorow" id="qaGround">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+          <span class="gon">Portions<i>Ground covered</i></span>
+          <svg class="gochev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+        <button class="igrow gorow" id="qaVision">
+          <svg viewBox="0 0 24 24"><path d="M12 3.2 13.9 8.1 18.8 10 13.9 11.9 12 16.8 10.1 11.9 5.2 10l4.9-1.9z"/><path d="M18.5 15.5 19.2 17.3 21 18l-1.8.7-.7 1.8-.7-1.8L16 18l1.8-.7z"/></svg>
+          <span class="gon">Vision<i>Why you started</i></span>
+          <svg class="gochev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+        <button class="igrow gorow" id="notesOpen">
+          <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h4"/></svg>
+          <span class="gon">Notes<i id="notesCount">&mdash;</i></span>
+          <svg class="gochev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+      </section>
+
+      <section class="daysec">
+        <div class="secbar"><h3>Every day you kept</h3><span class="secnote">This year</span></div>
         <button class="streak" id="streakCard">
           <div class="sgrid" id="sGrid"></div>
           <div class="sfoot">
@@ -3624,7 +4207,7 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
               <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>
           </div>
         </button>
-      </div>
+      </section>
       </div>
     </section>
 
@@ -4053,7 +4636,6 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
     </section>
   </main>
 
-  <div class="trail" id="taskRail" aria-hidden="true"><i id="taskRailFill"></i></div>
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M3 10.2a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15 21v-7.5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1V21"/></svg><span>Today</span></button>
     <button class="tab" data-v="plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 1.8 1.8L15 13"/></svg><span>Study</span></button>
@@ -4515,14 +5097,12 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
     <span class="hbn" id="recHabitsN">0/0</span>
     <span class="hbg"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
   </button>
-  <div class="field">
-    <span class="eyebrow">Completed</span>
-    <div class="rlist" id="recDone"></div>
-    <div class="addrow">
-      <input class="input" id="recAdd" placeholder="What you finished" maxlength="90" autocomplete="off">
-      <button class="addbtn" id="recAddBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-    </div>
-  </div>
+  <button class="habrow" id="recDoneOpen">
+    <span class="hbi green"><svg viewBox="0 0 24 24"><path d="m4 12.5 4.5 4.5L20 6.5"/></svg></span>
+    <span class="hbt"><b>Completed</b><i id="recDoneSub">&mdash;</i></span>
+    <span class="hbn" id="recDoneN">0</span>
+    <span class="hbg"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>
+  </button>
   <div class="field" id="recPauseWrap">
     <span class="eyebrow">Breaks</span>
     <div class="rlist" id="recPauses"></div>
@@ -4547,6 +5127,34 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
   <div class="fsbody"><div id="recFbBody"></div></div>
 </div>
 
+<!-- ===== EVERYTHING DONE — the full list, on its own page ===== -->
+<div class="sheet fullsheet igpop" id="doneSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="doneBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3>Completed</h3>
+      <span class="donen" id="doneTotal">0</span>
+    </div>
+  </div>
+  <div class="fsbody">
+    <div class="donehero">
+      <div class="dhnum"><b id="dhCount">0</b><span id="dhWord">today</span></div>
+      <p class="dhline" id="dhLine">&mdash;</p>
+      <div class="igstats donestats">
+        <span class="igstat"><b id="dhWeek">0</b><span>this week</span></span>
+        <span class="igstat"><b id="dhAll">0</b><span>all time</span></span>
+        <span class="igstat best"><b id="dhBest">0</b><span>best day</span></span>
+        <span class="igstat best"><b id="dhBestWeek">0</b><span>best week</span></span>
+      </div>
+    </div>
+    <div class="doneadd">
+      <input class="input" id="doneAdd" placeholder="What did you just finish?" maxlength="90" autocomplete="off">
+      <button class="addbtn" id="doneAddBtn" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div id="doneWrap"></div>
+  </div>
+</div>
+
 <!-- ===== HABITS — ticked off from the record, on its own page ===== -->
 <div class="sheet fullsheet igpop" id="habSheet">
   <div class="fshead">
@@ -4557,6 +5165,15 @@ html.igskin #v-plan{padding-right:calc(var(--gut) + 8px)}
     </div>
   </div>
   <div class="fsbody">
+    <div class="donehero habhero">
+      <div class="dhnum"><b id="habBig">0</b><span id="habBigWord">kept today</span></div>
+      <p class="dhline" id="habLine">&mdash;</p>
+      <div class="igstats donestats">
+        <span class="igstat"><b id="habRun">0</b><span>day run</span></span>
+        <span class="igstat best"><b id="habPerfect">0</b><span>perfect days</span></span>
+        <span class="igstat best"><b id="habBest">0</b><span>best run</span></span>
+      </div>
+    </div>
     <div class="habprog"><i id="habFill"></i></div>
     <div id="habWrap"></div>
   </div>
@@ -4984,6 +5601,7 @@ function renderToday(){
 
   renderQuote();
   renderWins();
+  renderStand();
   renderStreak();
 }
 
@@ -5011,14 +5629,18 @@ function renderWins(){
       '<span class="wint">The first one goes here</span></span>';
   }else{
     /* the newest first, because the last thing you did is the thing that
-       makes you want to do another */
-    const show=done.slice(-4).reverse();
+       makes you want to do another. Ten at most here; the rest are a tap away. */
+    const show=done.slice(-5).reverse();
     list.innerHTML=show.map(x=>
       '<span class="winrow">'+
         '<span class="wintick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
-        '<span class="wint">'+esc(x.text)+'</span></span>').join('')+
-      (n>show.length? '<span class="winmore">and '+(n-show.length)+' more</span>' : '');
+        '<span class="wint">'+esc(x.text)+'</span></span>').join('');
   }
+  renderWinGrid();
+  const more=$('#winMore'), total=doneStats().total;
+  more.hidden=!total;
+  more.textContent = n>5 ? 'Show all '+n+' from today'
+                         : 'Completed \u00B7 '+total;
 
   /* one line, and it only ever asks for the next one */
   $('#winNudge').textContent = !n ? 'Put the first one down' : 'Make it '+(n+1);
@@ -5112,7 +5734,11 @@ function renderQuote(){
 /* Home is the page you land on, so getting anywhere from it is one tap.
    The record is the one you reach for most, so it is the big one. */
 const goTab=v=>{ const t=$('.tab[data-v="'+v+'"]'); if(t) t.click(); };
-$('#qaRecord').addEventListener('click',()=>{ openRecord(TSTR); });
+$('#qaRecord').addEventListener('click',e=>{
+  /* the row at the foot goes to the whole list, the rest of the card to today */
+  if(e.target.closest('#winMore')){ openDone(); return; }
+  openRecord(TSTR);
+});
 $('#qaStudy').addEventListener('click',()=>{ goTab('plan'); buzz(HAPTIC.light); });
 $('#qaVision').addEventListener('click',()=>{ goTab('vision'); buzz(HAPTIC.light); });
 $('#qaGround').addEventListener('click',()=>{ openGround(); });
@@ -5167,6 +5793,228 @@ $('#qModeCtrl').addEventListener('click',async e=>{
   renderQuoteSettings(); renderQuote(); buzz(8);
 });
 
+
+/* ===========================================================
+   WHERE YOU STAND — the gap, and the work that closes it
+
+   Three readings, all taken from the subjects exactly as they are. Nothing
+   here is stored: change a cell in Portions and every number below moves.
+
+     covered   how much ground is filled in, across every subject
+     elapsed   how much of the run has already gone
+     the gap   the distance between the two
+
+   The bar carries both: covered as the fill, elapsed as a mark on top. When
+   the mark sits ahead of the fill you are behind, and you can see by how
+   much without reading a word.
+   =========================================================== */
+const SP_C=226.2;                    /* 2 * PI * r, with r = 36 */
+
+function standReading(){
+  if(!ground.length) return null;
+  let cells=0, sum=0;
+  const subs=[];
+  ground.forEach(g=>{
+    const n=g.topics.length*g.phases.length;
+    if(!n) return;
+    cells+=n; sum+=gScore(g)*n;
+    subs.push({name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
+  });
+  if(!cells) return null;
+  subs.sort((a,b)=>a.pct-b.pct);          /* weakest first: that is the work */
+  return {pct:Math.round(100*sum/cells),subs};
+}
+/* how far through the run, if one is set */
+function runDays(){
+  if(!S.runStart||!S.runEnd) return null;
+  const a=parseDay(S.runStart), b=parseDay(S.runEnd);
+  const total=Math.round((b-a)/86400000)+1;
+  if(!(total>0)) return null;
+  const gone=Math.max(0,Math.min(total,Math.round((TODAY-a)/86400000)+1));
+  return {total,gone,left:Math.max(0,total-gone)};
+}
+
+function renderStand(){
+  const sec=$('#standSec'); if(!sec) return;
+  const r=standReading(), days=runDays();
+  $('#standDays').textContent=days?days.left:'\u2014';
+  $('#standToday').textContent=doneCountOn(TSTR);
+
+  if(!r){
+    $('#standPct').textContent='0';
+    $('#standRing').style.strokeDashoffset=SP_C;
+    $('#standLeft').textContent='\u2014';
+    $('#subRail').hidden=true;
+    return;
+  }
+
+  $('#standPct').textContent=r.pct;
+  $('#standRing').style.strokeDashoffset=SP_C*(1-r.pct/100);
+  $('#standLeft').textContent=(100-r.pct)+'%';
+
+  const elapsed=days? Math.round(100*days.gone/days.total) : null;
+  const behind=elapsed!=null && elapsed>r.pct;
+  sec.classList.toggle('behind',!!behind);
+
+  /* the rail: one ring a subject, worst first */
+  $('#subRail').hidden=!r.subs.length;
+  $('#srTrack').innerHTML=r.subs.map(x=>
+    '<button class="srsub"><span class="srring" style="--c:'+esc(x.color)+
+      ';--p:'+(x.pct*3.6)+'deg"><span class="srin">'+
+      esc((x.name||'?').trim().charAt(0).toUpperCase())+'</span></span>'+
+      '<span class="srn">'+esc(x.name)+'</span>'+
+      '<span class="srp">'+x.pct+'%</span></button>').join('');
+}
+$('#subAll').addEventListener('click',()=>openGround());
+$('#srTrack').addEventListener('click',e=>{ if(e.target.closest('.srsub')) openGround(); });
+
+/* ===========================================================
+   EVERYTHING DONE
+   Every completion the record has ever taken, read back. It writes through
+   the same dayRec/saveDay the record uses, so a thing added here is the same
+   thing added there, and Home follows both without being told.
+   =========================================================== */
+function allDone(){
+  const out=[];
+  [...days.values()].forEach(r=>{
+    ((r&&r.done)||[]).forEach(x=>{
+      if(x&&(x.text||'').trim()) out.push({date:r.date,item:x});
+    });
+  });
+  /* newest first, and within a day the last one added comes first */
+  return out.sort((a,b)=>
+    b.date.localeCompare(a.date) || ((b.item.at||0)-(a.item.at||0)));
+}
+const doneCountOn=ds=>{
+  const r=days.get(ds);
+  return ((r&&r.done)||[]).filter(x=>x&&(x.text||'').trim()).length;
+};
+function doneStats(){
+  const all=allDone();
+  let week=0;
+  for(let i=0;i<7;i++) week+=doneCountOn(ymd(addDays(TODAY,-i)));
+  let best=0;
+  [...days.keys()].forEach(d=>{ best=Math.max(best,doneCountOn(d)); });
+  /* the best any seven days running have ever been, walked back from the
+     earliest day on record so no window is missed */
+  let bestWeek=0;
+  const dates=[...days.keys()].sort();
+  if(dates.length){
+    const first=parseDay(dates[0]);
+    const span=Math.round((TODAY-first)/86400000);
+    for(let i=0;i<=span;i++){
+      let sum=0;
+      for(let k=0;k<7;k++) sum+=doneCountOn(ymd(addDays(first,i+k)));
+      bestWeek=Math.max(bestWeek,sum);
+    }
+  }
+  return {total:all.length,today:doneCountOn(TSTR),week,best,bestWeek};
+}
+/* a run of days each with something finished on it */
+function doneRun(){
+  let n=0, d=TODAY;
+  if(!doneCountOn(ymd(d))) d=addDays(d,-1);
+  for(let i=0;i<400;i++){
+    if(doneCountOn(ymd(d))) n++; else break;
+    d=addDays(d,-1);
+  }
+  return n;
+}
+
+function openDone(){
+  renderDonePage();
+  $('#scrim').classList.add('on');
+  $('#doneSheet').classList.add('on');
+  const b=$('.fsbody',$('#doneSheet')); if(b) b.scrollTop=0;
+  buzz(HAPTIC.light);
+}
+function closeDone(){
+  $('#doneSheet').classList.remove('on');
+  if(!$('#recSheet').classList.contains('on')) $('#scrim').classList.remove('on');
+  if(document.activeElement) document.activeElement.blur();
+}
+$('#doneBack').addEventListener('click',()=>{ closeDone(); buzz(6); });
+
+function renderDonePage(){
+  const st=doneStats(), run=doneRun();
+  $('#doneTotal').textContent=st.today;
+  $('#dhCount').textContent=st.today;
+  $('#dhWord').textContent='today';
+  $('#dhWeek').textContent=st.week;
+  $('#dhAll').textContent=st.total;
+  $('#dhBest').textContent=st.best;
+  $('#dhBestWeek').textContent=st.bestWeek;
+
+  /* the line under the number always names the next one */
+  const beatDay=st.best && st.today>=st.best;
+  $('#dhLine').textContent =
+    !st.today ? (run? run+' day run on the line \u2014 put one down' : 'Put the first one down')
+    : beatDay ? 'Your best day ever \u2014 keep going'
+    : st.best ? (st.best-st.today)+' more beats your best day'
+    : 'Make it '+(st.today+1);
+  $('#dhLine').classList.toggle('hot',!!beatDay);
+
+  /* only today is listed: the page is for adding to, not for reading back */
+  const wrap=$('#doneWrap');
+  const items=((days.get(TSTR)||{}).done||[]).filter(x=>x&&(x.text||'').trim()).slice().reverse();
+  if(!items.length){
+    wrap.innerHTML='<div class="dnone">'+
+      '<span class="dnoneT"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>'+
+      '<b>Nothing down yet today</b>'+
+      '<span>The first one is the hard one. It is also the only one that matters right now.</span></div>';
+    return;
+  }
+  wrap.innerHTML='<section class="dsec"><span class="eyebrow">Today<i>'+items.length+'</i></span>'+
+    items.map(x=>'<div class="drow" data-d="'+esc(TSTR)+'" data-i="'+esc(x.id)+'">'+
+      '<span class="dtick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>'+
+      '<span class="dtx">'+esc(x.text)+'</span>'+
+      '<button class="ddel" aria-label="Remove"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+    '</div>').join('')+'</section>';
+}
+/* adding from this page goes through the record's own writer */
+async function addDoneHere(){
+  const el=$('#doneAdd'), text=el.value.trim();
+  if(!text){ el.focus(); return; }
+  await addCompletion(TSTR,text,false,'planned');
+  el.value='';
+  renderDonePage(); renderRecord(); renderSettings();
+  buzz(HAPTIC.tick);
+}
+$('#doneAddBtn').addEventListener('click',addDoneHere);
+$('#doneAdd').addEventListener('keydown',e=>{ if(e.key==='Enter') addDoneHere(); });
+$('#doneWrap').addEventListener('click',async e=>{
+  const del=e.target.closest('.ddel'); if(!del) return;
+  const row=del.closest('.drow'); if(!row) return;
+  const r=days.get(row.dataset.d); if(!r) return;
+  r.done=(r.done||[]).filter(x=>x.id!==row.dataset.i);
+  await saveDay(row.dataset.d);
+  renderDonePage(); renderRecord(); renderSettings(); buzz(12);
+});
+
+/* ---------- the board on Home ----------
+   A year of days, darkest where the most was finished. */
+function renderWinGrid(){
+  const g=$('#winGrid'); if(!g) return;
+  /* the same board the habits keep, counting things finished instead: seven
+     rows a week, filled down the columns, so the two read identically */
+  const weeks=(typeof weeksWanted==='function')?weeksWanted():18;
+  g.style.setProperty('--w',weeks);
+  const end=addDays(TODAY,6-TODAY.getDay());
+  const start=addDays(end,-(weeks*7-1));
+  let html='';
+  for(let i=0;i<weeks*7;i++){
+    const d=addDays(start,i), ds=ymd(d);
+    let cls='sq';
+    if(ds>TSTR) cls+=' future';
+    else{
+      const n=doneCountOn(ds);
+      cls += !n ? ' none' : n<2 ? ' l1' : n<4 ? ' l2' : n<6 ? ' l3' : ' l4';
+    }
+    if(ds===TSTR) cls+=' today';
+    html+='<i class="'+cls+'"></i>';
+  }
+  g.innerHTML=html;
+}
 /* ===========================================================
    HABITS — ticked off from the record, on a page of its own
    The marks themselves are the same records the app has always kept, under
@@ -5207,11 +6055,39 @@ function closeHabits(){
   if(!$('#recSheet').classList.contains('on')) $('#scrim').classList.remove('on');
   paintHabitRow();
 }
+/* the longest run of kept days there has ever been */
+function bestPerfectRun(){
+  const set=new Set(perfectDays());
+  if(!set.size) return 0;
+  const all=[...set].sort();
+  let best=1, run=1;
+  for(let i=1;i<all.length;i++){
+    const prev=parseDay(all[i-1]), cur=parseDay(all[i]);
+    run = Math.round((cur-prev)/86400000)===1 ? run+1 : 1;
+    best=Math.max(best,run);
+  }
+  return best;
+}
 function renderHabitSheet(){
   const ds=recDay, t=habitTallyOn(ds);
   $('#habWhen').textContent=recLabel(ds);
   $('#habCount').textContent=t.done+'/'+t.req;
   $('#habFill').style.width=(t.req? 100*t.done/t.req : 0)+'%';
+
+  /* the same header the completed page carries, counting what belongs here */
+  const run=perfectRun(), best=bestPerfectRun();
+  $('#habBig').textContent=t.done;
+  $('#habBigWord').textContent = t.req? 'of '+t.req+' kept' : 'kept';
+  $('#habRun').textContent=run;
+  $('#habPerfect').textContent=perfectDays().length;
+  $('#habBest').textContent=best;
+  const left=t.req-t.done;
+  const line=$('#habLine');
+  line.textContent = !t.req ? 'Nothing due today. It still counts.'
+    : left===0 ? (run>1? run+' days in a row \u2014 keep it' : 'Everything due is kept')
+    : left===1 ? 'One left. Do not break the run.'
+    : left+' left today';
+  line.classList.toggle('hot',t.req>0&&left===0);
 
   const wrap=$('#habWrap'); wrap.innerHTML='';
   if(!habits.length){
@@ -5263,6 +6139,7 @@ function habRow(x,ds,rest){
   return b;
 }
 $('#recHabitsOpen').addEventListener('click',openHabits);
+$('#recDoneOpen').addEventListener('click',openDone);
 $('#habBack').addEventListener('click',()=>{ closeHabits(); buzz(6); });
 $('#habWrap').addEventListener('click',e=>{
   const b=e.target.closest('.hitem'); if(!b) return;
@@ -6338,44 +7215,8 @@ function renderPlan(){
       '<button data-id="'+esc(s.id)+'">Restore</button>';
     wrapB.appendChild(row);
   });
-  paintTaskRail();
 }
 
-/* ===========================================================
-   THE RAIL — how much of the running session is done
-   It follows the session with the latest start time that has already begun,
-   and hands over the moment a later one starts. What it measures is the
-   sub-tasks ticked off inside that session, not the clock: a session is
-   closed by its list, so the list is what the bar should show.
-   =========================================================== */
-function railSession(){
-  const list=sessionsOn(TSTR).map(x=>({s:x,at:slotOf(x.time)}));
-  if(!list.length) return null;
-  const now=((new Date().getHours()*60+new Date().getMinutes())-dayStartMins()+1440)%1440;
-  /* The latest one that has begun. A session with no sub-tasks has nothing
-     to report, so the rail keeps to the latest one that does rather than
-     emptying itself the moment a bare session starts. */
-  const begun=list.filter(x=>x.at<=now).sort((a,b)=>b.at-a.at);
-  const withList=begun.find(x=>realGoals(x.s.goals).length);
-  if(withList) return withList.s;
-  if(begun[0]) return begun[0].s;
-  const ahead=list.sort((a,b)=>a.at-b.at);
-  return (ahead.find(x=>realGoals(x.s.goals).length)||ahead[0]).s;
-}
-function paintTaskRail(){
-  const rail=$('#taskRail'), fill=$('#taskRailFill');
-  if(!rail||!fill) return;
-  const tab=$('.tab.on');
-  const onPlan=tab && tab.dataset.v==='plan';
-  const s=onPlan? railSession() : null;
-  const goals=s? realGoals(s.goals) : [];
-  if(!goals.length){ rail.classList.remove('on'); fill.style.height='0%'; return; }
-
-  const hit=goals.filter(g=>g.done).length;
-  rail.classList.add('on');
-  fill.style.height=(100*hit/goals.length)+'%';
-}
-addEventListener('resize',()=>paintTaskRail(),{passive:true});
 function sessionCard(s,isToday){
   const t=fmtTime(s.time||'09:00');
   const goals=s.goals||[], real=realGoals(goals), hit=real.filter(g=>g.done).length;
@@ -6755,6 +7596,7 @@ $('#gxAddDiv').addEventListener('click',()=>{
     drag={item,rows,idx:rows.indexOf(item),cur:rows.indexOf(item),
           step:item.offsetHeight+6,y0:e.clientY};
     item.classList.add('dragging');
+    list.classList.add('dragging');
     try{ grip.setPointerCapture(e.pointerId); }catch(err){}
     buzz(9); e.preventDefault();
   });
@@ -6777,6 +7619,7 @@ $('#gxAddDiv').addEventListener('click',()=>{
   const end=()=>{
     if(!drag) return;
     const {rows,idx,cur}=drag; drag=null;
+    list.classList.remove('dragging');
     rows.forEach(r=>{ r.style.transform=''; r.classList.remove('dragging'); });
     if(cur!==idx){
       const [moved]=bGoals.splice(idx,1);
@@ -6800,7 +7643,11 @@ function openBlockSheet(s){
   if(s){
     bStart=s.time||'09:00';
     $('#bTitle').value=fromHabit?'':(s.title||'');
-    bGoals=(s.goals||[]).map(g=>({id:g.id||uid(),text:g.text||'',done:g.done?1:0}));
+    bGoals=(s.goals||[]).map(g=>{
+      const o={id:g.id||uid(),text:g.text||'',done:g.done?1:0};
+      if(g.div) o.div=1;              /* a divider stays a divider */
+      return o;
+    });
   }else{
     let h=planDay===TSTR ? new Date().getHours()+1 : 9;
     if(h>22) h=21;
@@ -6888,6 +7735,7 @@ function openRecord(ds){
 function closeRecord(){
   $('#fbSheet').classList.remove('on');
   $('#habSheet').classList.remove('on');
+  $('#doneSheet').classList.remove('on');
   fbOpen=false;
   $('#scrim').classList.remove('on'); $('#recSheet').classList.remove('on');
   if(document.activeElement) document.activeElement.blur();
@@ -6927,10 +7775,15 @@ function renderRecord(){
     if(on) strip.scrollLeft=Math.max(0,on.offsetLeft-strip.clientWidth/2+on.offsetWidth/2);
   });
 
-  /* Unplanned is gone as a heading. Anything already filed under it is not
-     hidden or dropped — it simply sits in the one list with everything else. */
+  /* the completions are a page of their own now; the record shows the count
+     and the way in, the same as it does for the habits */
   const all=(r&&r.done)||[];
-  fillList($('#recDone'),all,'');
+  const dn=$('#recDoneN'), ds=$('#recDoneSub');
+  if(dn) dn.textContent=all.length;
+  if(dn) dn.classList.toggle('full',all.length>0);
+  if(ds) ds.textContent = !all.length ? 'Nothing written down yet'
+    : all.length===1 ? 'One thing finished'
+    : all.length+' things finished';
   paintHabitRow();
 
   const pauses=(r&&r.pauses)||[];
@@ -6986,8 +7839,6 @@ async function addFromField(inputId,kind){
   await addCompletion(recDay,text,false,kind);
   el.value=''; renderRecord(); renderSettings(); buzz(10);
 }
-$('#recAddBtn').addEventListener('click',()=>addFromField('#recAdd','planned'));
-$('#recAdd').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#recAddBtn').click(); });
 $('#recSheet').addEventListener('click',async e=>{
   const d=e.target.closest('[data-del]');
   if(d){
@@ -8232,7 +9083,6 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
     applySettings();
     showView(v);
     if(v==='today'){ renderHeroRail(); armReveal(); }
-    paintTaskRail();
   };
   if(wasTheme!==nowTheme) themeSweep(nowTheme,t,swap); else swap();
   buzz(6);
@@ -9726,6 +10576,7 @@ const BACK_SHEETS=[
   ['#pdSheet',closePerfect],
   ['#noteSheet',closeNoteSheet],
   ['#notesSheet',closeNotes],
+  ['#doneSheet',closeDone],
   ['#habSheet',closeHabits],
   ['#fbSheet',closeFeedback],
   ['#recSheet',closeRecord],
