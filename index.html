@@ -5816,13 +5816,19 @@ function standReading(){
   const subs=[];
   ground.forEach(g=>{
     const n=g.topics.length*g.phases.length;
-    if(!n) return;
-    cells+=n; sum+=gScore(g)*n;
-    subs.push({name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
+    /* Every subject goes on the rail, including one with no chapters mapped
+       out yet — it reads 0% and sits at the front, which is exactly where an
+       untouched subject belongs. Only subjects that have cells can weigh the
+       overall figure, or an empty one would drag it down by nothing. */
+    if(n){ cells+=n; sum+=gScore(g)*n; }
+    subs.push({name:g.name,color:g.color,
+               pct:n? Math.round(gScore(g)*100) : 0,
+               empty:!n});
   });
-  if(!cells) return null;
-  subs.sort((a,b)=>a.pct-b.pct);          /* weakest first: that is the work */
-  return {pct:Math.round(100*sum/cells),subs};
+  /* the rail keeps the order Portions is in, so the two pages always read
+     the same way round. `ground` is already sorted by that order on load,
+     so it is left exactly as it comes. */
+  return {pct:cells? Math.round(100*sum/cells) : 0,subs};
 }
 /* how far through the run, if one is set */
 function runDays(){
