@@ -4039,6 +4039,47 @@ html.igskin .schip.add,.schip.add{color:var(--ink);
   background:transparent;border:0;
   box-shadow:inset 0 0 0 1.5px var(--line-2)}
 html.igskin .schip.add:active,.schip.add:active{background:var(--tint);opacity:.8}
+
+/* ---------- a subject row: open it, copy it, or move it ---------- */
+.gsub{position:relative}
+.gacts{display:flex;align-items:center;gap:4px;margin-left:auto}
+.gdup,.ggrip{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  color:var(--ink-3);flex:0 0 auto}
+.gdup svg,.ggrip svg{width:17px;height:17px;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.gdup:active{background:var(--tint);color:var(--ink)}
+.ggrip{touch-action:none;cursor:grab}
+.ggrip:active{background:var(--tint);color:var(--ink);cursor:grabbing}
+.gsub .gochev{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.35;margin-left:2px}
+.gsub.dragging{z-index:6;opacity:.97}
+.gsublist.dragging{touch-action:none}
+.gsublist .gsub{transition:transform .18s var(--ease)}
+.gsublist.dragging .gsub{transition:transform .18s var(--ease)}
+
+/* ===========================================================
+   PORTIONS — the summary runs to the edges
+   The sheet body is padded on all four sides, so the card is pulled back out
+   by exactly that padding: full width, flush against the bar above it, and
+   square where it meets both. Everything under it keeps the normal gutter.
+   =========================================================== */
+html.igskin #gndSheet .fsbody{padding-top:0}
+html.igskin #gndSheet .pgcard,
+#gndSheet .pgcard{
+  margin:0 calc(var(--gut) * -1) 22px;
+  border-radius:0;
+  padding:20px var(--gut) 20px;
+  background:var(--ig-fill-2);
+  box-shadow:inset 0 -1px 0 var(--ig-hair)}
+html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(--line)}
+/* the number and the bar want a little more room now they are full width */
+#gndSheet .pgcard .gsum{padding:0 0 14px}
+#gndSheet .pgcard .gsum .gsbig{font-size:38px}
+#gndSheet .pgcard .gsbar{height:6px;border-radius:3px;
+  background:color-mix(in srgb,var(--ink) 12%,transparent)}
+#gndSheet .pgcard .gmeta{padding:14px 0 0}
+/* the list that follows starts clear of it */
+#gndSheet .gsublist{margin-top:2px}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -5256,7 +5297,11 @@ async function writeOrder(items){
   applySet();
 }
 
-const THREADS=['#DE8C42','#D4605A','#C25E93','#8A6FD6','#4C86D4','#2BA396','#6BA342','#7C8BA1'];
+/* The subject colours are the same family Home uses for its own marks, so a
+   subject never arrives in a shade the rest of the app has no use for. Eight
+   steps around the wheel at one saturation and lightness, which keeps them
+   legible as small rings on both themes. */
+const THREADS=['#4F5BF7','#4C86D4','#2BA396','#5AA96B','#DE8C42','#D4605A','#C25E93','#8A6FD6'];
 const ACCENTS=['#F2A93B','#4EA8F5','#8B7CF7','#29B98E','#F0587F','#8D98AB'];
 const DL=['S','M','T','W','T','F','S'];
 const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -5816,14 +5861,12 @@ function standReading(){
   const subs=[];
   ground.forEach(g=>{
     const n=g.topics.length*g.phases.length;
-    /* Every subject goes on the rail, including one with no chapters mapped
-       out yet — it reads 0% and sits at the front, which is exactly where an
-       untouched subject belongs. Only subjects that have cells can weigh the
-       overall figure, or an empty one would drag it down by nothing. */
     if(n){ cells+=n; sum+=gScore(g)*n; }
-    subs.push({name:g.name,color:g.color,
-               pct:n? Math.round(gScore(g)*100) : 0,
-               empty:!n});
+    /* Only a subject with something actually marked goes on the rail. A cell
+       left at nought is not a reading, so a subject with none of them has
+       nothing to show and would sit there at 0% saying nothing. */
+    const started=n && g.topics.some(t=>g.phases.some(ph=>gCell(g,t.id,ph.id).c>=1));
+    if(started) subs.push({name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
   });
   /* the rail keeps the order Portions is in, so the two pages always read
      the same way round. `ground` is already sorted by that order on load,
@@ -9238,10 +9281,85 @@ function renderGroundList(b){
         '<span class="gm">'+g.topics.length+' topic'+(g.topics.length===1?'':'s')+
         ' · '+g.phases.length+' phase'+(g.phases.length===1?'':'s')+'</span>'+
         '</span>'+
-      '<span class="go"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></span>';
+      '<span class="gacts">'+
+        '<span class="gdup" role="button" data-dup="'+esc(g.id)+'" aria-label="Duplicate">'+
+          '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/>'+
+          '<path d="M5 15V6.5A1.5 1.5 0 0 1 6.5 5H15"/></svg></span>'+
+        '<span class="ggrip" data-grip="'+esc(g.id)+'" aria-label="Reorder">'+
+          '<svg viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></svg></span>'+
+        '<svg class="gochev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg>'+
+      '</span>';
     list.appendChild(el);
   });
   b.appendChild(list);
+  wireSubjectDrag(list);
+}
+
+/* a copy of a subject, phases, topics and every cell with it. New ids all the
+   way down, so the original and the copy can never write over each other. */
+async function duplicateSubject(id){
+  const g=gById(id); if(!g) return;
+  const pmap=new Map(), tmap=new Map();
+  const phases=g.phases.map(p=>{ const n={id:uid(),name:p.name}; pmap.set(p.id,n.id); return n; });
+  const topics=g.topics.map(t=>{ const n={id:uid(),name:t.name}; tmap.set(t.id,n.id); return n; });
+  const cells={};
+  Object.keys(g.cells||{}).forEach(k=>{
+    const [t,p]=k.split('|');
+    if(!tmap.has(t)||!pmap.has(p)) return;
+    const c=g.cells[k];
+    cells[GKEY(tmap.get(t),pmap.get(p))]={c:c.c,s:(c.s||[]).slice()};
+  });
+  const copy={id:uid(),name:(g.name+' copy').slice(0,48),color:g.color,scale:MAXC,
+    order:0,created:Date.now(),note:g.note||'',phases,topics,cells};
+  const at=ground.indexOf(g);
+  ground.splice(at+1,0,copy);                 /* it lands right under its original */
+  for(const x of ground){ x.order=ground.indexOf(x); await dbPut('ground',x); }
+  renderGround(); renderStand(); renderToday();
+  toast('Subject duplicated'); buzz(10);
+}
+
+/* dragging a subject into a new place; the order is what Home reads too */
+function wireSubjectDrag(list){
+  let drag=null;
+  list.addEventListener('pointerdown',e=>{
+    const grip=e.target.closest('.ggrip'); if(!grip) return;
+    const item=grip.closest('.gsub'); if(!item) return;
+    const rows=[...list.querySelectorAll('.gsub')];
+    drag={item,rows,idx:rows.indexOf(item),cur:rows.indexOf(item),
+          step:item.offsetHeight+8,y0:e.clientY};
+    item.classList.add('dragging'); list.classList.add('dragging');
+    try{ grip.setPointerCapture(e.pointerId); }catch(err){}
+    buzz(9); e.preventDefault(); e.stopPropagation();
+  });
+  list.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const dy=e.clientY-drag.y0;
+    drag.item.style.transform='translateY('+dy+'px)';
+    const ni=Math.max(0,Math.min(drag.rows.length-1,Math.round(dy/drag.step)+drag.idx));
+    if(ni!==drag.cur){
+      drag.cur=ni; buzz(5);
+      drag.rows.forEach((r,i)=>{
+        if(r===drag.item) return;
+        let off=0;
+        if(drag.idx<ni && i>drag.idx && i<=ni) off=-drag.step;
+        else if(drag.idx>ni && i>=ni && i<drag.idx) off=drag.step;
+        r.style.transform = off?'translateY('+off+'px)':'';
+      });
+    }
+  });
+  const end=async()=>{
+    if(!drag) return;
+    const {rows,idx,cur}=drag; drag=null;
+    list.classList.remove('dragging');
+    rows.forEach(r=>{ r.style.transform=''; r.classList.remove('dragging'); });
+    if(cur===idx) return;
+    const [moved]=ground.splice(idx,1);
+    ground.splice(cur,0,moved);
+    for(const x of ground){ x.order=ground.indexOf(x); await dbPut('ground',x); }
+    renderGround(); renderStand(); renderToday(); buzz(8);
+  };
+  list.addEventListener('pointerup',end);
+  list.addEventListener('pointercancel',end);
 }
 
 /* ---------- one subject: the whole sheet ---------- */
@@ -9586,6 +9704,10 @@ $('#gndPickSheet').addEventListener('click',e=>{
   setTimeout(()=>openName(r.dataset.add,null,''),140);
 });
 $('#gndBody').addEventListener('click',e=>{
+  /* the two controls on a row are caught first, or the row would open */
+  const dup=e.target.closest('[data-dup]');
+  if(dup){ e.stopPropagation(); duplicateSubject(dup.dataset.dup); return; }
+  if(e.target.closest('.ggrip')) return;          /* the handle only drags */
   const sub=e.target.closest('.gsub');
   if(sub && !gSubj){ gSubj=gById(sub.dataset.id); renderGround(); scrollTo(0,0); buzz(6); return; }
   const add=e.target.closest('[data-add]');
