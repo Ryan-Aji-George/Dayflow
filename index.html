@@ -4080,6 +4080,79 @@ html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(-
 #gndSheet .pgcard .gmeta{padding:14px 0 0}
 /* the list that follows starts clear of it */
 #gndSheet .gsublist{margin-top:2px}
+
+/* ===========================================================
+   THE BOARD
+   =========================================================== */
+.bcard{display:block;width:100%;text-align:left;padding:16px;border-radius:16px;
+  background:var(--ig-fill-2);color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);transition:transform .18s var(--spring)}
+html[data-theme="dark"] .bcard{box-shadow:inset 0 0 0 1px var(--line)}
+.bcard:active{transform:scale(.99)}
+.bmine{display:flex;align-items:flex-end;gap:12px;padding-bottom:14px;
+  border-bottom:1px solid var(--ig-hair)}
+.bmr{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px}
+.bmr i{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.bmr b{font-size:34px;font-weight:800;letter-spacing:-.045em;line-height:1;color:var(--ink)}
+.bmt{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.bmt b{font-size:14px;font-weight:700;color:var(--ink)}
+.bmt i{font-style:normal;font-size:11.5px;color:var(--ig-blue);text-align:right}
+/* the four above you, in the order they would appear on a list */
+.bahead{display:flex;flex-direction:column;padding-top:4px}
+.brow{display:flex;align-items:center;gap:12px;padding:9px 0;
+  border-bottom:1px solid var(--ig-hair)}
+.bahead .brow:last-child{border-bottom:0}
+.brk{flex:0 0 74px;font-size:13px;font-weight:700;color:var(--ink-3);
+  font-variant-numeric:tabular-nums}
+.bnm{flex:1;min-width:0;font-size:14.5px;font-weight:500;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bmk{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+.bnone{padding:12px 0;font-size:14px;color:var(--ink-2)}
+.bfoot{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;
+  border-top:1px solid var(--ig-hair);
+  font-size:13.5px;font-weight:700;color:var(--ig-blue)}
+.bfoot span{flex:1;min-width:0}
+.bfoot svg{flex:0 0 auto;width:15px;height:15px;fill:none;stroke:currentColor;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- the full list ---------- */
+#boardSheet .bhero{padding:6px 0 24px;border-bottom:1px solid var(--ig-hair)}
+.bhr{display:flex;align-items:baseline;gap:10px}
+.bhr i{font-style:normal;font-size:13px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.bhr b{font-size:52px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--ink)}
+.bhline{margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ig-blue)}
+#boardSheet .donestats{margin-top:22px}
+#boardList{padding-top:6px}
+#boardList .brow{padding:12px 0}
+#boardList .brow:last-child{border-bottom:0}
+#boardList .brow.top .brk{color:var(--ink)}
+/* you, in the middle of it */
+#boardList .brow.me{margin:0 calc(var(--gut) * -1);padding:14px var(--gut);
+  background:var(--ink);border-radius:12px;border-bottom:0}
+#boardList .brow.me .brk,#boardList .brow.me .bnm,#boardList .brow.me .bmk{color:var(--bg)}
+#boardList .brow.me .bnm{font-weight:800}
+/* the break between the top and the crowd around you */
+.bgap{display:flex;align-items:center;gap:12px;padding:16px 0}
+.bgap i{flex:1;height:1px;background:var(--ig-hair)}
+.bgap span{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--ink-3)}
+
+/* a seven-figure rank needs the whole width, so the marks and the caption
+   move under it rather than trying to share the line */
+.bmine{display:block;padding-bottom:12px}
+.bmr{display:flex;align-items:baseline;gap:8px}
+.bmr b{font-size:32px}
+.bmt{display:flex;flex-direction:row;align-items:baseline;gap:8px;margin-top:6px}
+.bmt b{font-size:13.5px;color:var(--ink-2);font-weight:600}
+.bmt i{text-align:left;font-size:12px}
+/* your own row on the card, marked the way it is on the list */
+.bahead .brow.me .brk,.bahead .brow.me .bnm,.bahead .brow.me .bmk{color:var(--ink)}
+.bahead .brow.me .bnm{font-weight:800}
+.bahead .brow.me{margin:0 -10px;padding:10px;border-radius:10px;
+  background:var(--tint);border-bottom:0}
+.brk{flex:0 0 86px}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -4187,6 +4260,21 @@ html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(-
           <div class="runtop"><span class="n" id="runN">&mdash;</span><span class="r" id="runR">&mdash;</span></div>
           <div class="runbar"><i id="runFill"></i></div>
         </div>
+      </section>
+
+      <!-- the board: where the work has put you, against everyone else -->
+      <section class="board" id="boardSec">
+        <div class="secbar"><h3>All India Rank</h3>
+          <button class="seeall" id="boardAll">Full list</button></div>
+        <button class="bcard" id="boardCard">
+          <div class="bmine">
+            <span class="bmr"><i>AIR</i><b id="bRank">&mdash;</b></span>
+            <span class="bmt"><b id="bMarks">&mdash;</b><i id="bMove">&mdash;</i></span>
+          </div>
+          <div class="bahead" id="bAhead"></div>
+          <div class="bfoot"><span id="bLine">&mdash;</span>
+            <svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></div>
+        </button>
       </section>
 
       <section class="subrail" id="subRail" hidden>
@@ -4404,6 +4492,11 @@ html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(-
           <span class="n">Habits &amp; dividers</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
+        <button class="smrow" data-sp="name">
+          <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg></span>
+          <span class="n">Your name</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
+        </button>
         <button class="smrow" data-sp="hero">
           <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 17 4.5-4.5L12 16l3-2.5 5 4.5"/></svg></span>
           <span class="n">Home pictures</span>
@@ -4554,6 +4647,20 @@ html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(-
               <div class="seg-ctrl" id="qModeCtrl">
                 <button data-q="day">One a day</button><button data-q="open">Every open</button>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="subpage" id="sp-name">
+        <header class="sphead">
+          <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Your name</h2></div>
+        </header>
+        <div class="group">
+          <div class="panel">
+            <div class="field" style="margin:0">
+              <input class="input" id="nameIn" placeholder="What the board should call you" maxlength="32" autocomplete="off">
             </div>
           </div>
         </div>
@@ -5196,6 +5303,29 @@ html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(-
   </div>
 </div>
 
+<!-- ===== THE BOARD — two hundred either side of you, then the top ===== -->
+<div class="sheet fullsheet igpop" id="boardSheet">
+  <div class="fshead">
+    <div class="fsbar">
+      <button class="fsx" id="boardBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <h3>All India Rank</h3>
+      <span class="donen" id="boardTotal">&mdash;</span>
+    </div>
+  </div>
+  <div class="fsbody">
+    <div class="bhero">
+      <div class="bhr"><i>AIR</i><b id="bhRank">&mdash;</b></div>
+      <p class="bhline" id="bhLine">&mdash;</p>
+      <div class="igstats donestats">
+        <span class="igstat"><b id="bhMarks">0</b><span>marks</span></span>
+        <span class="igstat"><b id="bhPct">0%</b><span>covered</span></span>
+        <span class="igstat"><b id="bhBeat">0</b><span>behind you</span></span>
+      </div>
+    </div>
+    <div id="boardList"></div>
+  </div>
+</div>
+
 <!-- ===== HABITS — ticked off from the record, on its own page ===== -->
 <div class="sheet fullsheet igpop" id="habSheet">
   <div class="fshead">
@@ -5412,8 +5542,12 @@ async function saveDay(ds){
   else{ r.updated=Date.now(); await dbPut('days',r); }
   /* what Home shows of today comes from this record, so it is repainted
      here — at the one point every change passes through — rather than at
-     each caller, where the next one added would forget */
-  if(ds===TSTR && typeof renderWins==='function') renderWins();
+     each caller, where the next one added would forget. The rank counts
+     completions as well, so it is taken along. */
+  if(ds===TSTR){
+    if(typeof renderWins==='function') renderWins();
+    if(typeof renderBoard==='function') renderBoard();
+  }
 }
 async function addCompletion(ds,text,timed,kind){
   const r=dayRec(ds);
@@ -5647,6 +5781,7 @@ function renderToday(){
   renderQuote();
   renderWins();
   renderStand();
+  renderBoard();
   renderStreak();
 }
 
@@ -5917,6 +6052,217 @@ function renderStand(){
 $('#subAll').addEventListener('click',()=>openGround());
 $('#srTrack').addEventListener('click',e=>{ if(e.target.closest('.srsub')) openGround(); });
 
+
+/* ===========================================================
+   THE BOARD — where the work has put you
+
+   One number, worked out from what is actually recorded:
+
+     coverage   the average confidence across every cell in Portions,
+                as a fraction of full confidence
+     effort     everything ever ticked off as completed
+
+   score = coverage + (1 - coverage) * EFFORT_CAP * effort/(effort + EFFORT_HALF)
+
+   The effort term is multiplied by the gap that is left, so finishing things
+   moves you a little while there is ground uncovered, and moves you nothing
+   once there is none. That is what makes the two ends exact: at zero
+   coverage and no effort the score is 0, and at full confidence the gap is
+   0 and the score is exactly 1 no matter what effort was.
+
+   rank = round(TOTAL^(1-score))
+
+   which is TOTAL at a score of 0 and 1 at a score of 1, and falls away
+   steeply in between — the first stretch of work moves you hundreds of
+   thousands of places, the last few points cost far more. That is how the
+   real thing behaves.
+   =========================================================== */
+const JEE_TOTAL=2097341;            /* not a round number, because they never are */
+
+/* Every confidence point in Portions is worth the same number of places, so
+   the rank moves in step with the work rather than in a curve. With P points
+   available across every cell, one point is worth (TOTAL-1)/P places: fill in
+   nothing and you are last, fill in everything and you are first, and half
+   way is half way.
+
+   Finishing things is worth a fraction of a single confidence point — it can
+   never carry you as far as raising one cell by one, no matter how much of it
+   you do. That is the ceiling below, and it is approached but never reached. */
+const EFFORT_SHARE=0.9;             /* of one confidence point, at most */
+const EFFORT_HALF=60;               /* completions at which half of it is earned */
+
+function jeePoints(){
+  let cells=0, sum=0;
+  ground.forEach(g=>{
+    const n=g.topics.length*g.phases.length;
+    if(!n) return;
+    cells+=n;
+    g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=gCell(g,t.id,ph.id).c; }));
+  });
+  return {have:sum,total:cells*MAXC};
+}
+const jeeCoverage=()=>{ const p=jeePoints(); return p.total? p.have/p.total : 0; };
+
+function jeeRank(){
+  const p=jeePoints();
+  if(!p.total) return JEE_TOTAL;             /* nothing mapped out is still last */
+  const span=JEE_TOTAL-1;
+  if(p.have>=p.total) return 1;              /* full confidence is exactly AIR 1 */
+
+  /* the places the confidence alone has earned */
+  const base=JEE_TOTAL-(p.have/p.total)*span;
+
+  /* and the places the finished work adds, capped under one confidence point */
+  const step=span/p.total;
+  const eff=doneStats().total;
+  const bonus=step*EFFORT_SHARE*(eff/(eff+EFFORT_HALF));
+
+  return Math.max(1,Math.min(JEE_TOTAL,Math.round(base-bonus)));
+}
+/* marks read back off a rank, so everyone on the board is consistent with
+   everyone else and with you */
+function jeeMarks(rank){
+  const r=Math.max(1,Math.min(JEE_TOTAL,rank));
+  const pct=1-Math.log(r)/Math.log(JEE_TOTAL);
+  return Math.max(4,Math.min(300,Math.round(4+296*Math.pow(pct,0.92))));
+}
+
+/* ---------- the other candidates ----------/* ---------- the other candidates ----------
+   A rank always gives the same person: the name is derived from the number
+   itself, so the board does not reshuffle under you between openings. */
+const JEE_FIRST=['Aarav','Vivaan','Aditya','Vihaan','Arjun','Sai','Reyansh','Ayaan','Krishna','Ishaan',
+'Rudra','Atharv','Aryan','Kabir','Dhruv','Kiaan','Arnav','Advik','Ansh','Rohan',
+'Ananya','Diya','Aadhya','Saanvi','Pari','Anika','Navya','Myra','Ira','Riya',
+'Kavya','Aarohi','Anvi','Prisha','Siya','Meera','Tara','Nitya','Isha','Rhea',
+'Karthik','Nikhil','Rahul','Varun','Manav','Yash','Om','Neel','Parth','Tanish',
+'Harsh','Kunal','Sarthak','Devansh','Shaurya','Aayush','Rishi','Veer','Naman','Laksh'];
+const JEE_LAST=['Sharma','Verma','Gupta','Reddy','Nair','Iyer','Menon','Patel','Shah','Desai',
+'Joshi','Kulkarni','Deshpande','Rao','Naidu','Pillai','Chatterjee','Banerjee','Mukherjee','Bose',
+'Das','Ghosh','Sen','Dutta','Mehta','Agarwal','Bansal','Jain','Malhotra','Kapoor',
+'Chauhan','Rathore','Singh','Yadav','Mishra','Tiwari','Pandey','Dubey','Trivedi','Saxena',
+'Khanna','Bhatia','Sethi','Arora','Chopra','Grover','Bakshi','Sinha','Prasad','Varma'];
+/* a small integer hash, so the same rank always lands on the same name */
+function jeeHash(n){
+  let h=(n^0x9E3779B9)>>>0;
+  h=Math.imul(h^(h>>>15),0x85EBCA6B)>>>0;
+  h=Math.imul(h^(h>>>13),0xC2B2AE35)>>>0;
+  return (h^(h>>>16))>>>0;
+}
+function jeeName(rank){
+  const h=jeeHash(rank);
+  const f=JEE_FIRST[h%JEE_FIRST.length];
+  const l=JEE_LAST[(h>>>8)%JEE_LAST.length];
+  /* two people can share a first and last name, so a middle initial is added
+     wherever the pair would otherwise repeat nearby */
+  const mid=String.fromCharCode(65+((h>>>16)%26));
+  return f+' '+mid+' '+l;
+}
+const myName=()=>((ig().name||'').trim()||'You');
+const jeeRow=(rank,me)=>({rank,me:!!me,
+  name:me?myName():jeeName(rank),marks:jeeMarks(rank)});
+
+/* ---------- the card on Home ---------- */
+function renderBoard(){
+  const sec=$('#boardSec'); if(!sec) return;
+  const rank=jeeRank(), marks=jeeMarks(rank);
+  $('#bRank').textContent=fmtRank(rank);
+  $('#bMarks').textContent=marks+' marks';
+
+  /* what raising one cell by one is worth, so the card can say plainly what
+     the next piece of work buys */
+  const pts=jeePoints();
+  const step=pts.total? Math.round((JEE_TOTAL-1)/pts.total) : 0;
+  $('#bMove').textContent = rank===1 ? 'nobody above you'
+    : step>0 ? '+'+fmtRank(step)+' places per confidence point'
+    : 'map out Portions to begin';
+
+  /* the four people immediately above you */
+  const above=[];
+  for(let i=4;i>=1;i--){ const r=rank-i; if(r>=1) above.push(jeeRow(r)); }
+  above.push(jeeRow(rank,true));            /* and you, at the foot of them */
+  $('#bAhead').innerHTML=above.map(x=>
+    '<span class="brow'+(x.me?' me':'')+'"><span class="brk">'+fmtRank(x.rank)+'</span>'+
+      '<span class="bnm">'+esc(x.name)+'</span>'+
+      '<span class="bmk">'+x.marks+'</span></span>').join('');
+
+  $('#bLine').textContent='Full list';
+}
+/* Indian grouping, because the number is meant to be read at a glance */
+function fmtRank(n){
+  const s=String(Math.round(n));
+  if(s.length<=3) return s;
+  const head=s.slice(0,-3), tail=s.slice(-3);
+  return head.replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+tail;
+}
+
+/* ---------- the full board ---------- */
+const BOARD_SPAN=100;
+const BOARD_TAIL=20;                /* the last of the list, always shown */
+function openBoard(){
+  renderBoardPage();
+  $('#scrim').classList.add('on');
+  $('#boardSheet').classList.add('on');
+  const b=$('.fsbody',$('#boardSheet'));
+  if(b) b.scrollTop=0;
+  buzz(HAPTIC.light);
+  /* opened on the list, it should be looking at you */
+  requestAnimationFrame(()=>{
+    const me=$('#boardList .brow.me');
+    if(me && me.scrollIntoView) me.scrollIntoView({block:'center'});
+  });
+}
+function closeBoard(){
+  $('#boardSheet').classList.remove('on');
+  $('#scrim').classList.remove('on');
+}
+$('#boardBack').addEventListener('click',()=>{ closeBoard(); buzz(6); });
+$('#boardAll').addEventListener('click',openBoard);
+$('#boardCard').addEventListener('click',openBoard);
+
+function renderBoardPage(){
+  const rank=jeeRank(), cov=jeeCoverage();
+  $('#boardTotal').textContent=fmtRank(JEE_TOTAL);
+  $('#bhRank').textContent=fmtRank(rank);
+  $('#bhMarks').textContent=jeeMarks(rank);
+  $('#bhPct').textContent=Math.round(cov*100)+'%';
+  $('#bhBeat').textContent=fmtRank(Math.max(0,JEE_TOTAL-rank));
+  $('#bhLine').textContent = rank===1 ? 'Nobody is ahead of you.'
+    : 'Cover more ground and they move down.';
+
+  const rows=[];
+  /* the top ten, the two hundred around you, and the last twenty — each run
+     joined by a break saying how many were passed over. A run is only drawn
+     where it does not already run into the one before it, so nobody appears
+     twice however near either end you are. */
+  const from=Math.max(1,rank-BOARD_SPAN), to=Math.min(JEE_TOTAL,rank+BOARD_SPAN);
+  const bottomFrom=Math.max(1,JEE_TOTAL-BOARD_TAIL+1);
+
+  const showTop=from>11;
+  if(showTop){
+    for(let r=1;r<=10;r++) rows.push(jeeRow(r,r===rank));
+    rows.push({gap:true,skipped:from-11});
+  }
+  const midTo=Math.min(to,showBottom()?bottomFrom-1:to);
+  for(let r=showTop?from:1;r<=midTo;r++) rows.push(jeeRow(r,r===rank));
+
+  function showBottom(){ return to<bottomFrom-1; }
+  if(showBottom()){
+    rows.push({gap:true,skipped:bottomFrom-1-to});
+    for(let r=bottomFrom;r<=JEE_TOTAL;r++) rows.push(jeeRow(r,r===rank));
+  }else{
+    /* your own window already reaches the foot of the list */
+    for(let r=Math.max(midTo+1,1);r<=JEE_TOTAL;r++) rows.push(jeeRow(r,r===rank));
+  }
+
+  $('#boardList').innerHTML=rows.map(x=>{
+    if(x.gap) return '<div class="bgap"><i></i><span>'+
+      fmtRank(x.skipped)+' more</span><i></i></div>';
+    return '<div class="brow'+(x.me?' me':'')+(x.rank<=10?' top':'')+'">'+
+      '<span class="brk">'+fmtRank(x.rank)+'</span>'+
+      '<span class="bnm">'+esc(x.name)+'</span>'+
+      '<span class="bmk">'+x.marks+'</span></div>';
+  }).join('');
+}
 /* ===========================================================
    EVERYTHING DONE
    Every completion the record has ever taken, read back. It writes through
@@ -9090,7 +9436,7 @@ function showView(v){
    Nothing moved out of the app. The same panels, the same handlers, the same
    ids — only put one tap in, so the page you land on asks a single question. */
 let setPage=null;
-const SP_PAGES=['habits','hero','quote','dayst','run','look','privacy','parts','data'];
+const SP_PAGES=['habits','name','hero','quote','dayst','run','look','privacy','parts','data'];
 function openSetPage(id){
   if(SP_PAGES.indexOf(id)<0) return;
   setPage=id;
@@ -9219,7 +9565,21 @@ function confInk(c){
 const scoreColor=p=>p>0?confColor(Math.min(MAXC,Math.max(1,Math.ceil(p/(100/MAXC))))):'';
 const CONF_WORD=['Not started','Barely looked','Getting there','Fairly sure','Strong','Cold'];
 const gById=id=>ground.find(x=>x.id===id)||null;
-async function gSave(g){ g.order=ground.indexOf(g); await dbPut('ground',g); }
+async function gSave(g){
+  g.order=ground.indexOf(g);
+  await dbPut('ground',g);
+  refreshHome();
+}
+/* What Home shows of the ground and the rank is read straight from these
+   records, so it is repainted wherever they change. Guarded because the
+   record and portions sheets can both be open before Home has ever drawn. */
+function refreshHome(){
+  try{
+    if(typeof renderStand==='function') renderStand();
+    if(typeof renderBoard==='function') renderBoard();
+    if(typeof renderWins==='function') renderWins();
+  }catch(err){ console.error('Onwards \u00B7 home refresh',err); }
+}
 
 function openGround(){
   gOpen=true; gSubj=null;
@@ -9532,7 +9892,7 @@ $('#gndNameDel').addEventListener('click',async e=>{
   if(!gName||!gName.id){ closeName(); return; }
   const {kind,id}=gName;
   if(kind==='subject'){
-    ground=ground.filter(x=>x.id!==id); await dbDel('ground',id);
+    ground=ground.filter(x=>x.id!==id); await dbDel('ground',id); refreshHome();
     for(const g of ground) await gSave(g);
     gSubj=null;
   }else if(gSubj){
@@ -9742,7 +10102,7 @@ $('#gndBody').addEventListener('click',e=>{
 async function dropSubject(){
   const g=gSubj; if(!g) return;
   ground=ground.filter(x=>x.id!==g.id);
-  await dbDel('ground',g.id);
+  await dbDel('ground',g.id); refreshHome();
   for(const x of ground) await gSave(x);
   gSubj=null; renderGround(); renderSettings();
   toast('Subject deleted'); buzz(12);
@@ -9905,6 +10265,8 @@ function renderSettings(){
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
   relabelDayButtons();
+  const nm=$('#nameIn');
+  if(nm && document.activeElement!==nm) nm.value=(ig().name||'')==='Future Me'?'':(ig().name||'');
   renderHeroSettings();
   renderQuoteSettings();
   renderInstall();
@@ -10650,6 +11012,20 @@ function renderHeroSettings(){
     '</div>').join('')
     : '<div class="hrempty">No pictures yet</div>';
 }
+/* the name the board calls you. It is the profile's own name, so setting it
+   here and setting it on the Vision page are the same thing. */
+let nameT=null;
+$('#nameIn').addEventListener('input',e=>{
+  clearTimeout(nameT);
+  const v=e.target.value.trim().slice(0,32);
+  nameT=setTimeout(async()=>{
+    ig().name=v||'Future Me';
+    await saveSettings();
+    renderBoard(); renderVision();
+  },500);
+});
+$('#nameIn').addEventListener('blur',()=>{ clearTimeout(nameT); renderBoard(); });
+
 $('#hrSw').addEventListener('click',async()=>{
   S.heroOn=!heroOn();
   await saveSettings();
@@ -10704,6 +11080,7 @@ const BACK_SHEETS=[
   ['#pdSheet',closePerfect],
   ['#noteSheet',closeNoteSheet],
   ['#notesSheet',closeNotes],
+  ['#boardSheet',closeBoard],
   ['#doneSheet',closeDone],
   ['#habSheet',closeHabits],
   ['#fbSheet',closeFeedback],
