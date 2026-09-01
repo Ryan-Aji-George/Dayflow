@@ -4153,6 +4153,75 @@ html[data-theme="dark"] .bcard{box-shadow:inset 0 0 0 1px var(--line)}
 .bahead .brow.me{margin:0 -10px;padding:10px;border-radius:10px;
   background:var(--tint);border-bottom:0}
 .brk{flex:0 0 86px}
+
+/* ===========================================================
+   THE NOTCH
+   It sits above the top bar, above every sheet and above the scrim, and it
+   never scrolls. Everything that used to start at the top of the screen now
+   starts below it, so nothing is hidden underneath: the app's own padding,
+   the sticky bar, and the full-height sheets all offset by its height, which
+   is measured once and kept in --notch-h.
+   =========================================================== */
+:root{--notch-h:34px}
+.notch{position:fixed;top:0;left:0;right:0;z-index:97;
+  display:flex;align-items:center;gap:10px;
+  height:calc(34px + env(safe-area-inset-top));
+  padding:env(safe-area-inset-top) var(--gut) 0;
+  background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:saturate(150%) blur(18px);
+  -webkit-backdrop-filter:saturate(150%) blur(18px);
+  box-shadow:inset 0 -1px 0 var(--ig-hair);
+  pointer-events:none;                       /* a reading, not a control */
+  font-family:var(--ui)}
+html[data-theme="dark"] .notch{box-shadow:inset 0 -1px 0 var(--line)}
+.ntair{flex:0 0 auto;display:flex;align-items:baseline;gap:5px}
+.ntair i{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+.ntair b{font-size:14px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+/* what today has bought, only when it has bought something */
+.ntup{flex:0 0 auto;display:flex;align-items:center;gap:3px;
+  padding:2px 7px;border-radius:7px;
+  background:color-mix(in srgb,var(--h-green) 16%,transparent);color:var(--h-green)}
+.ntup svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.ntup b{font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.ntmsg{flex:1;min-width:0;text-align:right;font-size:11.5px;font-weight:600;
+  color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* everything else starts below it */
+.app{padding-top:calc(var(--notch-h) + env(safe-area-inset-top))}
+.topbar{top:calc(var(--notch-h) + env(safe-area-inset-top))}
+html.igskin .topbar{padding-top:11px}
+.sheet.fullsheet,html.igskin .sheet.fullsheet{
+  top:calc(var(--notch-h) + env(safe-area-inset-top));height:auto}
+html.igskin .fshead{top:0}
+/* the lock screen owns the whole screen, so the notch stands down for it */
+html.locked .notch{display:none}
+
+/* the notch carries two tiers now: the readings, then the one instruction */
+.notch{display:block;height:auto;padding:calc(env(safe-area-inset-top) + 6px) var(--gut) 7px}
+.ntrow{display:flex;align-items:baseline;gap:12px}
+.ntair{flex:0 0 auto;display:flex;align-items:baseline;gap:5px}
+.ntair i{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+.ntair b{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+/* today and yesterday, always shown, a dash when nothing moved */
+.ntd{flex:0 0 auto;display:flex;align-items:baseline;gap:4px}
+.ntd i{font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.02em;
+  color:var(--ink-3)}
+.ntd b{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink-3)}
+.ntd.up b{color:var(--h-green)}
+.ntd.down b{color:var(--ig-red)}
+.ntd.flat b{color:var(--ink-3)}
+/* the instruction, meant to look like nothing */
+.ntgoal{margin-top:2px;font-size:12px;font-weight:700;letter-spacing:-.01em;
+  color:var(--ig-blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:359px){
+  .ntrow{gap:9px}
+  .ntd i{display:none}
+}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -4783,6 +4852,20 @@ html[data-theme="dark"] .bcard{box-shadow:inset 0 0 0 1px var(--line)}
       </div>
     </section>
   </main>
+
+  <!-- ===== THE NOTCH =====
+       Pinned above every page and every sheet, the way a phone's own status
+       bar is: it never scrolls away and nothing covers it. It says where you
+       stand right now, what today has bought you, and what the next piece of
+       work is worth. It is a reading, not a control. -->
+  <div class="notch" id="notch">
+    <div class="ntrow">
+      <span class="ntair"><i>AIR</i><b id="ntRank">&mdash;</b></span>
+      <span class="ntd" id="ntToday"><i>today</i><b>&mdash;</b></span>
+      <span class="ntd" id="ntYest"><i>yesterday</i><b>&mdash;</b></span>
+    </div>
+    <div class="ntgoal" id="ntMsg">&mdash;</div>
+  </div>
 
   <nav class="tabbar">
     <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><path d="M3 10.2a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15 21v-7.5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1V21"/></svg><span>Today</span></button>
@@ -5547,6 +5630,7 @@ async function saveDay(ds){
   if(ds===TSTR){
     if(typeof renderWins==='function') renderWins();
     if(typeof renderBoard==='function') renderBoard();
+    if(typeof renderNotch==='function') renderNotch();
   }
 }
 async function addCompletion(ds,text,timed,kind){
@@ -6263,6 +6347,97 @@ function renderBoardPage(){
       '<span class="bmk">'+x.marks+'</span></div>';
   }).join('');
 }
+
+/* ===========================================================
+   THE NOTCH — what it says
+
+   Three readings and one instruction:
+
+     AIR         where you stand this second
+     today       how far you have climbed since the day began
+     yesterday   how far you climbed across the whole of yesterday
+
+   The first two are always shown, at nought as readily as at a lakh, so the
+   bar reads the same every day and a zero is as plain as a gain.
+
+   The instruction is the point of it: the smallest number of confidence
+   points that would take you past the next round figure. It is meant to
+   look like nothing, because one cell usually is.
+   =========================================================== */
+/* the round figures worth passing, from the foot of the list to the front */
+const MILES=[1,3,10,25,50,100,250,500,1000,2500,5000,10000,25000,
+             50000,100000,250000,500000,1000000,1500000,2000000];
+
+function rankHist(){
+  if(!Array.isArray(S.rankHist)) S.rankHist=[];
+  return S.rankHist;
+}
+/* where today began, written down once. Only kept once there is something to
+   measure: taken before any subject exists it would be last place, and the
+   whole of setting the app up would read as a day's work. */
+function rankBase(){
+  const pts=jeePoints();
+  if(!pts.total) return jeeRank();
+  const h=rankHist();
+  if(!h.length || h[h.length-1].date!==TSTR){
+    h.push({date:TSTR,rank:jeeRank()});
+    while(h.length>14) h.shift();          /* a fortnight is plenty */
+    saveSettings();
+  }
+  return h[h.length-1].rank;
+}
+/* how far you moved across the whole of the day before this one */
+function yesterdayMove(){
+  const h=rankHist();
+  if(h.length<2) return 0;
+  return h[h.length-2].rank-h[h.length-1].rank;
+}
+/* the next round figure, and what it would cost to pass it */
+function nextGoal(rank){
+  const pts=jeePoints();
+  if(!pts.total || rank<=1) return null;
+  const step=(JEE_TOTAL-1)/pts.total;      /* places per confidence point */
+  const target=MILES.filter(m=>m<rank).pop();
+  if(target==null) return null;
+  const need=Math.max(1,Math.ceil((rank-target)/step));
+  const left=pts.total-pts.have;
+  return {need:Math.min(need,Math.max(1,left)),target};
+}
+function paintMove(el,n){
+  const b=$('b',el), i=$('i',el);
+  el.classList.toggle('up',n>0);
+  el.classList.toggle('down',n<0);
+  el.classList.toggle('flat',n===0);
+  b.textContent = n>0 ? '\u2191'+fmtRank(n) : n<0 ? '\u2193'+fmtRank(-n) : '\u2013';
+  return i;
+}
+function renderNotch(){
+  const el=$('#notch'); if(!el) return;
+  const rank=jeeRank();
+  $('#ntRank').textContent=fmtRank(rank);
+
+  paintMove($('#ntToday'),Math.max(0,rankBase()-rank));
+  paintMove($('#ntYest'),yesterdayMove());
+
+  /* the one instruction, and it is always the smallest one available */
+  const g=nextGoal(rank);
+  const msg=$('#ntMsg');
+  if(rank===1) msg.textContent='All India Rank 1. Hold it.';
+  else if(!jeePoints().total) msg.textContent='Map out Portions to get a rank';
+  else if(!g) msg.textContent='Keep going';
+  else msg.textContent = g.need===1
+    ? 'Just 1 more to break '+fmtRank(g.target)
+    : 'Just '+g.need+' more to break '+fmtRank(g.target);
+}
+/* its height is measured rather than assumed, so the safe area on any phone
+   is accounted for exactly once */
+function sizeNotch(){
+  const el=$('#notch'); if(!el) return;
+  const h=Math.round(el.getBoundingClientRect().height);
+  if(h) document.documentElement.style.setProperty('--notch-h',h+'px');
+}
+addEventListener('resize',()=>{ sizeNotch(); },{passive:true});
+setInterval(renderNotch,30000);          /* the line turns over on its own */
 /* ===========================================================
    EVERYTHING DONE
    Every completion the record has ever taken, read back. It writes through
@@ -9578,6 +9753,7 @@ function refreshHome(){
     if(typeof renderStand==='function') renderStand();
     if(typeof renderBoard==='function') renderBoard();
     if(typeof renderWins==='function') renderWins();
+    if(typeof renderNotch==='function') renderNotch();
   }catch(err){ console.error('Onwards \u00B7 home refresh',err); }
 }
 
@@ -10742,7 +10918,7 @@ async function seed(){
   applySet();
   S.seeded=true; await saveSettings();
 }
-function renderAll(){ renderToday(); renderHeroRail(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
+function renderAll(){ sizeNotch(); renderNotch(); renderToday(); renderHeroRail(); renderSets(); renderHabits(); renderPlan(); renderVision(); renderSettings(); }
 
 function checkRollover(){
   const d=logicalDay(new Date()), t=ymd(d);
