@@ -4563,7 +4563,7 @@ html.locked .notch{display:none}
         </button>
         <button class="smrow" data-sp="name">
           <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg></span>
-          <span class="n">Your name</span>
+          <span class="n">Rank &amp; name</span>
           <span class="go"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>
         </button>
         <button class="smrow" data-sp="hero">
@@ -4724,12 +4724,23 @@ html.locked .notch{display:none}
       <section class="subpage" id="sp-name">
         <header class="sphead">
           <button class="spback" aria-label="Back to settings"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
-          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Your name</h2></div>
+          <div class="sptitle"><span class="eyebrow">Settings</span><h2>Rank &amp; name</h2></div>
         </header>
         <div class="group">
           <div class="panel">
             <div class="field" style="margin:0">
               <input class="input" id="nameIn" placeholder="What the board should call you" maxlength="32" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="eyebrow">Rank history</span>
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n" id="rhStat">&mdash;</div></div>
+            </div>
+            <div class="btnrow" style="border-bottom:0">
+              <button class="btn ghost" id="rhClear">Clear rank history</button>
             </div>
           </div>
         </div>
@@ -6084,7 +6095,7 @@ function standReading(){
     /* Only a subject with something actually marked goes on the rail. A cell
        left at nought is not a reading, so a subject with none of them has
        nothing to show and would sit there at 0% saying nothing. */
-    const started=n && g.topics.some(t=>g.phases.some(ph=>gCell(g,t.id,ph.id).c>=1));
+    const started=n && g.topics.some(t=>g.phases.some(ph=>confEarned(gCell(g,t.id,ph.id).c)>0));
     if(started) subs.push({name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
   });
   /* the rail keeps the order Portions is in, so the two pages always read
@@ -6181,9 +6192,9 @@ function jeePoints(){
     const n=g.topics.length*g.phases.length;
     if(!n) return;
     cells+=n;
-    g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=gCell(g,t.id,ph.id).c; }));
+    g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=confEarned(gCell(g,t.id,ph.id).c); }));
   });
-  return {have:sum,total:cells*MAXC};
+  return {have:sum,total:cells*CONF_SPAN};
 }
 const jeeCoverage=()=>{ const p=jeePoints(); return p.total? p.have/p.total : 0; };
 
@@ -7554,12 +7565,21 @@ function normGround(g){
 }
 const gCell=(g,t,ph)=>g.cells[GKEY(t,ph)]||{c:0,s:[]};
 /* how much of a subject is covered: every cell counts, an empty one as nought */
+/* A cell only starts counting once it is past the bottom of the scale.
+   Nothing and barely-looked-at are the same thing as far as covered ground
+   goes, so both are worth nought and the scale that is left runs from there.
+   Every reading in the app goes through this: the subject percentages, the
+   figure on Home, and the rank. */
+const CONF_FLOOR=1;                       /* at or below this, it counts for nothing */
+const CONF_SPAN=MAXC-CONF_FLOOR;          /* what is left to earn on each cell */
+const confEarned=c=>Math.max(0,(Number(c)||0)-CONF_FLOOR);
+
 function gScore(g){
   const n=g.topics.length*g.phases.length;
   if(!n) return 0;
   let sum=0;
-  g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=gCell(g,t.id,ph.id).c; }));
-  return sum/(n*MAXC);
+  g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=confEarned(gCell(g,t.id,ph.id).c); }));
+  return sum/(n*CONF_SPAN);
 }
 /* One shape for a habit and for a note, used by every path that reads one in.
    These were written out field by field in two different places, so anything
@@ -10441,6 +10461,7 @@ function renderSettings(){
   if(document.activeElement!==$('#runStart')) $('#runStart').value=S.runStart||'';
   if(document.activeElement!==$('#runEnd')) $('#runEnd').value=S.runEnd||'';
   relabelDayButtons();
+  renderRankHist();
   const nm=$('#nameIn');
   if(nm && document.activeElement!==nm) nm.value=(ig().name||'')==='Future Me'?'':(ig().name||'');
   renderHeroSettings();
@@ -11191,6 +11212,24 @@ function renderHeroSettings(){
 /* the name the board calls you. It is the profile's own name, so setting it
    here and setting it on the Vision page are the same thing. */
 let nameT=null;
+/* the day-by-day snapshots the notch reads its two figures from. Clearing
+   them resets today and yesterday to nothing; it touches no habit, mark,
+   note, session or subject, and the rank itself is unaffected because that
+   is worked out from the ground, not from this. */
+function renderRankHist(){
+  const el=$('#rhStat'); if(!el) return;
+  const n=rankHist().length;
+  el.textContent = n ? n+' day'+(n===1?'':'s')+' recorded' : 'Nothing recorded yet';
+}
+$('#rhClear').addEventListener('click',e=>{
+  armed(e.currentTarget,'Clear rank history',async()=>{
+    S.rankHist=[];
+    await saveSettings();
+    renderRankHist(); renderNotch();
+    toast('Rank history cleared'); buzz(10);
+  });
+});
+
 $('#nameIn').addEventListener('input',e=>{
   clearTimeout(nameT);
   const v=e.target.value.trim().slice(0,32);
