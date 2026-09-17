@@ -4135,6 +4135,730 @@ html[data-theme="dark"] .pgglass::after{
   if(localStorage.getItem('dayflow.applock')==='1') d.dataset.theme='dark';
 }catch(e){}})();
 </script>
+<style id="polish">
+/* ===========================================================
+   POLISH — touch, motion and finish
+   A layer on top of everything above. It adds no data and removes no
+   control. Nearly all of it is scoped to html.igskin, which is only on
+   while Today, Portions or Settings is showing — so the Vision page and
+   its own sheets are never reached by any of it. The one exception is the
+   glide mark on the bottom bar, which is navigation, not a page.
+   Presses use the `scale` and `translate` properties rather than
+   `transform`, so they never fight the transforms the app already sets.
+   =========================================================== */
+:root{
+  --pl-out:cubic-bezier(.16,1,.3,1);
+  --pl-bounce:cubic-bezier(.34,1.56,.64,1);
+  --pl-soft:cubic-bezier(.25,1.2,.5,1);
+}
+@property --p{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+/* ---------- the bottom bar ---------- */
+.tabbar{isolation:isolate}
+.pl-glide{position:absolute;z-index:2;top:-1px;left:0;width:20px;height:3px;
+  border-radius:0 0 3px 3px;background:var(--ink);pointer-events:none;opacity:0;
+  transform:translate3d(var(--gx,0px),var(--gy,0px),0);
+  transition:transform .55s var(--pl-bounce),opacity .3s var(--ease),width .3s var(--pl-out)}
+.pl-glide.on{opacity:1}
+.pl-glide.still{transition:none}
+.tabbar.pl-vert .pl-glide{top:0;width:3px;height:20px;border-radius:0 3px 3px 0}
+@media (max-width:699px){
+  html.igskin .tabbar{background:color-mix(in srgb,var(--bg) 86%,transparent);
+    -webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px)}
+  html.igskin .topbar{background:color-mix(in srgb,var(--bg) 82%,transparent);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
+}
+html.igskin .topbar{transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+html.igskin .topbar.stuck{box-shadow:0 1px 0 var(--line)}
+html.igskin .tab{transition:color .25s var(--ease)}
+
+/* ---------- presses: in fast, out on a spring ---------- */
+html.igskin .bcard{transition:transform .18s var(--spring),scale .5s var(--pl-soft)}
+html.igskin .bcard:active{scale:.982;transition-duration:.18s,.12s}
+html.igskin .bcard .bfoot svg{transition:translate .4s var(--pl-bounce)}
+html.igskin .bcard:active .bfoot svg{translate:4px 0}
+html.igskin .srsub{transition:scale .5s var(--pl-bounce),opacity .2s var(--ease)}
+html.igskin .srsub:active{opacity:1;scale:.9;transition-duration:.12s}
+html.igskin .gorow{transition:opacity .2s var(--ease),background .2s var(--ease)}
+html.igskin .gorow:active{opacity:1}
+html.igskin .gorow:active .gon{opacity:.6}
+html.igskin .gorow .gon{transition:opacity .15s var(--ease)}
+html.igskin .gorow .gochev{transition:translate .45s var(--pl-bounce)}
+html.igskin .gorow:active .gochev{translate:4px 0}
+html.igskin .dn{transition:scale .45s var(--pl-soft),background .2s var(--ease),opacity .2s var(--ease)}
+html.igskin .dn:active{opacity:1;scale:.985;background:var(--tint)}
+html.igskin .pgcell{transition:background .28s var(--ease),opacity .14s var(--ease),scale .45s var(--pl-bounce)}
+html.igskin .pgcell:active{opacity:.85;scale:.84;transition-duration:.28s,.14s,.1s}
+html.igskin .gdup,html.igskin .ggrip{transition:scale .4s var(--pl-bounce),background .15s,color .15s}
+html.igskin .gdup:active{scale:.84}
+html.igskin .smrow .go{transition:translate .45s var(--pl-bounce)}
+html.igskin .smrow:active .go{translate:4px 0}
+html.igskin .pickrow .pickico{transition:scale .45s var(--pl-bounce)}
+html.igskin .pickrow:active .pickico{scale:.88}
+html.igskin .seeall{transition:opacity .15s var(--ease)}
+html.igskin .hrx{transition:scale .35s var(--pl-bounce)}
+html.igskin .hrx:active{scale:.85}
+html.igskin .qxdel:active{scale:.88}
+/* the quote sits in Home's reveal, which owns its transform and transition;
+   this repeats that transition and adds the press to it */
+@media (prefers-reduced-motion:no-preference){
+  #tSide.reveal>.qcard{transition:opacity .5s var(--ease),transform .62s var(--spring),scale .5s var(--pl-soft);
+    transition-delay:var(--d,0ms),var(--d,0ms),0ms}
+}
+html.igskin .qcard{cursor:pointer;-webkit-tap-highlight-color:transparent}
+html.igskin .qcard:active{scale:.98}
+
+/* ---------- switches: the knob stretches under the thumb ---------- */
+html.igskin .switch::after{transition:transform .45s var(--pl-bounce),width .22s var(--pl-out),background .28s var(--ease)}
+html.igskin .switch:active::after{width:31px}
+html.igskin .switch.on:active::after{transform:translateX(15px)}
+
+/* ---------- segmented controls: one plate that slides ---------- */
+html.igskin .seg-ctrl.pl-seg{position:relative;isolation:isolate}
+html.igskin .seg-ctrl.pl-seg button{position:relative;z-index:1;background:transparent!important;
+  transition:color .25s var(--ease)}
+.pl-segplate{position:absolute;z-index:0;top:3px;bottom:3px;left:0;width:0;border-radius:9px;
+  background:var(--bg);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.05);
+  transform:translate3d(var(--sx,0px),0,0);pointer-events:none;
+  transition:transform .45s var(--pl-bounce),width .45s var(--pl-bounce)}
+.pl-segplate.still{transition:none}
+html[data-theme="dark"] .pl-segplate{background:var(--line-2);box-shadow:none}
+
+/* ---------- the chosen step of sureness lands with a little weight ---------- */
+@keyframes pl-pop{0%{scale:1}38%{scale:1.16}100%{scale:1}}
+@media (prefers-reduced-motion:no-preference){
+  html.igskin .confstep.on{animation:pl-pop .44s var(--pl-out)}
+}
+
+/* ---------- toast ---------- */
+html.igskin .toast{padding:11px 18px;border-radius:14px;border:0;scale:.92;
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.55),0 2px 8px -2px rgba(0,0,0,.18);
+  transition:opacity .25s var(--ease),transform .5s var(--pl-bounce),scale .5s var(--pl-bounce)}
+html.igskin .toast.on{scale:1}
+
+/* ---------- sheets: a bigger grip, and drag it down to let go ---------- */
+html.igskin .sheet .grabber{position:relative;width:38px;height:5px;border-radius:3px}
+html.igskin .sheet .grabber::before{content:'';position:absolute;inset:-12px -48px}
+#gndPickSheet>.grabber,#gndCellSheet>.grabber,#gndNameSheet>.grabber,#pinSheet>.grabber,
+#gndPickSheet>h3,#gndCellSheet>h3,#gndNameSheet>h3,#pinSheet>h3{touch-action:none}
+html.igskin .sheet.pl-drag{transition:none!important}
+
+/* ===========================================================
+   HOME
+   =========================================================== */
+/* the three doors carry their own colour in a chip, so they read at a glance */
+html.igskin .gorow{padding:11px 2px;gap:14px}
+html.igskin .gorow>svg:first-child{width:42px;height:42px;padding:10.5px;border-radius:13px;flex:0 0 auto;
+  color:var(--qc,var(--ink));background:color-mix(in srgb,var(--qc,var(--ink)) 14%,transparent);
+  stroke-width:1.9;transition:scale .45s var(--pl-bounce)}
+html[data-theme="dark"].igskin .gorow>svg:first-child{color:color-mix(in srgb,var(--qc,var(--ink)) 82%,#fff);
+  background:color-mix(in srgb,var(--qc,var(--ink)) 20%,transparent)}
+html.igskin .gorow:active>svg:first-child{scale:.88}
+html.igskin .gorow .gon{gap:2px}
+
+/* the progress ring takes a gradient, and glows a touch in the dark */
+#standRing{stroke:url(#plRingGrad) var(--ig-blue,#4F5BF7)}
+html[data-theme="dark"] .spring{filter:drop-shadow(0 0 7px rgba(128,138,255,.35))}
+.spbg{stroke:color-mix(in srgb,var(--ink) 9%,transparent)}
+/* the two readings beside it are parted by a hairline, as a profile's are */
+html.igskin .standnums{gap:0}
+html.igskin .standnums .igstat{padding-left:16px}
+html.igskin .standnums .igstat+.igstat{border-left:1px solid var(--ig-hair)}
+html.igskin .standnums .igstat b,.spnum b,.gsum .gsbig,.gring b,.srp,.bmr b,.bhr b,
+.donestats .igstat b,.runtop .n,.runtop .r{font-variant-numeric:tabular-nums}
+/* the countdown fill runs indigo into violet */
+html.igskin #standSec .runbar i{background:linear-gradient(90deg,var(--ig-blue),var(--h-violet))}
+html.igskin #standSec .runbar{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+
+/* the rings on the subject rail fill as they arrive */
+@keyframes pl-ring{from{--p:0deg}}
+@media (prefers-reduced-motion:no-preference){
+  html.igskin .srring{animation:pl-ring 1.1s var(--pl-out) backwards}
+  html.igskin .srsub:nth-child(2) .srring{animation-delay:.07s}
+  html.igskin .srsub:nth-child(3) .srring{animation-delay:.14s}
+  html.igskin .srsub:nth-child(4) .srring{animation-delay:.21s}
+  html.igskin .srsub:nth-child(n+5) .srring{animation-delay:.28s}
+}
+html.igskin .srin{box-shadow:0 1px 2px rgba(0,0,0,.06)}
+
+/* the board's rows sit on one line of type, not on the middle of the box */
+html.igskin .bahead .brow,html.igskin #boardList .brow{align-items:baseline}
+html.igskin .bahead .brow.me{box-shadow:inset 3px 0 0 var(--ig-blue)}
+
+/* where you are among the pictures */
+.pl-dots{position:absolute;z-index:3;left:0;right:0;bottom:12px;display:flex;justify-content:center;
+  align-items:center;gap:5px;pointer-events:none}
+.pl-dots[hidden]{display:none}
+.pl-dots i{display:block;width:6px;height:6px;border-radius:3px;
+  background:color-mix(in srgb,var(--ink) 26%,transparent);
+  transition:width .45s var(--pl-bounce),background .3s var(--ease)}
+.pl-dots i.on{width:18px;background:var(--ink)}
+
+/* ===========================================================
+   PORTIONS
+   =========================================================== */
+html.igskin .gempty::before{content:'';display:block;width:56px;height:56px;margin:0 auto 16px;
+  border-radius:18px;background:var(--ig-fill)}
+html.igskin .gempty{position:relative}
+html.igskin .gempty::after{content:'';position:absolute;top:calc(46px + 14px);left:50%;width:28px;height:28px;
+  margin-left:-14px;background:var(--ink-3);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='13.5' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='3' y='13.5' width='7.5' height='7.5' rx='2'/%3E%3Cpath d='M17.25 14v6.5M14 17.25h6.5'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='13.5' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='3' y='13.5' width='7.5' height='7.5' rx='2'/%3E%3Cpath d='M17.25 14v6.5M14 17.25h6.5'/%3E%3C/svg%3E") center/contain no-repeat}
+html.igskin .gndplus{box-shadow:0 6px 16px -8px color-mix(in srgb,var(--ink) 60%,transparent)}
+html.igskin .pgcell.pl-hot{position:relative;z-index:1}
+
+/* ===========================================================
+   SETTINGS
+   =========================================================== */
+html.igskin .smrow{gap:15px}
+html.igskin .smrow .ico{width:34px;height:34px;border-radius:10px;
+  color:var(--ic,var(--ink));background:color-mix(in srgb,var(--ic,var(--ink)) 14%,transparent);
+  transition:scale .45s var(--pl-bounce)}
+html.igskin .smrow .ico svg{width:19px;height:19px;stroke-width:1.85}
+html[data-theme="dark"].igskin .smrow .ico{color:color-mix(in srgb,var(--ic,var(--ink)) 80%,#fff);
+  background:color-mix(in srgb,var(--ic,var(--ink)) 22%,transparent)}
+html.igskin .smrow:active .ico{scale:.88}
+.smrow[data-sp="name"]{--ic:#4C86D4}
+.smrow[data-sp="hero"]{--ic:#C25E93}
+.smrow[data-sp="quote"]{--ic:#DE8C42}
+.smrow[data-sp="dayst"]{--ic:#2BA396}
+.smrow[data-sp="run"]{--ic:#8A6FD6}
+.smrow[data-sp="look"]{--ic:#4F5BF7}
+.smrow[data-sp="privacy"]{--ic:#5AA96B}
+.smrow[data-sp="parts"]{--ic:#6F7D95}
+.smrow[data-sp="data"]{--ic:#D4605A}
+
+/* ---------- notes: an empty list says what to do ---------- */
+html.igskin #dnList:empty{min-height:52vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:0 24px}
+html.igskin #dnList:empty::before{content:'';width:34px;height:34px;padding:0;margin-bottom:16px;
+  background:var(--ink-3);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h11l3 3v13H5z'/%3E%3Cpath d='M9 10h6M9 14h4'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h11l3 3v13H5z'/%3E%3Cpath d='M9 10h6M9 14h4'/%3E%3C/svg%3E") center/contain no-repeat}
+html.igskin #dnList:empty::after{content:'No notes yet.\A Tap + to write the first one.';white-space:pre-line;
+  font-size:15px;line-height:1.5;color:var(--ink-2)}
+
+html.igskin ::selection{background:color-mix(in srgb,var(--ig-blue) 26%,transparent)}
+
+/* ---------- a theme change spreads out from the button ---------- */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
+
+@media (prefers-reduced-motion:reduce){
+  .pl-glide,.pl-segplate,.pl-dots i{transition:none}
+}
+
+/* ===========================================================
+   POLISH II — the bar comes off the top, and the pages are
+   rebuilt around the room that leaves.
+   =========================================================== */
+/* the rank no longer rides above every page: what it was saying is said
+   where it belongs, on the card that is about the rank */
+.notch{display:none!important}
+html{--notch-h:0px}
+
+/* ---------- Home: three blocks, each one a card, in one rhythm ---------- */
+html.igskin #tSide>section{padding:20px 0;border-top:1px solid var(--ig-hair)}
+html.igskin #tSide>section.stand{
+  border-top:0;margin:18px 0 0;padding:17px 16px 18px!important;
+  background:var(--ig-fill-2);border-radius:18px;
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"].igskin #tSide>section.stand{box-shadow:inset 0 0 0 1px var(--line)}
+html.igskin #tSide>section.board{border-top:0;padding:18px 0 4px}
+html.igskin #standSec .run{margin:17px 0 0;padding:12px 14px;border-radius:12px;
+  background:var(--bg);box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"].igskin #standSec .run{background:#0E0E0E;box-shadow:inset 0 0 0 1px var(--line)}
+html.igskin .runtop .n{font-size:15px}
+html.igskin .runtop .r{font-size:12.5px}
+html.igskin .standtop{gap:18px}
+html.igskin .standnums .igstat b{font-size:19px;line-height:1.1}
+html.igskin .standnums .igstat span{font-size:12px;color:var(--ink-3)}
+/* the heading of a section, and the way out of it */
+html.igskin .secbar{margin-bottom:13px}
+html.igskin .secbar h3{font-size:17px;font-weight:700;letter-spacing:-.025em}
+html.igskin .seeall{padding:5px 11px;margin-right:-4px;border-radius:9px;font-size:13px;
+  background:color-mix(in srgb,var(--ig-blue) 11%,transparent);
+  transition:background .18s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .seeall:active{scale:.92;background:color-mix(in srgb,var(--ig-blue) 20%,transparent)}
+/* the board card */
+html.igskin .bcard{padding:16px 16px 14px;border-radius:18px}
+html.igskin .bmr b{font-size:34px}
+html.igskin .bmt b{font-size:13px}
+html.igskin .bfoot{font-size:13.5px;margin-top:13px;padding-top:12px;align-items:center}
+html.igskin .bfoot span{line-height:1.35}
+html.igskin .bahead .brow{padding:10px 0}
+/* the doors at the foot of Home */
+html.igskin .gosec{padding-top:14px!important}
+
+/* ---------- Portions ---------- */
+html.igskin .gsub{padding:16px 0;transition:scale .45s var(--pl-soft),opacity .18s var(--ease)}
+html.igskin .gsub:active{opacity:1;scale:.985;transition-duration:.12s}
+html.igskin .gsub .gn{font-size:17px}
+html.igskin .gndtitle h2{letter-spacing:-.04em}
+html.igskin .gndhead{padding-top:8px}
+/* the square you are reading, and the row and column it sits in */
+html.igskin .pgrid.pl-focus .pgcell,
+html.igskin .pgrid.pl-focus .pgname,
+html.igskin .pgrid.pl-focus .pgph{opacity:.26;transition:opacity .28s var(--ease)}
+html.igskin .pgrid.pl-focus .pl-cross{opacity:1}
+html.igskin .pgrid.pl-focus .pl-at{opacity:1;position:relative;z-index:2;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+html.igskin .pgkey{padding-top:22px}
+
+/* ---------- controls ---------- */
+html.igskin .input:focus{box-shadow:inset 0 0 0 1.5px var(--ig-blue)}
+html.igskin .btn,html.igskin .subpage .btn,html.igskin .sheet-actions .btn{border-radius:13px}
+html.igskin .gndplus:active{scale:.9}
+html.igskin .fsbar h3{letter-spacing:-.035em}
+/* a full page you can pull down to put away */
+#notesSheet .fsbar,#noteSheet .fsbar,#boardSheet .fsbar{touch-action:none}
+html.igskin .fullsheet .fshead::after{content:'';position:absolute;top:6px;left:50%;width:38px;height:5px;
+  margin-left:-19px;border-radius:3px;background:var(--line-2);opacity:0;transition:opacity .2s var(--ease)}
+html.igskin .fullsheet.pl-drag .fshead::after{opacity:1}
+html.igskin .fullsheet .fshead{position:sticky;padding-top:calc(10px + env(safe-area-inset-top))}
+
+/* the page under a swipe back */
+.view.pl-swipe{transition:none}
+.view.pl-swipeback{transition:transform .28s var(--pl-out)}
+
+@media (min-width:700px) and (min-height:600px){
+  html.igskin #tSide>section.stand{padding:20px 20px 22px!important;border-radius:20px}
+  html.igskin .bcard{padding:18px 20px 16px}
+}
+
+/* a full page owns the screen from the very top now that nothing sits above it */
+.sheet.fullsheet,html.igskin .sheet.fullsheet{top:0;height:100%}
+/* there is more of the grid to the right: the edge says so */
+html.igskin .pgwrap.pl-more{
+  -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 54px),rgba(0,0,0,.25) 100%);
+  mask-image:linear-gradient(to right,#000 calc(100% - 54px),rgba(0,0,0,.25) 100%)}
+/* a sheet lifted clear of the keyboard */
+html.igskin .sheet.pl-lift{transition:transform .28s var(--pl-out)}
+
+/* ---------- a settings row says what it is set to ---------- */
+html.igskin .smrow{gap:13px}
+html.igskin .smrow .n{flex:1 1 auto}
+html.igskin .smrow .pl-sv{flex:0 1 auto;min-width:0;max-width:48%;text-align:right;
+  font-size:15px;font-weight:400;letter-spacing:-.01em;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---------- what today has bought, on the card it belongs to ---------- */
+.pl-climb{display:inline-flex;align-items:baseline;gap:3px;margin-left:9px;
+  padding:3px 8px;border-radius:8px;font-style:normal;
+  font-size:12px;font-weight:700;letter-spacing:-.01em;
+  color:var(--h-green);background:color-mix(in srgb,var(--h-green) 13%,transparent);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+html.igskin .bmr{flex-wrap:wrap;align-items:baseline}
+
+/* ===========================================================
+   POLISH III — the four pages that carry the numbers
+   =========================================================== */
+
+/* ---------- Home: where you stand ---------- */
+html.igskin #tSide>section.stand{padding:15px 16px 17px!important}
+.pl-standhead{display:flex;align-items:center;gap:10px;margin:0 0 15px}
+.pl-standhead>span{font-size:16px;font-weight:700;letter-spacing:-.022em;color:var(--ink)}
+.pl-pace{margin-left:auto;font-style:normal;flex:0 0 auto;
+  padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:-.01em;
+  color:var(--ink-2);background:var(--tint);white-space:nowrap;
+  transition:background .3s var(--ease),color .3s var(--ease)}
+.pl-pace.ahead{color:var(--h-green);background:color-mix(in srgb,var(--h-green) 14%,transparent)}
+.pl-pace.behind{color:var(--h-warm);background:color-mix(in srgb,var(--h-warm) 15%,transparent)}
+.pl-pace[hidden]{display:none}
+html.igskin .standpct{width:84px;height:84px}
+html.igskin .spring{width:84px;height:84px}
+html.igskin .spring circle{stroke-width:7}
+html.igskin .spnum b{font-size:25px}
+html.igskin .standtop{gap:20px}
+html.igskin .standnums .igstat b{font-size:20px}
+html.igskin .standnums .igstat span{font-size:12px;line-height:1.25}
+/* the run, and a mark on it for how much ground is covered against it */
+html.igskin #standSec .runbar{position:relative;overflow:visible;height:6px;border-radius:4px}
+html.igskin #standSec .runbar i{border-radius:4px}
+.pl-mark{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;
+  background:var(--ink);opacity:.55;pointer-events:none;
+  transition:left .7s var(--pl-out)}
+.pl-mark::after{content:'';position:absolute;top:-4px;left:-2.5px;width:7px;height:7px;
+  border-radius:50%;background:var(--ink)}
+.pl-mark[hidden]{display:none}
+html.igskin #standSec .run{padding:13px 14px 15px}
+
+/* ---------- the rank, on Home and on its own page ---------- */
+.pl-spark{position:relative;margin:14px 0 2px;padding-top:2px}
+.pl-spark svg{display:block;width:100%;height:34px;overflow:visible}
+.pl-spark .pl-line{fill:none;stroke:var(--h-green);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.pl-spark.down .pl-line{stroke:var(--ig-red)}
+.pl-spark .pl-fill{stroke:none;fill:color-mix(in srgb,var(--h-green) 16%,transparent)}
+.pl-spark.down .pl-fill{fill:color-mix(in srgb,var(--ig-red) 13%,transparent)}
+.pl-spark .pl-tip{fill:var(--h-green);stroke:var(--bg);stroke-width:2}
+.pl-spark.down .pl-tip{fill:var(--ig-red)}
+.pl-sparklbl{display:block;margin-top:7px;font-size:11.5px;font-weight:600;
+  letter-spacing:-.005em;color:var(--ink-3)}
+.pl-spark[hidden]{display:none}
+html.igskin .bmine{padding-bottom:10px}
+html.igskin .bmr b{font-size:33px}
+html.igskin .bahead{padding-top:2px}
+html.igskin .brk{font-variant-numeric:tabular-nums}
+html.igskin .bahead .brow.me{background:color-mix(in srgb,var(--ig-blue) 9%,transparent);
+  box-shadow:inset 3px 0 0 var(--ig-blue)}
+/* the full list */
+html.igskin #boardSheet .bhero{padding:4px 0 22px}
+html.igskin .bhr b{font-size:54px}
+html.igskin .bhline{font-size:14.5px;margin-top:8px}
+html.igskin #boardSheet .donestats .igstat b{font-size:20px}
+html.igskin #boardList .brow{padding:13px 0}
+html.igskin #boardList .brow.me{box-shadow:none}
+html.igskin #boardList .brow.top:nth-child(-n+3) .brk::before{content:'';display:inline-block;
+  width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--m,var(--ink-3));vertical-align:middle}
+html.igskin #boardList .brow.top:nth-child(1){--m:#D9A521}
+html.igskin #boardList .brow.top:nth-child(2){--m:#A8A9AD}
+html.igskin #boardList .brow.top:nth-child(3){--m:#B87333}
+html.igskin #boardList .brow.top:nth-child(-n+3) .bnm{font-weight:600}
+html.igskin .bgap span{padding:3px 10px;border-radius:999px;background:var(--tint);
+  font-size:11.5px;font-weight:700;color:var(--ink-3)}
+/* the way back to your own row */
+.pl-jump{position:fixed;left:50%;z-index:8;transform:translate(-50%,14px);
+  bottom:calc(24px + env(safe-area-inset-bottom));
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 18px;border-radius:999px;border:0;
+  background:var(--ink);color:var(--bg);
+  font-family:var(--ui);font-size:14px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:0 14px 34px -12px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;
+  transition:opacity .28s var(--ease),transform .45s var(--pl-bounce)}
+.pl-jump.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.pl-jump:active{transform:translate(-50%,0) scale(.94)}
+.pl-jump svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.6;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Notes ---------- */
+.pl-notecount{margin-left:auto;margin-right:12px;font-size:14px;font-weight:600;
+  color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+html.igskin #notesSheet .fsbar h3{flex:0 0 auto}
+.pl-group{padding:22px 0 9px;font-size:13px;font-weight:700;letter-spacing:.01em;
+  color:var(--ink-3);border-bottom:0!important}
+.pl-group:first-child{padding-top:6px}
+html.igskin .dn{border-radius:0;background:transparent;box-shadow:none}
+html.igskin .dn:active{background:var(--tint);scale:1}
+html.igskin .dn-head{padding:14px 2px 4px;gap:12px}
+html.igskin .dn-title{font-size:16.5px;font-weight:600;letter-spacing:-.02em;white-space:normal;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.igskin .dn-when{font-size:12.5px;color:var(--ink-3);font-weight:500}
+html.igskin .dn-read{padding:0 2px 14px}
+html.igskin .dn-text{font-size:14.5px;line-height:1.5;color:var(--ink-2);-webkit-line-clamp:2}
+html.igskin .dn .chev{opacity:.4}
+
+/* ---------- one note ---------- */
+html.igskin #noteSheet .nstitle{font-size:27px;font-weight:800;letter-spacing:-.035em;
+  line-height:1.2;padding:8px 0 10px;margin-bottom:0}
+html.igskin #noteSheet .nsbody{padding-top:14px;border-top:1px solid var(--ig-hair);
+  font-size:17px;line-height:1.72}
+html.igskin #noteSheet .nsbody h3{font-size:20px;margin:22px 0 8px}
+html.igskin #noteSheet .nsbody blockquote{border-left-width:3px;padding-left:16px;margin:14px 0}
+html.igskin #noteSheet .nsbody ul,html.igskin #noteSheet .nsbody ol{padding-left:24px}
+html.igskin #noteSheet .nsbody li{margin-bottom:8px}
+html.igskin #noteSheet .fsbar h3{font-size:14px;font-weight:600;color:var(--ink-3)}
+html.igskin #noteSheet .fmtbar button{width:40px;height:38px;border-radius:10px}
+html.igskin #noteSheet .fmtbar button.on{box-shadow:none}
+html.igskin .nsdone{padding:8px 15px;border-radius:10px}
+html.igskin .nsfoot{margin-top:34px;padding-top:16px}
+html.igskin .nsmeta{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+
+/* ---------- Portions ---------- */
+.pl-share{display:flex;gap:3px;margin-top:14px}
+.pl-share i{flex:1 1 0;height:7px;border-radius:4px;position:relative;overflow:hidden;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.pl-share i::after{content:'';position:absolute;inset:0 auto 0 0;width:var(--w,0%);
+  border-radius:4px;background:var(--c,var(--ig-blue));
+  transition:width .7s var(--pl-out)}
+.pl-worst{margin-top:12px;font-size:13.5px;font-weight:600;color:var(--ink-2);
+  display:flex;align-items:center;gap:7px}
+.pl-worst b{font-weight:700;color:var(--ink)}
+.pl-worst i{width:9px;height:9px;border-radius:50%;background:var(--c,var(--ink-3));flex:0 0 auto}
+html.igskin #gndBody .pgcard .gmeta{padding-top:12px}
+html.igskin .gsum .gsbig{font-size:36px;letter-spacing:-.045em}
+html.igskin .gsub .gm{font-size:13.5px;margin-top:4px}
+html.igskin .pgkey{gap:4px;padding-top:26px}
+html.igskin .pgks{height:12px;border-radius:2px}
+html.igskin .pgkl{font-size:11.5px;font-weight:600}
+html.igskin .gfoot{padding-top:30px;gap:10px}
+html.igskin .gfoot button{padding:9px 16px;border-radius:999px;background:var(--ig-fill);
+  font-size:13.5px;font-weight:600;color:var(--ink-2);
+  transition:background .18s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .gfoot button:active{scale:.94}
+html.igskin .gfoot button.armed{background:color-mix(in srgb,var(--ig-red) 14%,transparent)}
+
+/* the shelf's one-line reading, given room */
+html.igskin #gndSheet .pgcard .gsbar{margin-bottom:2px}
+.pl-share{margin-top:12px}
+.pl-worst{margin-top:10px}
+
+/* ===========================================================
+   POLISH IV — one card, one button, one stat strip
+   The pages had each grown their own version of the same three parts.
+   These settle every one of them on a single answer, and rebuild the two
+   blocks on Home that carry the numbers.
+   =========================================================== */
+html.igskin{--pl-card:18px;--pl-pad:16px}
+
+/* ---------- one card ---------- */
+html.igskin #tSide>section.stand,
+html.igskin .bcard,
+html.igskin .run,
+html.igskin .pgcard{
+  border-radius:var(--pl-card);
+  background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"].igskin #tSide>section.stand,
+html[data-theme="dark"].igskin .bcard,
+html[data-theme="dark"].igskin .pgcard{box-shadow:inset 0 0 0 1px var(--line)}
+html.igskin #tSide>section.stand{padding:16px var(--pl-pad) 18px!important}
+html.igskin .bcard{padding:16px var(--pl-pad) 6px}
+
+/* ---------- one stat strip: label under figure, hairlines between ---------- */
+html.igskin .pl-stats,html.igskin .donestats,html.igskin .standnums{display:flex;gap:0}
+html.igskin .pl-stats .igstat,html.igskin .donestats .igstat,html.igskin .standnums .igstat{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding-left:14px;border-left:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin .pl-stats .igstat,
+html[data-theme="dark"].igskin .donestats .igstat,
+html[data-theme="dark"].igskin .standnums .igstat{border-left-color:var(--line)}
+html.igskin .pl-stats .igstat:first-child,html.igskin .donestats .igstat:first-child,
+html.igskin .standnums .igstat:first-child{padding-left:0;border-left:0}
+html.igskin .pl-stats .igstat b,html.igskin .donestats .igstat b,html.igskin .standnums .igstat b{
+  font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+html.igskin .pl-stats .igstat span,html.igskin .donestats .igstat span,
+html.igskin .standnums .igstat span{font-size:11.5px;font-weight:600;letter-spacing:.005em;
+  line-height:1.2;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+/* ---------- Home · where you stand ---------- */
+.pl-standhead{margin-bottom:16px}
+html.igskin .standtop{gap:18px;align-items:center}
+html.igskin .standpct{width:88px;height:88px}
+html.igskin .spring{width:88px;height:88px}
+html.igskin .spring circle{stroke-width:7.5}
+html.igskin .spbg{stroke:color-mix(in srgb,var(--ink) 8%,transparent)}
+html.igskin .spnum b{font-size:26px;letter-spacing:-.045em}
+html.igskin .spnum b::after{font-size:12px;vertical-align:super;margin-left:1px}
+/* the run is a band under the reading, not a box inside a box */
+html.igskin #standSec .run{margin:17px 0 0;padding:15px 0 0;border-radius:0;
+  background:transparent;box-shadow:none;border-top:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin #standSec .run{border-top-color:var(--line)}
+html.igskin #standSec .runtop{margin-bottom:10px}
+html.igskin #standSec .runtop .n{font-size:15px;font-weight:700;letter-spacing:-.02em}
+html.igskin #standSec .runtop .r{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+html.igskin #standSec .runbar{height:6px;border-radius:4px;overflow:hidden;position:relative;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.pl-mark{display:none!important}
+
+/* ---------- Home · the rank ---------- */
+html.igskin .bmine{padding:0 0 14px;border-bottom:0}
+html.igskin .bmr{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+html.igskin .bmr i{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--ink-3)}
+html.igskin .bmr b{font-size:33px;font-weight:800;letter-spacing:-.045em;line-height:1.05}
+html.igskin .bmt{display:block;margin-top:7px}
+html.igskin .bmt b{display:none}
+html.igskin .bmt i{font-size:12.5px;font-weight:600;color:var(--ink-3);letter-spacing:-.005em}
+.pl-stats{padding:0 0 15px;border-bottom:1px solid var(--ig-hair)}
+html[data-theme="dark"] .pl-stats{border-bottom-color:var(--line)}
+/* the rows above you, and your own among them, edge to edge */
+html.igskin .bahead{padding-top:2px}
+html.igskin .bahead .brow{padding:11px 0;border-bottom:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin .bahead .brow{border-bottom-color:var(--line)}
+html.igskin .bahead .brow.me{
+  margin:0 calc(-1 * var(--pl-pad));padding:12px var(--pl-pad);
+  border-radius:0;border-bottom:0;box-shadow:none;background:var(--ink)}
+html.igskin .bahead .brow.me .brk,
+html.igskin .bahead .brow.me .bnm,
+html.igskin .bahead .brow.me .bmk{color:var(--bg)}
+html.igskin .bahead .brow.me .bnm{font-weight:800}
+html.igskin .bfoot{margin:0 calc(-1 * var(--pl-pad));padding:14px var(--pl-pad);
+  border-top:1px solid var(--ig-hair);font-size:13.5px}
+html[data-theme="dark"].igskin .bfoot{border-top-color:var(--line)}
+
+/* ---------- the rank page ---------- */
+html.igskin #boardList .brow.me{margin:0 calc(-1 * var(--gut));padding:15px var(--gut);
+  border-radius:0;background:var(--ink)}
+html.igskin #boardSheet .bhero{padding:6px 0 20px}
+html.igskin #boardSheet .donestats{margin-top:20px}
+.pl-jump svg{transition:transform .3s var(--pl-out)}
+.pl-jump.up svg{transform:rotate(180deg)}
+
+/* ---------- one button ----------
+   Anything that is only a word is a pill: the same height, the same plate,
+   the same press. Full-width bars are kept for the one action a sheet or a
+   page is actually for. */
+html.igskin .subpage .btn.ghost,
+html.igskin .subpage .btn.danger,
+html.igskin #gndCellEditWrap .btn,
+html.igskin #gndSrcAdd,
+html.igskin .dn-del,
+html.igskin .nsfoot .dn-del,
+html.igskin .gfoot button,
+html.igskin .seeall{
+  width:auto;min-height:0;height:auto;padding:10px 17px;border-radius:999px;
+  font-family:var(--ui);font-size:13.5px;font-weight:600;letter-spacing:-.01em;
+  background:var(--ig-fill);color:var(--ink-2);border:0;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  transition:background .18s var(--ease),color .18s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .subpage .btn.ghost:active,
+html.igskin #gndCellEditWrap .btn:active,
+html.igskin #gndSrcAdd:active,
+html.igskin .gfoot button:active,
+html.igskin .dn-del:active{scale:.94;background:var(--cell)}
+html.igskin .subpage .btn.ghost svg,html.igskin #gndSrcAdd svg{width:15px;height:15px}
+html.igskin .subpage .btn.danger,
+html.igskin .dn-del,html.igskin .nsfoot .dn-del,
+html.igskin .gfoot button.armed{color:var(--ig-red);
+  background:color-mix(in srgb,var(--ig-red) 11%,transparent)}
+html.igskin .subpage .btn.danger:active,html.igskin .dn-del:active,
+html.igskin .nsfoot .dn-del:active{background:color-mix(in srgb,var(--ig-red) 20%,transparent);scale:.94}
+html.igskin .seeall{background:color-mix(in srgb,var(--ig-blue) 11%,transparent);color:var(--ig-blue);
+  padding:7px 14px;font-size:13px;font-weight:700}
+html.igskin .subpage .btnrow{gap:9px;padding:14px 0 2px;flex-wrap:wrap}
+html.igskin .subpage .srow>.btn.danger{justify-self:start}
+html.igskin #gndCellEditWrap{margin-top:14px}
+html.igskin .nsfoot{align-items:center}
+
+/* ---------- Portions ---------- */
+html.igskin #gndSheet .pgcard{border-radius:0;box-shadow:inset 0 -1px 0 var(--ig-hair)}
+html[data-theme="dark"].igskin #gndSheet .pgcard{box-shadow:inset 0 -1px 0 var(--line)}
+.pl-share{margin-top:14px;margin-bottom:2px}
+
+/* ---------- how near the next round figure is ---------- */
+html.igskin .bfoot{flex-wrap:wrap}
+.pl-goalbar{flex:1 1 100%;height:5px;border-radius:3px;margin-top:11px;overflow:hidden;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.pl-goalbar i{display:block;height:100%;width:0;border-radius:3px;
+  background:linear-gradient(90deg,var(--ig-blue),var(--h-violet));
+  transition:width .8s var(--pl-out)}
+.pl-goalbar[hidden]{display:none}
+#boardSheet .pl-goalbar{margin-top:14px;height:6px}
+
+/* ===========================================================
+   POLISH V
+   =========================================================== */
+/* the bar under the rank goes */
+.pl-goalbar{display:none!important}
+
+/* ---------- where you stand: the run is drawn round the reading ----------
+   The flat bar under the card was a second progress meter saying the same
+   kind of thing as the ring beside it. The run is now a hairline arc round
+   the outside of that ring, so time spent and ground covered can be read
+   against one another at a glance, and the line under it is only words. */
+html.igskin .standpct{width:96px;height:96px}
+html.igskin .spring{width:96px;height:96px;overflow:visible}
+.pl-timebg{fill:none;stroke:color-mix(in srgb,var(--ink) 9%,transparent);stroke-width:3}
+.pl-timefg{fill:none;stroke:color-mix(in srgb,var(--ink) 42%,transparent);stroke-width:3;stroke-linecap:round;
+  transition:stroke-dashoffset .9s var(--pl-out),stroke .4s var(--ease)}
+.stand.behind .pl-timefg{stroke:var(--h-warm)}
+html.igskin #standSec .runbar{display:none}
+html.igskin #standSec .run{margin:16px 0 0;padding:14px 0 0;background:transparent;
+  border-top:1px solid var(--ig-hair);box-shadow:none;border-radius:0}
+html[data-theme="dark"].igskin #standSec .run{border-top-color:var(--line)}
+html.igskin #standSec .runtop{margin:0;align-items:baseline}
+html.igskin #standSec .runtop .n{font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+html.igskin #standSec .runtop .r{font-size:13px;font-weight:600;color:var(--ink-3);text-transform:none;
+  letter-spacing:-.005em}
+/* what the two arcs mean, in four words under them */
+.pl-ringkey{display:flex;align-items:center;gap:14px;margin-top:14px;
+  padding-top:13px;border-top:1px solid var(--ig-hair)}
+html[data-theme="dark"] .pl-ringkey{border-top-color:var(--line)}
+.pl-ringkey span{display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:600;color:var(--ink-3)}
+.pl-ringkey i{width:14px;height:4px;border-radius:2px;
+  background:var(--k,color-mix(in srgb,var(--ink) 42%,transparent))}
+.pl-ringkey .pl-kcov{--k:var(--ig-blue)}
+.pl-ringkey[hidden]{display:none}
+
+/* ---------- notes: something to search, and a quieter list ---------- */
+.pl-searchwrap{position:relative;margin:2px 0 6px}
+.pl-search{width:100%;height:42px;border-radius:12px;border:0;outline:0;
+  background:var(--ig-fill);color:var(--ink);
+  padding:0 38px 0 38px;font:inherit;font-size:15.5px;letter-spacing:-.01em}
+.pl-search::placeholder{color:var(--ink-3)}
+.pl-search:focus{box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.pl-searchwrap svg{position:absolute;left:13px;top:50%;margin-top:-8px;width:16px;height:16px;
+  fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linecap:round;pointer-events:none}
+.pl-clear{position:absolute;right:6px;top:50%;margin-top:-15px;width:30px;height:30px;
+  border:0;background:transparent;border-radius:50%;display:none;place-items:center;color:var(--ink-3)}
+.pl-clear.on{display:grid}
+.pl-clear svg{position:static;margin:0;width:13px;height:13px;stroke-width:2.6;stroke:currentColor}
+.pl-nores{padding:44px 8px;text-align:center;font-size:15px;color:var(--ink-2);display:none}
+.pl-nores.on{display:block}
+html.igskin .dn[hidden],.pl-group[hidden]{display:none!important}
+html.igskin #notesSheet .fsbody{padding-top:14px}
+html.igskin .dn-head{align-items:baseline}
+html.igskin .dn .chev{align-self:center}
+
+/* ---------- one note ---------- */
+html.igskin #noteSheet .nsbody{min-height:52vh}
+html.igskin #noteSheet .fmtbar{gap:4px}
+html.igskin #noteSheet .fmtbar button{background:transparent;color:var(--ink-2)}
+html.igskin #noteSheet .fmtbar button:active{background:var(--ig-fill);color:var(--ink)}
+html.igskin #noteSheet .fmtbar button.on{background:var(--ink);color:var(--bg)}
+html.igskin #noteSheet .fmtbar .fmtsep{background:var(--ig-hair);height:18px}
+html[data-theme="dark"].igskin #noteSheet .fmtbar .fmtsep{background:var(--line)}
+html.igskin .nsdone{background:var(--ig-blue);color:#fff;font-weight:700}
+
+/* ---------- Portions · one subject ----------
+   The page says the subject's name, what it is made of, and how much of it
+   is covered. The way back is the edge of the screen, so the row that only
+   repeated the page you came from is gone. */
+html.igskin .gndback{display:none}
+html.igskin .gndhead{padding-top:12px}
+html.igskin .gndtitle h2{display:flex;align-items:center;gap:10px;font-size:29px}
+.pl-subdot{flex:0 0 auto;width:12px;height:12px;border-radius:50%;background:var(--c,var(--ig-blue))}
+html.igskin .gndtitle .eyebrow{font-size:12.5px;font-weight:600;color:var(--ink-3);margin-bottom:6px}
+html.igskin #gndSheet .pgcard{padding:18px var(--gut) 20px}
+html.igskin #gndSheet .pgcard .gsum{align-items:baseline;gap:10px;padding-bottom:13px}
+html.igskin #gndSheet .pgcard .gsum .gsbig{font-size:40px;letter-spacing:-.05em}
+html.igskin #gndSheet .pgcard .gsn{font-size:14.5px;font-weight:600;color:var(--ink-2)}
+html.igskin #gndSheet .pgcard .gsbar{height:7px;border-radius:4px}
+html.igskin #gndSheet .pgcard .gmeta{font-size:13.5px;font-weight:600;color:var(--ink-3);padding-top:13px}
+
+.pl-search::-webkit-search-cancel-button,.pl-search::-webkit-search-decoration{display:none}
+
+/* ===========================================================
+   POLISH VI — Where you stand, settled
+   One ring for the ground covered, one line for the run. The second arc,
+   its key, the glow and the box around the run are all gone: they were
+   three ways of saying the same thing on top of one another.
+   =========================================================== */
+.pl-timebg,.pl-timefg,.pl-ringkey{display:none!important}
+html[data-theme="dark"] .spring,html.igskin .spring{filter:none}
+
+html.igskin #tSide>section.stand{padding:16px var(--pl-pad) 17px!important}
+.pl-standhead{margin-bottom:14px}
+.pl-standhead>span{font-size:16.5px}
+.pl-pace{padding:5px 11px;font-size:12px;font-weight:700;border-radius:999px}
+
+/* the ring says what its figure means, inside itself */
+html.igskin .standpct{width:104px;height:104px}
+html.igskin .spring{width:104px;height:104px}
+html.igskin .spring circle{stroke-width:8}
+html.igskin .spnum{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+html.igskin .spnum b{font-size:28px;letter-spacing:-.05em;line-height:1}
+.pl-cap{font-size:10.5px;font-weight:600;letter-spacing:-.005em;color:var(--ink-3);
+  line-height:1;margin-top:5px}
+html.igskin .standtop{gap:20px;align-items:center}
+
+/* the run: a line of words, then one slim bar under it */
+html.igskin #standSec .run,
+html[data-theme="dark"].igskin #standSec .run{
+  margin:18px 0 0;padding:16px 0 0;background:transparent;box-shadow:none;border-radius:0;
+  border-top:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin #standSec .run{border-top-color:var(--line)}
+html.igskin #standSec .runtop{margin:0 0 11px;align-items:baseline}
+html.igskin #standSec .runtop .n{font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+html.igskin #standSec .runtop .r{font-size:13px;font-weight:600;letter-spacing:-.005em;
+  text-transform:none;color:var(--ink-3)}
+html.igskin #standSec .runbar{display:block;height:5px;border-radius:999px;overflow:hidden;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+html.igskin #standSec .runbar i{border-radius:999px;
+  background:linear-gradient(90deg,var(--ig-blue),var(--h-violet))}
+</style>
 </head>
 <body>
 <!-- ===== THE APP LOCK =====
@@ -9025,6 +9749,1258 @@ addEventListener('hashchange',()=>{
     console.error('Onwards · render',err);
     toast('Something failed to draw — your data is safe');
   }
+})();
+</script>
+<script id="polish-js">
+/* ===========================================================
+   POLISH — the moving parts
+   Everything here watches or wraps; nothing writes data. Every hook is in
+   its own try, so if any one of them cannot run the app is exactly what it
+   was before. The Vision page is never animated from here.
+   =========================================================== */
+(function(){
+'use strict';
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const OUT='cubic-bezier(.16,1,.3,1)';
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish',err); } };
+
+/* :active only lights up on iOS once a touch listener exists */
+document.addEventListener('touchstart',()=>{},{passive:true});
+
+/* One animation, with a guarantee: if the timeline ever stalls, the element
+   is put back to its resting state rather than being left half-arrived. */
+function play(el,frames,o){
+  if(!el || !el.animate || RM()) return null;
+  try{
+    const opts=Object.assign({duration:320,easing:OUT,fill:'backwards'},o||{});
+    const a=el.animate(frames,opts);
+    setTimeout(()=>{ try{ if(a.playState!=='finished') a.finish(); }catch(e){} },(opts.delay||0)+opts.duration+300);
+    return a;
+  }catch(e){ return null; }
+}
+/* a figure that counts to its value instead of swapping digits */
+function countTo(el,from,to,ms,fmt){
+  if(!el) return;
+  fmt=fmt||(v=>String(Math.round(v)));
+  if(el.__plc) cancelAnimationFrame(el.__plc);
+  if(RM() || from==null || !isFinite(from) || !isFinite(to) || from===to){ el.textContent=fmt(to); return; }
+  const t0=performance.now();
+  const step=now=>{
+    const k=Math.min(1,(now-t0)/ms), e=1-Math.pow(1-k,4);
+    el.textContent=fmt(from+(to-from)*e);
+    if(k<1) el.__plc=requestAnimationFrame(step); else { el.__plc=0; el.textContent=fmt(to); }
+  };
+  el.textContent=fmt(from);
+  el.__plc=requestAnimationFrame(step);
+}
+/* only touch a class when it actually changes: re-adding one that is already
+   there still counts as a mutation, and several observers here watch classes */
+const cls=(el,name,on)=>{ if(el && el.classList.contains(name)!==!!on) el.classList.toggle(name,!!on); };
+const num=t=>{ const n=parseFloat(String(t||'').replace(/[^0-9.\-]/g,'')); return isFinite(n)?n:null; };
+const activeView=()=>{ const v=q('.view.active'); return v? v.id.replace('v-','') : ''; };
+const wrap=(name,after,before)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      let ctx; try{ ctx=before&&before.apply(this,arguments); }catch(e){}
+      const out=orig.apply(this,arguments);
+      try{ after&&after.call(this,ctx,arguments); }catch(e){ console.warn('Onwards polish',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+
+const enter={today:true,ground:false,settings:false};
+
+/* ===========================================================
+   NAVIGATION — the bar's glide mark, and pages that arrive
+   =========================================================== */
+safe(()=>{
+  const bar=q('.tabbar'); if(!bar) return;
+  const mark=document.createElement('i');
+  mark.className='pl-glide still'; mark.setAttribute('aria-hidden','true');
+  bar.appendChild(mark);
+  let lastOn=null;
+  const place=(animate)=>{
+    const t=q('.tab.on',bar); if(!t){ cls(mark,'on',false); return; }
+    const br=bar.getBoundingClientRect(), tr=t.getBoundingClientRect();
+    if(!br.width || !tr.width) return;
+    const vert=br.height>br.width;
+    cls(bar,'pl-vert',vert);
+    if(!animate) cls(mark,'still',true);
+    if(vert){
+      mark.style.setProperty('--gx','0px');
+      mark.style.setProperty('--gy',Math.round(tr.top-br.top+tr.height/2-10)+'px');
+    }else{
+      mark.style.setProperty('--gx',Math.round(tr.left-br.left+tr.width/2-10)+'px');
+      mark.style.setProperty('--gy','0px');
+    }
+    cls(mark,'on',true);
+    if(!animate) requestAnimationFrame(()=>requestAnimationFrame(()=>cls(mark,'still',false)));
+  };
+  const onChange=()=>{
+    const t=q('.tab.on',bar);
+    if(t===lastOn) return;
+    place(true);
+    if(t && lastOn){
+      const svg=q('svg',t);
+      play(svg,[{transform:'scale(1)'},{transform:'scale(.78)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],
+        {duration:460,easing:'ease-out',fill:'none'});
+    }
+    lastOn=t;
+  };
+  lastOn=q('.tab.on',bar);
+  new MutationObserver(onChange).observe(bar,{subtree:true,attributes:true,attributeFilter:['class']});
+  requestAnimationFrame(()=>place(false));
+  addEventListener('resize',()=>place(false),{passive:true});
+  addEventListener('orientationchange',()=>setTimeout(()=>place(false),200));
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>place(false));
+});
+
+/* pages other than Home arrive with a short lift. Home has its own reveal. */
+wrap('showView',(ctx,args)=>{
+  const v=args[0];
+  if(v==='ground'){
+    const h=q('#v-ground .gndhead');
+    play(h,[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:360});
+  }
+  if(v==='settings'){
+    const root=q('#setRoot');
+    play(q('.ptitle',root),[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:340});
+    qa('#setMenu > *',root).slice(0,16).forEach((el,i)=>
+      play(el,[{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:380,delay:40+i*18}));
+  }
+});
+/* the entry flags are set before the page draws, by a plain outer wrapper */
+safe(()=>{
+  const orig=window.showView;
+  if(typeof orig!=='function') return;
+  window.showView=function(v){
+    if(v in enter) enter[v]=true;
+    return orig.apply(this,arguments);
+  };
+});
+
+/* the theme button: the new look spreads out from it */
+safe(()=>{
+  const btn=q('#themeBtn'); if(!btn) return;
+  btn.addEventListener('click',e=>{
+    if(e.__pl || RM() || typeof document.startViewTransition!=='function') return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    const r=btn.getBoundingClientRect();
+    const x=r.left+r.width/2, y=r.top+r.height/2;
+    const R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+    let vt;
+    try{
+      vt=document.startViewTransition(()=>{
+        const ev=new MouseEvent('click',{bubbles:true,cancelable:true});
+        ev.__pl=true; btn.dispatchEvent(ev);
+      });
+    }catch(err){
+      const ev=new MouseEvent('click',{bubbles:true,cancelable:true}); ev.__pl=true; btn.dispatchEvent(ev); return;
+    }
+    vt.ready.then(()=>{
+      document.documentElement.animate(
+        {clipPath:['circle(0px at '+x+'px '+y+'px)','circle('+R+'px at '+x+'px '+y+'px)']},
+        {duration:560,easing:'cubic-bezier(.22,.9,.28,1)',pseudoElement:'::view-transition-new(root)'});
+    }).catch(()=>{});
+  },true);
+  btn.addEventListener('click',()=>{
+    play(q('#themeIcon'),[{transform:'rotate(-110deg) scale(.5)',opacity:0},{transform:'none',opacity:1}],
+      {duration:520,easing:'cubic-bezier(.34,1.56,.64,1)',fill:'none'});
+  });
+});
+
+/* ===========================================================
+   HOME
+   =========================================================== */
+/* the ring's gradient */
+safe(()=>{
+  const svg=q('.spring'); if(!svg || q('#plRingGrad')) return;
+  const NS='http://www.w3.org/2000/svg';
+  const defs=document.createElementNS(NS,'defs');
+  defs.innerHTML='<linearGradient id="plRingGrad" x1="0" y1="0" x2="1" y2="1">'+
+    '<stop offset="0" style="stop-color:var(--ig-blue,#4F5BF7)"/>'+
+    '<stop offset="1" style="stop-color:var(--h-violet,#8A6FD6)"/></linearGradient>';
+  svg.insertBefore(defs,svg.firstChild);
+});
+
+const last={pct:null,left:null,days:null,rank:null};
+wrap('renderStand',()=>{
+  if(activeView()!=='today'){ return; }
+  const fresh=enter.today; enter.today=false;
+  const pctEl=q('#standPct'), leftEl=q('#standLeft'), daysEl=q('#standDays'), ring=q('#standRing');
+  const pct=num(pctEl&&pctEl.textContent), left=num(leftEl&&leftEl.textContent), days=num(daysEl&&daysEl.textContent);
+  const leftTxt=leftEl?leftEl.textContent:'', daysTxt=daysEl?daysEl.textContent:'';
+  if(pct!=null) countTo(pctEl, fresh?0:last.pct, pct, 900);
+  if(left!=null && /%$/.test(leftTxt)) countTo(leftEl, fresh?100:last.left, left, 900, v=>Math.round(v)+'%');
+  if(days!=null && /^\d+$/.test(daysTxt.trim())) countTo(daysEl, fresh?0:last.days, days, 900);
+  if(fresh && ring && !RM()){
+    const target=ring.style.strokeDashoffset;
+    ring.style.transition='none';
+    ring.style.strokeDashoffset=String(typeof SP_C==='number'?SP_C:226.2);
+    void ring.getBoundingClientRect();
+    ring.style.transition='';
+    requestAnimationFrame(()=>{ ring.style.strokeDashoffset=target; });
+    const fill=q('#runFill');
+    if(fill && fill.style.width){
+      const w=fill.style.width;
+      play(fill,[{width:'0%'},{width:w}],{duration:1000,delay:150,easing:OUT});
+    }
+  }
+  last.pct=pct; last.left=left; last.days=days;
+});
+wrap('renderBoard',()=>{
+  const el=q('#bRank'); if(!el) return;
+  const rank=typeof jeeRank==='function'? jeeRank() : null;
+  if(rank==null || typeof fmtRank!=='function') return;
+  if(activeView()==='today' && last.rank!==rank){
+    const from= last.rank==null ? (typeof JEE_TOTAL==='number'?JEE_TOTAL:rank) : last.rank;
+    countTo(el,from,rank,1100,v=>fmtRank(Math.round(v)));
+  }
+  last.rank=rank;
+});
+
+/* a new line fades up through a soft blur rather than swapping */
+safe(()=>{
+  const t=q('#quoteText'), card=q('#quoteCard'); if(!t||!card) return;
+  let prev=t.textContent;
+  new MutationObserver(()=>{
+    if(t.textContent===prev) return;
+    const first=prev==='\u2014'||prev==='';
+    prev=t.textContent;
+    if(first) return;
+    play(t,[{opacity:0,filter:'blur(6px)',transform:'translateY(6px)'},{opacity:1,filter:'blur(0)',transform:'none'}],{duration:460,fill:'none'});
+    play(q('.qfoot',card),[{opacity:0},{opacity:1}],{duration:420,delay:90});
+  }).observe(t,{childList:true,characterData:true,subtree:true});
+  card.addEventListener('click',()=>{ try{ buzz(HAPTIC.light); }catch(e){} });
+});
+
+/* dots under the pictures */
+safe(()=>{
+  const rail=q('#heroRail'), track=q('#hrTrack'); if(!rail||!track) return;
+  const dots=document.createElement('div');
+  dots.className='pl-dots'; dots.hidden=true; dots.setAttribute('aria-hidden','true');
+  rail.appendChild(dots);
+  let raf=0;
+  const paint=()=>{
+    raf=0;
+    const n=(typeof hrN==='number')?hrN:0;
+    if(n<2 || n>12){ dots.hidden=true; return; }
+    if(dots.children.length!==n) dots.innerHTML='<i></i>'.repeat(n);
+    const live=(typeof hrLive==='number' && hrLive>=0)? ((hrLive%n)+n)%n : 0;
+    Array.from(dots.children).forEach((d,i)=>d.classList.toggle('on',i===live));
+    dots.hidden=false;
+  };
+  new MutationObserver(()=>{ if(!raf) raf=requestAnimationFrame(paint); })
+    .observe(track,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+});
+
+/* ===========================================================
+   PORTIONS
+   =========================================================== */
+let gKey=null;
+wrap('renderGround',()=>{
+  const b=q('#gndBody'); if(!b) return;
+  const key=(typeof gSubj!=='undefined' && gSubj)? gSubj.id : 'list';
+  const prev=gKey; gKey=key;
+  if(activeView()!=='ground') return;
+  const fresh=enter.ground; enter.ground=false;
+  if(!fresh && key===prev){
+    /* the same page redrawn after a change: the square you just set answers */
+    if(typeof gCellAt!=='undefined' && gCellAt && key!=='list'){
+      const c=q('.pgcell[data-t="'+CSS.escape(gCellAt.t)+'"][data-ph="'+CSS.escape(gCellAt.ph)+'"]',b);
+      if(c){
+        cls(c,'pl-hot',true);
+        const a=play(c,[{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],
+          {duration:420,easing:'cubic-bezier(.34,1.56,.64,1)',fill:'none'});
+        setTimeout(()=>c.classList.remove('pl-hot'),460);
+        if(!a) c.classList.remove('pl-hot');
+      }
+    }
+    return;
+  }
+  const dir= fresh? 0 : (prev==='list'&&key!=='list')? 1 : (key==='list'&&prev!=='list')? -1 : 0;
+  const from= dir? 'translateX('+(dir*28)+'px)' : 'translateY(10px)';
+  if(!fresh){
+    play(q('.gndtitle'),[{opacity:0,transform:from},{opacity:1,transform:'none'}],{duration:340});
+    play(b,[{opacity:0,transform:from},{opacity:1,transform:'none'}],{duration:380});
+  }
+  /* the headline figure counts up, and its bar fills */
+  const big=q('.pgcard .gsbig',b);
+  if(big){ const v=num(big.textContent); if(v!=null) countTo(big,0,v,850,x=>Math.round(x)+'%'); }
+  const fill=q('.pgcard .gsbar i',b);
+  if(fill && fill.style.width) play(fill,[{width:'0%'},{width:fill.style.width}],{duration:900,delay:80});
+
+  if(key==='list'){
+    qa('.gsub',b).forEach((row,i)=>{
+      const d=Math.min(i,10)*45+60;
+      play(row,[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:420,delay:d,fill:'backwards'});
+      const ring=q('.gfgc',row);
+      if(ring){
+        const C=parseFloat(ring.getAttribute('stroke-dasharray'))||125.7;
+        const to=parseFloat(ring.getAttribute('stroke-dashoffset'));
+        if(isFinite(to)) play(ring,[{strokeDashoffset:C+'px'},{strokeDashoffset:to+'px'}],{duration:900,delay:d+80});
+      }
+      const n=q('.gring b',row);
+      if(n){ const v=num(n.textContent); if(v!=null) setTimeout(()=>countTo(n,0,v,800),d+80); }
+    });
+  }else if(typeof gSubj!=='undefined' && gSubj){
+    const ti=new Map(gSubj.topics.map((t,i)=>[t.id,i]));
+    const pi=new Map(gSubj.phases.map((p,i)=>[p.id,i]));
+    qa('.pgph',b).forEach((el,i)=>play(el,[{opacity:0},{opacity:1}],{duration:380,delay:80+i*40}));
+    qa('.pgname',b).forEach((el,i)=>play(el,[{opacity:0,transform:'translateX(-8px)'},{opacity:1,transform:'none'}],
+      {duration:380,delay:90+Math.min(i,14)*28}));
+    qa('.pgcell',b).forEach(c=>{
+      const r=ti.get(c.dataset.t)||0, k=pi.get(c.dataset.ph)||0;
+      play(c,[{opacity:0,transform:'scale(.35)'},{opacity:1,transform:'none'}],
+        {duration:460,delay:Math.min(900,140+(r+k)*34),easing:'cubic-bezier(.34,1.4,.64,1)'});
+    });
+    play(q('.pgkey',b),[{opacity:0},{opacity:1}],{duration:500,delay:420});
+  }
+});
+
+/* ===========================================================
+   SETTINGS — doors that slide, and plates that glide
+   =========================================================== */
+safe(()=>{
+  const v=q('#v-settings'); if(!v) return;
+  let sub=v.classList.contains('sub');
+  new MutationObserver(()=>{
+    const now=v.classList.contains('sub');
+    if(now===sub) return;
+    sub=now;
+    if(!v.classList.contains('active')) return;
+    if(now){
+      const page=q('#setPages .subpage.on');
+      play(page,[{opacity:0,transform:'translateX(30px)'},{opacity:1,transform:'none'}],{duration:380});
+    }else{
+      play(q('#setRoot'),[{opacity:0,transform:'translateX(-24px)'},{opacity:1,transform:'none'}],{duration:360});
+    }
+    requestAnimationFrame(()=>qa('.seg-ctrl.pl-seg').forEach(c=>c.__plPlace&&c.__plPlace(false)));
+  }).observe(v,{attributes:true,attributeFilter:['class']});
+});
+safe(()=>{
+  qa('#v-settings .seg-ctrl').forEach(ctrl=>{
+    const plate=document.createElement('i');
+    plate.className='pl-segplate still'; plate.setAttribute('aria-hidden','true');
+    ctrl.insertBefore(plate,ctrl.firstChild);
+    let placed=false;
+    const place=animate=>{
+      const on=q('button.on',ctrl);
+      if(!on || !on.offsetWidth){ return; }
+      const snap=!animate || !placed;
+      if(snap) cls(plate,'still',true);
+      const cr=ctrl.getBoundingClientRect(), br=on.getBoundingClientRect();
+      plate.style.width=br.width.toFixed(2)+'px';
+      plate.style.setProperty('--sx',(br.left-cr.left-ctrl.clientLeft).toFixed(2)+'px');
+      cls(ctrl,'pl-seg',true);
+      if(snap) requestAnimationFrame(()=>requestAnimationFrame(()=>cls(plate,'still',false)));
+      placed=true;
+    };
+    ctrl.__plPlace=place;
+    let lastBtn=null;
+    new MutationObserver(()=>{
+      const on=q('button.on',ctrl);
+      if(on===lastBtn && placed) return;
+      lastBtn=on; place(true);
+    }).observe(ctrl,{subtree:true,attributes:true,attributeFilter:['class']});
+    addEventListener('resize',()=>place(false),{passive:true});
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>place(false));
+  });
+});
+
+/* ===========================================================
+   SHEETS — pull one down by its top edge to put it away
+   =========================================================== */
+safe(()=>{
+  const scrim=q('#scrim');
+  const list=[
+    ['#gndPickSheet',()=>closePick()],
+    ['#gndCellSheet',()=>closeCell()],
+    ['#gndNameSheet',()=>closeName()],
+    ['#pinSheet',()=>closePin()]
+  ];
+  list.forEach(([sel,close])=>{
+    const sh=q(sel); if(!sh) return;
+    let d=null;
+    sh.addEventListener('pointerdown',e=>{
+      if(innerWidth>=540 || !sh.classList.contains('on') || !document.documentElement.classList.contains('igskin')) return;
+      if(e.pointerType==='mouse' && e.button!==0) return;
+      const h3=e.target.closest('h3');
+      const zone=e.target.closest('.grabber') || (h3 && h3.parentElement===sh ? h3 : null);
+      if(!zone || sh.scrollTop>2) return;
+      d={y0:e.clientY,t0:performance.now(),dy:0,h:sh.offsetHeight||400,id:e.pointerId,moved:false};
+      try{ sh.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    sh.addEventListener('pointermove',e=>{
+      if(!d || e.pointerId!==d.id) return;
+      let dy=e.clientY-d.y0;
+      if(!d.moved && Math.abs(dy)<4) return;
+      d.moved=true;
+      dy = dy<0 ? dy*.18 : dy;                   /* upward it only gives a little */
+      d.dy=dy;
+      cls(sh,'pl-drag',true);
+      if(scrim) scrim.style.transition='none';
+      sh.style.transform='translate3d(0,'+dy.toFixed(1)+'px,0)';
+      if(scrim) scrim.style.opacity=String(Math.max(0,1-Math.max(0,dy)/(d.h*1.1)));
+    });
+    const end=e=>{
+      if(!d || (e && e.pointerId!==d.id)) return;
+      const {dy,t0,moved}=d; d=null;
+      if(!moved){ cls(sh,'pl-drag',false); return; }
+      const v=dy/Math.max(1,performance.now()-t0);
+      if(dy>110 || (dy>36 && v>.55)){
+        cls(sh,'pl-drag',false);
+        sh.style.transform=''; if(scrim){ scrim.style.transition=''; scrim.style.opacity=''; }
+        try{ close(); buzz(6); }catch(err){}
+      }else{
+        cls(sh,'pl-drag',false);
+        sh.style.transition='transform .5s cubic-bezier(.34,1.35,.64,1)';
+        sh.style.transform='';
+        if(scrim){ scrim.style.transition='opacity .3s'; scrim.style.opacity=''; }
+        setTimeout(()=>{ sh.style.transition=''; if(scrim) scrim.style.transition=''; },520);
+      }
+    };
+    sh.addEventListener('pointerup',end);
+    sh.addEventListener('pointercancel',end);
+    /* anything that shuts the sheet some other way leaves nothing behind */
+    new MutationObserver(()=>{
+      if(!sh.classList.contains('on') && !d){ sh.style.transform=''; if(scrim && !q('.sheet.on')) scrim.style.opacity=''; }
+    }).observe(sh,{attributes:true,attributeFilter:['class']});
+  });
+});
+
+/* ===========================================================
+   FULL PAGES — the board and the notes
+   =========================================================== */
+safe(()=>{
+  const bs=q('#boardSheet'); if(!bs) return;
+  let was=false;
+  new MutationObserver(()=>{
+    const on=bs.classList.contains('on');
+    if(on===was) return; was=on;
+    if(!on || !document.documentElement.classList.contains('igskin')) return;
+    const r=q('#bhRank');
+    if(r && typeof jeeRank==='function' && typeof fmtRank==='function'){
+      const rank=jeeRank(), top=(typeof JEE_TOTAL==='number'?JEE_TOTAL:rank);
+      countTo(r,top,rank,1200,v=>fmtRank(Math.round(v)));
+    }
+    setTimeout(()=>{
+      const me=q('#boardList .brow.me');
+      play(me,[{transform:'scale(1)'},{transform:'scale(1.035)'},{transform:'scale(1)'}],
+        {duration:520,easing:'cubic-bezier(.34,1.56,.64,1)',fill:'none'});
+    },480);
+  }).observe(bs,{attributes:true,attributeFilter:['class']});
+});
+safe(()=>{
+  const ns=q('#notesSheet'); if(!ns) return;
+  let was=false;
+  new MutationObserver(()=>{
+    const on=ns.classList.contains('on');
+    if(on===was) return; was=on;
+    if(!on) return;
+    requestAnimationFrame(()=>qa('#dnList > .dn').slice(0,10).forEach((el,i)=>
+      play(el,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:420,delay:140+i*40})));
+  }).observe(ns,{attributes:true,attributeFilter:['class']});
+});
+
+/* ===========================================================
+   THE LOCK — the name arrives, and the app is uncovered, not cut to
+   =========================================================== */
+safe(()=>{
+  const lock=q('#applock'); if(!lock) return;
+  const show=()=>{
+    play(q('.alword',lock),[{opacity:0,letterSpacing:'.6em',textIndent:'.6em',filter:'blur(8px)'},
+      {opacity:1,letterSpacing:'.30em',textIndent:'.30em',filter:'blur(0)'}],{duration:1000,easing:OUT,fill:'none'});
+    play(q('#alPin',lock),[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:560,delay:220});
+    play(q('#alGo',lock),[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:560,delay:300});
+  };
+  let hidden=lock.hidden;
+  new MutationObserver(()=>{
+    if(lock.hidden===hidden) return;
+    hidden=lock.hidden;
+    if(!hidden) show();
+  }).observe(lock,{attributes:true,attributeFilter:['hidden']});
+  if(!lock.hidden) show();
+});
+wrap('hideAppLock',ctx=>{
+  if(!ctx || RM()) { if(ctx) ctx.remove(); return; }
+  requestAnimationFrame(()=>{
+    const a=ctx.animate([{opacity:1},{opacity:0}],{duration:420,easing:'ease-out',fill:'forwards'});
+    a.onfinish=()=>ctx.remove();
+    setTimeout(()=>{ if(ctx.isConnected) ctx.remove(); },700);
+  });
+},()=>{
+  const lock=q('#applock');
+  if(!lock || lock.hidden) return null;
+  const veil=document.createElement('div');
+  veil.setAttribute('aria-hidden','true');
+  veil.style.cssText='position:fixed;inset:0;z-index:101;background:#000;pointer-events:none';
+  document.body.appendChild(veil);
+  return veil;
+});
+
+})();
+</script>
+
+<script id="polish-js-2">
+/* ===========================================================
+   POLISH II — the rank bar off, and the gestures on
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish II',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+const wrapFn=(name,after,before)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      let ctx; try{ ctx=before&&before.apply(this,arguments); }catch(e){}
+      const out=orig.apply(this,arguments);
+      try{ after&&after.call(this,ctx,arguments); }catch(e){ console.warn('Onwards polish II',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+
+/* ---------- the bar across the top goes ---------- */
+safe(()=>{
+  if(typeof window.notchWanted==='function') window.notchWanted=function(){ return false; };
+  if(typeof window.applyNotch==='function') window.applyNotch();
+  document.documentElement.style.setProperty('--notch-h','0px');
+  document.documentElement.classList.add('nonotch');
+});
+/* what it was saying moves onto the card it was about: the one piece of work
+   that would take you past the next round figure */
+wrapFn('renderBoard',()=>{
+  const line=q('#bLine'); if(!line) return;
+  if(typeof jeeRank!=='function' || typeof nextGoal!=='function' || typeof fmtRank!=='function') return;
+  const rank=jeeRank(), g=nextGoal(rank);
+  line.textContent = rank===1 ? 'All India Rank 1. Hold it.'
+    : (typeof jeePoints==='function' && !jeePoints().total) ? 'Map out Portions to get a rank'
+    : !g ? 'See the full list'
+    : g.need===1 ? 'One more confidence point breaks '+fmtRank(g.target)
+    : g.need+' more confidence points break '+fmtRank(g.target);
+});
+
+/* ---------- tapping the tab you are on takes you back to the top ---------- */
+safe(()=>{
+  const bar=q('.tabbar'); if(!bar) return;
+  bar.addEventListener('click',e=>{
+    const t=e.target.closest('.tab'); if(!t || !t.classList.contains('on')) return;
+    const v=t.dataset.v;
+    if(v==='vision') return;
+    if(v==='settings' && typeof setPage!=='undefined' && setPage) return;   /* steps back instead */
+    if(v==='ground' && typeof gSubj!=='undefined' && gSubj) return;          /* steps out instead */
+    if(scrollY<=4) return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    try{ scrollTo({top:0,behavior:RM()?'auto':'smooth'}); }catch(err){ scrollTo(0,0); }
+    hap(6);
+  },true);
+});
+
+/* ---------- swipe in from the left edge to step back ----------
+   Touch events rather than pointer events: a horizontal drag over a page that
+   scrolls vertically is taken for a pan and the pointer stream is cancelled
+   half way through it. Once the gesture is plainly sideways the move is
+   claimed outright, so it can never turn into a scroll under the finger. */
+safe(()=>{
+  const backer=()=>{
+    if(q('.sheet.on') || q('#pdfBox.on') || q('#vBox.on')) return null;
+    const set=q('#v-settings');
+    if(set && set.classList.contains('active') && typeof setPage!=='undefined' && setPage
+       && typeof closeSetPage==='function') return closeSetPage;
+    const gnd=q('#v-ground');
+    if(gnd && gnd.classList.contains('active') && typeof gSubj!=='undefined' && gSubj
+       && typeof closeGround==='function') return closeGround;
+    return null;
+  };
+  let sw=null;
+  addEventListener('touchstart',e=>{
+    if(sw || e.touches.length!==1){ sw=null; return; }
+    const t=e.touches[0];
+    if(t.clientX>28) return;
+    if(e.target.closest && e.target.closest('input,textarea')) return;
+    /* a sideways scroller only keeps the move while it still has room to give */
+    const sc=e.target.closest && e.target.closest('.pgwrap,.srtrack,.hrtrack,.igtrack');
+    if(sc && sc.scrollLeft>2) return;
+    const fn=backer(); if(!fn) return;
+    sw={x:t.clientX,y:t.clientY,fn,live:false,dx:0,view:q('.view.active')};
+  },{passive:true});
+  addEventListener('touchmove',e=>{
+    if(!sw || !e.touches.length) return;
+    const t=e.touches[0];
+    const dx=t.clientX-sw.x, dy=t.clientY-sw.y;
+    if(!sw.live){
+      if(Math.abs(dy)>14 && Math.abs(dy)>Math.abs(dx)){ sw=null; return; }   /* they are scrolling */
+      if(dx<16) return;
+      sw.live=true; cls(sw.view,'pl-swipe',true); hap(4);
+    }
+    sw.dx=dx;
+    if(e.cancelable) e.preventDefault();          /* the move is ours now */
+    if(sw.view) sw.view.style.transform='translate3d('+Math.min(78,dx*.4).toFixed(1)+'px,0,0)';
+  },{passive:false});
+  const end=()=>{
+    if(!sw) return;
+    const {view,dx,live,fn}=sw; sw=null;
+    if(!view) return;
+    cls(view,'pl-swipe',false);
+    if(live && dx>70){
+      view.style.transform='';
+      try{ fn(); hap(8); }catch(e){}
+    }else if(live){
+      cls(view,'pl-swipeback',true);
+      view.style.transform='';
+      setTimeout(()=>cls(view,'pl-swipeback',false),320);
+    }
+  };
+  addEventListener('touchend',end,{passive:true});
+  addEventListener('touchcancel',end,{passive:true});
+});
+
+/* ---------- a full page is pulled down by its head to put it away ---------- */
+safe(()=>{
+  const scrim=q('#scrim');
+  [['#notesSheet',()=>closeNotes()],
+   ['#noteSheet',()=>closeNoteSheet()],
+   ['#boardSheet',()=>closeBoard()]].forEach(([sel,close])=>{
+    const sh=q(sel); if(!sh) return;
+    let d=null;
+    sh.addEventListener('pointerdown',e=>{
+      if(!sh.classList.contains('on')) return;
+      if(e.pointerType==='mouse' && e.button!==0) return;
+      const bar=e.target.closest('.fsbar');
+      if(!bar || bar.parentElement.parentElement!==sh) return;
+      d={y0:e.clientY,t0:performance.now(),dy:0,id:e.pointerId,moved:false,h:sh.offsetHeight||700};
+      try{ sh.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    sh.addEventListener('pointermove',e=>{
+      if(!d || e.pointerId!==d.id) return;
+      let dy=e.clientY-d.y0;
+      if(!d.moved){ if(Math.abs(dy)<5) return; d.moved=true; cls(sh,'pl-drag',true); }
+      dy = dy<0 ? dy*.16 : dy;
+      d.dy=dy;
+      sh.style.transform='translate3d(0,'+dy.toFixed(1)+'px,0)';
+      sh.style.borderRadius = dy>8 ? '18px 18px 0 0' : '';
+    });
+    const end=e=>{
+      if(!d || (e && e.pointerId!==d.id)) return;
+      const {dy,t0,moved}=d; d=null;
+      cls(sh,'pl-drag',false);
+      if(!moved) return;
+      const v=dy/Math.max(1,performance.now()-t0);
+      if(dy>130 || (dy>44 && v>.5)){
+        sh.style.transform=''; sh.style.borderRadius='';
+        try{ close(); hap(6); }catch(err){}
+      }else{
+        sh.style.transition='transform .46s cubic-bezier(.34,1.3,.64,1),border-radius .3s';
+        sh.style.transform=''; sh.style.borderRadius='';
+        setTimeout(()=>{ sh.style.transition=''; },480);
+      }
+    };
+    sh.addEventListener('pointerup',end);
+    sh.addEventListener('pointercancel',end);
+    new MutationObserver(()=>{ if(!sh.classList.contains('on') && !d){ sh.style.transform=''; sh.style.borderRadius=''; } })
+      .observe(sh,{attributes:true,attributeFilter:['class']});
+  });
+});
+
+/* ---------- the square being read, with its row and its column ---------- */
+function crossOff(){
+  qa('.pgrid.pl-focus').forEach(g=>cls(g,'pl-focus',false));
+  qa('.pl-cross').forEach(el=>cls(el,'pl-cross',false));
+  qa('.pl-at').forEach(el=>cls(el,'pl-at',false));
+}
+function crossOn(){
+  if(typeof gCellAt==='undefined' || !gCellAt) return;
+  const grid=q('#gndBody .pgrid'); if(!grid) return;
+  crossOff();
+  const t=CSS.escape(gCellAt.t), ph=CSS.escape(gCellAt.ph);
+  qa('.pgcell[data-t="'+t+'"],.pgcell[data-ph="'+ph+'"],.pgname[data-t="'+t+'"],.pgph[data-ph="'+ph+'"]',grid)
+    .forEach(el=>cls(el,'pl-cross',true));
+  const at=q('.pgcell[data-t="'+t+'"][data-ph="'+ph+'"]',grid);
+  cls(at,'pl-at',true);
+  cls(grid,'pl-focus',true);
+}
+wrapFn('openCell',()=>{ if(!RM()) requestAnimationFrame(crossOn); });
+wrapFn('closeCell',()=>crossOff());
+wrapFn('renderGround',()=>{
+  const sheet=q('#gndCellSheet');
+  if(sheet && sheet.classList.contains('on') && !RM()) requestAnimationFrame(crossOn);
+});
+
+/* ---------- the app arrives rather than appearing ---------- */
+safe(()=>{
+  let first=true;
+  wrapFn('renderAll',()=>{
+    if(!first) return; first=false;
+    const app=q('.app');
+    if(!app || RM() || !app.animate) return;
+    try{
+      const a=app.animate([{opacity:0},{opacity:1}],{duration:420,easing:'ease-out',fill:'none'});
+      setTimeout(()=>{ try{ if(a.playState!=='finished') a.finish(); }catch(e){} },800);
+    }catch(e){}
+  });
+});
+
+/* a little more feedback where taps already do something */
+safe(()=>{
+  const light=['#boardCard','#boardAll','#subAll','#notesOpen','#gndBack','#notesAdd'];
+  light.forEach(sel=>{ const el=q(sel); if(el) el.addEventListener('click',()=>hap(6)); });
+});
+
+/* ---------- Enter finishes what a small sheet is asking ---------- */
+safe(()=>{
+  const go=(input,btn)=>{
+    const i=q(input), b=q(btn); if(!i||!b) return;
+    i.setAttribute('enterkeyhint','done');
+    i.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); b.click(); } });
+  };
+  go('#gndNameIn','#gndNameSave');
+  go('#pinA','#pinSave');
+  go('#pinB','#pinSave');
+});
+
+/* ---------- the grid says when there is more of it to the right ---------- */
+function markMore(){
+  const w=q('#gndBody .pgwrap'); if(!w) return;
+  const more=()=>cls(w,'pl-more',w.scrollLeft+w.clientWidth < w.scrollWidth-2);
+  if(!w.__plMore){ w.__plMore=true; w.addEventListener('scroll',more,{passive:true}); }
+  more();
+}
+wrapFn('renderGround',()=>{ requestAnimationFrame(markMore); });
+addEventListener('resize',()=>safe(markMore),{passive:true});
+
+/* ---------- a sheet stays above the keyboard ---------- */
+safe(()=>{
+  const vv=window.visualViewport; if(!vv) return;
+  let lifted=null;
+  const openSheet=()=>{
+    const s=qa('.sheet.on').filter(x=>!x.classList.contains('fullsheet'));
+    return s.length? s[s.length-1] : null;
+  };
+  const sync=()=>{
+    const sh=openSheet();
+    if(lifted && lifted!==sh){ lifted.style.transform=''; cls(lifted,'pl-lift',false); lifted=null; }
+    if(!sh || innerWidth>=540) return;
+    const a=document.activeElement;
+    const typing=a && sh.contains(a) && (a.tagName==='INPUT'||a.tagName==='TEXTAREA');
+    const kb=Math.max(0,Math.round(innerHeight-vv.height-vv.offsetTop));
+    if(typing && kb>90){
+      cls(sh,'pl-lift',true);
+      sh.style.transform='translate3d(0,'+(-kb)+'px,0)';
+      lifted=sh;
+    }else if(lifted===sh){
+      sh.style.transform=''; setTimeout(()=>cls(sh,'pl-lift',false),320); lifted=null;
+    }
+  };
+  vv.addEventListener('resize',()=>safe(sync));
+  vv.addEventListener('scroll',()=>safe(sync));
+  document.addEventListener('focusin',()=>setTimeout(()=>safe(sync),180));
+  document.addEventListener('focusout',()=>setTimeout(()=>safe(sync),180));
+});
+
+/* ---------- every settings door says what is behind it ---------- */
+safe(()=>{
+  const put=(sp,text)=>{
+    const row=q('.smrow[data-sp="'+sp+'"]'); if(!row) return;
+    let sv=q('.pl-sv',row);
+    if(!sv){ sv=document.createElement('span'); sv.className='pl-sv'; row.insertBefore(sv,q('.go',row)); }
+    sv.textContent=text||'';
+  };
+  const fill=()=>{
+    const S2=(typeof S!=='undefined')?S:{};
+    const name=(typeof ig==='function'? (ig().name||'').trim() : '');
+    put('name', name && name!=='Future Me' ? name : 'Not set');
+    put('hero', (typeof heroPics!=='undefined' && heroPics.length)
+      ? (S2.heroOn===false? heroPics.length+' · off' : heroPics.length+' picture'+(heroPics.length===1?'':'s'))
+      : 'None yet');
+    const lines=Array.isArray(S2.quotes)? S2.quotes.filter(x=>x&&(x.text||'').trim()).length : 0;
+    put('quote', lines? lines+' line'+(lines===1?'':'s') : 'The stock lines');
+    try{
+      put('dayst', (typeof dayShifted==='function' && dayShifted() && typeof fmtTimeStr==='function' && typeof str24==='function' && typeof dayStartMins==='function')
+        ? fmtTimeStr(str24(dayStartMins())) : 'Midnight');
+    }catch(e){}
+    try{
+      const r=(typeof runDays==='function')? runDays() : null;
+      put('run', r? 'Day '+r.gone+' of '+r.total : 'Not set');
+    }catch(e){}
+    put('look', S2.theme==='auto'?'Automatic':(S2.theme==='light'?'Light':'Dark'));
+    const pin=!!(S2.visionLock&&S2.visionLock.hash);
+    put('privacy', !pin? 'Open' : (S2.appLock? 'Whole app locked' : 'Vision locked'));
+    try{ put('data', myNotes.length+' notes · '+ground.length+' subjects'); }catch(e){}
+  };
+  wrapFn('renderSettings',()=>safe(fill));
+  safe(fill);
+});
+
+/* ---------- and the board card carries the day's climb ---------- */
+wrapFn('renderBoard',()=>{
+  const host=q('#boardCard .bmr'); if(!host) return;
+  let tag=q('.pl-climb',host);
+  let up=0;
+  try{ up=Math.max(0,rankBase()-jeeRank()); }catch(e){ return; }
+  if(!up){ if(tag) tag.remove(); return; }
+  if(!tag){ tag=document.createElement('i'); tag.className='pl-climb'; host.appendChild(tag); }
+  tag.textContent='\u2191'+fmtRank(up)+' today';
+});
+
+})();
+</script>
+
+<script id="polish-js-3">
+/* ===========================================================
+   POLISH III — Home's two cards, the rank page, notes, Portions
+   Nothing here stores anything. Every reading is worked out from the
+   records the app already keeps, and every element it adds is filled in
+   after the app's own render has run.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish III',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+const wrapFn=(name,after,before)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      let ctx; try{ ctx=before&&before.apply(this,arguments); }catch(e){}
+      const out=orig.apply(this,arguments);
+      try{ after&&after.call(this,ctx,arguments); }catch(e){ console.warn('Onwards polish III',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+const el=(tag,cn,html)=>{ const n=document.createElement(tag); if(cn) n.className=cn; if(html!=null) n.innerHTML=html; return n; };
+
+/* ===========================================================
+   WHERE YOU STAND — a heading, a reading of the pace, and a mark on
+   the run for the ground actually covered against the time spent
+   =========================================================== */
+safe(()=>{
+  const sec=q('#standSec'), top=q('.standtop',sec);
+  if(!sec||!top) return;
+  const head=el('div','pl-standhead','<span>Where you stand</span>');
+  const pace=el('i','pl-pace'); pace.hidden=true;
+  head.appendChild(pace);
+  sec.insertBefore(head,top);
+  const bar=q('#standSec .runbar');
+  if(bar){ const m=el('i','pl-mark'); m.hidden=true; bar.appendChild(m); }
+});
+wrapFn('renderStand',()=>{
+  const pace=q('.pl-pace'), mark=q('#standSec .pl-mark');
+  let r=null,days=null;
+  try{ r=standReading(); days=runDays(); }catch(e){ return; }
+  const pct=r? r.pct : 0;
+  if(pace){
+    if(!days || !r){ pace.hidden=true; }
+    else{
+      const spent=Math.round(100*days.gone/days.total);
+      const d=pct-spent;
+      pace.hidden=false;
+      cls(pace,'ahead',d>2); cls(pace,'behind',d<-2);
+      pace.textContent = Math.abs(d)<=2 ? 'On pace'
+        : d>0 ? 'Ahead by '+d+'%' : 'Behind by '+Math.abs(d)+'%';
+    }
+  }
+  if(mark){
+    if(!days || !r || !pct){ mark.hidden=true; }
+    else{ mark.hidden=false; mark.style.left=Math.max(0,Math.min(100,pct))+'%'; }
+  }
+});
+
+/* the way back to your own row on a list of two million */
+safe(()=>{
+  const sheet=q('#boardSheet'); if(!sheet) return;
+  const jump=el('button','pl-jump',
+    '<svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>Back to you</span>');
+  const aim=()=>{
+    const me=q('#boardList .brow.me'); if(!me) return;
+    const up=me.getBoundingClientRect().top < sheet.getBoundingClientRect().top;
+    cls(jump,'up',up);
+  };
+  jump.type='button';
+  sheet.appendChild(jump);
+  jump.addEventListener('click',()=>{
+    const me=q('#boardList .brow.me');
+    if(me && me.scrollIntoView) me.scrollIntoView({block:'center',behavior:RM()?'auto':'smooth'});
+    hap(6);
+  });
+  let io=null;
+  const watch=()=>{
+    const me=q('#boardList .brow.me');
+    if(io) io.disconnect();
+    cls(jump,'on',false);
+    if(!me || typeof IntersectionObserver!=='function') return;
+    io=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        aim();
+        cls(jump,'on',!e.isIntersecting && sheet.classList.contains('on'));
+      });
+    },{root:sheet,threshold:0});
+    sheet.addEventListener('scroll',()=>{ if(jump.classList.contains('on')) aim(); },{passive:true});
+    io.observe(me);
+  };
+  wrapFn('renderBoardPage',()=>requestAnimationFrame(watch));
+  new MutationObserver(()=>{ if(!sheet.classList.contains('on')) cls(jump,'on',false); })
+    .observe(sheet,{attributes:true,attributeFilter:['class']});
+});
+
+/* ===========================================================
+   NOTES — the list, gathered by day
+   =========================================================== */
+safe(()=>{
+  const bar=q('#notesSheet .fsbar'), add=q('#notesAdd');
+  if(!bar||!add) return;
+  const c=el('span','pl-notecount');
+  bar.insertBefore(c,add);
+});
+function noteGroup(ds){
+  try{
+    if(ds===TSTR) return 'Today';
+    if(ds===ymd(addDays(TODAY,-1))) return 'Yesterday';
+    const d=parseDay(ds), now=TODAY;
+    const days=Math.round((now-d)/86400000);
+    if(days<7) return 'Earlier this week';
+    if(d.getFullYear()===now.getFullYear()) return FULLMON[d.getMonth()];
+    return FULLMON[d.getMonth()]+' '+d.getFullYear();
+  }catch(e){ return ''; }
+}
+wrapFn('renderNotes',()=>{
+  const list=q('#dnList'); if(!list) return;
+  const byId=new Map();
+  try{ myNotes.forEach(n=>byId.set(n.id,n)); }catch(e){}
+  let last=null;
+  qa('.dn',list).forEach(card=>{
+    const n=byId.get(card.dataset.id); if(!n) return;
+    const g=noteGroup(n.date||'');
+    if(g && g!==last){
+      last=g;
+      const h=el('div','pl-group'); h.textContent=g;
+      list.insertBefore(h,card);
+    }
+  });
+  const c=q('.pl-notecount');
+  if(c){
+    const n=qa('.dn',list).length;
+    c.textContent = n? n+(n===1?' note':' notes') : '';
+  }
+});
+
+/* ===========================================================
+   PORTIONS — the shelf, read in one line
+   =========================================================== */
+wrapFn('renderGround',()=>{
+  const b=q('#gndBody'); if(!b) return;
+  const card=q('.pgcard',b); if(!card) return;
+  if(typeof gSubj!=='undefined' && gSubj) return;        /* the shelf only */
+  let subs=[];
+  try{
+    subs=ground.map(g=>({name:g.name,color:g.color,pct:Math.round(gScore(g)*100),
+      cells:g.topics.length*g.phases.length,
+      filled:g.topics.reduce((n,t)=>n+g.phases.reduce((m,p)=>m+(gCell(g,t.id,p.id).c?1:0),0),0)}));
+  }catch(e){ return; }
+  if(!subs.length) return;
+  /* one stripe a subject, in its own colour, filled to its own reading */
+  const share=el('div','pl-share');
+  subs.forEach(s=>{
+    const i=el('i');
+    i.style.setProperty('--c',s.color);
+    i.style.setProperty('--w',s.pct+'%');
+    i.title=s.name+' · '+s.pct+'%';
+    share.appendChild(i);
+  });
+  const meta=q('.gmeta',card);
+  const cells=subs.reduce((n,s)=>n+s.cells,0), filled=subs.reduce((n,s)=>n+s.filled,0);
+  if(meta) meta.textContent=filled+' of '+cells+' square'+(cells===1?'':'s')+' filled in';
+  else card.appendChild(el('div','gmeta',filled+' of '+cells+' squares filled in'));
+  card.insertBefore(share,q('.gmeta',card));
+});
+
+})();
+</script>
+
+<script id="polish-js-4">
+/* ===========================================================
+   POLISH IV — the rank card on Home reads like the rank page
+   Three figures, the same three the full list opens on, worked out from
+   the same functions. Nothing is stored and nothing new is counted.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish IV',err); } };
+const wrapFn=(name,after)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      const out=orig.apply(this,arguments);
+      try{ after.apply(this,arguments); }catch(e){ console.warn('Onwards polish IV',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+
+safe(()=>{
+  const card=q('#boardCard'), mine=q('#boardCard .bmine'), rows=q('#bAhead');
+  if(!card||!mine||!rows) return;
+  const strip=document.createElement('div');
+  strip.className='igstats pl-stats';
+  strip.innerHTML='<span class="igstat"><b id="plBMarks">0</b><span>marks</span></span>'+
+    '<span class="igstat"><b id="plBPct">0%</b><span>covered</span></span>'+
+    '<span class="igstat"><b id="plBBeat">0</b><span>behind you</span></span>';
+  rows.parentNode.insertBefore(strip,rows);
+});
+wrapFn('renderBoard',()=>{
+  const m=q('#plBMarks'); if(!m) return;
+  if(typeof jeeRank!=='function'||typeof jeeMarks!=='function'||typeof fmtRank!=='function') return;
+  const rank=jeeRank();
+  m.textContent=jeeMarks(rank);
+  const p=q('#plBPct');
+  if(p && typeof jeeCoverage==='function') p.textContent=Math.round(jeeCoverage()*100)+'%';
+  const b=q('#plBBeat');
+  if(b && typeof JEE_TOTAL==='number') b.textContent=fmtRank(Math.max(0,JEE_TOTAL-rank));
+});
+
+/* ---------- the run up to the next round figure ---------- */
+function bandOf(rank,target){
+  for(let m=1000000;m>=1;m/=10){
+    if(Math.floor((rank-1)/m)*m===target) return m;
+  }
+  return null;
+}
+function paintGoal(bar,label){
+  if(!bar) return;
+  if(typeof jeeRank!=='function'||typeof nextGoal!=='function'){ bar.hidden=true; return; }
+  const rank=jeeRank(), g=nextGoal(rank);
+  if(!g || rank<=1){ bar.hidden=true; return; }
+  const m=bandOf(rank,g.target);
+  if(!m){ bar.hidden=true; return; }
+  const done=Math.max(0,Math.min(1,(g.target+m-rank)/m));
+  bar.hidden=false;
+  const fill=bar.firstElementChild;
+  if(fill) requestAnimationFrame(()=>{ fill.style.width=(done*100).toFixed(1)+'%'; });
+}
+safe(()=>{
+  const foot=q('#boardCard .bfoot');
+  if(foot){ const bar=document.createElement('div'); bar.className='pl-goalbar'; bar.hidden=true;
+    bar.innerHTML='<i></i>'; foot.appendChild(bar); }
+  const line=q('#bhLine');
+  if(line){ const bar=document.createElement('div'); bar.className='pl-goalbar'; bar.hidden=true;
+    bar.innerHTML='<i></i>'; line.insertAdjacentElement('afterend',bar); }
+});
+wrapFn('renderBoard',()=>paintGoal(q('#boardCard .pl-goalbar')));
+wrapFn('renderBoardPage',()=>paintGoal(q('#boardSheet .pl-goalbar')));
+
+})();
+</script>
+
+<script id="polish-js-5">
+/* ===========================================================
+   POLISH V — the run round the ring, notes you can search, and a
+   subject page you leave by the edge of the screen
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish V',err); } };
+const wrapFn=(name,after)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      const out=orig.apply(this,arguments);
+      try{ after.apply(this,arguments); }catch(e){ console.warn('Onwards polish V',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+const NS='http://www.w3.org/2000/svg';
+const R_TIME=45, C_TIME=2*Math.PI*R_TIME;
+
+/* ---------- the run, drawn round the outside of the reading ---------- */
+safe(()=>{
+  const svg=q('.spring'); if(!svg || q('.pl-timefg')) return;
+  svg.setAttribute('viewBox','-9 -9 102 102');
+  const mk=(cn)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('class',cn); c.setAttribute('cx','42'); c.setAttribute('cy','42');
+    c.setAttribute('r',String(R_TIME));
+    c.setAttribute('stroke-dasharray',C_TIME.toFixed(1));
+    return c;
+  };
+  const bg=mk('pl-timebg'), fg=mk('pl-timefg');
+  bg.setAttribute('stroke-dashoffset','0');
+  fg.setAttribute('stroke-dashoffset',String(C_TIME));
+  svg.appendChild(bg); svg.appendChild(fg);
+  bg.setAttribute('visibility','hidden'); fg.setAttribute('visibility','hidden');
+  /* and what each arc is */
+  const sec=q('#standSec'), run=q('#runCard');
+  if(sec){
+    const key=document.createElement('div');
+    key.className='pl-ringkey'; key.hidden=true;
+    key.innerHTML='<span class="pl-kcov"><i></i>ground covered</span>'+
+      '<span><i></i>the run so far</span>';
+    if(run) sec.insertBefore(key,run); else sec.appendChild(key);
+  }
+});
+wrapFn('renderStand',()=>{
+  const bg=q('.pl-timebg'), fg=q('.pl-timefg'), key=q('.pl-ringkey');
+  if(!fg||!bg) return;
+  let days=null;
+  try{ days=runDays(); }catch(e){}
+  const on=!!(days && days.total>0);
+  bg.setAttribute('visibility',on?'visible':'hidden');
+  fg.setAttribute('visibility',on?'visible':'hidden');
+  if(key) key.hidden=!on;
+  if(!on) return;
+  const k=Math.max(0,Math.min(1,days.gone/days.total));
+  fg.style.strokeDashoffset=(C_TIME*(1-k)).toFixed(1);
+});
+
+/* ---------- notes: a list you can search ---------- */
+let noteQ='';
+safe(()=>{
+  const body=q('#notesSheet .fsbody'), list=q('#dnList');
+  if(!body||!list) return;
+  const wrap=document.createElement('div');
+  wrap.className='pl-searchwrap';
+  wrap.innerHTML='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>'+
+    '<input class="pl-search" type="text" placeholder="Search your notes" autocomplete="off" enterkeyhint="search">'+
+    '<button class="pl-clear" type="button" aria-label="Clear"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>';
+  body.insertBefore(wrap,list);
+  const none=document.createElement('div');
+  none.className='pl-nores'; none.textContent='No notes match that.';
+  list.insertAdjacentElement('afterend',none);
+  const input=q('.pl-search',wrap), clear=q('.pl-clear',wrap);
+  input.addEventListener('input',()=>{ noteQ=input.value.trim().toLowerCase(); filter(); });
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); input.blur(); } });
+  clear.addEventListener('click',()=>{ input.value=''; noteQ=''; filter(); input.focus(); });
+  /* the sheet opens clean every time */
+  new MutationObserver(()=>{
+    const sheet=q('#notesSheet');
+    if(sheet && !sheet.classList.contains('on') && noteQ){ input.value=''; noteQ=''; filter(); }
+  }).observe(q('#notesSheet'),{attributes:true,attributeFilter:['class']});
+});
+function noteText(id){
+  try{
+    const n=myNotes.find(x=>x.id===id); if(!n) return '';
+    return ((n.title||'')+' '+(typeof noteToText==='function'? noteToText(n.text):(n.text||''))).toLowerCase();
+  }catch(e){ return ''; }
+}
+function filter(){
+  const list=q('#dnList'); if(!list) return;
+  const clear=q('.pl-clear'); if(clear) cls(clear,'on',!!noteQ);
+  let shown=0;
+  const kids=Array.from(list.children);
+  kids.forEach(el=>{
+    if(el.classList.contains('dn')){
+      const hit=!noteQ || noteText(el.dataset.id).indexOf(noteQ)>=0;
+      el.hidden=!hit; if(hit) shown++;
+    }
+  });
+  /* a heading with nothing under it goes too */
+  let head=null, any=false;
+  kids.forEach(el=>{
+    if(el.classList.contains('pl-group')){
+      if(head) head.hidden=!any;
+      head=el; any=false;
+    }else if(el.classList.contains('dn') && !el.hidden) any=true;
+  });
+  if(head) head.hidden=!any;
+  const none=q('.pl-nores');
+  if(none) cls(none,'on',!!noteQ && shown===0);
+}
+wrapFn('renderNotes',()=>{ if(q('#dnList')) safe(filter); });
+
+/* ---------- Portions: the subject's own colour on its name ---------- */
+wrapFn('renderGround',()=>{
+  const h=q('#gndTitle'); if(!h) return;
+  const dot=q('.pl-subdot',h);
+  if(typeof gSubj==='undefined' || !gSubj){ if(dot) dot.remove(); return; }
+  const d=dot||document.createElement('i');
+  d.className='pl-subdot';
+  d.style.setProperty('--c',gSubj.color||'');
+  if(!dot) h.insertBefore(d,h.firstChild);
+  /* the line above the title already says what the subject is made of */
+  const meta=q('#gndBody .pgcard .gmeta');
+  if(meta){
+    let cells=0, read=0;
+    try{
+      gSubj.topics.forEach(t=>gSubj.phases.forEach(p=>{ cells++; if(gCell(gSubj,t.id,p.id).c) read++; }));
+    }catch(e){ return; }
+    if(cells) meta.textContent=read+' of '+cells+' squares filled in';
+  }
+});
+
+})();
+</script>
+
+<script id="polish-js-6">
+/* ===========================================================
+   POLISH VI — the ring names its own figure, and the reading beside it
+   stops repeating it
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish VI',err); } };
+const wrapFn=(name,after)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      const out=orig.apply(this,arguments);
+      try{ after.apply(this,arguments); }catch(e){ console.warn('Onwards polish VI',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+
+/* the outer arc is gone, so the ring is drawn to the whole box again rather
+   than to the smaller one that was leaving room around it */
+safe(()=>{
+  const svg=q('.spring');
+  if(svg) svg.setAttribute('viewBox','0 0 84 84');
+});
+safe(()=>{
+  const n=q('.spnum'); if(!n || q('.pl-cap')) return;
+  const cap=document.createElement('span');
+  cap.className='pl-cap'; cap.textContent='covered';
+  n.appendChild(cap);
+});
+
+wrapFn('renderStand',()=>{
+  const b=q('#standLeft'); if(!b) return;
+  const label=b.parentElement? b.parentElement.querySelector('span') : null;
+  let cells=0, read=0;
+  try{
+    ground.forEach(g=>g.topics.forEach(t=>g.phases.forEach(p=>{
+      cells++; if(gCell(g,t.id,p.id).c) read++;
+    })));
+  }catch(e){ return; }
+  if(!cells) return;                       /* nothing mapped out: leave it be */
+  if(b.__plc){ cancelAnimationFrame(b.__plc); b.__plc=0; }
+  b.textContent=read+' of '+cells;
+  if(label) label.textContent='squares filled';
+});
+
 })();
 </script>
 </body>
