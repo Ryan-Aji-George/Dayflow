@@ -4305,7 +4305,6 @@ html.igskin .gempty::after{content:'';position:absolute;top:calc(46px + 14px);le
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='13.5' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='3' y='13.5' width='7.5' height='7.5' rx='2'/%3E%3Cpath d='M17.25 14v6.5M14 17.25h6.5'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='13.5' y='3' width='7.5' height='7.5' rx='2'/%3E%3Crect x='3' y='13.5' width='7.5' height='7.5' rx='2'/%3E%3Cpath d='M17.25 14v6.5M14 17.25h6.5'/%3E%3C/svg%3E") center/contain no-repeat}
 html.igskin .gndplus{box-shadow:0 6px 16px -8px color-mix(in srgb,var(--ink) 60%,transparent)}
-html.igskin .pgcell.pl-hot{position:relative;z-index:1}
 
 /* ===========================================================
    SETTINGS
@@ -4396,13 +4395,6 @@ html.igskin .gsub:active{opacity:1;scale:.985;transition-duration:.12s}
 html.igskin .gsub .gn{font-size:17px}
 html.igskin .gndtitle h2{letter-spacing:-.04em}
 html.igskin .gndhead{padding-top:8px}
-/* the square you are reading, and the row and column it sits in */
-html.igskin .pgrid.pl-focus .pgcell,
-html.igskin .pgrid.pl-focus .pgname,
-html.igskin .pgrid.pl-focus .pgph{opacity:.26;transition:opacity .28s var(--ease)}
-html.igskin .pgrid.pl-focus .pl-cross{opacity:1}
-html.igskin .pgrid.pl-focus .pl-at{opacity:1;position:relative;z-index:2;
-  box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
 html.igskin .pgkey{padding-top:22px}
 
 /* ---------- controls ---------- */
@@ -4858,6 +4850,205 @@ html.igskin #standSec .runbar{display:block;height:5px;border-radius:999px;overf
   background:color-mix(in srgb,var(--ink) 10%,transparent)}
 html.igskin #standSec .runbar i{border-radius:999px;
   background:linear-gradient(90deg,var(--ig-blue),var(--h-violet))}
+
+/* the pace reading comes off the card */
+.pl-pace{display:none!important}
+
+/* ===========================================================
+   POLISH VII
+   =========================================================== */
+/* the pace reading and the days beside the ring both come off: the run line
+   under them already says how much time is left */
+.pl-pace{display:none!important}
+html.igskin .standnums .igstat:nth-child(2){display:none}
+html.igskin .standnums .igstat:first-child{padding-left:0;border-left:0}
+
+/* ---------- Home: the rhythm between the sections ---------- */
+html.igskin #tSide>section.board{border-top:0;padding:18px 0 24px}
+html.igskin #tSide>section.subrail{padding:20px 0 22px}
+html.igskin .gosec{padding-top:6px!important;padding-bottom:14px!important}
+html.igskin .gosec .gorow:first-child{padding-top:8px}
+
+/* ---------- the steps a phase runs to ---------- */
+html.igskin .lvlrow{display:flex;align-items:center;gap:8px;padding:5px;
+  border-radius:14px;background:var(--ig-fill)}
+html.igskin .lvlpm{width:46px;height:46px;flex:0 0 auto;border:0;border-radius:11px;
+  display:grid;place-items:center;background:var(--bg);color:var(--ink);
+  box-shadow:0 1px 3px rgba(0,0,0,.1);
+  transition:scale .4s var(--pl-bounce),opacity .2s var(--ease)}
+html[data-theme="dark"].igskin .lvlpm{background:var(--line-2);box-shadow:none}
+html.igskin .lvlpm svg{width:19px;height:19px;fill:none;stroke:currentColor;
+  stroke-width:2.4;stroke-linecap:round}
+html.igskin .lvlpm:active{scale:.9}
+html.igskin .lvlpm:disabled{opacity:.35}
+html.igskin .lvlnum{flex:1 1 auto;text-align:center;font-size:24px;font-weight:800;
+  letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+html.igskin .lvlquick{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+html.igskin .lvlquick button{flex:1 1 auto;min-width:46px;padding:8px 0;border:0;
+  border-radius:999px;background:var(--ig-fill);color:var(--ink-2);
+  font-family:var(--ui);font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  transition:background .2s var(--ease),color .2s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .lvlquick button:active{scale:.93}
+html.igskin .lvlquick button.on{background:var(--ink);color:var(--bg)}
+
+/* ---------- a long scale wraps into a grid rather than shrinking ---------- */
+html.igskin .confrow.many{display:grid;gap:6px;
+  grid-template-columns:repeat(auto-fit,minmax(46px,1fr));
+  max-height:232px;overflow:auto;padding:1px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+html.igskin .confrow.many::-webkit-scrollbar{display:none}
+html.igskin .confrow.many .confstep{flex:none;height:44px;font-size:15px}
+html.igskin .confword{font-variant-numeric:tabular-nums}
+html.igskin .gndlvlhint{margin:9px 2px 0;font-size:12.5px;font-weight:500;
+  line-height:1.4;color:var(--ink-3)}
+
+/* the key is one ramp now */
+html.igskin .pgkey .pgks.ramp{flex:1 1 auto;height:10px;border-radius:999px;min-width:90px}
+html.igskin .pgkey{gap:10px}
+
+/* ===========================================================
+   POLISH VIII — the grid's glass, and the Vision page
+   =========================================================== */
+/* no fade at the far edge of the grid any more */
+html.igskin .pgwrap.pl-more{-webkit-mask-image:none;mask-image:none}
+
+/* ---------- the topic column is glass at all times, from the screen's edge ----------
+   It used to come on only once the grid had been pushed sideways. Now the
+   pane is frosted from the moment the page opens and it runs the whole way
+   out to the edge of the screen, so anything travelling under it is blurred
+   rather than cut off at the gutter. */
+html.igskin #gndBody .pgwrap{
+  margin-left:calc(-1 * var(--gut));margin-right:calc(-1 * var(--gut));
+  scroll-padding-left:calc(var(--namew) + var(--gut))}
+html.igskin #gndBody .pgrid{
+  grid-template-columns:calc(var(--namew) + var(--gut)) repeat(var(--ph,1),var(--sq))}
+html.igskin #gndBody .pgname{padding-left:var(--gut)}
+html.igskin #gndBody .pgcorner{padding-left:var(--gut)}
+html.igskin .pgglass{
+  background:linear-gradient(to right,
+    rgba(255,255,255,.86) 0%,rgba(255,255,255,.66) 58%,rgba(255,255,255,.34) 100%)}
+html[data-theme="dark"].igskin .pgglass{
+  background:linear-gradient(to right,
+    rgba(0,0,0,.80) 0%,rgba(0,0,0,.58) 58%,rgba(0,0,0,.30) 100%)}
+@supports ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+  html.igskin .pgglass{
+    -webkit-backdrop-filter:blur(64px) saturate(180%) brightness(1.05);
+    backdrop-filter:blur(64px) saturate(180%) brightness(1.05)}
+  html[data-theme="dark"].igskin .pgglass{
+    -webkit-backdrop-filter:blur(64px) saturate(185%) brightness(1.55);
+    backdrop-filter:blur(64px) saturate(185%) brightness(1.55)}
+}
+
+
+/* ===========================================================
+   POLISH IX — the way in, and the colour of Home
+   =========================================================== */
+/* ---------- the loader: shown while the records are being read, and at no
+   other time. It carries the app's own wordmark, so the first thing on the
+   screen is the app rather than a blank page. ---------- */
+#pl-boot{position:fixed;inset:0;z-index:120;display:grid;place-items:center;
+  background:var(--bg,#fff);transition:opacity .38s var(--ease)}
+#pl-boot.gone{opacity:0;pointer-events:none}
+#pl-boot .pl-bootin{display:flex;flex-direction:column;align-items:center;gap:22px;
+  padding-bottom:6vh}
+#pl-boot h1{margin:0;font-family:var(--display,inherit);font-size:23px;font-weight:800;
+  letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:var(--ink,#111)}
+#pl-boot .pl-bootbar{position:relative;width:104px;height:3px;border-radius:2px;overflow:hidden;
+  background:color-mix(in srgb,var(--ink,#111) 12%,transparent)}
+#pl-boot .pl-bootbar i{position:absolute;top:0;bottom:0;left:0;width:42%;border-radius:2px;
+  background:var(--ink,#111);animation:pl-slide 1.15s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes pl-slide{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+@media (prefers-reduced-motion:reduce){
+  #pl-boot .pl-bootbar i{animation:none;width:100%;opacity:.45}
+}
+
+/* ---------- the lock on the board wears the lock on the app ---------- */
+#vLock{min-height:calc(100dvh - 92px);min-height:calc(100vh - 92px)}
+#vLock .alword{margin:0 0 34px;font-size:25px;font-size:clamp(21px,6.4vw,27px);
+  letter-spacing:.30em;text-indent:.30em;line-height:1.1;color:var(--ig-ink)}
+@media (min-width:700px) and (min-height:600px){
+  #vLock .alword{font-size:30px;margin-bottom:40px}
+}
+#vLock .input{background:#262626;color:#F5F5F5;border:0;box-shadow:none}
+#vLock .input:focus{background:#262626;box-shadow:inset 0 0 0 1.5px #3A3A3C}
+#vLock .input::placeholder{color:#8E8E8E}
+
+/* ===========================================================
+   HOME TAKES ITS COLOUR FROM THE PICTURE
+   --pl-hero is the tint the app already works out from the hero picture; it
+   is mirrored onto the page so everything on Home can take it, and it moves
+   whenever the picture does. Every accent falls back to the app's indigo, so
+   with no pictures at all Home looks exactly as it did.
+   =========================================================== */
+html.igskin{
+  --pl-hero:var(--ig-blue);
+  --pl-accent:color-mix(in srgb,var(--pl-hero) 74%,var(--ink) 26%);
+  --pl-accent-soft:color-mix(in srgb,var(--pl-hero) 55%,var(--ink) 8%)}
+html.igskin #v-today{
+  --ig-blue:var(--pl-accent);
+  --h-violet:var(--pl-accent-soft);
+  --h-rose:var(--pl-accent-soft)}
+/* the three doors, the rings on the rail and the mark under the tab all
+   answer to the same colour */
+html.igskin #v-today .gorow{--qc:var(--pl-accent)!important}
+html.igskin #v-today .srring{--c:var(--pl-accent)!important}
+html.igskin .app.pl-today .pl-glide{background:var(--pl-accent)}
+/* and the bar at the top carries it until the page is scrolled under it */
+html.igskin .app.pl-today .topbar{
+  background-color:color-mix(in srgb,var(--pl-hero) 15%,var(--bg));
+  transition:background-color .7s var(--ease),transform .3s var(--ease),box-shadow .3s var(--ease)}
+@media (max-width:699px){
+  html.igskin .app.pl-today .topbar{
+    background-color:color-mix(in srgb,var(--pl-hero) 15%,
+      color-mix(in srgb,var(--bg) 86%,transparent))}
+}
+html.igskin .app.pl-today .topbar.stuck{background-color:color-mix(in srgb,var(--bg) 86%,transparent)}
+
+/* ---------- what today has bought, given room ---------- */
+html.igskin .bmr{gap:10px}
+html.igskin .bmr .pl-climb{margin-left:0;padding:5px 10px 5px 8px;border-radius:999px;
+  font-size:12.5px;font-weight:700;letter-spacing:-.005em;line-height:1;
+  gap:5px;align-self:center;
+  color:var(--pl-accent);background:color-mix(in srgb,var(--pl-accent) 13%,transparent)}
+/* up is green, down is red — the one reading on Home that is not the
+   picture's colour, because it is saying which way the day went */
+html.igskin{--pl-up:#2F9E63}
+html[data-theme="dark"].igskin{--pl-up:#5FD08C}
+html.igskin .bmr .pl-climb.up{color:var(--pl-up);
+  background:color-mix(in srgb,var(--pl-up) 15%,transparent)}
+html.igskin .bmr .pl-climb.down{color:var(--ig-red);
+  background:color-mix(in srgb,var(--ig-red) 13%,transparent)}
+/* the figure inside the pill belongs to the pill, not to the rank beside it:
+   .bmr b is the big number's own colour, and it was reaching in here */
+html.igskin .bmr .pl-climb b{font-size:13px;font-weight:800;letter-spacing:-.01em;
+  text-transform:none;line-height:1;color:inherit;font-variant-numeric:tabular-nums}
+html.igskin .bmr .pl-climb span{font-size:12px;font-weight:600;letter-spacing:-.005em;
+  text-transform:none;color:inherit;opacity:.82;line-height:1}
+html.igskin .bmr .pl-climb svg{color:inherit}
+.pl-climb svg{width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- naming the steps of a phase ---------- */
+html.igskin .wordtog{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  width:100%;margin-top:14px;padding:11px 14px;border:0;border-radius:12px;
+  background:var(--ig-fill);color:var(--ink-2);
+  font-family:var(--ui);font-size:14px;font-weight:600;letter-spacing:-.01em;
+  transition:background .2s var(--ease),color .2s var(--ease)}
+html.igskin .wordtog svg{width:17px;height:17px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .32s var(--pl-out)}
+html.igskin .wordtog.on{color:var(--ink)}
+html.igskin .wordtog.on svg{transform:rotate(180deg)}
+html.igskin .wordlist{display:flex;flex-direction:column;gap:7px;margin-top:10px;
+  max-height:min(46vh,340px);overflow:auto;padding:2px 1px;
+  scrollbar-width:none}
+html.igskin .wordlist::-webkit-scrollbar{display:none}
+html.igskin .wordrow{display:flex;align-items:center;gap:10px}
+html.igskin .wordrow i{flex:0 0 auto;width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;font-style:normal;
+  font-family:var(--ui);font-size:13px;font-weight:700;color:var(--ink-3);
+  background:var(--ig-fill);font-variant-numeric:tabular-nums}
+html.igskin .wordrow .input{flex:1 1 auto;min-width:0;height:42px;font-size:15px}
 </style>
 </head>
 <body>
@@ -5014,11 +5205,7 @@ html.igskin #standSec .runbar i{border-radius:999px;
     <!-- ===== VISION ===== -->
     <section class="view" id="v-vision">
       <div class="vlock" id="vLock" hidden>
-        <div class="lockring">
-          <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></svg>
-        </div>
-        <h3>Vision is locked</h3>
-        <p class="lockwhy">Enter your PIN to open the board.</p>
+        <h1 class="wordmark alword">Onwards</h1>
         <input class="input pin" id="vPin" type="password" inputmode="numeric" placeholder="PIN" maxlength="12" autocomplete="off">
         <button class="btn" id="vUnlock">Unlock</button>
         <div class="vlock-err" id="vPinErr"></div>
@@ -5478,7 +5665,6 @@ html.igskin #standSec .runbar i{border-radius:999px;
     <button class="igrow" data-do="edit"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10a2.1 2.1 0 0 0-3-3L5 17z"/></svg><span>Edit profile</span></button>
     <button class="igrow" data-do="add"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg><span>Add photos</span></button>
     <button class="igrow" data-do="arrange"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span id="igArrangeLbl">Rearrange posts</span></button>
-    <button class="igrow" data-do="docs"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Documents</span></button>
   </div>
   <div class="sheet-actions"><button class="btn ghost" id="igMenuClose">Cancel</button></div>
 </div>
@@ -5657,6 +5843,29 @@ html.igskin #standSec .runbar i{border-radius:999px;
   <div class="field" id="gndColWrap" hidden>
     <span class="eyebrow">Colour</span>
     <div class="colors" id="gndColors"></div>
+  </div>
+  <div class="field" id="gndLvlWrap" hidden>
+    <span class="eyebrow">Steps of sureness</span>
+    <div class="lvlrow">
+      <button type="button" class="lvlpm" id="gndLvlDown" aria-label="One step fewer">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+      <span class="lvlnum" id="gndLvlNum">5</span>
+      <button type="button" class="lvlpm" id="gndLvlUp" aria-label="One step more">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="lvlquick" id="gndLvlQuick">
+      <button type="button" data-l="2">2</button>
+      <button type="button" data-l="3">3</button>
+      <button type="button" data-l="5">5</button>
+      <button type="button" data-l="10">10</button>
+      <button type="button" data-l="20">20</button>
+    </div>
+    <p class="gndlvlhint" id="gndLvlHint">Squares in this phase are marked 0 to 5.</p>
+    <button type="button" class="wordtog" id="gndWordTog" aria-expanded="false">
+      <span>Name each step</span>
+      <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
+    </button>
+    <div class="wordlist" id="gndWordList" hidden></div>
   </div>
   <div class="sheet-actions">
     <button class="btn ghost" id="gndNameCancel">Cancel</button>
@@ -6123,7 +6332,7 @@ function standReading(){
        left at nought is not a reading, so a subject with none of them has
        nothing to show and would sit there at 0% saying nothing. */
     const started=n && g.topics.some(t=>g.phases.some(ph=>confEarned(gCell(g,t.id,ph.id).c)>0));
-    if(started) subs.push({name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
+    if(started) subs.push({id:g.id,name:g.name,color:g.color,pct:Math.round(gScore(g)*100)});
   });
   /* the rail keeps the order Portions is in, so the two pages always read
      the same way round. `ground` is already sorted by that order on load,
@@ -6164,14 +6373,17 @@ function renderStand(){
   /* the rail: one ring a subject, worst first */
   $('#subRail').hidden=!r.subs.length;
   $('#srTrack').innerHTML=r.subs.map(x=>
-    '<button class="srsub"><span class="srring" style="--c:'+esc(x.color)+
+    '<button class="srsub" data-id="'+esc(x.id)+'"><span class="srring" style="--c:'+esc(x.color)+
       ';--p:'+(x.pct*3.6)+'deg"><span class="srin">'+
       esc((x.name||'?').trim().charAt(0).toUpperCase())+'</span></span>'+
       '<span class="srn">'+esc(x.name)+'</span>'+
       '<span class="srp">'+x.pct+'%</span></button>').join('');
 }
 $('#subAll').addEventListener('click',()=>openGround());
-$('#srTrack').addEventListener('click',e=>{ if(e.target.closest('.srsub')) openGround(); });
+$('#srTrack').addEventListener('click',e=>{
+  const b=e.target.closest('.srsub'); if(!b) return;
+  openSubject(b.dataset.id);
+});
 
 
 /* ===========================================================
@@ -6213,14 +6425,18 @@ const EFFORT_SHARE=0.9;             /* of one confidence point, at most */
 const EFFORT_HALF=60;               /* completions at which half of it is earned */
 
 function jeePoints(){
-  let cells=0, sum=0;
+  let sum=0, total=0;
   ground.forEach(g=>{
     const n=g.topics.length*g.phases.length;
     if(!n) return;
-    cells+=n;
-    g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=confEarned(gCell(g,t.id,ph.id).c); }));
+    /* what is available is the sum of every phase's own scale, so a phase
+       kept short simply offers fewer points and each one is worth more */
+    g.topics.forEach(t=>g.phases.forEach(ph=>{
+      sum+=confEarned(gCell(g,t.id,ph.id).c);
+      total+=phSpan(ph);
+    }));
   });
-  return {have:sum,total:cells*CONF_SPAN};
+  return {have:sum,total};
 }
 const jeeCoverage=()=>{ const p=jeePoints(); return p.total? p.have/p.total : 0; };
 
@@ -6983,10 +7199,36 @@ const GKEY=(t,ph)=>t+'|'+ph;
    rather than rounding, so a one stays a one and nothing already recorded
    falls back to nothing. */
 const MAXC=5;
+/* Each phase may run on a shorter scale of its own: a pass that is only ever
+   done or not needs two steps, not five. The number lives on the phase, falls
+   back to the full five, and every reading in the app — the subject
+   percentages, the figure on Home, the rank — divides by the phase's own
+   scale rather than by a fixed one. */
+const CONF_MINL=2, CONF_MAXL=99;
+/* what a phase says it runs to, if it says anything sensible */
+const phCap=v=>{ const n=Math.round(Number(v));
+  return (isFinite(n)&&n>=CONF_MINL&&n<=CONF_MAXL)?n:MAXC; };
+const clampLvl=v=>{ const n=Math.round(Number(v));
+  return isFinite(n)? Math.max(CONF_MINL,Math.min(CONF_MAXL,n)) : MAXC; };
 function normGround(g){
   g=g||{};
   const phases=(Array.isArray(g.phases)?g.phases:[])
-    .filter(x=>x&&x.id).map(x=>({id:String(x.id),name:String(x.name||'Phase').slice(0,28)}));
+    .filter(x=>x&&x.id).map(x=>{
+      const m=phCap(x.max);
+      const ph={id:String(x.id),name:String(x.name||'Phase').slice(0,28),max:m};
+      /* a phase may name its own steps; anything missing falls back to the
+         words the app ships with */
+      if(Array.isArray(x.words)){
+        const w=[]; let any=false;
+        for(let i=0;i<=m;i++){
+          const s=String(x.words[i]==null?'':x.words[i]).trim().slice(0,28);
+          w[i]=s; if(s) any=true;
+        }
+        if(any) ph.words=w;
+      }
+      return ph;
+    });
+  const phTop=new Map(phases.map(p=>[p.id,p.max]));
   const topics=(Array.isArray(g.topics)?g.topics:[])
     .filter(x=>x&&x.id).map(x=>({id:String(x.id),name:String(x.name||'Topic').slice(0,60)}));
   const fresh = Number(g.scale)===MAXC;
@@ -6999,7 +7241,8 @@ function normGround(g){
     let n=Math.round(Number(c.c));
     if(!isFinite(n)||n<0) n=0;
     if(!fresh && n>0) n=Math.ceil(n/2);          /* ten-scale becomes five */
-    const conf=Math.min(MAXC,n);
+    /* a reading can never sit above the scale of the phase it is under */
+    const conf=Math.min(phTop.get(k.split('|')[1])||MAXC,n);
     /* one block of text became a list; a file written before that still
        reads, its lines becoming the entries */
     const raw = Array.isArray(c.s) ? c.s : String(c.s==null?'':c.s).split('\n');
@@ -7023,15 +7266,32 @@ const gCell=(g,t,ph)=>g.cells[GKEY(t,ph)]||{c:0,s:[]};
    Every reading in the app goes through this: the subject percentages, the
    figure on Home, and the rank. */
 const CONF_FLOOR=1;                       /* at or below this, it counts for nothing */
-const CONF_SPAN=MAXC-CONF_FLOOR;          /* what is left to earn on each cell */
+const CONF_SPAN=MAXC-CONF_FLOOR;          /* what is left to earn on a full-scale cell */
+const phMax=ph=>phCap(ph&&ph.max);
+const phSpan=ph=>Math.max(1,phMax(ph)-CONF_FLOOR);
+/* A reading taken on a shorter scale is shown against the same five-step
+   ramp, so two phases with different scales still read the same way: the top
+   of a three-step phase is the same colour as the top of a five-step one. */
+const confStepOn=(c,max)=>{ c=Number(c)||0; if(c<=0) return 0;
+  return Math.max(1,Math.min(MAXC,Math.round(c/phCap(max)*MAXC))); };
+/* For the colour the same position is taken without rounding, so a phase with
+   twenty steps runs the whole way from red to green twenty shades at a time
+   rather than in five jumps. The first step is always the red end and the
+   last always the green one, whatever the scale. */
+const confPos=(c,max)=>{ c=Number(c)||0; if(c<=0) return 0;
+  const m=phCap(max);
+  return m<=1? MAXC : 1+(c-1)/(m-1)*(MAXC-1); };
 const confEarned=c=>Math.max(0,(Number(c)||0)-CONF_FLOOR);
 
 function gScore(g){
   const n=g.topics.length*g.phases.length;
   if(!n) return 0;
-  let sum=0;
-  g.topics.forEach(t=>g.phases.forEach(ph=>{ sum+=confEarned(gCell(g,t.id,ph.id).c); }));
-  return sum/(n*CONF_SPAN);
+  let sum=0, span=0;
+  g.topics.forEach(t=>g.phases.forEach(ph=>{
+    sum+=confEarned(gCell(g,t.id,ph.id).c);
+    span+=phSpan(ph);
+  }));
+  return span? sum/span : 0;
 }
 function normNote(n){
   n=n||{};
@@ -7106,7 +7366,11 @@ async function tryAppUnlock(){
   const v=$('#alPin').value.trim();
   if(!v){ $('#alPin').focus(); return; }
   if(await pinMatches(v)){
-    appUnlocked=true; hideAppLock(); buzz(HAPTIC.done);
+    appUnlocked=true;
+    /* the board is behind the same PIN, and it has just been given */
+    visionUnlocked=true;
+    hideAppLock(); buzz(HAPTIC.done);
+    try{ syncVisionLock(); }catch(e){}
     applySettings();           /* the app's own theme comes back */
   }else{
     $('#alErr').textContent='That is not the PIN';
@@ -7123,7 +7387,9 @@ document.addEventListener('visibilitychange',()=>{
   else if(!document.hidden && appLockOn() && !appUnlocked) showAppLock();
 });
 /* the page has two stops past the lock: the door, and the profile behind it */
-let vStage='gate';
+/* The page opens on the profile. The door in front of it asked a question
+   nobody needed asking twice. */
+let vStage='profile';
 function syncVisionLock(){
   const locked=visionLocked();
   $('#vLock').hidden=!locked;
@@ -7149,6 +7415,76 @@ async function tryUnlock(){
 }
 $('#vUnlock').addEventListener('click',tryUnlock);
 $('#vPin').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* how many steps the phase being named runs to */
+let gLvl=MAXC;
+function paintLvl(){
+  $('#gndLvlNum').textContent=gLvl;
+  $$('#gndLvlQuick button').forEach(b=>b.classList.toggle('on',+b.dataset.l===gLvl));
+  $('#gndLvlDown').disabled = gLvl<=CONF_MINL;
+  $('#gndLvlUp').disabled = gLvl>=CONF_MAXL;
+  const h=$('#gndLvlHint');
+  if(h) h.textContent = gLvl===2
+    ? 'Squares in this phase are marked 0, 1 or 2.'
+    : 'Squares in this phase are marked 0 to '+gLvl+'.';
+}
+function setLvl(v){
+  const n=clampLvl(v);
+  if(n===gLvl) return;
+  gLvl=n; paintLvl();
+  if(!$('#gndWordList').hidden) buildWords();   /* the list follows the scale */
+  buzz(6);
+}
+/* the words a phase gives its own steps. Anything left blank keeps the word
+   the app would have used, so a half-named scale still reads properly. */
+let gWords=[];
+const defWord=(i,max)=>CONF_WORD[confStepOn(i,max)]||'';
+function buildWords(){
+  const L=$('#gndWordList'); if(!L) return;
+  L.innerHTML='';
+  for(let i=0;i<=gLvl;i++){
+    const row=document.createElement('label');
+    row.className='wordrow';
+    const tag=document.createElement('i'); tag.textContent=i;
+    const inp=document.createElement('input');
+    inp.className='input'; inp.type='text'; inp.maxLength=28;
+    inp.dataset.i=String(i);
+    inp.placeholder=defWord(i,gLvl);
+    inp.value=gWords[i]||'';
+    inp.addEventListener('input',()=>{ gWords[i]=inp.value; });
+    row.appendChild(tag); row.appendChild(inp);
+    L.appendChild(row);
+  }
+}
+$('#gndWordTog').addEventListener('click',()=>{
+  const L=$('#gndWordList'), opening=L.hidden;
+  if(opening) buildWords();
+  L.hidden=!opening;
+  $('#gndWordTog').classList.toggle('on',opening);
+  $('#gndWordTog').setAttribute('aria-expanded',opening?'true':'false');
+  buzz(6);
+});
+$('#gndLvlQuick').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(b) setLvl(b.dataset.l);
+});
+/* the two ends step one at a time, and keep stepping while they are held */
+(function lvlSteppers(){
+  let hold=0, rep=0;
+  const stop=()=>{ clearTimeout(hold); clearInterval(rep); hold=0; rep=0; };
+  [['#gndLvlDown',-1],['#gndLvlUp',1]].forEach(([sel,dir])=>{
+    const b=$(sel);
+    b.addEventListener('click',()=>setLvl(gLvl+dir));
+    b.addEventListener('pointerdown',()=>{
+      stop();
+      hold=setTimeout(()=>{ rep=setInterval(()=>{
+        const was=gLvl; setLvl(gLvl+dir);
+        if(gLvl===was) stop();               /* it has hit the end */
+      },90); },420);
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,stop));
+  });
+  addEventListener('blur',stop);
+})();
 
 let pinMode='set';
 function openPin(mode){
@@ -7309,7 +7645,7 @@ function paintGate(){
   el.textContent=GATE_LINES[((d%n)+n)%n];
 }
 function visionStage(s){
-  vStage = s==='profile' ? 'profile' : 'gate';
+  vStage='profile';
   renderVision(); scrollTo(0,0);
 }
 $('#gateProfile').addEventListener('click',()=>{ visionStage('profile'); buzz(8); });
@@ -8061,7 +8397,7 @@ function showView(v){
   requestAnimationFrame(syncBarHeight);
   if(v==='today') renderToday();
   if(v==='ground'){ gSubj=null; renderGround(); }
-  if(v==='vision'){ vStage='gate'; renderVision(); }
+  if(v==='vision'){ vStage='profile'; renderVision(); }
   if(v==='settings'){ renderSettings(); }
 }
 /* ---------- settings: the doors and what is behind them ----------
@@ -8217,6 +8553,13 @@ function refreshHome(){
 /* Portions is a tab now. Opening it is going to that tab; the tab itself
    draws the page, so nothing here touches the scrim or a sheet. */
 function openGround(){ goTab('ground'); }
+/* straight into one subject, rather than to the shelf it sits on */
+function openSubject(id){
+  const g=gById(id);
+  goTab('ground');
+  if(!g) return;
+  gSubj=g; renderGround(); scrollTo(0,0);
+}
 /* the arrow only ever steps back from one subject to the shelf */
 function closeGround(){
   if(!gSubj) return;
@@ -8297,7 +8640,9 @@ function renderGroundList(b){
 async function duplicateSubject(id){
   const g=gById(id); if(!g) return;
   const pmap=new Map(), tmap=new Map();
-  const phases=g.phases.map(p=>{ const n={id:uid(),name:p.name}; pmap.set(p.id,n.id); return n; });
+  const phases=g.phases.map(p=>{ const n={id:uid(),name:p.name,max:phMax(p)};
+    if(Array.isArray(p.words)) n.words=p.words.slice();
+    pmap.set(p.id,n.id); return n; });
   const topics=g.topics.map(t=>{ const n={id:uid(),name:t.name}; tmap.set(t.id,n.id); return n; });
   const cells={};
   Object.keys(g.cells||{}).forEach(k=>{
@@ -8403,7 +8748,7 @@ function renderGroundSheet(b){
     const phPct=ph=>{
       if(!g.topics.length) return 0;
       let sum=0; g.topics.forEach(t=>{ sum+=gCell(g,t.id,ph.id).c; });
-      return Math.round(sum/(g.topics.length*MAXC)*100);
+      return Math.round(sum/(g.topics.length*phMax(ph))*100);
     };
     /* Every square is given its row and column outright rather than being
        left to fall into place. That frees the first column to carry one
@@ -8422,7 +8767,7 @@ function renderGroundSheet(b){
         '<span class="pgnt">'+esc(tp.name)+'</span></button>'+
         g.phases.map((ph,i)=>{
           const c=gCell(g,tp.id,ph.id);
-          const tint=confColor(c.c);
+          const tint=confColor(confPos(c.c,phMax(ph)));
           /* the square says everything by its colour alone: no figure inside
              it, and no mark for the sources kept behind it */
           return '<button class="pgcell'+(c.c?' set':'')+'"'+
@@ -8455,10 +8800,13 @@ function renderGroundSheet(b){
     markX();
     const key=document.createElement('div');
     key.className='pgkey';
-    let kh='<span class="pgkl">Barely looked</span>';
-    for(let i=1;i<=MAXC;i++)
-      kh+='<i class="pgks" style="background:'+confColor(i)+'"></i>';
-    kh+='<span class="pgkl">Cold</span>';
+    /* one unbroken ramp rather than five blocks, since a phase may run to
+       any number of steps and the colour between them is continuous */
+    const stops=[];
+    for(let i=0;i<=24;i++) stops.push(confColor(1+(i/24)*(MAXC-1))+' '+((i/24)*100).toFixed(1)+'%');
+    let kh='<span class="pgkl">Barely looked</span>'+
+      '<i class="pgks ramp" style="background:linear-gradient(90deg,'+stops.join(',')+')"></i>'+
+      '<span class="pgkl">Cold</span>';
     key.innerHTML=kh;
     b.appendChild(key);
   }
@@ -8508,6 +8856,17 @@ function openName(kind,id,current){
     gColor = g ? g.color : THREADS[ground.length%THREADS.length];
     paintGndColours();
   }
+  const isPh=kind==='phase';
+  $('#gndLvlWrap').hidden=!isPh;
+  if(isPh){
+    const row=(id&&gSubj)? gSubj.phases.find(x=>x.id===id) : null;
+    gLvl=phMax(row||{});
+    gWords=Array.isArray(row&&row.words)? row.words.map(w=>String(w||'')) : [];
+    $('#gndWordList').hidden=true; $('#gndWordList').innerHTML='';
+    $('#gndWordTog').classList.remove('on');
+    $('#gndWordTog').setAttribute('aria-expanded','false');
+    paintLvl();
+  }
   $('#gndNameDelWrap').hidden=!id;
   $('#gndNameDel').textContent='Delete '+t.toLowerCase(); $('#gndNameDel').dataset.armed='';
   $('#scrim').classList.add('on','high'); $('#gndNameSheet').classList.add('on');
@@ -8552,7 +8911,27 @@ $('#gndNameSave').addEventListener('click',async()=>{
     const row = id ? list.find(x=>x.id===id) : null;
     if(row) row.name=name.slice(0,cap);
     else list.push({id:uid(),name:name.slice(0,cap)});
+    let brought=0;
+    if(kind==='phase'){
+      const ph = row || list[list.length-1];
+      ph.max=phCap(gLvl);
+      const words=[]; let named=false;
+      for(let i=0;i<=ph.max;i++){
+        const s=String(gWords[i]||'').trim().slice(0,28);
+        words[i]=s; if(s) named=true;
+      }
+      if(named) ph.words=words; else delete ph.words;
+      /* a shorter scale cannot hold a reading taken on a longer one, so
+         anything above it comes down to the new top rather than being lost */
+      for(const k of Object.keys(gSubj.cells)){
+        if(k.split('|')[1]!==ph.id) continue;
+        const cell=gSubj.cells[k];
+        if(cell.c>ph.max){ cell.c=ph.max; brought++; }
+      }
+    }
     await gSave(gSubj);
+    if(brought) toast(brought===1 ? 'One reading came down to '+phCap(gLvl)
+                                  : brought+' readings came down to '+phCap(gLvl));
   }
   closeName(); renderGround(); renderSettings(); buzz(10);
 });
@@ -8579,14 +8958,27 @@ $('#gndNameDel').addEventListener('click',async e=>{
 });
 
 /* ---------- one reading ---------- */
-(function conf(){
+let gConfMax=MAXC, gConfWords=[];
+function buildConf(max,words){
+  const next=phCap(max);
+  gConfWords=Array.isArray(words)?words:[];
   const w=$('#gndConf');
-  for(let i=0;i<=MAXC;i++){
+  if(next===gConfMax && w.children.length===next+1) return;   /* already built */
+  gConfMax=next;
+  w.innerHTML='';
+  for(let i=0;i<=gConfMax;i++){
     const b=document.createElement('button');
     b.className='confstep'; b.dataset.v=i; b.textContent=i;
-    b.setAttribute('aria-label','Sureness '+i+' of '+MAXC);
+    b.setAttribute('aria-label','Sureness '+i+' of '+gConfMax);
     w.appendChild(b);
   }
+  /* six or fewer sit in one strip; past that they wrap into a grid rather
+     than shrinking to nothing */
+  w.classList.toggle('many',gConfMax>6);
+}
+(function conf(){
+  const w=$('#gndConf');
+  gConfMax=0; buildConf(MAXC);
   w.addEventListener('click',e=>{
     const b=e.target.closest('.confstep'); if(!b) return;
     gConf=+b.dataset.v; paintConf(); buzz(6);
@@ -8632,13 +9024,17 @@ function paintConf(){
   $$('#gndConf .confstep').forEach(b=>{
     const v=+b.dataset.v;
     const lit=v>0&&v<=gConf;
+    const pos=confPos(v,gConfMax);
     b.classList.toggle('lit',lit);
     /* each step wears its own colour, not the colour of the choice */
-    b.style.background = lit ? confColor(v) : '';
-    b.style.color = lit ? confInk(v) : '';
+    b.style.background = lit ? confColor(pos) : '';
+    b.style.color = lit ? confInk(pos) : '';
     b.classList.toggle('on',v===gConf);
   });
-  $('#gndConfWord').textContent=CONF_WORD[gConf]||'';
+  const own=gConfWords && gConfWords[gConf] ? String(gConfWords[gConf]) : '';
+  const word=own || CONF_WORD[confStepOn(gConf,gConfMax)] || '';
+  $('#gndConfWord').textContent = gConfMax===MAXC ? word
+    : word+' · '+gConf+' of '+gConfMax;
 }
 /* The cell opens as something to read. Sureness is live either way, because
    that is the one thing the cell is usually opened to change; the sources are
@@ -8680,7 +9076,8 @@ function openCell(tid,pid){
   if(!tp||!ph) return;
   gCellAt={t:tid,ph:pid};
   const c=gCell(gSubj,tid,pid);
-  gConf=c.c; paintConf();
+  buildConf(phMax(ph),ph.words);
+  gConf=Math.min(c.c,gConfMax); paintConf();
   $('#gndCellTitle').textContent=tp.name;
   $('#gndCellWhere').textContent=ph.name;
 
@@ -9639,8 +10036,6 @@ function topLayer(){
   }
   if(feedOn) return closeFeed;
   if(arrangeOn) return ()=>{ arrangeOn=false; renderGrid(); toast('Order saved'); };
-  if($('#v-vision').classList.contains('active') && vStage==='profile')
-    return ()=>visionStage('gate');
   if($('#v-settings').classList.contains('active') && setPage) return closeSetPage;
   /* inside a subject, back steps out to the shelf before it leaves the page */
   if($('#v-ground').classList.contains('active') && gSubj) return closeGround;
@@ -10009,20 +10404,7 @@ wrap('renderGround',()=>{
   const prev=gKey; gKey=key;
   if(activeView()!=='ground') return;
   const fresh=enter.ground; enter.ground=false;
-  if(!fresh && key===prev){
-    /* the same page redrawn after a change: the square you just set answers */
-    if(typeof gCellAt!=='undefined' && gCellAt && key!=='list'){
-      const c=q('.pgcell[data-t="'+CSS.escape(gCellAt.t)+'"][data-ph="'+CSS.escape(gCellAt.ph)+'"]',b);
-      if(c){
-        cls(c,'pl-hot',true);
-        const a=play(c,[{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(1)'}],
-          {duration:420,easing:'cubic-bezier(.34,1.56,.64,1)',fill:'none'});
-        setTimeout(()=>c.classList.remove('pl-hot'),460);
-        if(!a) c.classList.remove('pl-hot');
-      }
-    }
-    return;
-  }
+  if(!fresh && key===prev) return;      /* a redraw after a change says nothing */
   const dir= fresh? 0 : (prev==='list'&&key!=='list')? 1 : (key==='list'&&prev!=='list')? -1 : 0;
   const from= dir? 'translateX('+(dir*28)+'px)' : 'translateY(10px)';
   if(!fresh){
@@ -10133,14 +10515,17 @@ safe(()=>{
       const h3=e.target.closest('h3');
       const zone=e.target.closest('.grabber') || (h3 && h3.parentElement===sh ? h3 : null);
       if(!zone || sh.scrollTop>2) return;
+      if(e.target.closest('button,a,input,textarea')) return;
       d={y0:e.clientY,t0:performance.now(),dy:0,h:sh.offsetHeight||400,id:e.pointerId,moved:false};
-      try{ sh.setPointerCapture(e.pointerId); }catch(err){}
     });
     sh.addEventListener('pointermove',e=>{
       if(!d || e.pointerId!==d.id) return;
       let dy=e.clientY-d.y0;
-      if(!d.moved && Math.abs(dy)<4) return;
-      d.moved=true;
+      if(!d.moved){
+        if(Math.abs(dy)<4) return;
+        d.moved=true;
+        try{ sh.setPointerCapture(d.id); }catch(err){}   /* only once it is a drag */
+      }
       dy = dy<0 ? dy*.18 : dy;                   /* upward it only gives a little */
       d.dy=dy;
       cls(sh,'pl-drag',true);
@@ -10380,13 +10765,20 @@ safe(()=>{
       if(e.pointerType==='mouse' && e.button!==0) return;
       const bar=e.target.closest('.fsbar');
       if(!bar || bar.parentElement.parentElement!==sh) return;
+      /* a control in the head is a control: pressing Done or Back is not the
+         start of a drag, and capturing the pointer here would send its click
+         to the sheet instead of to the button */
+      if(e.target.closest('button,a,input,textarea,[contenteditable="true"]')) return;
       d={y0:e.clientY,t0:performance.now(),dy:0,id:e.pointerId,moved:false,h:sh.offsetHeight||700};
-      try{ sh.setPointerCapture(e.pointerId); }catch(err){}
     });
     sh.addEventListener('pointermove',e=>{
       if(!d || e.pointerId!==d.id) return;
       let dy=e.clientY-d.y0;
-      if(!d.moved){ if(Math.abs(dy)<5) return; d.moved=true; cls(sh,'pl-drag',true); }
+      if(!d.moved){
+        if(Math.abs(dy)<5) return;
+        d.moved=true; cls(sh,'pl-drag',true);
+        try{ sh.setPointerCapture(d.id); }catch(err){}   /* only once it is a drag */
+      }
       dy = dy<0 ? dy*.16 : dy;
       d.dy=dy;
       sh.style.transform='translate3d(0,'+dy.toFixed(1)+'px,0)';
@@ -10412,30 +10804,6 @@ safe(()=>{
     new MutationObserver(()=>{ if(!sh.classList.contains('on') && !d){ sh.style.transform=''; sh.style.borderRadius=''; } })
       .observe(sh,{attributes:true,attributeFilter:['class']});
   });
-});
-
-/* ---------- the square being read, with its row and its column ---------- */
-function crossOff(){
-  qa('.pgrid.pl-focus').forEach(g=>cls(g,'pl-focus',false));
-  qa('.pl-cross').forEach(el=>cls(el,'pl-cross',false));
-  qa('.pl-at').forEach(el=>cls(el,'pl-at',false));
-}
-function crossOn(){
-  if(typeof gCellAt==='undefined' || !gCellAt) return;
-  const grid=q('#gndBody .pgrid'); if(!grid) return;
-  crossOff();
-  const t=CSS.escape(gCellAt.t), ph=CSS.escape(gCellAt.ph);
-  qa('.pgcell[data-t="'+t+'"],.pgcell[data-ph="'+ph+'"],.pgname[data-t="'+t+'"],.pgph[data-ph="'+ph+'"]',grid)
-    .forEach(el=>cls(el,'pl-cross',true));
-  const at=q('.pgcell[data-t="'+t+'"][data-ph="'+ph+'"]',grid);
-  cls(at,'pl-at',true);
-  cls(grid,'pl-focus',true);
-}
-wrapFn('openCell',()=>{ if(!RM()) requestAnimationFrame(crossOn); });
-wrapFn('closeCell',()=>crossOff());
-wrapFn('renderGround',()=>{
-  const sheet=q('#gndCellSheet');
-  if(sheet && sheet.classList.contains('on') && !RM()) requestAnimationFrame(crossOn);
 });
 
 /* ---------- the app arrives rather than appearing ---------- */
@@ -10547,11 +10915,14 @@ safe(()=>{
 wrapFn('renderBoard',()=>{
   const host=q('#boardCard .bmr'); if(!host) return;
   let tag=q('.pl-climb',host);
-  let up=0;
-  try{ up=Math.max(0,rankBase()-jeeRank()); }catch(e){ return; }
-  if(!up){ if(tag) tag.remove(); return; }
+  let move=0;
+  /* a rank is better when it is smaller, so the day's move is where it
+     started less where it stands: above nought is a climb, below is a slip */
+  try{ move=rankBase()-jeeRank(); }catch(e){ return; }
+  if(!move){ if(tag) tag.remove(); return; }
   if(!tag){ tag=document.createElement('i'); tag.className='pl-climb'; host.appendChild(tag); }
-  tag.textContent='\u2191'+fmtRank(up)+' today';
+  cls(tag,'up',move>0); cls(tag,'down',move<0);
+  tag.textContent=(move>0?'\u2191':'\u2193')+fmtRank(Math.abs(move))+' today';
 });
 
 })();
@@ -10986,19 +11357,205 @@ safe(()=>{
   n.appendChild(cap);
 });
 
+/* the reading beside the ring counts the confidence actually earned against
+   everything there is to earn — the same two numbers the rank is worked out
+   from, rather than a count of squares touched */
 wrapFn('renderStand',()=>{
   const b=q('#standLeft'); if(!b) return;
   const label=b.parentElement? b.parentElement.querySelector('span') : null;
-  let cells=0, read=0;
-  try{
-    ground.forEach(g=>g.topics.forEach(t=>g.phases.forEach(p=>{
-      cells++; if(gCell(g,t.id,p.id).c) read++;
-    })));
-  }catch(e){ return; }
-  if(!cells) return;                       /* nothing mapped out: leave it be */
+  let p=null;
+  try{ p=jeePoints(); }catch(e){ return; }
+  if(!p || !p.total) return;               /* nothing mapped out: leave it be */
   if(b.__plc){ cancelAnimationFrame(b.__plc); b.__plc=0; }
-  b.textContent=read+' of '+cells;
-  if(label) label.textContent='squares filled';
+  b.textContent=p.have+' of '+p.total;
+  if(label) label.textContent='confidence points';
+});
+
+/* ---------- a subject on Home opens that subject, not the shelf ---------- */
+safe(()=>{
+  const track=q('#srTrack'); if(!track) return;
+  /* the rail is drawn from the same list, in the same order, so the rows can
+     be named after the subjects they were built from */
+  wrapFn('renderStand',()=>{
+    let started=[];
+    try{
+      started=ground.filter(g=>{
+        const n=g.topics.length*g.phases.length;
+        return n && g.topics.some(t=>g.phases.some(p=>confEarned(gCell(g,t.id,p.id).c)>0));
+      });
+    }catch(e){ return; }
+    const rows=track.querySelectorAll('.srsub');
+    if(rows.length!==started.length) return;
+    rows.forEach((el,i)=>{ el.dataset.gid=started[i].id; });
+  });
+  track.addEventListener('click',e=>{
+    const row=e.target.closest('.srsub');
+    if(!row || !row.dataset.gid) return;
+    let g=null;
+    try{ g=ground.find(x=>x.id===row.dataset.gid); }catch(err){}
+    if(!g) return;
+    e.stopImmediatePropagation(); e.preventDefault();
+    try{ goTab('ground'); }catch(err){ return; }
+    let tries=0;
+    const open=()=>{
+      const v=q('#v-ground');
+      if(!v || !v.classList.contains('active')){
+        if(tries++<8) return setTimeout(open,120);
+        return;
+      }
+      gSubj=g; renderGround(); scrollTo(0,0);
+    };
+    open();
+  },true);
+});
+
+})();
+</script>
+
+<script id="polish-js-9">
+/* ===========================================================
+   POLISH IX — the loader, the colour of Home, the board's lock
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish IX',err); } };
+const wrapFn=(name,after)=>{
+  try{
+    const orig=window[name];
+    if(typeof orig!=='function') return;
+    window[name]=function(){
+      const out=orig.apply(this,arguments);
+      try{ after.apply(this,arguments); }catch(e){ console.warn('Onwards polish IX',name,e); }
+      return out;
+    };
+  }catch(e){}
+};
+
+/* ===========================================================
+   THE LOADER
+   It stands in front of the app only while the records are being opened and
+   read — the one moment the page would otherwise be blank. It goes as soon
+   as the first draw lands, and a timer takes it away regardless, so nothing
+   can ever leave it sitting there.
+   =========================================================== */
+safe(()=>{
+  if(q('#pl-boot')) return;
+  const el=document.createElement('div');
+  el.id='pl-boot'; el.setAttribute('aria-hidden','true');
+  el.innerHTML='<div class="pl-bootin"><h1>Onwards</h1>'+
+    '<div class="pl-bootbar"><i></i></div></div>';
+  document.body.appendChild(el);
+  let gone=false;
+  const t0=Date.now();
+  const drop=()=>{
+    if(gone) return;
+    /* never a flash: once it is up it stays up long enough to be read */
+    const left=450-(Date.now()-t0);
+    if(left>0){ setTimeout(drop,left); return; }
+    gone=true;
+    el.classList.add('gone');
+    setTimeout(()=>{ if(el.isConnected) el.remove(); },500);
+  };
+  window.__plBootDone=drop;
+  /* the first full draw is the signal; the lock screen counts as arrived too */
+  wrapFn('renderAll',()=>requestAnimationFrame(drop));
+  wrapFn('showAppLock',()=>requestAnimationFrame(drop));
+  setTimeout(drop,6000);                      /* whatever happens, it goes */
+});
+
+/* ===========================================================
+   HOME TAKES THE PICTURE'S COLOUR
+   The app already works out a tint for the hero picture and sets it on the
+   page as --wash. That value is mirrored onto the document so the top bar
+   and the tab mark — which live outside Home — can take it as well. When
+   there are no pictures the variable is cleared and every accent falls back
+   to the app's own indigo.
+   =========================================================== */
+safe(()=>{
+  const day=q('#v-today'); if(!day) return;
+  const root=document.documentElement;
+  const sync=()=>{
+    const w=(day.style.getPropertyValue('--wash')||'').trim();
+    if(w) root.style.setProperty('--pl-hero',w);
+    else root.style.removeProperty('--pl-hero');
+    paintRankTone();
+  };
+  new MutationObserver(sync).observe(day,{attributes:true,attributeFilter:['style']});
+  sync();
+});
+const heroOn=()=>{
+  try{ return !!document.documentElement.style.getPropertyValue('--pl-hero').trim(); }
+  catch(e){ return false; }
+};
+/* the rank on Home wears the same colour; the full list keeps the app's own
+   reading of where the number sits */
+function paintRankTone(){
+  const el=q('#bRank'); if(!el) return;
+  if(heroOn()){
+    if(!el.dataset.plTone) el.dataset.plTone=el.style.color||'';
+    el.style.color='var(--pl-accent)';
+  }else if(el.dataset.plTone!==undefined){
+    el.style.color=el.dataset.plTone||'';
+    delete el.dataset.plTone;
+  }
+}
+wrapFn('renderBoard',()=>safe(paintRankTone));
+/* Home is marked on the app itself, so the bars outside it can follow */
+safe(()=>{
+  const app=q('.app'); if(!app) return;
+  const mark=()=>{
+    const v=q('.view.active');
+    cls(app,'pl-today',!!v && v.id==='v-today');
+  };
+  wrapFn('showView',()=>requestAnimationFrame(mark));
+  mark();
+});
+
+/* the day's move, rebuilt with room in it: the arrow points the way the rank
+   went and the colour says whether that was the right way */
+wrapFn('renderBoard',()=>{
+  const tag=q('#boardCard .pl-climb'); if(!tag) return;
+  const txt=(tag.textContent||'').replace(/[^0-9,]/g,'');
+  if(!txt) return;
+  const down=tag.classList.contains('down');
+  const arrow=down ? 'M12 5v14M18 13l-6 6-6-6' : 'M12 19V5M6 11l6-6 6 6';
+  tag.innerHTML='<svg viewBox="0 0 24 24"><path d="'+arrow+'"/></svg>'+
+    '<b>'+txt+'</b><span>today</span>';
+});
+
+/* ===========================================================
+   THE BOARD'S LOCK ARRIVES THE WAY THE APP'S DOES
+   =========================================================== */
+safe(()=>{
+  const lock=q('#vLock'); if(!lock) return;
+  const play=(el,frames,o)=>{
+    if(!el||!el.animate||RM()) return;
+    try{
+      const opts=Object.assign({duration:520,easing:'cubic-bezier(.16,1,.3,1)',fill:'backwards'},o||{});
+      const a=el.animate(frames,opts);
+      setTimeout(()=>{ try{ if(a.playState!=='finished') a.finish(); }catch(e){} },
+        (opts.delay||0)+opts.duration+300);
+    }catch(e){}
+  };
+  const show=()=>{
+    play(q('.wordmark',lock),
+      [{opacity:0,letterSpacing:'.6em',textIndent:'.6em',filter:'blur(8px)'},
+       {opacity:1,letterSpacing:'.30em',textIndent:'.30em',filter:'blur(0)'}],
+      {duration:1000,fill:'none'});
+    play(q('#vPin'),[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:560,delay:220});
+    play(q('#vUnlock'),[{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:560,delay:300});
+  };
+  let hidden=lock.hidden;
+  new MutationObserver(()=>{
+    if(lock.hidden===hidden) return;
+    hidden=lock.hidden;
+    if(!hidden) show();
+  }).observe(lock,{attributes:true,attributeFilter:['hidden']});
+  if(!lock.hidden) show();
 });
 
 })();
