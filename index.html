@@ -4985,25 +4985,25 @@ html.igskin{
   --pl-hero:var(--ig-blue);
   --pl-accent:color-mix(in srgb,var(--pl-hero) 74%,var(--ink) 26%);
   --pl-accent-soft:color-mix(in srgb,var(--pl-hero) 55%,var(--ink) 8%)}
-html.igskin #v-today{
+html.igskin.pl-hero #v-today{
   --ig-blue:var(--pl-accent);
   --h-violet:var(--pl-accent-soft);
   --h-rose:var(--pl-accent-soft)}
 /* the three doors, the rings on the rail and the mark under the tab all
    answer to the same colour */
-html.igskin #v-today .gorow{--qc:var(--pl-accent)!important}
-html.igskin #v-today .srring{--c:var(--pl-accent)!important}
-html.igskin .app.pl-today .pl-glide{background:var(--pl-accent)}
+html.igskin.pl-hero #v-today .gorow{--qc:var(--pl-accent)!important}
+html.igskin.pl-hero #v-today .srring{--c:var(--pl-accent)!important}
+html.igskin.pl-hero .app.pl-today .pl-glide{background:var(--pl-accent)}
 /* and the bar at the top carries it until the page is scrolled under it */
-html.igskin .app.pl-today .topbar{
+html.igskin.pl-hero .app.pl-today .topbar{
   background-color:color-mix(in srgb,var(--pl-hero) 15%,var(--bg));
   transition:background-color .7s var(--ease),transform .3s var(--ease),box-shadow .3s var(--ease)}
 @media (max-width:699px){
-  html.igskin .app.pl-today .topbar{
+  html.igskin.pl-hero .app.pl-today .topbar{
     background-color:color-mix(in srgb,var(--pl-hero) 15%,
       color-mix(in srgb,var(--bg) 86%,transparent))}
 }
-html.igskin .app.pl-today .topbar.stuck{background-color:color-mix(in srgb,var(--bg) 86%,transparent)}
+html.igskin.pl-hero .app.pl-today .topbar.stuck{background-color:color-mix(in srgb,var(--bg) 86%,transparent)}
 
 /* ---------- what today has bought, given room ---------- */
 html.igskin .bmr{gap:10px}
@@ -5050,6 +5050,158 @@ html.igskin .wordrow i{flex:0 0 auto;width:30px;height:30px;border-radius:9px;
   font-family:var(--ui);font-size:13px;font-weight:700;color:var(--ink-3);
   background:var(--ig-fill);font-variant-numeric:tabular-nums}
 html.igskin .wordrow .input{flex:1 1 auto;min-width:0;height:42px;font-size:15px}
+
+/* ===========================================================
+   POLISH X — the strip behind the notch
+   The bar under the notch takes Home's colour with the rest of the page, and
+   the browser's own status bar is told the same colour, so the phone's chrome
+   matches instead of sitting as a black or white band above a coloured bar.
+   Everywhere else it is the app's plain paper: black or white by theme.
+   =========================================================== */
+#pl-status{position:fixed;top:0;left:0;right:0;z-index:41;pointer-events:none;
+  height:env(safe-area-inset-top);
+  background-color:var(--bg);
+  transition:background-color .7s var(--ease)}
+html.igskin #pl-status.tint{
+  background-color:color-mix(in srgb,var(--pl-hero) 15%,var(--bg))}
+/* a twin with no transition on it: the strip's colour is read from here, so
+   what the phone's bar is told is the colour it is going to be rather than
+   whatever shade the fade happens to be passing through */
+#pl-statusprobe{position:fixed;top:0;left:0;width:0;height:0;opacity:0;
+  pointer-events:none;background-color:var(--bg)}
+html.igskin #pl-statusprobe.tint{
+  background-color:color-mix(in srgb,var(--pl-hero) 15%,var(--bg))}
+
+/* ===========================================================
+   POLISH XI — the finish
+   A pass over the whole app for weight, depth and rhythm. Nothing here
+   moves a control or changes what a page says; it settles type, surfaces,
+   spacing and states so every screen reads as one piece of work.
+   =========================================================== */
+
+/* ---------- your own row, on Home and on the full list ----------
+   A block of solid ink across the list was loud and read as an error state.
+   The row is now the accent at low strength with a bar down its edge, the
+   rank in the accent and the name in full ink — present without shouting. */
+html.igskin .bahead .brow.me{
+  margin:0 calc(-1 * var(--pl-pad));padding:13px var(--pl-pad);
+  border-radius:0;border-bottom:0;
+  background:color-mix(in srgb,var(--pl-accent) 11%,transparent);
+  box-shadow:inset 3px 0 0 var(--pl-accent)}
+html.igskin .bahead .brow.me .brk{color:var(--pl-accent);font-weight:700}
+html.igskin .bahead .brow.me .bnm,
+html.igskin .bahead .brow.me .bmk{color:var(--ink);font-weight:700}
+html.igskin #boardList .brow.me{
+  background:color-mix(in srgb,var(--ig-blue) 11%,transparent);
+  box-shadow:inset 3px 0 0 var(--ig-blue)}
+html.igskin #boardList .brow.me .brk{color:var(--ig-blue);font-weight:700}
+html.igskin #boardList .brow.me .bnm,
+html.igskin #boardList .brow.me .bmk{color:var(--ink);font-weight:700}
+html.igskin .brow.me .bnm::after{content:'you';
+  margin-left:9px;padding:2px 7px;border-radius:999px;vertical-align:2px;
+  font-family:var(--ui);font-size:10px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--bg);background:var(--pl-accent)}
+html.igskin #boardList .brow.me .bnm::after{background:var(--ig-blue)}
+
+/* ---------- surfaces ----------
+   One raised plane: a hairline to hold the edge, and a shadow soft enough to
+   be felt rather than seen. In the dark the plane lifts off the black by a
+   shade instead, since a shadow on black is nothing at all. */
+html.igskin #tSide>section.stand,
+html.igskin .bcard,
+html.igskin #gndBody .pgcard{
+  box-shadow:inset 0 0 0 1px var(--ig-hair),
+             0 1px 2px rgba(0,0,0,.035),
+             0 10px 28px -20px rgba(0,0,0,.22)}
+html[data-theme="dark"].igskin #tSide>section.stand,
+html[data-theme="dark"].igskin .bcard{
+  background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+html[data-theme="dark"].igskin #gndSheet .pgcard{background:#0D0D0D}
+html.igskin .qcard{box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 30px -22px rgba(0,0,0,.30)}
+html[data-theme="dark"].igskin .qcard{box-shadow:inset 0 0 0 1px #1C1C1C}
+
+/* ---------- type ----------
+   Figures line up in columns, headings sit tighter, and the second line of
+   anything is quieter than the first. */
+html.igskin{font-feature-settings:"kern" 1,"liga" 1}
+html.igskin .brk,html.igskin .bmk,html.igskin .gsbig,html.igskin .srp,
+html.igskin .spnum b,html.igskin .pgpc,html.igskin .lvlnum,
+html.igskin .igstat b,html.igskin .runtop .n,html.igskin .runtop .r,
+html.igskin .dn-when,html.igskin .bhr b{font-variant-numeric:tabular-nums}
+html.igskin .ptitle{font-size:26px;letter-spacing:-.04em}
+html.igskin .sphead h2,html.igskin .fsbar h3{letter-spacing:-.035em}
+html.igskin .eyebrow{font-size:12px;font-weight:600;letter-spacing:.01em;color:var(--ink-3)}
+html.igskin .secbar h3{font-size:17px;font-weight:700;letter-spacing:-.028em}
+html.igskin .gndtitle h2{font-size:29px;letter-spacing:-.04em}
+
+/* ---------- controls ----------
+   One height for anything you press, one radius for anything that holds a
+   value, one ring for anything focused. */
+html.igskin .btn{min-height:46px;border-radius:14px;font-size:15.5px;letter-spacing:-.015em}
+html.igskin .input,html.igskin .ta{border-radius:12px;font-size:15.5px}
+html.igskin .input{height:46px}
+html.igskin .input:focus,html.igskin .ta:focus{
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ig-blue) 60%,transparent)}
+html.igskin :focus-visible{outline:2px solid color-mix(in srgb,var(--ig-blue) 70%,transparent);
+  outline-offset:2px;border-radius:8px}
+html.igskin .switch{width:51px;height:31px}
+html.igskin .smrow{min-height:54px}
+html.igskin .smrow .go{opacity:.38}
+html.igskin .srow .sub{color:var(--ink-3);line-height:1.45}
+
+/* ---------- sheets ---------- */
+html.igskin .sheet{border-radius:22px 22px 0 0}
+html.igskin .sheet.fullsheet{border-radius:0}
+html.igskin .sheet .grabber{width:36px;height:5px;
+  background:color-mix(in srgb,var(--ink) 16%,transparent)}
+html.igskin .sheet.on{box-shadow:0 -24px 60px -30px rgba(0,0,0,.55)}
+html.igskin .sheet>h3{font-size:16.5px;letter-spacing:-.025em}
+html.igskin .sheet-actions{gap:10px}
+
+/* ---------- the bottom bar ---------- */
+html.igskin .tab svg{stroke-width:1.85}
+html.igskin .tab.on svg{stroke-width:2.2}
+.pl-glide{height:2.5px;width:22px}
+
+/* ---------- lists ---------- */
+html.igskin .brow{padding:11px 0}
+html.igskin .brow .bnm{font-weight:500;letter-spacing:-.012em}
+html.igskin .brow .brk{color:var(--ink-3);font-weight:600;font-size:13px}
+html.igskin .gsub .gn{letter-spacing:-.025em}
+html.igskin .pickrow{min-height:54px}
+
+/* ---------- Portions ---------- */
+html.igskin .pgcell{border-radius:7px}
+html.igskin .pgcell.pl-hot{border-radius:7px}
+html.igskin .pgnt{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+html.igskin .pgphn{font-weight:700;letter-spacing:.005em}
+html.igskin .gsum .gsn{color:var(--ink-3)}
+
+/* ---------- Notes ---------- */
+html.igskin .dn-title{letter-spacing:-.025em}
+html.igskin .dn-text{color:var(--ink-3)}
+html.igskin .pl-group{font-size:12.5px;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700}
+
+/* ---------- what the app says when there is nothing yet ---------- */
+html.igskin .gempty,html.igskin #dnList:empty::after{letter-spacing:-.01em}
+html.igskin .gempty{font-size:15px;line-height:1.5;color:var(--ink-3)}
+
+/* ---------- the loader wears the app's own paper ---------- */
+#pl-boot h1{font-size:22px;letter-spacing:.32em;text-indent:.32em}
+#pl-boot .pl-bootbar{width:96px}
+
+/* the row keeps its name, and there is room for the value beside it: the
+   chip, the gap and both sizes are trimmed until the longest pair in the
+   list — "When your day starts / Midnight" — sits on one line whole */
+html.igskin .smrow{gap:11px}
+html.igskin .smrow .ico{width:32px;height:32px;border-radius:9px}
+html.igskin .smrow .ico svg{width:18px;height:18px}
+html.igskin .smrow .n{flex:0 1 auto;min-width:0;font-size:16px;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.igskin .smrow .pl-sv{flex:1 1 auto;max-width:none;padding-left:6px;font-size:14.5px}
+html.igskin .smrow .go{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -11485,6 +11637,9 @@ safe(()=>{
     const w=(day.style.getPropertyValue('--wash')||'').trim();
     if(w) root.style.setProperty('--pl-hero',w);
     else root.style.removeProperty('--pl-hero');
+    /* the class is the switch: with no pictures at all, Home keeps the app's
+       own colours rather than being tinted by a fallback */
+    if(root.classList.contains('pl-hero')!==!!w) root.classList.toggle('pl-hero',!!w);
     paintRankTone();
   };
   new MutationObserver(sync).observe(day,{attributes:true,attributeFilter:['style']});
@@ -11563,6 +11718,90 @@ safe(()=>{
     if(!hidden) show();
   }).observe(lock,{attributes:true,attributeFilter:['hidden']});
   if(!lock.hidden) show();
+});
+
+})();
+</script>
+
+<script id="polish-js-10">
+/* ===========================================================
+   POLISH X — the notch strip and the browser's own bar
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards polish X',err); } };
+
+safe(()=>{
+  const app=q('.app'); if(!app || q('#pl-status')) return;
+  const strip=document.createElement('div');
+  strip.id='pl-status'; strip.setAttribute('aria-hidden','true');
+  app.insertBefore(strip,app.firstChild);
+  const probe=document.createElement('i');
+  probe.id='pl-statusprobe'; probe.setAttribute('aria-hidden','true');
+  app.insertBefore(probe,app.firstChild);
+
+  const meta=q('meta[name=theme-color]');
+  /* what the app itself would have the bar be, kept as it sets it */
+  let plain = meta ? meta.getAttribute('content') : null;
+  safe(()=>{
+    const orig=window.applySettings;
+    if(typeof orig!=='function') return;
+    window.applySettings=function(){
+      const out=orig.apply(this,arguments);
+      if(meta) plain=meta.getAttribute('content');
+      requestAnimationFrame(paint);
+      return out;
+    };
+  });
+
+  /* rgb(), rgba() and color(srgb ...) all come back as three numbers; a bar
+     colour is safest as plain hex */
+  function toHex(str){
+    if(!str) return '';
+    const n=String(str).match(/-?[\d.]+(?:e-?\d+)?/g);
+    if(!n || n.length<3) return '';
+    const unit=/color\(/.test(str);
+    const to=v=>{
+      let x=parseFloat(v);
+      if(unit) x*=255;
+      x=Math.max(0,Math.min(255,Math.round(x)));
+      return x.toString(16).padStart(2,'0');
+    };
+    return '#'+to(n[0])+to(n[1])+to(n[2]);
+  }
+
+  let queued=0;
+  function paint(){
+    queued=0;
+    const bar=q('.topbar');
+    const onHome=app.classList.contains('pl-today');
+    const scrolled=!!(bar && bar.classList.contains('stuck'));
+    const hero=!!(document.documentElement.style.getPropertyValue('--pl-hero')||'').trim();
+    const tint=onHome && !scrolled && hero &&
+      document.documentElement.classList.contains('igskin');
+    cls(strip,'tint',tint);
+    cls(probe,'tint',tint);
+    if(!meta) return;
+    if(tint){
+      /* the phone's bar cannot read a colour expression, so it is given the
+         plain hex the strip resolves to */
+      const hex=toHex(getComputedStyle(probe).backgroundColor);
+      if(hex) meta.setAttribute('content',hex);
+    }else if(plain){
+      meta.setAttribute('content',plain);
+    }
+  }
+  const ask=()=>{ if(!queued) queued=requestAnimationFrame(paint); };
+
+  new MutationObserver(ask).observe(app,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(ask).observe(document.documentElement,{attributes:true,attributeFilter:['style','class','data-theme']});
+  const bar=q('.topbar');
+  if(bar) new MutationObserver(ask).observe(bar,{attributes:true,attributeFilter:['class']});
+  addEventListener('scroll',ask,{passive:true});
+  addEventListener('resize',ask,{passive:true});
+  ask();
 });
 
 })();
