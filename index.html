@@ -4985,13 +4985,24 @@ html.igskin{
   --pl-hero:var(--ig-blue);
   --pl-accent:color-mix(in srgb,var(--pl-hero) 74%,var(--ink) 26%);
   --pl-accent-soft:color-mix(in srgb,var(--pl-hero) 55%,var(--ink) 8%)}
-html.igskin.pl-hero #v-today{
+/* the whole app, not just Home: every page that wears the app's own skin
+   takes the picture's colour where the indigo used to be. The board is not
+   one of them — it has no skin on and is left exactly as it was. */
+html.igskin.pl-hero,
+html.igskin.pl-hero .igpop{
   --ig-blue:var(--pl-accent);
+  --ig-blue-2:color-mix(in srgb,var(--pl-accent) 86%,var(--ink));
+  --ig-purple:var(--pl-accent);
+  --acc:var(--pl-accent);
   --h-violet:var(--pl-accent-soft);
   --h-rose:var(--pl-accent-soft)}
+/* a sheet carries its own copy of the palette, so it is given the colour too;
+   the board's own sheets are never reached, since the skin is off there */
+html.igskin.pl-hero .igpop{--pl-hero:inherit}
+html.igskin.pl-hero .smrow{--ic:var(--pl-accent)!important}
 /* the three doors, the rings on the rail and the mark under the tab all
    answer to the same colour */
-html.igskin.pl-hero #v-today .gorow{--qc:var(--pl-accent)!important}
+html.igskin.pl-hero .gorow{--qc:var(--pl-accent)!important}
 html.igskin.pl-hero #v-today .srring{--c:var(--pl-accent)!important}
 html.igskin.pl-hero .app.pl-today .pl-glide{background:var(--pl-accent)}
 /* and the bar at the top carries it until the page is scrolled under it */
@@ -5050,6 +5061,24 @@ html.igskin .wordrow i{flex:0 0 auto;width:30px;height:30px;border-radius:9px;
   font-family:var(--ui);font-size:13px;font-weight:700;color:var(--ink-3);
   background:var(--ig-fill);font-variant-numeric:tabular-nums}
 html.igskin .wordrow .input{flex:1 1 auto;min-width:0;height:42px;font-size:15px}
+
+/* ---------- the two lock screens stay neutral ----------
+   A lock is not the place for the day's colour. Both wear plain ink on plain
+   paper: a white pill on black, which is as cool as it needs to be. */
+#applock .vlock .btn,#applock .btn,#vLock .btn{background:var(--ink);color:var(--bg);border:0;
+  box-shadow:0 10px 30px -14px rgba(0,0,0,.6)}
+#applock .vlock .btn:active,#applock .btn:active,#vLock .btn:active{
+  background:color-mix(in srgb,var(--ink) 86%,var(--bg));filter:none}
+#applock .vlock .input,#applock .input,#vLock .input{background:color-mix(in srgb,var(--ink) 10%,transparent);
+  color:var(--ink);box-shadow:none}
+#applock .vlock .input:focus,#applock .input:focus,#vLock .input:focus{
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 34%,transparent)}
+#applock .vlock .input::placeholder,#applock .input::placeholder,#vLock .input::placeholder{
+  color:color-mix(in srgb,var(--ink) 42%,transparent)}
+#applock :focus-visible,#vLock :focus-visible{
+  outline:2px solid color-mix(in srgb,var(--ink) 45%,transparent)}
+#applock .alword,#vLock .alword{color:var(--ink)}
+#applock .vlock-err,#vLock .vlock-err{color:color-mix(in srgb,var(--ig-red) 86%,var(--ink))}
 
 /* ===========================================================
    POLISH X — the strip behind the notch
