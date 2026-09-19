@@ -3948,6 +3948,7 @@ html.nonotch .notch{display:none}
 .gndhead .gndplus{margin-bottom:3px}
 /* the rule under the heading is the only edge it needs */
 .gndhead::after{content:'';grid-column:1/-1;height:1px;margin-top:16px;
+  margin-left:calc(-1 * var(--gut,16px));margin-right:calc(-1 * var(--gut,16px));
   background:var(--ig-hair,#EFEFEF)}
 html[data-theme="dark"] .gndhead::after{background:var(--line)}
 
@@ -7370,7 +7371,9 @@ async function tryAppUnlock(){
     /* the board is behind the same PIN, and it has just been given */
     visionUnlocked=true;
     hideAppLock(); buzz(HAPTIC.done);
-    try{ syncVisionLock(); }catch(e){}
+    /* the lock empties the board's grid on its way in, so the page has to be
+       drawn again rather than merely unhidden */
+    try{ renderVision(); }catch(e){}
     applySettings();           /* the app's own theme comes back */
   }else{
     $('#alErr').textContent='That is not the PIN';
@@ -9684,7 +9687,7 @@ function checkRollover(){
 }
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){ visionUnlocked=false; deskBank().then(deskSaveState); }
-  else{ checkRollover(); syncVisionLock(); deskRollover(); renderDesk(); }
+  else{ checkRollover(); renderVision(); deskRollover(); renderDesk(); }
 });
 setInterval(checkRollover,60000);
 
@@ -11487,15 +11490,19 @@ safe(()=>{
   new MutationObserver(sync).observe(day,{attributes:true,attributeFilter:['style']});
   sync();
 });
-const heroOn=()=>{
+/* a name of its own, since the app already has a heroOn for whether the
+   pictures are switched on at all. A declaration rather than a const, so
+   the first sync — which runs while this block is still being read — can
+   reach it. */
+function hasHeroTint(){
   try{ return !!document.documentElement.style.getPropertyValue('--pl-hero').trim(); }
   catch(e){ return false; }
-};
+}
 /* the rank on Home wears the same colour; the full list keeps the app's own
    reading of where the number sits */
 function paintRankTone(){
   const el=q('#bRank'); if(!el) return;
-  if(heroOn()){
+  if(hasHeroTint()){
     if(!el.dataset.plTone) el.dataset.plTone=el.style.color||'';
     el.style.color='var(--pl-accent)';
   }else if(el.dataset.plTone!==undefined){
