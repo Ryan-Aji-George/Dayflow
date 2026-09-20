@@ -5297,6 +5297,37 @@ html.igskin #noteSheet .fmtbar button.on{background:var(--bg);color:var(--ink);
   box-shadow:0 1px 2px rgba(0,0,0,.12)}
 html[data-theme="dark"].igskin #noteSheet .fmtbar button.on{background:var(--line-2);box-shadow:none}
 html.igskin #noteSheet .fmtsep{margin:0 4px;height:20px;align-self:center}
+
+/* ===========================================================
+   POLISH XIII — the hero pictures
+   A photograph put through a phone, a canvas and a re-encode arrives with
+   its gradients banded and its edges softened. Three things are done about
+   it: it is kept at the size the screen can actually show, the live card is
+   given back a little of the contrast and colour the re-encode took, and a
+   very fine grain is laid over the top. The grain is the old trick from
+   print: it hides banding and compression mush, and reads as film rather
+   than as a low-quality picture.
+   =========================================================== */
+html.igskin .hrcard.live img{
+  filter:saturate(1.07) contrast(1.035) brightness(1.01)}
+html[data-theme="dark"].igskin .hrcard.live img{
+  filter:saturate(1.09) contrast(1.05) brightness(.99)}
+.hrcard::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  opacity:0;transition:opacity .5s var(--ease);
+  background-image:
+    radial-gradient(120% 78% at 50% 38%,transparent 52%,rgba(0,0,0,.20) 100%),
+    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  background-size:auto,160px 160px;
+  mix-blend-mode:overlay;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 58%,
+    rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 11%,#000 58%,
+    rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%)}
+.hrcard.live::after{opacity:.5}
+html[data-theme="dark"] .hrcard.live::after{opacity:.38}
+@media (prefers-reduced-motion:reduce){.hrcard::after{transition:none}}
+/* the picture is drawn at the size it is shown, not scaled twice */
+html.igskin .hrcard img,html.igskin .hrcell img{image-rendering:auto}
 </style>
 </head>
 <body>
@@ -7826,8 +7857,23 @@ async function shrinkImage(file,max=1600,q=.84){
   const sc=Math.min(1,max/Math.max(im.width,im.height));
   const w=Math.max(1,Math.round(im.width*sc)), h=Math.max(1,Math.round(im.height*sc));
   const c=document.createElement('canvas'); c.width=w; c.height=h;
-  c.getContext('2d').drawImage(im,0,0,w,h);
-  return {src:c.toDataURL('image/jpeg',q),ar:w/h};
+  const x=c.getContext('2d');
+  x.imageSmoothingEnabled=true; x.imageSmoothingQuality='high';
+  x.drawImage(im,0,0,w,h);
+  /* WebP wherever the browser can write it: at the same weight it holds far
+     more of a photograph than JPEG does, and it is what shows on skies,
+     gradients and skin. Anything that cannot falls back to JPEG. */
+  let src='';
+  try{ src=c.toDataURL('image/webp',q); }catch(e){ src=''; }
+  if(src.indexOf('data:image/webp')!==0) src=c.toDataURL('image/jpeg',q);
+  return {src,ar:w/h};
+}
+/* how large a hero picture is worth keeping: what this screen can actually
+   put on the glass, with a little in hand for a bigger one later */
+function heroSize(){
+  const side=Math.max(screen.width||0,screen.height||0,innerWidth,innerHeight);
+  const dpr=Math.min(3,Math.max(1,window.devicePixelRatio||1));
+  return Math.min(2000,Math.max(1440,Math.round(side*dpr*1.1)));
 }
 /* ---------- the profile ----------
    Everything shown here is yours to set: the name, the numbers, the bio and
@@ -10237,7 +10283,7 @@ $('#hrFile').addEventListener('change',async e=>{
   let bad=0;
   for(const f of files){
     try{
-      const {src}=await shrinkImage(f,1400,.82);
+      const {src}=await shrinkImage(f,heroSize(),.92);
       const pic={id:uid(),src,created:Date.now()};
       heroPics.push(pic);
       await dbPut('hero',pic);
