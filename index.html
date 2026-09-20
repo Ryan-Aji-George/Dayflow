@@ -5231,6 +5231,72 @@ html.igskin .smrow .n{flex:0 1 auto;min-width:0;font-size:16px;letter-spacing:-.
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html.igskin .smrow .pl-sv{flex:1 1 auto;max-width:none;padding-left:6px;font-size:14.5px}
 html.igskin .smrow .go{width:16px;height:16px}
+
+/* the row runs to both edges: width:100% was holding it to the column while
+   its negative margins pulled it left, so every value and chevron sat a
+   gutter short of the right-hand edge */
+html.igskin .smrow{width:auto}
+
+/* ===========================================================
+   POLISH XII — the notes
+   The list was a run of flat rows on hairlines, which read as a settings
+   page rather than as things you wrote. Each note is a card again, with a
+   proper hierarchy: what it is called, when it was written, and the first
+   two lines of it. The note itself is set as a page to read.
+   =========================================================== */
+html.igskin .dnlist{gap:10px;padding:2px 0 8px}
+html.igskin .dnlist>*{border-bottom:0!important}
+html.igskin .dn{
+  background:var(--ig-fill-2);border-radius:16px;overflow:hidden;
+  box-shadow:inset 0 0 0 1px var(--ig-hair);
+  transition:scale .45s var(--pl-soft),background .2s var(--ease)}
+html[data-theme="dark"].igskin .dn{background:#121212;box-shadow:inset 0 0 0 1px #1F1F1F}
+html.igskin .dn:active{scale:.985;opacity:1;background:var(--ig-fill)}
+html.igskin .dn-head{padding:14px 15px 5px;align-items:baseline;gap:10px}
+html.igskin .dn-title{font-size:16.5px;font-weight:700;letter-spacing:-.025em;
+  white-space:normal;-webkit-line-clamp:2}
+html.igskin .dn-title.untitled{font-weight:500;color:var(--ink-3)}
+html.igskin .dn-when{flex:0 0 auto;font-family:var(--ui);font-size:11px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+html.igskin .dn-read{padding:0 15px 14px}
+html.igskin .dn-text{font-size:14.5px;line-height:1.52;color:var(--ink-3);-webkit-line-clamp:2}
+html.igskin .dn .chev{display:none}
+html.igskin .pl-group{padding:18px 3px 9px}
+html.igskin .pl-group:first-child{padding-top:2px}
+html.igskin #notesSheet .fsbody{padding-top:12px}
+
+/* the search field */
+.pl-searchwrap{margin:2px 0 4px}
+.pl-search{height:44px;border-radius:14px;font-size:16px;padding-left:40px}
+.pl-searchwrap svg{left:14px}
+
+/* ---------- one note, set to be read ---------- */
+html.igskin #noteSheet .fshead{padding-bottom:2px}
+html.igskin #noteSheet .fsbar h3{font-size:13.5px;font-weight:600;letter-spacing:.01em;
+  text-transform:uppercase;color:var(--ink-3)}
+html.igskin #noteSheet .nstitle{font-size:28px;font-weight:800;letter-spacing:-.04em;
+  line-height:1.16;padding:10px 0 12px}
+html.igskin #noteSheet .nsbody{padding-top:16px;font-size:17px;line-height:1.75;color:var(--ink);
+  border-top:1px solid var(--ig-hair);min-height:58vh}
+html[data-theme="dark"].igskin #noteSheet .nsbody{border-top-color:var(--line)}
+html.igskin #noteSheet .nsbody:empty::before{content:attr(data-placeholder);color:var(--ink-3)}
+html.igskin #nsPage{padding-bottom:18vh}
+html.igskin .nsfoot{margin-top:28px;padding-top:16px;border-top:1px solid var(--ig-hair);
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+html[data-theme="dark"].igskin .nsfoot{border-top-color:var(--line)}
+html.igskin .nsmeta{font-size:12.5px;font-weight:600;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--ink-3)}
+
+/* the marks bar reads as one tool, not eight loose buttons */
+html.igskin #noteSheet .fmtbar{gap:2px;padding:5px;border-radius:14px;
+  background:var(--ig-fill);margin:6px 0 4px}
+html.igskin #noteSheet .fmtbar button{width:38px;height:36px;border-radius:10px;
+  background:transparent;color:var(--ink-2)}
+html.igskin #noteSheet .fmtbar button:active{background:var(--cell);color:var(--ink)}
+html.igskin #noteSheet .fmtbar button.on{background:var(--bg);color:var(--ink);
+  box-shadow:0 1px 2px rgba(0,0,0,.12)}
+html[data-theme="dark"].igskin #noteSheet .fmtbar button.on{background:var(--line-2);box-shadow:none}
+html.igskin #noteSheet .fmtsep{margin:0 4px;height:20px;align-self:center}
 </style>
 </head>
 <body>
