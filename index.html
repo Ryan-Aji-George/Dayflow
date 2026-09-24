@@ -5927,6 +5927,32 @@ html.igskin .walsec.walactivity{padding-top:18px}
 .walactbar.on svg{transform:rotate(180deg)}
 .walactivity .wallog{padding-top:4px}
 .walactivity .wallog[hidden]{display:none}
+
+/* ---------- how much room is left ---------- */
+.dbroom{margin:0 0 20px;padding:15px 16px 16px;border-radius:var(--pl-card,18px);
+  background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .dbroom{background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+.dbroomtop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dbroomtop span{font-size:12.5px;font-weight:700;letter-spacing:.01em;color:var(--ink-3)}
+.dbroomtop b{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.dbroombar{margin-top:11px;height:6px;border-radius:999px;overflow:hidden;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.dbroombar i{display:block;height:100%;width:0;border-radius:999px;background:var(--pl-accent);
+  transition:width .7s var(--pl-out)}
+.dbroombar i.warm{background:var(--h-warm,#DE8C42)}
+.dbroombar i.hot{background:var(--ig-red)}
+.dbroomhint{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:var(--ink-3)}
+.dbtrouble{margin:10px 0 0;padding:10px 12px;border-radius:12px;font-size:12.5px;line-height:1.45;
+  color:var(--ig-red);background:color-mix(in srgb,var(--ig-red) 10%,transparent)}
+.dbtrouble[hidden]{display:none}
+
+.dbkeep{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.dbkeep b{font-weight:700;color:var(--ink-2)}
+.dbkeep b.ok{color:var(--pl-up,#2F9E63)}
+.dbkeep b.warn{color:var(--h-warm,#DE8C42)}
+.dbfile{display:block;margin-top:8px;padding:10px 12px;border-radius:12px;
+  color:var(--h-warm,#DE8C42);background:color-mix(in srgb,var(--h-warm,#DE8C42) 11%,transparent)}
 </style>
 </head>
 <body>
@@ -6838,7 +6864,13 @@ const wrap=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()
 /* A store the database has never heard of reads as empty and takes no writes,
    rather than throwing and stopping the whole app from opening. */
 const dbAll=n=>hasStore(n)?wrap(store(n).getAll()):Promise.resolve([]);
-const dbPut=(n,v)=>hasStore(n)?wrap(store(n,'readwrite').put(v)):Promise.resolve();
+const dbPut=(n,v)=>{
+  if(!hasStore(n)) return Promise.resolve();
+  /* a failed write is said out loud rather than lost quietly: silence here is
+     what reads to anyone using it as data disappearing on its own */
+  try{ return wrap(store(n,'readwrite').put(v)).catch(e=>dbFail(n,e)); }
+  catch(e){ return Promise.resolve(dbFail(n,e)); }
+};
 const dbDel=(n,k)=>hasStore(n)?wrap(store(n,'readwrite').delete(k)):Promise.resolve();
 const dbClear=n=>hasStore(n)?wrap(store(n,'readwrite').clear()):Promise.resolve();
 
@@ -8473,7 +8505,7 @@ async function shrinkImage(file,max=1600,q=.84){
 function heroSize(){
   const side=Math.max(screen.width||0,screen.height||0,innerWidth,innerHeight);
   const dpr=Math.min(3,Math.max(1,window.devicePixelRatio||1));
-  return Math.min(2000,Math.max(1440,Math.round(side*dpr*1.1)));
+  return Math.min(1700,Math.max(1400,Math.round(side*dpr)));
 }
 /* ---------- the profile ----------
    Everything shown here is yours to set: the name, the numbers, the bio and
@@ -10210,6 +10242,10 @@ function renderSettings(){
   $('#cntNotes').textContent=partCount('notes');
   $('#cntVision').textContent=partCount('vision');
   $('#cntGround').textContent=partCount('ground');
+  const cw=$('#cntWallet'); if(cw) cw.textContent=partCount('wallet');
+  const ch=$('#cntHero'); if(ch) ch.textContent=partCount('hero');
+  const st=$('#dbTrouble');
+  if(st) st.hidden=!dbTrouble;
   if(document.activeElement!==$('#dayStartTime')) $('#dayStartTime').value=str24(dayStartMins());
   const dsAt=fmtTimeStr(str24(dayStartMins()));
   $('#dayStartNow').textContent = dayShifted()
@@ -10254,14 +10290,24 @@ $('#exportBtn').addEventListener('click',()=>{
    A part file is an ordinary Onwards file carrying only its own slice, so a full
    backup works in these buttons too: it just takes the one part you asked for.
    Importing a part merges, it never clears — nothing else in the app is touched. */
-const PART_NAME={notes:'Notes',vision:'Vision',ground:'Portions'};
+const PART_NAME={notes:'Notes',vision:'Vision',ground:'Portions',
+                 wallet:'Wallet',hero:'Home pictures'};
 function partPayload(kind){
+  if(kind==='wallet') return {settings:{wallet:S.wallet||null}};
+  if(kind==='hero')   return {hero:heroPics};
   if(kind==='notes')  return {dnotes:myNotes};
   if(kind==='vision') return {vision:visionItems,profile:S.ig||null,northStar:S.northStar||''};
   if(kind==='ground') return {ground};
   return {};
 }
 function partCount(kind){
+  if(kind==='wallet'){
+    const w=S.wallet||{};
+    const b=(w.badges||[]).length, t=(w.tasks||[]).length;
+    return '$'+Math.round(w.bal||0).toLocaleString('en-US')+' · '+
+      t+' task'+(t===1?'':'s')+(b?' · '+b+' badge'+(b===1?'':'s'):'');
+  }
+  if(kind==='hero') return heroPics.length+' picture'+(heroPics.length===1?'':'s');
   if(kind==='notes')  return myNotes.length+' note'+(myNotes.length===1?'':'s');
   if(kind==='vision'){
     const c=vPosts().length, p=vPdfList().length;
@@ -10283,6 +10329,25 @@ function exportPart(kind){
 }
 async function mergePart(kind,d){
   let n=0;
+  if(kind==='wallet'){
+    const w=(d.settings&&d.settings.wallet) || d.wallet;
+    if(w && typeof w==='object'){
+      S.wallet=w;
+      if(typeof normWallet==='function') normWallet();
+      await saveSettings();
+      n=1;
+    }
+  }
+  if(kind==='hero'){
+    for(const h of (d.hero||[])){
+      if(!h||!h.src) continue;
+      const i=heroPics.findIndex(x=>x.id===h.id);
+      if(i>=0) heroPics[i]=h; else heroPics.push(h);
+      await dbPut('hero',h); n++;
+    }
+    heroPics.sort((a,b)=>(a.created||0)-(b.created||0));
+    if(typeof renderHeroRail==='function') renderHeroRail();
+  }
   if(kind==='notes'){
     for(const x of (d.dnotes||[])){
       const nt=normNote(x);
@@ -10525,7 +10590,23 @@ $('#installBtn').addEventListener('click',async()=>{
 /* ===========================================================
    Boot
    =========================================================== */
-const saveSettings=()=>dbPut('meta',{key:'settings',value:S});
+let dbReady=false;          /* true once loadAll has finished */
+let dbTrouble='';           /* what went wrong the last time a write failed */
+function dbFail(where,err){
+  const name=(err&&err.name)||'';
+  dbTrouble = name==='QuotaExceededError' ? 'full' : 'error';
+  console.error('Onwards · could not save',where,err);
+  try{
+    toast(dbTrouble==='full'
+      ? 'Storage is full — nothing new can be saved'
+      : 'That did not save');
+  }catch(e){}
+  return null;
+}
+const saveSettings=()=>{
+  if(!dbReady) return Promise.resolve();     /* the settings are not loaded yet */
+  return dbPut('meta',{key:'settings',value:S});
+};
 async function loadAll(){
   plans=new Map((await dbAll('plans')).map(r=>[r.key,r.text]));
   /* an old timed block becomes a session: its first line is the title and
@@ -10885,7 +10966,7 @@ $('#hrFile').addEventListener('change',async e=>{
   let bad=0;
   for(const f of files){
     try{
-      const {src}=await shrinkImage(f,heroSize(),.92);
+      const {src}=await shrinkImage(f,heroSize(),.86);
       const pic={id:uid(),src,created:Date.now()};
       heroPics.push(pic);
       await dbPut('hero',pic);
@@ -11026,7 +11107,7 @@ addEventListener('hashchange',()=>{
   try{
     db=await openDB();
     await loadAll();
-    loaded=true;
+    loaded=true; dbReady=true;
   }catch(err){
     console.error('Onwards · storage',err);
     document.body.insertAdjacentHTML('beforeend','<div class="toast on">Storage is blocked in this browser</div>');
@@ -12619,6 +12700,14 @@ function blank(){
   return {bal:0,streak:0,best:0,settled:'',tasks:[],log:[],days:[]};
 }
 function normWallet(){
+  try{ return normWalletInner(); }
+  catch(err){
+    console.warn('Onwards wallet \u00b7 records repaired',err);
+    S.wallet=blank();
+    return true;
+  }
+}
+function normWalletInner(){
   let changed=false;
   const w=(S.wallet&&typeof S.wallet==='object')? S.wallet : (changed=true,blank());
   const num=(v,d)=>{ const n=Number(v); return isFinite(n)?n:d; };
@@ -12670,6 +12759,7 @@ const dayDelta=ds=>{ const r=W().days.find(d=>d.date===ds); return r?r.delta:0; 
    Every day that has finished since the last look is settled in order, so a
    week away costs exactly what a week of opening it would have. */
 function walSettle(){
+  if(typeof dbReady!=='undefined' && !dbReady) return null;   /* not loaded yet */
   const w=W();
   if(!w.settled){ w.settled=ymd(addDays(TODAY,-1)); saveW(); return null; }
   let cur=parseDay(w.settled), guard=0, fined=0, missed=0, broke=false, made=0;
@@ -13471,11 +13561,21 @@ safe(()=>{
   addEventListener('resize',()=>safe(placeTabs),{passive:true});
 
   /* on the way in: settle whatever finished while the app was shut */
-  setTimeout(()=>safe(()=>{
-    const sum=walSettle();
-    renderWallet(); placeTabs();
-    if(sum && sum.fined) setTimeout(()=>showFine(sum),700);
-  }),900);
+  /* the day is settled once the records are actually in, however long that
+     takes; before that there is nothing true to settle against */
+  let tries=0;
+  const settleWhenReady=()=>{
+    if(typeof dbReady!=='undefined' && !dbReady){
+      if(tries++<40) return setTimeout(settleWhenReady,300);
+      return;
+    }
+    safe(()=>{
+      const sum=walSettle();
+      renderWallet(); placeTabs();
+      if(sum && sum.fined) setTimeout(()=>showFine(sum),700);
+    });
+  };
+  setTimeout(settleWhenReady,900);
 });
 
 })();
@@ -13516,6 +13616,12 @@ function nextMile(bal){
 }
 
 function normBadges(){
+  try{ return normBadgesInner(); }
+  catch(err){ console.warn('Onwards badges \u00b7 repaired',err);
+    try{ W().badges=[]; }catch(e){}
+    return []; }
+}
+function normBadgesInner(){
   const w=W();
   if(!Array.isArray(w.badges)) w.badges=[];
   w.badges=w.badges.filter(b=>b&&typeof b==='object').map(b=>({
@@ -13787,7 +13893,9 @@ function buildBadgeSheet(){
     const f=e.target.files&&e.target.files[0]; e.target.value='';
     if(!f) return;
     try{
-      const {src}=await shrinkImage(f,600,.88);
+      /* a badge is shown at a hundred-odd points, so it is kept small: a
+         shelf of them should never be what fills the drive */
+      const {src}=await shrinkImage(f,440,.84);
       beImg=src;
       q('#walBeThumb').innerHTML='<img src="'+esc2(src)+'" alt="">';
       hap(8);
@@ -13952,6 +14060,191 @@ safe(()=>{
   after('renderWallet',()=>{ safe(walMileBar); });
   setTimeout(()=>safe(()=>{ renderHomeWallet(); renderHomeBadges(); renderBadgeSettings(); }),1200);
 });
+
+})();
+</script>
+
+<script id="polish-js-16">
+/* ===========================================================
+   KEEPING WHAT IS THERE
+   Three things, all of them about not losing anything:
+   the wallet waits for the records to be read before it writes; the parts
+   panel gains the two rows the new pages need; and Settings says plainly how
+   much room is left and whether a write has failed.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards keep',err); } };
+const el=(t,c,h)=>{ const n=document.createElement(t); if(c) n.className=c; if(h!=null) n.innerHTML=h; return n; };
+const OUT='<svg viewBox="0 0 24 24"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg>';
+const IN='<svg viewBox="0 0 24 24"><path d="M12 4v12M7.5 11.5 12 16l4.5-4.5"/><path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5"/></svg>';
+
+/* ---------- the two new rows ---------- */
+safe(()=>{
+  const panel=q('#partPanel'); if(!panel || q('.partrow[data-part="wallet"]')) return;
+  const row=(kind,name,id)=>{
+    const r=el('div','partrow');
+    r.dataset.part=kind;
+    r.innerHTML='<div class="t"><div class="n">'+name+'</div><div class="d" id="'+id+'">\u2014</div></div>'+
+      '<button class="pbtn" data-do="out" aria-label="Export '+name+'">'+OUT+'</button>'+
+      '<button class="pbtn" data-do="in" aria-label="Import '+name+'">'+IN+'</button>';
+    panel.appendChild(r);
+  };
+  row('wallet','Wallet','cntWallet');
+  row('hero','Home pictures','cntHero');
+});
+
+/* ---------- how much room is left, and whether anything failed ---------- */
+safe(()=>{
+  const page=q('#sp-data'); if(!page || q('#dbRoom')) return;
+  const group=page.querySelector('.group') || page;
+  const box=el('div','dbroom');
+  box.id='dbRoom';
+  box.innerHTML='<div class="dbroomtop"><span>Room used</span><b id="dbRoomN">\u2014</b></div>'+
+    '<div class="dbroombar"><i id="dbRoomBar"></i></div>'+
+    '<p class="dbroomhint" id="dbRoomHint">Notes, pictures, posts and the wallet all live on this device.</p>'+
+    '<p class="dbtrouble" id="dbTrouble" hidden>The last save did not go through. '+
+      'If the room above is full, move some pictures out and delete them here.</p>';
+  group.insertBefore(box,group.firstChild);
+  measure();
+});
+function measure(){
+  const n=q('#dbRoomN'), bar=q('#dbRoomBar'), hint=q('#dbRoomHint');
+  if(!n || !navigator.storage || !navigator.storage.estimate) return;
+  navigator.storage.estimate().then(e=>{
+    const used=e.usage||0, quota=e.quota||0;
+    const mb=v=>(v/1048576).toFixed(v>104857600?0:1)+' MB';
+    n.textContent=quota? mb(used)+' of '+mb(quota) : mb(used);
+    const k=quota? Math.max(.01,Math.min(1,used/quota)) : 0;
+    if(bar){ bar.style.width=(k*100).toFixed(1)+'%'; bar.className=k>.85?'hot':k>.6?'warm':''; }
+    if(hint && quota) hint.textContent = k>.85
+      ? 'Nearly full. New pictures and posts may stop saving \u2014 export a backup, then clear some out.'
+      : 'Notes, pictures, posts and the wallet all live on this device.';
+  }).catch(()=>{});
+}
+safe(()=>{
+  const o=window.renderSettings;
+  if(typeof o!=='function') return;
+  window.renderSettings=function(){ const r=o.apply(this,arguments); safe(measure); return r; };
+});
+
+})();
+</script>
+
+<script id="polish-js-17">
+/* ===========================================================
+   A SECOND COPY, AND A WORD WITH THE BROWSER
+   Three defences against waking up to an empty app:
+   1. the browser is asked to keep this data rather than clear it when the
+      device is short of room;
+   2. a copy of the settings — the PIN, the run, the quotes, the wallet and
+      the badges — is kept in a second place, and put back if the records
+      come up empty;
+   3. Settings says plainly whether either of those is in force.
+   Nothing here writes over anything that is already there.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards keep',err); } };
+const KEY='onwards.settings.copy';
+const KEYW='onwards.wallet.copy';
+let persisted=null, lastCopy='';
+
+const ls={
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+
+/* ---------- ask the browser to hold on to it ---------- */
+safe(()=>{
+  if(!navigator.storage) return;
+  if(navigator.storage.persisted) navigator.storage.persisted().then(v=>{ persisted=v; paint(); }).catch(()=>{});
+  if(navigator.storage.persist) setTimeout(()=>{
+    navigator.storage.persist().then(v=>{ persisted=v; paint(); }).catch(()=>{});
+  },2500);
+});
+
+/* ---------- the second copy ---------- */
+function slim(o){
+  /* pictures are the weight; the copy keeps them while it can and drops them
+     rather than failing outright when it cannot */
+  const c=JSON.parse(JSON.stringify(o));
+  if(c.wallet && Array.isArray(c.wallet.badges)) c.wallet.badges.forEach(b=>{ b.img=''; });
+  if(c.ig) c.ig.avatar='';
+  return c;
+}
+function copyNow(){
+  if(typeof S==='undefined') return;
+  if(typeof dbReady!=='undefined' && !dbReady) return;     /* nothing true to copy yet */
+  let text='';
+  try{ text=JSON.stringify(S); }catch(e){ return; }
+  if(text===lastCopy) return;
+  if(!ls.set(KEY,text)){
+    try{ ls.set(KEY,JSON.stringify(slim(S))); }catch(e){}
+  }
+  lastCopy=text;
+  try{ if(S.wallet) ls.set(KEYW,JSON.stringify(slim({wallet:S.wallet}).wallet)); }catch(e){}
+}
+setInterval(()=>safe(copyNow),8000);
+addEventListener('pagehide',()=>safe(copyNow));
+addEventListener('beforeunload',()=>safe(copyNow));
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) safe(copyNow); });
+
+/* ---------- and put it back if the records come up empty ---------- */
+async function restoreIfEmpty(){
+  if(typeof dbReady==='undefined' || !dbReady) return;
+  let rec=null;
+  try{ rec=(await dbAll('meta')).find(m=>m.key==='settings'); }catch(e){ return; }
+  if(rec && rec.value) { copyNow(); return; }              /* the records are fine */
+  const text=ls.get(KEY); if(!text) return;
+  let back=null;
+  try{ back=JSON.parse(text); }catch(e){ return; }
+  if(!back || typeof back!=='object') return;
+  Object.assign(S,back);
+  try{ if(typeof normalizeExtras==='function') normalizeExtras(); }catch(e){}
+  try{ await saveSettings(); }catch(e){}
+  try{ applySettings(); cacheLook(); renderAll(); }catch(e){}
+  try{ if(typeof renderWallet==='function') renderWallet(); }catch(e){}
+  try{ toast('Settings put back from the backup copy'); }catch(e){}
+}
+let tries=0;
+(function wait(){
+  if(typeof dbReady!=='undefined' && dbReady){ safe(restoreIfEmpty); return; }
+  if(tries++<50) setTimeout(wait,300);
+})();
+
+/* ---------- what Settings says about all this ---------- */
+function paint(){
+  const host=q('#dbRoom'); if(!host) return;
+  let line=q('#dbKeep');
+  if(!line){
+    line=document.createElement('p');
+    line.className='dbkeep'; line.id='dbKeep';
+    const hint=q('#dbRoomHint');
+    if(hint) hint.insertAdjacentElement('afterend',line); else host.appendChild(line);
+  }
+  const file=location.protocol==='file:';
+  const copy=!!ls.get(KEY);
+  const bits=[];
+  bits.push(persisted===true
+    ? '<b class="ok">Kept by the browser</b>'
+    : persisted===false
+      ? '<b class="warn">Not pinned by the browser</b>'
+      : '<b>Asking the browser to keep it</b>');
+  bits.push(copy? '<b class="ok">Backup copy on this device</b>' : '<b class="warn">No backup copy yet</b>');
+  line.innerHTML=bits.join(' \u00b7 ')+
+    (file? '<span class="dbfile">Opened as a file, so the browser may clear everything at any '+
+      'time. Put it on a web address, or keep exporting a file every so often.</span>' : '');
+}
+safe(()=>{
+  const o=window.renderSettings;
+  if(typeof o!=='function') return;
+  window.renderSettings=function(){ const r=o.apply(this,arguments); safe(paint); return r; };
+});
+setTimeout(()=>safe(paint),1800);
 
 })();
 </script>
