@@ -5328,6 +5328,605 @@ html[data-theme="dark"] .hrcard.live::after{opacity:.38}
 @media (prefers-reduced-motion:reduce){.hrcard::after{transition:none}}
 /* the picture is drawn at the size it is shown, not scaled twice */
 html.igskin .hrcard img,html.igskin .hrcell img{image-rendering:auto}
+
+/* ===========================================================
+   THE WALLET — styling
+   It wears the same skin as the rest of the app: the hero picture's accent,
+   the same cards, the same pills, the same hairlines. Nothing here reaches
+   any other page.
+   =========================================================== */
+
+/* ---------- the pair of tabs ---------- */
+.waltabs{position:relative;z-index:6;display:inline-flex;align-self:center;
+  margin:0 auto;padding:3px;border-radius:999px;gap:2px;
+  background:color-mix(in srgb,var(--ink) 8%,transparent);
+  -webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%)}
+html.igskin #tSide>.waltabs{display:flex;width:max-content;margin:2px auto 12px}
+#heroRail .waltabs{position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  margin:0;background:rgba(0,0,0,.28);box-shadow:0 8px 22px -12px rgba(0,0,0,.6)}
+#walTabsHost{display:flex;justify-content:center;padding:4px 0 14px}
+.waltabs[hidden]{display:none}
+.waltab{position:relative;z-index:1;min-width:92px;padding:9px 16px;border:0;border-radius:999px;
+  background:transparent;color:var(--ink-3);
+  font-family:var(--ui);font-size:13.5px;font-weight:700;letter-spacing:-.01em;
+  transition:color .25s var(--ease),scale .4s var(--pl-bounce)}
+.waltab:active{scale:.94}
+.waltab.on{color:var(--bg)}
+.waltabplate{position:absolute;z-index:0;top:3px;bottom:3px;left:0;width:0;border-radius:999px;
+  background:var(--ink);transform:translate3d(var(--px,0px),0,0);
+  transition:transform .45s var(--pl-bounce),width .45s var(--pl-bounce)}
+.waltabs.over .waltab{color:rgba(255,255,255,.72)}
+.waltabs.over .waltab.on{color:#111}
+.waltabs.over .waltabplate{background:#fff}
+
+/* ---------- the page ---------- */
+html.igskin #v-wallet.active{display:block}
+.walpage{max-width:640px;margin:0 auto}
+.walhero{padding:6px 0 4px}
+.waleye{display:block;font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--ink-3)}
+#walBal{display:block;margin-top:6px;font-family:var(--display,inherit);
+  font-size:clamp(42px,13vw,58px);font-weight:800;letter-spacing:-.05em;line-height:1;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.walmeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.walchg,.walstreak{font-style:normal;padding:6px 11px;border-radius:999px;
+  font-size:12.5px;font-weight:700;letter-spacing:-.005em;
+  color:var(--ink-3);background:var(--ig-fill);font-variant-numeric:tabular-nums}
+.walchg.up{color:var(--pl-up,#2F9E63);background:color-mix(in srgb,var(--pl-up,#2F9E63) 14%,transparent)}
+.walchg.down{color:var(--ig-red);background:color-mix(in srgb,var(--ig-red) 13%,transparent)}
+.walstreak.lit{color:var(--pl-accent);background:color-mix(in srgb,var(--pl-accent) 14%,transparent)}
+
+/* the way through to the tasks */
+.walbig{display:flex;align-items:center;gap:14px;width:100%;margin:22px 0 4px;
+  padding:15px var(--pl-pad,16px);border:0;border-radius:var(--pl-card,18px);text-align:left;
+  background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair);
+  transition:scale .45s var(--pl-soft),background .2s var(--ease)}
+html[data-theme="dark"] .walbig{background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+.walbig:active{scale:.985}
+.walbigico{flex:0 0 auto;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  color:var(--pl-accent);background:color-mix(in srgb,var(--pl-accent) 14%,transparent)}
+.walbigico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.walbigt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.walbigt b{font-size:16.5px;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
+.walbigt span{font-size:13px;color:var(--ink-3)}
+.walbig .gochev{width:17px;height:17px;flex:0 0 auto;opacity:.38;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--ink-3);
+  transition:translate .45s var(--pl-bounce)}
+.walbig:active .gochev{translate:4px 0}
+
+.walsec{padding:22px 0 0}
+.walnet{font-size:13px;font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.walnet.up{color:var(--pl-up,#2F9E63)}
+.walnet.down{color:var(--ig-red)}
+
+/* ---------- a fortnight, drawn ---------- */
+.walgraph{display:flex;align-items:stretch;gap:3px;height:132px}
+.walbarwrap{flex:1 1 0;display:flex;flex-direction:column;align-items:center;min-width:0}
+.walbarcell{flex:1 1 0;width:100%;display:flex;justify-content:center}
+.walbarcell.top{align-items:flex-end}
+.walbarcell.bot{align-items:flex-start}
+.walbarline{width:100%;height:1px;background:var(--ig-hair)}
+html[data-theme="dark"] .walbarline{background:var(--line)}
+.walbar{display:block;width:70%;max-width:16px;border-radius:4px;
+  animation:walgrow .5s cubic-bezier(.16,1,.3,1) both}
+.walbar.up{background:linear-gradient(180deg,var(--pl-accent),color-mix(in srgb,var(--pl-accent) 55%,transparent));
+  border-radius:4px 4px 1px 1px}
+.walbar.down{background:linear-gradient(180deg,color-mix(in srgb,var(--ig-red) 75%,transparent),var(--ig-red));
+  border-radius:1px 1px 4px 4px}
+@keyframes walgrow{from{height:0!important;opacity:0}}
+.walbarday{margin-top:7px;font-size:10px;font-weight:600;color:var(--ink-3);
+  font-variant-numeric:tabular-nums}
+.walbarwrap.now .walbarday{color:var(--ink);font-weight:800}
+
+/* ---------- what has happened ---------- */
+.wallog{display:flex;flex-direction:column}
+.walrow{display:flex;align-items:center;gap:13px;padding:12px 0;
+  border-bottom:1px solid var(--ig-hair)}
+html[data-theme="dark"] .walrow{border-bottom-color:var(--line)}
+.walrow:last-child{border-bottom:0}
+.walico{flex:0 0 auto;width:34px;height:34px;border-radius:11px;display:grid;place-items:center}
+.walico svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round}
+.walico.up{color:var(--pl-up,#2F9E63);background:color-mix(in srgb,var(--pl-up,#2F9E63) 13%,transparent)}
+.walico.down{color:var(--ig-red);background:color-mix(in srgb,var(--ig-red) 12%,transparent)}
+.walrowt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.walrowt b{font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.walrowt span{font-size:12.5px;color:var(--ink-3)}
+.walamt{flex:0 0 auto;font-size:15px;font-weight:800;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.walamt.up{color:var(--pl-up,#2F9E63)}
+.walamt.down{color:var(--ig-red)}
+.walnone{padding:34px 8px;text-align:center;font-size:14.5px;line-height:1.5;color:var(--ink-3)}
+
+/* ---------- the tasks page ---------- */
+.walediting{padding:8px 15px;border:0;border-radius:999px;background:var(--ig-fill);
+  color:var(--ink-2);font-family:var(--ui);font-size:13.5px;font-weight:700;
+  transition:background .2s var(--ease),color .2s var(--ease),scale .4s var(--pl-bounce)}
+.walediting:active{scale:.94}
+.walediting.on{background:var(--pl-accent);color:var(--bg)}
+.waldays{display:flex;gap:7px;overflow-x:auto;padding:12px var(--gut) 12px;
+  margin:0 calc(-1 * var(--gut));scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+.waldays::-webkit-scrollbar{display:none}
+.walday{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border:0;border-radius:999px;scroll-snap-align:center;
+  background:var(--ig-fill);color:var(--ink-2);
+  font-family:var(--ui);font-size:13.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  transition:background .2s var(--ease),color .2s var(--ease),scale .4s var(--pl-bounce)}
+.walday:active{scale:.94}
+.walday.on{background:var(--ink);color:var(--bg)}
+.waldaydot{font-style:normal;min-width:18px;height:18px;padding:0 5px;border-radius:999px;
+  display:grid;place-items:center;font-size:11px;font-weight:800;
+  color:var(--bg);background:var(--pl-accent);font-variant-numeric:tabular-nums}
+.waldaydot.done{background:color-mix(in srgb,var(--pl-up,#2F9E63) 90%,transparent)}
+.walday.on .waldaydot{background:var(--bg);color:var(--ink)}
+
+.waladd{display:none;gap:9px;padding:4px 0 14px}
+#walTasks.editing .waladd{display:flex}
+.waladd .input{flex:1;min-width:0}
+.waladdgo{flex:0 0 auto;width:46px;height:46px;border:0;border-radius:14px;display:grid;place-items:center;
+  background:var(--pl-accent);color:var(--bg);transition:scale .4s var(--pl-bounce)}
+.waladdgo:active{scale:.9}
+.waladdgo svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+
+.waltask{display:flex;align-items:center;gap:13px;padding:13px 0;
+  border-bottom:1px solid var(--ig-hair)}
+html[data-theme="dark"] .waltask{border-bottom-color:var(--line)}
+.waltask:last-child{border-bottom:0}
+.waltick{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  border:0;background:transparent;color:transparent;
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ink) 22%,transparent);
+  transition:background .25s var(--ease),color .25s var(--ease),scale .4s var(--pl-bounce),
+             box-shadow .25s var(--ease)}
+.waltick svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.waltick:active{scale:.88}
+.waltask.done .waltick{background:var(--pl-up,#2F9E63);color:#fff;box-shadow:none}
+.waltask.missed .waltick{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ig-red) 45%,transparent)}
+.waltxt{flex:1;min-width:0;font-size:15.5px;line-height:1.35;letter-spacing:-.015em;color:var(--ink);
+  word-break:break-word}
+.waltask.done .waltxt{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px}
+.waltask.missed .waltxt{color:var(--ink-3)}
+.waltxtin{height:42px;font-size:15.5px}
+.waltag{flex:0 0 auto;padding:4px 9px;border-radius:999px;font-size:11.5px;font-weight:800;
+  letter-spacing:-.005em;font-variant-numeric:tabular-nums}
+.waltag.up{color:var(--pl-up,#2F9E63);background:color-mix(in srgb,var(--pl-up,#2F9E63) 14%,transparent)}
+.waltag.down{color:var(--ig-red);background:color-mix(in srgb,var(--ig-red) 12%,transparent);
+  text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
+.waldel{display:none;flex:0 0 auto;width:32px;height:32px;border:0;border-radius:10px;
+  place-items:center;color:var(--ig-red);background:color-mix(in srgb,var(--ig-red) 11%,transparent);
+  transition:scale .4s var(--pl-bounce)}
+.waldel svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.waldel:active{scale:.88}
+#walTasks.editing .waldel{display:grid}
+#walTasks.editing .waltick{opacity:.35;pointer-events:none}
+
+/* ---------- the payout ---------- */
+.walrev{position:fixed;inset:0;z-index:110;display:grid;place-items:center;padding:24px;
+  background:rgba(0,0,0,.62);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.walrev.on{opacity:1;pointer-events:auto}
+.walrevcard{position:relative;width:min(340px,100%);padding:34px 26px 26px;border-radius:26px;
+  text-align:center;background:var(--bg);color:var(--ink);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.8),inset 0 0 0 1px var(--ig-hair);
+  transform:scale(.9);opacity:0;transition:transform .5s var(--pl-bounce),opacity .3s var(--ease)}
+.walrev.on .walrevcard{transform:none;opacity:1}
+.walreveye{display:block;font-size:12.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3)}
+.walrevamt{display:block;margin:14px 0 0;font-family:var(--display,inherit);
+  font-size:clamp(40px,12vw,52px);font-weight:800;letter-spacing:-.05em;line-height:1;
+  color:var(--pl-accent);font-variant-numeric:tabular-nums;
+  transition:color .3s var(--ease),scale .5s var(--pl-bounce);
+  filter:blur(6px);opacity:.62}
+.walrevcard.landed .walrevamt{filter:none;opacity:1;animation:walland .6s cubic-bezier(.34,1.56,.64,1)}
+.walrevcard.landed.big .walrevamt{color:var(--pl-up,#2F9E63)}
+@keyframes walland{0%{scale:.7}55%{scale:1.14}100%{scale:1}}
+.walrevmult{display:block;margin-top:12px;padding:6px 12px;border-radius:999px;
+  font-size:12.5px;font-weight:700;color:var(--pl-accent);
+  background:color-mix(in srgb,var(--pl-accent) 13%,transparent)}
+.walrevbal{display:block;margin-top:14px;font-size:13.5px;font-weight:600;color:var(--ink-3);
+  font-variant-numeric:tabular-nums}
+.walrevgo{margin-top:22px;width:100%;height:48px;border:0;border-radius:15px;
+  background:var(--ink);color:var(--bg);
+  font-family:var(--ui);font-size:15.5px;font-weight:700;letter-spacing:-.015em;
+  transition:scale .4s var(--pl-bounce)}
+.walrevgo:active{scale:.96}
+/* the other side of it */
+.walrev.fineside .walrevamt{color:var(--ig-red)}
+.walrev.fineside .walrevmult{color:var(--ig-red);
+  background:color-mix(in srgb,var(--ig-red) 12%,transparent)}
+
+/* the burst */
+.walspark{position:absolute;left:50%;top:44%;width:0;height:0;pointer-events:none}
+.walspark i{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:2px;
+  background:var(--pl-accent);
+  animation:walspark .9s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--t,0ms);
+  transform:rotate(var(--a)) translateY(0)}
+.walspark i:nth-child(3n){background:var(--pl-up,#2F9E63)}
+.walspark i:nth-child(4n){background:var(--h-warm,#DE8C42)}
+@keyframes walspark{
+  0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.4)}
+  25%{opacity:1}
+  100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(.7)}}
+@media (prefers-reduced-motion:reduce){
+  .walspark{display:none}
+  .walrevamt{filter:none;opacity:1}
+  .walbar{animation:none}
+}
+
+.walrevleft{display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:var(--ig-red)}
+.walrevleft.good{color:var(--pl-up,#2F9E63)}
+.walgraph .walnone{flex:1;padding:44px 8px}
+
+/* ===========================================================
+   THE WALLET, SECOND PASS — the chart, the cards, the badges
+   =========================================================== */
+/* ---------- the page ---------- */
+.walpage{max-width:640px;margin:0 auto;padding-bottom:6px}
+.walhero{padding:2px 0 0}
+#walBal{margin-top:4px}
+.walmeta{margin-top:12px}
+
+/* ---------- the chart ---------- */
+.walchartwrap{position:relative;margin:18px 0 0;padding:16px 14px 12px;
+  border-radius:var(--pl-card,18px);background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .walchartwrap{background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+.walscrub{display:flex;align-items:baseline;gap:9px;padding:0 2px 10px;min-height:26px}
+.walscrub b{font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.walscrub span{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.walscrub.up b{color:var(--pl-up,#2F9E63)}
+.walscrub.down b{color:var(--ig-red)}
+.walscrub.held span{color:var(--ink-2)}
+.walchart{position:relative;height:140px;touch-action:pan-y;cursor:crosshair}
+.walsvg{width:100%;height:132px;display:block;overflow:visible}
+.walgrid{stroke:var(--ig-hair);stroke-width:1;vector-effect:non-scaling-stroke}
+html[data-theme="dark"] .walgrid{stroke:#1C1C1C}
+.walline{fill:none;stroke:var(--pl-up,#2F9E63);stroke-width:2.2;stroke-linejoin:round;
+  stroke-linecap:round;vector-effect:non-scaling-stroke}
+.walsvg.down .walline{stroke:var(--ig-red)}
+.walarea{stroke:none;fill:url(#walFill)}
+.wfup{stop-color:var(--pl-up,#2F9E63);stop-opacity:.30}
+.wfmid{stop-color:var(--pl-up,#2F9E63);stop-opacity:0}
+.wfdn{stop-color:var(--ig-red);stop-opacity:.28}
+.walline{stroke:url(#walStroke)}
+.walsvg.down .walline{stroke:url(#walStroke)}
+.wsup{stop-color:var(--pl-up,#2F9E63)}
+.wsdn{stop-color:var(--ig-red)}
+.walzero{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:2 5;opacity:.5;
+  vector-effect:non-scaling-stroke}
+.waldot{fill:var(--pl-up,#2F9E63);stroke:var(--bg);stroke-width:2.4}
+.waldot.dn{fill:var(--ig-red)}
+.walhi{color:var(--pl-up,#2F9E63)}
+.wallo{color:var(--ig-red)}
+.waldotx{fill:var(--ink);stroke:var(--bg);stroke-width:2.4}
+.walcross{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 4;vector-effect:non-scaling-stroke}
+.walhi,.wallo{position:absolute;right:2px;font-size:10.5px;font-weight:700;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;pointer-events:none}
+.walhi{top:2px}.wallo{bottom:2px}
+.walranges{display:flex;gap:6px;padding:12px 0 0}
+.walranges button{flex:0 0 auto;padding:7px 13px;border:0;border-radius:999px;
+  background:var(--ig-fill);color:var(--ink-3);
+  font-family:var(--ui);font-size:12.5px;font-weight:700;letter-spacing:-.005em;
+  transition:background .2s var(--ease),color .2s var(--ease),scale .4s var(--pl-bounce)}
+.walranges button:active{scale:.93}
+.walranges button.on{background:var(--ink);color:var(--bg)}
+
+/* ---------- the milestone ---------- */
+.walmile{margin-top:18px;padding:15px var(--pl-pad,16px) 16px;border-radius:var(--pl-card,18px);
+  background:color-mix(in srgb,var(--pl-accent) 9%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pl-accent) 22%,transparent)}
+.walmiletop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.walmiletop span{font-size:12.5px;font-weight:700;letter-spacing:.01em;color:var(--ink-3)}
+.walmiletop b{font-size:18px;font-weight:800;letter-spacing:-.03em;color:var(--pl-accent);
+  font-variant-numeric:tabular-nums}
+.walmilebar{margin-top:11px;height:7px;border-radius:999px;overflow:hidden;
+  background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.walmilebar i{display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--pl-accent),var(--h-violet,var(--pl-accent)));
+  transition:width .8s var(--pl-out)}
+.walmilebar.sm{height:5px;margin-top:12px}
+.walmilefoot{display:flex;justify-content:space-between;gap:10px;margin-top:9px;
+  font-size:12px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.walstrip{margin-top:20px;padding-bottom:0;border-bottom:0}
+.walrows{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.walrows .walbig{margin:0}
+.walbigico.alt{color:var(--h-warm,#DE8C42);
+  background:color-mix(in srgb,var(--h-warm,#DE8C42) 15%,transparent)}
+.walbigico.alt svg{fill:currentColor;stroke:none}
+
+/* ---------- the tasks page ---------- */
+.waldayhead{padding:0 0 10px;font-size:12.5px;font-weight:700;letter-spacing:.01em;
+  color:var(--ink-3);font-variant-numeric:tabular-nums}
+.waltask .waltxt{cursor:pointer}
+
+/* ---------- the card ---------- */
+.walring{position:absolute;inset:-1px;border-radius:26px;pointer-events:none;opacity:0;
+  transition:opacity .3s var(--ease)}
+.walrev.spinning .walring{opacity:1}
+.walring i{position:absolute;inset:0;border-radius:26px;
+  background:conic-gradient(from -90deg,var(--pl-accent) calc(var(--k,0) * 360deg),transparent 0);
+  -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
+  mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
+  -webkit-mask-composite:xor;mask-composite:exclude;padding:2px}
+.walrev.spinning .walrevamt{filter:blur(3.5px);opacity:.9;scale:.96}
+.walrev.spinning .walrevbtns{opacity:0;pointer-events:none;transform:translateY(6px)}
+.walrevbtns{transition:opacity .3s var(--ease),transform .4s var(--pl-out)}
+.walrev.spinning .walrevbal{opacity:0}
+.walrevcard.landed .walrevamt{scale:1}
+.walrevcard.landed.jackpot .walrevamt{
+  background:linear-gradient(100deg,#F6C453,#F2A03D,#F6C453);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 18px rgba(246,196,83,.32))}
+.walrevcard.danger .walrevamt{color:var(--ig-red);font-size:clamp(24px,7vw,30px);
+  letter-spacing:-.03em;line-height:1.25}
+.walrev.asking .walrevamt{filter:none;opacity:1;font-size:clamp(22px,6.4vw,27px);
+  letter-spacing:-.03em;line-height:1.28}
+.walrev.asking .walrevmult{background:transparent;color:var(--ink-3);font-weight:600;
+  padding:0;margin-top:10px;line-height:1.45}
+.walrev.mileside .walrevmult{color:var(--h-warm,#DE8C42);
+  background:color-mix(in srgb,var(--h-warm,#DE8C42) 14%,transparent)}
+.walrevbtns{display:flex;gap:9px;margin-top:22px}
+.walrevgo{margin-top:0;flex:1}
+.walrevno{flex:1;height:48px;border:0;border-radius:15px;background:var(--ig-fill);color:var(--ink-2);
+  font-family:var(--ui);font-size:15.5px;font-weight:700;letter-spacing:-.015em;
+  transition:scale .4s var(--pl-bounce)}
+.walrevno:active{scale:.96}
+
+/* ---------- the shop ---------- */
+.walshopbal{margin-left:auto;font-size:14.5px;font-weight:800;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.walshop{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:4px 0 10px}
+.walcard{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
+  background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .walcard{background:#121212;box-shadow:inset 0 0 0 1px #1F1F1F}
+.walcardimg{position:relative;aspect-ratio:1;background:var(--ig-fill);display:grid;place-items:center}
+.walcardimg img{width:100%;height:100%;object-fit:cover;display:block}
+.walcardno{font-size:26px;color:var(--ink-3)}
+.walcard.owned .walcardimg img{filter:none}
+.walcard:not(.owned) .walcardimg img{filter:grayscale(.75) brightness(.82)}
+.walowned{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;background:var(--pl-up,#2F9E63);color:#fff}
+.walowned svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.walcardt{padding:11px 12px 4px;display:flex;flex-direction:column;gap:3px}
+.walcardt b{font-size:14.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.walcardt span{font-size:12.5px;font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.walbuy{margin:8px 12px 12px;height:36px;border:0;border-radius:999px;
+  background:var(--pl-accent);color:var(--bg);
+  font-family:var(--ui);font-size:13.5px;font-weight:700;
+  transition:scale .4s var(--pl-bounce),opacity .2s var(--ease)}
+.walbuy:active{scale:.94}
+.walbuy.off{background:var(--ig-fill);color:var(--ink-3)}
+.walnone.sm{padding:18px 4px;text-align:left}
+
+/* ---------- badges on Home ---------- */
+.walbadgerail{margin:14px 0 2px;overflow:hidden}
+.walbadgetrack{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.walbadgetrack::-webkit-scrollbar{display:none}
+.walbadge{flex:0 0 auto;width:78px;display:flex;flex-direction:column;align-items:center;gap:7px}
+.walbadgeimg{width:64px;height:64px;border-radius:20px;overflow:hidden;display:grid;place-items:center;
+  background:var(--ig-fill);
+  box-shadow:inset 0 0 0 1px var(--ig-hair),0 10px 22px -16px rgba(0,0,0,.5)}
+.walbadgeimg img{width:100%;height:100%;object-fit:cover;display:block}
+.walbadgeimg i{font-style:normal;font-size:24px;color:var(--pl-accent)}
+.walbadgen{font-size:11px;font-weight:600;letter-spacing:-.005em;color:var(--ink-3);
+  text-align:center;line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- the wallet card on Home ---------- */
+html.igskin #tSide>section.walhomesec{padding:20px 0;border-top:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin #tSide>section.walhomesec{border-top-color:var(--line)}
+.walhomecard{display:block;width:100%;text-align:left;padding:16px var(--pl-pad,16px) 15px;
+  border:0;border-radius:var(--pl-card,18px);background:var(--ig-fill-2);
+  box-shadow:inset 0 0 0 1px var(--ig-hair);
+  transition:scale .45s var(--pl-soft),background .2s var(--ease)}
+html[data-theme="dark"] .walhomecard{background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+.walhomecard:active{scale:.985}
+.walhometop{display:flex;align-items:baseline;gap:10px}
+.walhomebal{flex:1;min-width:0;font-family:var(--display,inherit);font-size:30px;font-weight:800;
+  letter-spacing:-.045em;color:var(--ink);font-variant-numeric:tabular-nums}
+.walhomefoot{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:11px;
+  font-size:12.5px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+/* ---------- settings ---------- */
+.walhint{margin:0 0 14px;font-size:14px;line-height:1.5;color:var(--ink-3)}
+.walberow{display:flex;align-items:center;gap:13px;width:100%;padding:11px 0;border:0;
+  background:transparent;text-align:left;border-bottom:1px solid var(--ig-hair)}
+html[data-theme="dark"] .walberow{border-bottom-color:var(--line)}
+.walberow:last-of-type{border-bottom:0}
+.walbethumb{flex:0 0 auto;width:44px;height:44px;border-radius:13px;overflow:hidden;
+  display:grid;place-items:center;background:var(--ig-fill)}
+.walbethumb img{width:100%;height:100%;object-fit:cover;display:block}
+.walbethumb i{font-style:normal;font-size:19px;color:var(--pl-accent)}
+.walbet{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.walbet b{font-size:15.5px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.walbet span{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.walberow .go{flex:0 0 auto;width:16px;height:16px;color:var(--ink-3);opacity:.4}
+.walberow .go svg{width:16px;height:16px}
+.walbepic{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;
+  border-radius:14px;background:var(--ig-fill);color:var(--ink-2);text-align:left;
+  font-family:var(--ui);font-size:14.5px;font-weight:600}
+.walbepic span{flex:0 0 auto;width:46px;height:46px;border-radius:12px;overflow:hidden;
+  display:grid;place-items:center;background:var(--cell)}
+.walbepic img{width:100%;height:100%;object-fit:cover;display:block}
+.smrow[data-sp="badges"]{--ic:#DE8C42}
+
+/* ---------- Home and Wallet, one move apart ---------- */
+@media (prefers-reduced-motion:no-preference){
+  html.walgo::view-transition-old(root){animation:walout .34s cubic-bezier(.16,1,.3,1) both}
+  html.walgo::view-transition-new(root){animation:walin .38s cubic-bezier(.16,1,.3,1) both}
+  html.walback::view-transition-old(root){animation:waloutb .34s cubic-bezier(.16,1,.3,1) both}
+  html.walback::view-transition-new(root){animation:walinb .38s cubic-bezier(.16,1,.3,1) both}
+}
+@keyframes walin{from{opacity:0;transform:translateX(9%) scale(.98)}to{opacity:1;transform:none}}
+@keyframes walout{to{opacity:0;transform:translateX(-5%) scale(.985)}}
+@keyframes walinb{from{opacity:0;transform:translateX(-9%) scale(.98)}to{opacity:1;transform:none}}
+@keyframes waloutb{to{opacity:0;transform:translateX(5%) scale(.985)}}
+
+/* the badge sheet opens over a page that already has a scrim, so it clears
+   the raised one the same way the Portions sheets do */
+#walBadgeEdit{z-index:97}
+
+/* ===========================================================
+   BADGES AND THE CARDS OVER THE TOP
+   One badge tile, used on Home and in the shop alike: a square picture, the
+   name under it, the price under that. And the cards the wallet throws up are
+   the app's own surface now, with the app's own buttons on them.
+   =========================================================== */
+
+/* ---------- the tile ---------- */
+.bdgtile{display:flex;flex-direction:column;align-items:center;gap:9px;width:100%}
+.bdgimg{position:relative;width:100%;aspect-ratio:1;border-radius:22px;overflow:hidden;
+  display:grid;place-items:center;background:var(--ig-fill);
+  box-shadow:inset 0 0 0 1px var(--ig-hair),0 14px 28px -20px rgba(0,0,0,.55);
+  transition:scale .45s var(--pl-bounce)}
+html[data-theme="dark"] .bdgimg{box-shadow:inset 0 0 0 1px #242424,0 16px 30px -22px rgba(0,0,0,.9)}
+.bdgimg img{width:100%;height:100%;object-fit:cover;display:block}
+.bdgimg i{font-style:normal;font-size:30px;color:var(--pl-accent)}
+.bdgtile:not(.owned) .bdgimg img{filter:grayscale(.85) brightness(.72) contrast(.95)}
+.bdgtile:not(.owned) .bdgimg{box-shadow:inset 0 0 0 1px var(--ig-hair)}
+.bdgtick{position:absolute;right:7px;bottom:7px;width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;background:var(--pl-up,#2F9E63);color:#fff;
+  box-shadow:0 4px 12px -4px rgba(0,0,0,.5)}
+.bdgtick svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.bdgname{font-size:12.5px;font-weight:700;letter-spacing:-.015em;line-height:1.28;
+  text-align:center;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bdgprice{font-size:12px;font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.bdgtile.owned .bdgprice{color:var(--pl-up,#2F9E63)}
+.bdgcount{font-size:13px;font-weight:700;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+/* ---------- the shelf on Home ---------- */
+html.igskin #tSide>section.walshelf{padding:20px 0 22px;border-top:1px solid var(--ig-hair)}
+html[data-theme="dark"].igskin #tSide>section.walshelf{border-top-color:var(--line)}
+.bdgshelf{position:relative}
+.bdgtrack{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 16px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bdgtrack::-webkit-scrollbar{display:none}
+.bdgtrack .bdgtile{flex:0 0 auto;width:104px}
+.bdgtrack .bdgtile:active .bdgimg{scale:.94}
+/* the plank they stand on */
+.bdgplank{height:3px;border-radius:2px;margin-top:-6px;
+  background:linear-gradient(90deg,transparent,var(--ig-hair) 8%,var(--ig-hair) 92%,transparent)}
+html[data-theme="dark"] .bdgplank{
+  background:linear-gradient(90deg,transparent,#242424 8%,#242424 92%,transparent)}
+
+/* ---------- the shop ---------- */
+.walshop{padding:2px 0 16px}
+.walshop .secbar{margin:6px 0 14px}
+.walshop .secbar.mt{margin-top:28px}
+.bdggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 14px}
+@media (min-width:560px){ .bdggrid{grid-template-columns:repeat(3,1fr)} }
+.bdgcell{display:flex;flex-direction:column;gap:10px}
+.bdgbuy{height:38px;border:0;border-radius:999px;background:var(--pl-accent);color:var(--bg);
+  font-family:var(--ui);font-size:13.5px;font-weight:700;letter-spacing:-.01em;
+  transition:scale .4s var(--pl-bounce),background .2s var(--ease)}
+.bdgbuy:active{scale:.94}
+.bdgbuy.off{background:var(--ig-fill);color:var(--ink-3);font-variant-numeric:tabular-nums}
+#walShop .fsbody{padding-top:8px}
+
+/* ---------- the cards the wallet throws up ---------- */
+.walrev{background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(16px) saturate(140%);
+  backdrop-filter:blur(16px) saturate(140%);padding:22px}
+.walrevcard{width:min(344px,100%);padding:30px 24px 24px;border-radius:24px;
+  background:var(--bg);
+  box-shadow:0 40px 80px -28px rgba(0,0,0,.6),inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .walrevcard{background:#141414;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.9),inset 0 0 0 1px #242424}
+.walreveye{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3)}
+.walrevamt{margin:16px 0 0;font-size:clamp(36px,11vw,46px);letter-spacing:-.045em;
+  color:var(--ink)}
+.walrevcard.landed .walrevamt{color:var(--pl-accent)}
+.walrevcard.landed.big .walrevamt{color:var(--pl-up,#2F9E63)}
+.walrevmult{margin-top:13px;padding:6px 13px;border-radius:999px;font-size:12.5px;font-weight:700;
+  color:var(--pl-accent);background:color-mix(in srgb,var(--pl-accent) 12%,transparent);
+  animation:bdgin .42s cubic-bezier(.34,1.56,.64,1) both}
+.walrevbal{margin-top:15px;font-size:13.5px;font-weight:600;color:var(--ink-3)}
+.walrevbtns{margin-top:24px}
+.walrevgo{height:50px;border-radius:16px;background:var(--ink);color:var(--bg);font-size:15.5px}
+.walrevno{height:50px;border-radius:16px;background:var(--ig-fill);color:var(--ink-2);font-size:15.5px}
+@keyframes bdgin{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+
+/* ---------- the reel ---------- */
+.walreel{display:none;height:64px;margin:14px 0 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 26%,#000 74%,transparent);
+  mask-image:linear-gradient(to bottom,transparent,#000 26%,#000 74%,transparent)}
+.walrev.reeling .walreel{display:block}
+.walrev.reeling .walrevamt,
+.walrev.reeling .walrevmult,
+.walrev.reeling .walrevbal,
+.walrev.reeling .walrevbtns{display:none}
+.walreelstrip{display:flex;flex-direction:column;will-change:transform}
+.walreelrow{flex:0 0 64px;height:64px;display:grid;place-items:center;
+  font-family:var(--display,inherit);font-size:clamp(30px,9vw,38px);font-weight:800;
+  letter-spacing:-.045em;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.walreelrow.last{color:var(--pl-accent)}
+.walrev.reeling .walreveye{color:var(--pl-accent)}
+.walrevcard.lifted .walrevamt{animation:walland .5s cubic-bezier(.34,1.56,.64,1)}
+/* the ring around the card only while it is actually spinning */
+.walring{border-radius:24px}
+.walring i{border-radius:24px}
+
+/* the asking card, in the same clothes */
+.walrev.asking .walrevamt{color:var(--ink);font-size:clamp(21px,6.2vw,26px);line-height:1.3;
+  letter-spacing:-.03em;margin-top:12px}
+.walrev.asking .walrevmult{background:transparent;color:var(--ink-3);padding:0;margin-top:11px;
+  font-size:13.5px;font-weight:500;line-height:1.5;animation:none}
+.walrevcard.danger .walrevamt{color:var(--ig-red)}
+.walrev.fineside .walrevamt,.walrev.fineside .walrevcard.landed .walrevamt{color:var(--ig-red)}
+.walrev.mileside .walrevcard.landed .walrevamt{color:var(--h-warm,#DE8C42)}
+
+/* the shop is a page of sections, not one grid */
+.walshop{display:block}
+.walrevmult.alt{background:color-mix(in srgb,var(--h-warm,#DE8C42) 14%,transparent);
+  color:var(--h-warm,#DE8C42);margin-top:8px}
+.walrevmult[hidden]{display:none}
+/* the reel is the motion; a second spinner round the card only fought it */
+.walring{display:none}
+/* and nothing is pressable until the figure has finished arriving */
+.walrevcard.counting .walrevbtns,.walrevcard.counting .walrevbal{opacity:0;pointer-events:none}
+
+/* ---------- the shelf sits under the quote without a rule above it ---------- */
+html.igskin #tSide>section.walshelf{border-top:0;padding:16px 0 20px}
+html[data-theme="dark"].igskin #tSide>section.walshelf{border-top:0}
+
+/* ---------- the badges row wears the page's colour ---------- */
+.walbigico.alt{color:var(--pl-accent);
+  background:color-mix(in srgb,var(--pl-accent) 14%,transparent)}
+
+/* ---------- the reel shows one row, and only once it has stopped ----------
+   The window is exactly one row high with a hard edge, so nothing above or
+   below it can be read, and the strip is blurred while it is moving. What is
+   coming is genuinely not knowable until it settles. */
+.walreel{height:66px;-webkit-mask-image:none;mask-image:none;
+  border-radius:16px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+html[data-theme="dark"] .walreel{background:rgba(255,255,255,.04)}
+.walreelrow{flex:0 0 66px;height:66px}
+.walreelstrip{filter:blur(0);transition:filter .22s var(--ease)}
+.walreelstrip.moving{filter:blur(7px)}
+
+/* ---------- activity, folded away ---------- */
+html.igskin .walsec.walactivity{padding-top:18px}
+.walactbar{display:flex;align-items:center;gap:9px;width:100%;padding:12px 14px;border:0;
+  border-radius:14px;background:var(--ig-fill);color:var(--ink-3);text-align:left;
+  font-family:var(--ui);font-size:14px;font-weight:700;letter-spacing:-.015em;
+  transition:background .2s var(--ease),color .2s var(--ease)}
+.walactbar span{color:var(--ink-2)}
+.walactbar i{margin-left:auto;font-style:normal;font-size:12.5px;font-weight:600;color:var(--ink-3);
+  font-variant-numeric:tabular-nums}
+.walactbar svg{width:17px;height:17px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2.1;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .32s var(--pl-out)}
+.walactbar.on{color:var(--ink)}
+.walactbar.on svg{transform:rotate(180deg)}
+.walactivity .wallog{padding-top:4px}
+.walactivity .wallog[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -7445,6 +8044,7 @@ function normalizeExtras(){
   if(!isFinite(bm)||bm<1||bm>180){ S.breakMins=5; changed=true; }
   else if(S.breakMins!==bm){ S.breakMins=bm; changed=true; }
   if(normalizeQuotes()) changed=true;
+  if(typeof normWallet==='function' && normWallet()) changed=true;
   return changed;
 }
 
@@ -8685,7 +9285,8 @@ function showView(v){
   /* Portions and Settings wear Instagram's own palette, not the app's: the
      accent and the paper colour step aside on these tabs and come back on the
      others. Sheets opened from here inherit it, so a popup never half-changes. */
-  document.documentElement.classList.toggle('igskin',v==='today'||v==='ground'||v==='settings');
+  document.documentElement.classList.toggle('igskin',
+    v==='today'||v==='ground'||v==='settings'||v==='wallet');
   applySettings();
   $$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));
   scrollTo(0,0);
@@ -8695,6 +9296,7 @@ function showView(v){
   if(v==='ground'){ gSubj=null; renderGround(); }
   if(v==='vision'){ vStage='profile'; renderVision(); }
   if(v==='settings'){ renderSettings(); }
+  if(v==='wallet' && typeof renderWallet==='function') renderWallet();
 }
 /* ---------- settings: the doors and what is behind them ----------
    Nothing moved out of the app. The same panels, the same handlers, the same
@@ -10980,6 +11582,10 @@ safe(()=>{
     const t=e.target.closest('.tab'); if(!t || !t.classList.contains('on')) return;
     const v=t.dataset.v;
     if(v==='vision') return;
+    /* the Wallet sits behind the Today tab: while it is open, the tab is a way
+       back to Home rather than a way to the top of it */
+    const live=q('.view.active');
+    if(!live || live.id!=='v-'+v) return;
     if(v==='settings' && typeof setPage!=='undefined' && setPage) return;   /* steps back instead */
     if(v==='ground' && typeof gSubj!=='undefined' && gSubj) return;          /* steps out instead */
     if(scrollY<=4) return;
@@ -11943,6 +12549,1408 @@ safe(()=>{
   addEventListener('scroll',ask,{passive:true});
   addEventListener('resize',ask,{passive:true});
   ask();
+});
+
+})();
+</script>
+
+<script id="polish-js-13">
+/* ===========================================================
+   THE WALLET
+   A second page behind Home, reached by the pair of tabs over the picture.
+   Tasks are set for any day in the next fifty; ticking one off today pays
+   out, and a day ended with a task still open costs five per cent of the
+   balance for each one left.
+
+   Everything it owns lives in S.wallet, so it is written by the app's own
+   saveSettings, and it is carried by export, import and backup without any
+   of those having to know it exists. Nothing else in the app is touched:
+   the page is a view like the others, the tasks are a full sheet like the
+   notes, and the payout card is a layer over the top.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards wallet',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+const esc2=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const el=(tag,cn,html)=>{ const n=document.createElement(tag); if(cn) n.className=cn; if(html!=null) n.innerHTML=html; return n; };
+
+/* ---------- what a payout is worth ---------- */
+const TIERS=[
+  {p:.05,amt:10000,name:'Jackpot'},
+  {p:.15,amt:5000, name:'Big one'},
+  {p:.35,amt:2500, name:'Solid'},
+  {p:.45,amt:1050, name:'Steady'}
+];
+const FINE=0.05;          /* of the balance, for each task left open */
+const STREAK_STEP=0.10;   /* each day of a streak is worth a tenth more */
+const STREAK_CAP=3;       /* and it stops climbing at three times */
+const HORIZON=50;         /* how far ahead a task can be set */
+const LOG_MAX=120, DAY_MAX=90;
+
+const rollAmount=()=>{
+  const r=Math.random(); let a=0;
+  for(const t of TIERS){ a+=t.p; if(r<a) return t; }
+  return TIERS[TIERS.length-1];
+};
+const multOf=streak=>Math.min(STREAK_CAP,Math.pow(1+STREAK_STEP,Math.max(0,streak)));
+/* a task done before its day is worth a tenth more for every day of notice,
+   on the same compounding footing as a streak and capped the same way */
+const AHEAD_CAP=2;
+const daysAhead=ds=>{
+  try{
+    const d=Math.round((parseDay(ds)-parseDay(TSTR))/86400000);
+    return isFinite(d)&&d>0? d : 0;
+  }catch(e){ return 0; }
+};
+const aheadMultOf=n=>Math.min(AHEAD_CAP,Math.pow(1+STREAK_STEP,Math.max(0,n)));
+const money=n=>{
+  const v=Math.round(Math.abs(Number(n)||0));
+  return '$'+v.toLocaleString('en-US');
+};
+const signed=n=>(n>0?'+':n<0?'\u2212':'')+money(n);
+
+/* ---------- the record ---------- */
+function blank(){
+  return {bal:0,streak:0,best:0,settled:'',tasks:[],log:[],days:[]};
+}
+function normWallet(){
+  let changed=false;
+  const w=(S.wallet&&typeof S.wallet==='object')? S.wallet : (changed=true,blank());
+  const num=(v,d)=>{ const n=Number(v); return isFinite(n)?n:d; };
+  const before=JSON.stringify([w.bal,w.streak,w.best,w.settled,(w.tasks||[]).length,(w.log||[]).length,(w.days||[]).length]);
+  w.bal=Math.max(0,Math.round(num(w.bal,0)));
+  w.streak=Math.max(0,Math.round(num(w.streak,0)));
+  w.best=Math.max(w.streak,Math.round(num(w.best,0)));
+  w.settled=typeof w.settled==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.settled)? w.settled : '';
+  w.tasks=(Array.isArray(w.tasks)?w.tasks:[])
+    .filter(t=>t&&typeof t==='object'&&/^\d{4}-\d{2}-\d{2}$/.test(t.date))
+    .map(t=>({id:String(t.id||uid()),date:t.date,
+      text:String(t.text||'').slice(0,120),
+      done:!!t.done,doneAt:num(t.doneAt,0),amt:Math.max(0,Math.round(num(t.amt,0)))}))
+    .filter(t=>t.text.trim());
+  w.log=(Array.isArray(w.log)?w.log:[])
+    .filter(x=>x&&typeof x==='object')
+    .map(x=>({id:String(x.id||uid()),t:num(x.t,Date.now()),
+      date:typeof x.date==='string'?x.date:'',kind:x.kind==='fine'?'fine':'earn',
+      amt:Math.round(num(x.amt,0)),note:String(x.note||'').slice(0,60),
+      mult:num(x.mult,1),streak:Math.max(0,Math.round(num(x.streak,0)))}))
+    .slice(0,LOG_MAX);
+  w.days=(Array.isArray(w.days)?w.days:[])
+    .filter(d=>d&&/^\d{4}-\d{2}-\d{2}$/.test(d.date))
+    .map(d=>({date:d.date,delta:Math.round(num(d.delta,0))}))
+    .slice(-DAY_MAX);
+  S.wallet=w;
+  if(before!==JSON.stringify([w.bal,w.streak,w.best,w.settled,w.tasks.length,w.log.length,w.days.length])) changed=true;
+  return changed;
+}
+window.normWallet=normWallet;
+const W=()=>{ if(!S.wallet||typeof S.wallet!=='object') normWallet(); return S.wallet; };
+const saveW=()=>{ try{ saveSettings(); }catch(e){} };
+
+function logAdd(w,entry){
+  w.log.unshift(Object.assign({id:uid(),t:Date.now(),date:TSTR,mult:1,streak:0},entry));
+  if(w.log.length>LOG_MAX) w.log.length=LOG_MAX;
+}
+function dayAdd(w,ds,delta){
+  const row=w.days.find(d=>d.date===ds);
+  if(row) row.delta+=delta;
+  else w.days.push({date:ds,delta:delta});
+  w.days.sort((a,b)=>a.date<b.date?-1:1);
+  if(w.days.length>DAY_MAX) w.days.splice(0,w.days.length-DAY_MAX);
+}
+const tasksOn=ds=>W().tasks.filter(t=>t.date===ds);
+const dayDelta=ds=>{ const r=W().days.find(d=>d.date===ds); return r?r.delta:0; };
+
+/* ---------- the end of a day ----------
+   Every day that has finished since the last look is settled in order, so a
+   week away costs exactly what a week of opening it would have. */
+function walSettle(){
+  const w=W();
+  if(!w.settled){ w.settled=ymd(addDays(TODAY,-1)); saveW(); return null; }
+  let cur=parseDay(w.settled), guard=0, fined=0, missed=0, broke=false, made=0;
+  while(guard++<400){
+    const nx=addDays(cur,1), ns=ymd(nx);
+    if(ns>=TSTR) break;                 /* today is not over */
+    const list=tasksOn(ns);
+    if(list.length){
+      const open=list.filter(t=>!t.done).length;
+      if(open){
+        let cost=0;
+        for(let i=0;i<open;i++){ const cut=w.bal*FINE; cost+=cut; w.bal-=cut; }
+        cost=Math.round(cost); w.bal=Math.max(0,Math.round(w.bal));
+        if(cost>0){
+          logAdd(w,{kind:'fine',amt:-cost,date:ns,
+            note:open+(open===1?' task missed':' tasks missed')});
+          dayAdd(w,ns,-cost);
+        }
+        fined+=cost; missed+=open;
+        if(w.streak) broke=true;
+        w.streak=0;
+      }else{
+        w.streak++; made++;
+        w.best=Math.max(w.best,w.streak);
+      }
+    }
+    w.settled=ns; cur=nx;
+  }
+  saveW();
+  return (fined||missed||made)? {fined,missed,broke,made} : null;
+}
+window.walSettle=walSettle;
+
+/* ---------- ticking one off, and taking it back ----------
+   Any day can be ticked: a task set for Thursday can be done on Tuesday, and
+   one forgotten on Monday can still be caught up. What a finished day cost in
+   fines stays paid — the money is the record, and it is not rewritten. */
+function payOut(t){
+  const w=W();
+  const tier=rollAmount();
+  const streak=w.streak;
+  const sMult=multOf(streak);
+  const ahead=daysAhead(t.date);
+  const aMult=aheadMultOf(ahead);
+  const mult=sMult*aMult;
+  const gain=Math.round(tier.amt*mult);
+  t.done=true; t.doneAt=Date.now(); t.amt=gain;
+  w.bal=Math.round(w.bal+gain);
+  logAdd(w,{kind:'earn',amt:gain,date:TSTR,note:t.text.slice(0,40),mult,streak});
+  dayAdd(w,TSTR,gain);
+  saveW();
+  renderTasks(); renderWallet();
+  reveal({base:tier.amt,tier,mult,streak,gain,bal:w.bal,ahead,sMult,aMult});
+  safe(()=>{ if(typeof window.walMilestone==='function') window.walMilestone(); });
+}
+function takeBack(t){
+  const w=W();
+  const back=Math.max(0,Math.round(t.amt||0));
+  t.done=false; t.doneAt=0; t.amt=0;
+  if(back){
+    w.bal=Math.max(0,Math.round(w.bal-back));
+    logAdd(w,{kind:'fine',amt:-back,date:TSTR,note:'Put back: '+t.text.slice(0,32)});
+    dayAdd(w,TSTR,-back);
+  }
+  saveW(); renderTasks(); renderWallet();
+  toast(back? money(back)+' put back' : 'Unticked');
+  hap(14);
+}
+function tapTask(id){
+  const w=W();
+  const t=w.tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(t.done){
+    ask({
+      eye:'Put it back',
+      title:money(t.amt||0),
+      line:'The payout goes back and the task is open again.',
+      go:'Put it back', danger:true,
+      then:()=>takeBack(t)
+    });
+    return;
+  }
+  const ahead=daysAhead(t.date);
+  const when = t.date===TSTR ? 'today' : t.date>TSTR ? 'set for '+whenLabel(t.date) : 'from '+whenLabel(t.date);
+  const extra = ahead ? ' Done '+ahead+(ahead===1?' day':' days')+' early, so it pays \u00d7'+
+      aheadMultOf(ahead).toFixed(2).replace(/0$/,'') + ' on top.' : '';
+  ask({
+    eye:'Done for real?',
+    title:t.text,
+    line:'A task '+when+'. The roll happens the moment you say yes.'+extra,
+    go:'Tick it off',
+    then:()=>payOut(t)
+  });
+}
+
+/* ===========================================================
+   THE PAGE
+   =========================================================== */
+function buildWallet(){
+  if(q('#v-wallet')) return;
+  const host=q('#v-today'); if(!host || !host.parentNode) return;
+  const v=el('section','view');
+  v.id='v-wallet';
+  v.innerHTML=
+    '<div class="walpage">'+
+      '<div class="waltop" id="walTabsHost"></div>'+
+      '<div class="walhero">'+
+        '<span class="waleye">Balance</span>'+
+        '<b id="walBal">$0</b>'+
+        '<div class="walmeta">'+
+          '<i class="walchg" id="walChg"></i>'+
+          '<i class="walstreak" id="walStreak"></i>'+
+        '</div>'+
+      '</div>'+
+      '<div class="walchartwrap">'+
+        '<div class="walchart" id="walChart"></div>'+
+        '<div class="walscrub" id="walScrub" hidden><b></b><span></span></div>'+
+        '<div class="walranges" id="walRanges">'+
+          '<button data-r="7" class="on">7D</button>'+
+          '<button data-r="30">30D</button>'+
+          '<button data-r="0">All</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="walmile" id="walMile"></div>'+
+      '<div class="walstrip igstats pl-stats" id="walStats"></div>'+
+      '<div class="walrows" id="walRows"></div>'+
+      '<section class="walsec walactivity" id="walAct">'+
+        '<button class="walactbar" id="walActBar">'+
+          '<span>Activity</span><i id="walActN"></i>'+
+          '<svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button>'+
+        '<div class="wallog" id="walLog" hidden></div>'+
+      '</section>'+
+    '</div>';
+  host.parentNode.insertBefore(v,host.nextSibling);
+
+  /* the tasks, as a page of their own */
+  const sheet=el('div','sheet fullsheet');
+  sheet.id='walTasks';
+  sheet.innerHTML=
+    '<div class="fshead"><div class="fsbar">'+
+      '<button class="fsx" id="walTasksClose" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>'+
+      '<h3>Tasks</h3>'+
+      '<button class="walediting" id="walEditBtn">Edit</button>'+
+    '</div>'+
+    '<div class="waldays" id="walDays"></div>'+
+    '<div class="waldayhead" id="walDayHead"></div></div>'+
+    '<div class="fsbody" id="walTaskBody">'+
+      '<div class="waladd" id="walAddRow">'+
+        '<input class="input" id="walAddIn" type="text" maxlength="120" placeholder="Add a task" enterkeyhint="done" autocomplete="off">'+
+        '<button class="waladdgo" id="walAddGo" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>'+
+      '</div>'+
+      '<div id="walList"></div>'+
+    '</div>';
+  document.body.appendChild(sheet);
+
+  /* the payout, as a layer over everything */
+  const rev=el('div','walrev');
+  rev.id='walReveal';
+  rev.innerHTML=
+    '<div class="walrevcard" id="walRevCard">'+
+      '<div class="walring" id="walRing"><i></i></div>'+
+      '<span class="walreveye" id="walRevEye">Rolling</span>'+
+      '<div class="walreel" id="walReel"><div class="walreelstrip" id="walReelStrip"></div></div>'+
+      '<b class="walrevamt" id="walRevAmt">$0</b>'+
+      '<span class="walrevmult" id="walRevMult"></span>'+
+      '<span class="walrevmult alt" id="walRevMult2" hidden></span>'+
+      '<span class="walrevbal" id="walRevBal"></span>'+
+      '<div class="walrevbtns">'+
+        '<button class="walrevno" id="walRevNo" hidden>Not yet</button>'+
+        '<button class="walrevgo" id="walRevGo">Take it</button>'+
+      '</div>'+
+      '<div class="walspark" id="walSpark"></div>'+
+    '</div>';
+  document.body.appendChild(rev);
+}
+
+/* ---------- the pair of tabs over the picture ---------- */
+function buildTabs(){
+  if(q('#walTabs')) return;
+  const pill=el('div','waltabs');
+  pill.id='walTabs';
+  pill.innerHTML=
+    '<button class="waltab on" data-w="today"><span>Today</span></button>'+
+    '<button class="waltab" data-w="wallet"><span>Wallet</span></button>'+
+    '<i class="waltabplate" id="walTabPlate"></i>';
+  document.body.appendChild(pill);
+  pill.addEventListener('click',e=>{
+    const b=e.target.closest('.waltab'); if(!b) return;
+    const to=b.dataset.w;
+    const on=q('#v-wallet').classList.contains('active')?'wallet':'today';
+    if(to===on){ if(scrollY>4) try{ scrollTo({top:0,behavior:RM()?'auto':'smooth'}); }catch(err){} return; }
+    hap(8);
+    showView(to);
+  });
+}
+function placeTabs(){
+  const pill=q('#walTabs'); if(!pill) return;
+  const wallet=q('#v-wallet'), today=q('#v-today');
+  const onWallet=wallet && wallet.classList.contains('active');
+  const onToday=today && today.classList.contains('active');
+  pill.hidden=!(onWallet||onToday);
+  if(pill.hidden) return;
+  const rail=q('#heroRail');
+  const overPic = onToday && rail && !rail.hidden;
+  cls(pill,'over',!!overPic);
+  const host = onWallet ? q('#walTabsHost')
+    : overPic ? rail
+    : q('#tSide');
+  if(host && pill.parentNode!==host){
+    if(host.id==='tSide' && host.firstChild) host.insertBefore(pill,host.firstChild);
+    else host.appendChild(pill);
+  }
+  qa('.waltab',pill).forEach(b=>cls(b,'on',b.dataset.w===(onWallet?'wallet':'today')));
+  const plate=q('#walTabPlate'), act=q('.waltab.on',pill);
+  if(plate&&act&&act.offsetWidth){
+    plate.style.width=act.offsetWidth+'px';
+    plate.style.setProperty('--px',act.offsetLeft+'px');
+  }
+}
+
+/* ---------- drawing it ---------- */
+function renderWallet(){
+  const w=W();
+  if(!q('#v-wallet')) return;
+  const bal=q('#walBal'); if(bal) bal.textContent=money(w.bal);
+  const today=dayDelta(TSTR);
+  const chg=q('#walChg');
+  if(chg){
+    cls(chg,'up',today>0); cls(chg,'down',today<0);
+    chg.textContent = today ? signed(today)+' today' : 'Flat today';
+  }
+  const st=q('#walStreak');
+  if(st){
+    const m=multOf(w.streak);
+    cls(st,'lit',w.streak>0);
+    st.textContent = w.streak
+      ? w.streak+'-day streak \u00b7 \u00d7'+m.toFixed(2).replace(/0$/,'')
+      : 'No streak yet';
+  }
+  drawStats(); drawRows(); drawChart(); drawLog();
+  safe(()=>{ if(typeof window.walMileBar==='function') window.walMileBar(); });
+  placeTabs();
+}
+
+function drawStats(){
+  const host=q('#walStats'); if(!host) return;
+  const w=W();
+  const done=w.tasks.filter(t=>t.done).length;
+  const open=tasksOn(TSTR).filter(t=>!t.done).length;
+  host.innerHTML=
+    '<span class="igstat"><b>'+w.streak+'</b><span>day streak</span></span>'+
+    '<span class="igstat"><b>'+w.best+'</b><span>best run</span></span>'+
+    '<span class="igstat"><b>'+done+'</b><span>ticked off</span></span>'+
+    '<span class="igstat"><b>'+open+'</b><span>open today</span></span>';
+}
+
+function drawRows(){
+  const host=q('#walRows'); if(!host) return;
+  const all=tasksOn(TSTR), open=all.filter(t=>!t.done).length;
+  const sub = !all.length ? 'Nothing set for today'
+    : open ? open+' of '+all.length+' still open today'
+    : all.length===1 ? 'Today\u2019s one task is done'
+    : 'All '+all.length+' done today';
+  let h='<button class="walbig" data-go="tasks">'+
+    '<span class="walbigico"><svg viewBox="0 0 24 24"><path d="M4 7h11M4 12h11M4 17h7"/><path d="m16.5 16 2 2 4-4.5"/></svg></span>'+
+    '<span class="walbigt"><b>Tasks</b><span>'+esc2(sub)+'</span></span>'+
+    '<svg class="gochev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+  if(typeof window.walBadgeRow==='function') h+=window.walBadgeRow();
+  host.innerHTML=h;
+}
+
+/* ---------- the balance, drawn the way a market is ----------
+   Every day the wallet has moved is a point, and the line between them is the
+   balance as it stood. Drag along it and the figure for that day is read out
+   above. The fill is green when the stretch ends higher than it started and
+   red when it does not, which is the only colour on the chart. */
+let walRange=7;
+/* ---------- what each day made or lost ----------
+   The line is the day's own move, not the pile it sits on: above the rule is
+   a day that paid, below it is a day that cost. The fill and the stroke both
+   turn over at the rule, so a week reads at a glance. */
+function walSeries(range){
+  const w=W();
+  const days=w.days.slice().sort((a,b)=>a.date<b.date?-1:1);
+  const firstKnown=days.length?days[0].date:TSTR;
+  let from = range ? ymd(addDays(TODAY,-(range-1))) : firstKnown;
+  if(from>TSTR) from=TSTR;
+  const out=[];
+  let cur=parseDay(from), guard=0;
+  while(guard++<400){
+    const ds=ymd(cur);
+    const row=days.find(d=>d.date===ds);
+    out.push({date:ds,v:row?Math.round(row.delta):0});
+    if(ds===TSTR) break;
+    cur=addDays(cur,1);
+  }
+  return out;
+}
+function drawChart(){
+  const host=q('#walChart'); if(!host) return;
+  const pts=walSeries(walRange);
+  const w=W();
+  if(pts.length<2 || (!w.log.length && !w.bal)){
+    host.innerHTML='<div class="walnone">Tick a task off and the line starts here.</div>';
+    const s=q('#walScrub'); if(s) s.hidden=true;
+    return;
+  }
+  const W0=300,H0=132,pad=10;
+  const vals=pts.map(p=>p.v);
+  const top=Math.max(1,...vals.map(v=>Math.abs(v)));
+  const hi=top, lo=-top;                     /* the rule sits in the middle */
+  const x=i=>pad+(i/(pts.length-1))*(W0-pad*2);
+  const y=v=>H0/2-(v/top)*(H0/2-pad);
+  const zero=H0/2;
+  const net=vals.reduce((n,v)=>n+v,0);
+  const up=net>=0;
+  let d='';
+  pts.forEach((p,i)=>{ d+=(i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1)+' '; });
+  const area=d+'L'+x(pts.length-1).toFixed(1)+' '+zero+' L'+x(0).toFixed(1)+' '+zero+' Z';
+  const lastX=x(pts.length-1), lastY=y(vals[vals.length-1]);
+  const mid=(zero/H0*100).toFixed(2)+'%';
+  host.innerHTML='<svg class="walsvg'+(up?' up':' down')+'" viewBox="0 0 '+W0+' '+H0+'" preserveAspectRatio="none">'+
+    '<defs>'+
+      '<linearGradient id="walFill" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="'+H0+'">'+
+        '<stop offset="0" class="wfup"/><stop offset="'+mid+'" class="wfmid"/>'+
+        '<stop offset="'+mid+'" class="wfmid"/><stop offset="1" class="wfdn"/></linearGradient>'+
+      '<linearGradient id="walStroke" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="'+H0+'">'+
+        '<stop offset="0" class="wsup"/><stop offset="'+mid+'" class="wsup"/>'+
+        '<stop offset="'+mid+'" class="wsdn"/><stop offset="1" class="wsdn"/></linearGradient>'+
+    '</defs>'+
+    '<path class="walarea" d="'+area+'"/>'+
+    '<line class="walzero" x1="0" x2="'+W0+'" y1="'+zero+'" y2="'+zero+'"/>'+
+    '<path class="walline" d="'+d+'"/>'+
+    '<line class="walcross" x1="0" x2="0" y1="0" y2="'+H0+'" style="display:none"/>'+
+    '<circle class="waldotx" cx="0" cy="0" r="3.4" style="display:none"/>'+
+    '<circle class="waldot'+(vals[vals.length-1]<0?' dn':'')+'" cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="3.6"/>'+
+    '</svg>'+
+    '<span class="walhi">'+signed(hi)+'</span><span class="wallo">'+signed(lo)+'</span>';
+  host.__pts=pts; host.__geo={W0,H0,x,y};
+  const scrub=q('#walScrub');
+  if(scrub){
+    scrub.hidden=false;
+    cls(scrub,'up',net>0); cls(scrub,'down',net<0);
+    q('b',scrub).textContent=net?signed(net):'No change';
+    q('span',scrub).textContent=(walRange?('over the last '+walRange+' days'):'all time')+
+      ' \u00b7 balance '+money(w.bal);
+  }
+}
+function scrubAt(clientX){
+  const host=q('#walChart'), scrub=q('#walScrub');
+  if(!host||!host.__pts||!scrub) return;
+  const r=host.getBoundingClientRect();
+  const k=Math.max(0,Math.min(1,(clientX-r.left)/Math.max(1,r.width)));
+  const i=Math.round(k*(host.__pts.length-1));
+  const p=host.__pts[i], g=host.__geo;
+  const svg=q('.walsvg',host); if(!svg) return;
+  const cx=g.x(i), cy=g.y(p.v);
+  const line=q('.walcross',svg), dot=q('.waldotx',svg);
+  line.style.display=''; line.setAttribute('x1',cx); line.setAttribute('x2',cx);
+  dot.style.display=''; dot.setAttribute('cx',cx); dot.setAttribute('cy',cy);
+  cls(scrub,'up',p.v>0); cls(scrub,'down',p.v<0);
+  q('b',scrub).textContent=p.v?signed(p.v):'Nothing';
+  q('span',scrub).textContent=whenLabel(p.date);
+  cls(scrub,'held',true);
+}
+function scrubOff(){
+  const host=q('#walChart'), scrub=q('#walScrub');
+  if(!host) return;
+  const svg=q('.walsvg',host);
+  if(svg){ const l=q('.walcross',svg), d2=q('.waldotx',svg); if(l) l.style.display='none'; if(d2) d2.style.display='none'; }
+  if(scrub) cls(scrub,'held',false);
+  drawChart();
+}
+window.renderWallet=renderWallet;
+
+function drawLog(){
+  const host=q('#walLog'); if(!host) return;
+  const w=W();
+  const n=q('#walActN');
+  if(n) n.textContent = w.log.length? (w.log.length>10?'last 10':String(w.log.length)) : 'nothing yet';
+  const rows=w.log.slice(0,10);
+  if(!rows.length){
+    host.innerHTML='<div class="walnone">Nothing yet. Tick a task off and it lands here.</div>';
+    return;
+  }
+  host.innerHTML=rows.map(r=>{
+    const up=r.amt>0;
+    const when=r.date===TSTR? 'Today' : whenLabel(r.date);
+    const mult=(r.kind==='earn'&&r.mult>1.001)? ' \u00b7 \u00d7'+Number(r.mult).toFixed(2).replace(/0$/,'') : '';
+    return '<div class="walrow">'+
+      '<span class="walico '+(up?'up':'down')+'"><svg viewBox="0 0 24 24"><path d="'+
+        (up?'M12 19V5M6 11l6-6 6 6':'M12 5v14M18 13l-6 6-6-6')+'"/></svg></span>'+
+      '<span class="walrowt"><b>'+esc2(r.note||(up?'Task done':'Tasks missed'))+'</b>'+
+        '<span>'+esc2(when+mult)+'</span></span>'+
+      '<b class="walamt '+(up?'up':'down')+'">'+signed(r.amt)+'</b></div>';
+  }).join('');
+}
+
+/* ===========================================================
+   THE TASKS PAGE
+   =========================================================== */
+let walDay=null, walEdit=false;
+function openTasks(){
+  walDay=walDay||TSTR;
+  walEdit=false;
+  renderTasks();
+  q('#scrim').classList.add('on');
+  q('#walTasks').classList.add('on');
+  hap(8);
+  setTimeout(()=>{ const b=q('#walTaskBody'); if(b) b.scrollTop=0; },30);
+}
+function closeTasks(){
+  q('#walTasks').classList.remove('on');
+  if(!q('.sheet.on')) q('#scrim').classList.remove('on');
+  renderWallet();
+}
+window.closeWalTasks=closeTasks;
+
+function dayChip(ds,i){
+  const list=tasksOn(ds);
+  const open=list.filter(t=>!t.done).length;
+  const d=parseDay(ds);
+  const label = i===0?'Today' : i===1?'Tomorrow' : DN[d.getDay()]+' '+d.getDate();
+  return '<button class="walday'+(ds===walDay?' on':'')+'" data-d="'+ds+'">'+
+    '<span>'+esc2(label)+'</span>'+
+    (list.length? '<i class="waldaydot'+(open?'':' done')+'">'+(open||list.length)+'</i>' : '')+
+    '</button>';
+}
+function renderTasks(){
+  if(!q('#walTasks')) return;
+  const w=W();
+  walDay=walDay||TSTR;
+  const days=q('#walDays');
+  if(days){
+    let h='';
+    for(let i=0;i<=HORIZON;i++) h+=dayChip(ymd(addDays(TODAY,i)),i);
+    days.innerHTML=h;
+    const on=q('.walday.on',days);
+    if(on) on.scrollIntoView({inline:'center',block:'nearest'});
+  }
+  cls(q('#walTasks'),'editing',walEdit);
+  const btn=q('#walEditBtn');
+  if(btn){ btn.textContent=walEdit?'Done':'Edit'; cls(btn,'on',walEdit); }
+  const list=q('#walList');
+  if(!list) return;
+  const rows=tasksOn(walDay);
+  const past=walDay<TSTR;
+  const head=q('#walDayHead');
+  if(head){
+    const done=rows.filter(t=>t.done).length;
+    head.textContent = rows.length
+      ? rows.length+(rows.length===1?' task \u00b7 ':' tasks \u00b7 ')+done+' done'
+      : '';
+  }
+  if(!rows.length){
+    list.innerHTML='<div class="walnone">'+
+      (past?'Nothing was set for this day.':'No tasks yet. Turn on Edit and add one.')+'</div>';
+    return;
+  }
+  list.innerHTML=rows.map(t=>{
+    const missed=past&&!t.done;
+    return '<div class="waltask'+(t.done?' done':'')+(missed?' missed':'')+'" data-id="'+t.id+'">'+
+      '<button class="waltick" data-act="tick" aria-label="Done">'+
+        '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
+      '<span class="waltxt" data-act="'+(walEdit?'edit':'tick')+'">'+esc2(t.text)+'</span>'+
+      (t.done? '<b class="waltag up">'+signed(t.amt)+'</b>' : '')+
+      (missed? '<b class="waltag down">missed</b>' : '')+
+      '<button class="waldel" data-act="del" aria-label="Delete">'+
+        '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>'+
+      '</div>';
+  }).join('');
+}
+function addTask(text){
+  text=String(text||'').trim().slice(0,120);
+  if(!text) return;
+  const w=W();
+  w.tasks.push({id:uid(),date:walDay||TSTR,text,done:false,doneAt:0,amt:0});
+  saveW(); renderTasks(); renderWallet(); hap(8);
+}
+function delTask(id){
+  const w=W();
+  const i=w.tasks.findIndex(t=>t.id===id);
+  if(i<0) return;
+  w.tasks.splice(i,1);
+  saveW(); renderTasks(); renderWallet(); hap(12);
+}
+function renameTask(id,row){
+  const w=W();
+  const t=w.tasks.find(x=>x.id===id); if(!t) return;
+  const span=q('.waltxt',row); if(!span || q('input',row)) return;
+  const inp=el('input','input waltxtin');
+  inp.value=t.text; inp.maxLength=120;
+  span.replaceWith(inp);
+  inp.focus(); inp.select();
+  const finish=()=>{
+    const v=inp.value.trim().slice(0,120);
+    if(v){ t.text=v; saveW(); }
+    renderTasks(); renderWallet();
+  };
+  inp.addEventListener('blur',finish);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); inp.blur(); } });
+}
+
+/* ===========================================================
+   THE PAYOUT
+   A short build, then the figure. The numbers that flicker past are the
+   four the app can actually pay, so what is being decided is plain.
+   =========================================================== */
+let revTimer=0, revStep=0, askThen=null;
+function revEls(){
+  return {box:q('#walReveal'),card:q('#walRevCard'),eye:q('#walRevEye'),
+    amt:q('#walRevAmt'),mult:q('#walRevMult'),bal:q('#walRevBal'),go:q('#walRevGo'),
+    cancel:q('#walRevNo'),ring:q('#walRing')};
+}
+function revReset(){
+  const e=revEls();
+  clearTimeout(revTimer);
+  cls(e.box,'fineside',false); cls(e.box,'asking',false); cls(e.box,'spinning',false);
+  cls(e.box,'reeling',false); cls(e.box,'mileside',false);
+  cls(e.card,'landed',false); cls(e.card,'big',false); cls(e.card,'jackpot',false);
+  cls(e.card,'lifted',false); cls(e.card,'danger',false);
+  e.mult.hidden=true; e.mult.textContent='';
+  e.bal.innerHTML=''; e.cancel.hidden=true;
+  q('#walSpark').innerHTML='';
+  return e;
+}
+/* ---------- are you sure ---------- */
+function ask(o){
+  const e=revReset();
+  askThen=o.then||null;
+  cls(e.box,'asking',true);
+  cls(e.card,'landed',true);
+  cls(e.card,'danger',!!o.danger);
+  e.eye.textContent=o.eye||'Sure?';
+  e.amt.textContent=o.title||'';
+  e.mult.hidden=false; e.mult.textContent=o.line||'';
+  e.go.textContent=o.go||'Yes';
+  e.cancel.hidden=false;
+  e.box.classList.add('on');
+  hap(8);
+}
+function askYes(){
+  const fn=askThen; askThen=null;
+  const e=revEls();
+  e.box.classList.remove('on');
+  cls(e.card,'danger',false);
+  if(typeof fn==='function') setTimeout(fn,180);
+}
+/* ---------- the roll ----------
+   A reel of the four amounts the app can pay, spun and slowed until it stops
+   on one. What is being decided is on the strip the whole time, so the wait
+   means something. The streak is a second beat: the amount it landed on is
+   multiplied up in front of you rather than appearing already multiplied. */
+function reelHTML(tier){
+  const n=22;
+  let h='';
+  for(let i=0;i<n-1;i++){
+    const t=TIERS[Math.floor(Math.random()*TIERS.length)];
+    h+='<span class="walreelrow">'+money(t.amt)+'</span>';
+  }
+  h+='<span class="walreelrow last">'+money(tier.amt)+'</span>';
+  return {html:h,n};
+}
+function reveal(o){
+  const e=revReset();
+  e.eye.textContent='Rolling';
+  e.go.textContent='Take it';
+  cls(e.box,'spinning',true);
+  const reel=q('#walReel'), strip=q('#walReelStrip');
+  if(reel&&strip){
+    const r=reelHTML(o.tier);
+    strip.innerHTML=r.html;
+    strip.style.transition='none';
+    strip.style.transform='translateY(0)';
+    e.amt.textContent='';
+    cls(e.box,'reeling',true);
+    e.box.classList.add('on');
+    if(RM()){ cls(e.box,'reeling',false); land(o); return; }
+    requestAnimationFrame(()=>{
+      const row=strip.firstElementChild;
+      const h=row?row.offsetHeight:64;
+      const dur=2000;
+      cls(strip,'moving',true);
+      strip.style.transition='transform '+dur+'ms cubic-bezier(.12,.72,.15,1)';
+      strip.style.transform='translateY(-'+((r.n-1)*h)+'px)';
+      let k=0;
+      const tick=()=>{
+        k++;
+        if(k>26) return;
+        hap(k>18?6:3);
+        revTimer=setTimeout(tick,Math.round(34+Math.pow(k,2.05)*1.1));
+      };
+      revTimer=setTimeout(tick,120);
+      setTimeout(()=>{ cls(strip,'moving',false); },dur-150);
+      setTimeout(()=>{ clearTimeout(revTimer); land(o); },dur+140);
+    });
+    return;
+  }
+  e.box.classList.add('on');
+  land(o);
+}
+function countUp(el,to,ms,pre,from){
+  const a0=Number(from)||0;
+  const t0=performance.now();
+  const step=now=>{
+    const k=Math.min(1,(now-t0)/ms), e=1-Math.pow(1-k,4);
+    el.textContent=(pre||'')+money(a0+(to-a0)*e);
+    if(k<1) requestAnimationFrame(step); else el.textContent=(pre||'')+money(to);
+  };
+  requestAnimationFrame(step);
+}
+function land(o){
+  clearTimeout(revTimer);
+  const e=revEls();
+  cls(e.box,'spinning',false);
+  cls(e.box,'reeling',false);
+  e.eye.textContent=o.tier?o.tier.name:'Paid';
+  cls(e.card,'landed',true);
+  cls(e.card,'big',o.base>=5000);
+  cls(e.card,'jackpot',o.base>=10000);
+  const hasMult=o.mult>1.001;
+  const m2=q('#walRevMult2');
+  if(m2){ m2.hidden=true; m2.textContent=''; }
+  e.amt.textContent='+'+money(o.base);
+  hap(o.base>=10000?30:o.base>=5000?24:16);
+  sparks(o.base>=10000?34:o.base>=5000?22:12);
+  const finish=()=>{
+    const left=tasksOn(TSTR).filter(t=>!t.done).length;
+    e.bal.innerHTML='Balance '+esc2(money(o.bal))+
+      (left? '<span class="walrevleft">'+left+(left===1?' task still open today':' tasks still open today')+'</span>'
+           : '<span class="walrevleft good">Day cleared \u00b7 streak safe</span>');
+  };
+  const chips=()=>{
+    const s=(o.sMult||1)>1.001, a=(o.aMult||1)>1.001;
+    if(s){
+      e.mult.hidden=false;
+      e.mult.textContent='\u00d7'+o.sMult.toFixed(2).replace(/0$/,'')+' \u00b7 '+o.streak+'-day streak';
+    }
+    if(a && m2){
+      m2.hidden=false;
+      m2.textContent='\u00d7'+o.aMult.toFixed(2).replace(/0$/,'')+' \u00b7 '+
+        o.ahead+(o.ahead===1?' day early':' days early');
+    }
+    if(!s && !a && hasMult){
+      e.mult.hidden=false;
+      e.mult.textContent='\u00d7'+o.mult.toFixed(2).replace(/0$/,'');
+    }
+  };
+  if(hasMult && !RM()){
+    /* the second beat: what the reel stopped on is multiplied up in front of you.
+       Nothing to press until it has finished, so it cannot be tapped away
+       halfway through. */
+    cls(e.card,'counting',true);
+    setTimeout(()=>{
+      cls(e.card,'counting',false);
+      chips();
+      cls(e.card,'lifted',true);
+      countUp(e.amt,o.gain,760,'+',o.base);
+      hap(22); sparks(14);
+      setTimeout(finish,420);
+    },620);
+  }else{
+    if(hasMult){ chips(); e.amt.textContent='+'+money(o.gain); }
+    finish();
+  }
+}
+function sparks(n){
+  const host=q('#walSpark'); if(!host||RM()) return;
+  let h='';
+  for(let i=0;i<n;i++){
+    const a=(i/n)*360+Math.random()*20, d=58+Math.random()*110;
+    h+='<i style="--a:'+a.toFixed(1)+'deg;--d:'+d.toFixed(0)+'px;--t:'+(Math.random()*140).toFixed(0)+'ms"></i>';
+  }
+  host.innerHTML=h;
+}
+function closeReveal(){
+  clearTimeout(revTimer);
+  askThen=null;
+  const box=q('#walReveal'); if(!box) return;
+  box.classList.remove('on');
+  cls(q('#walRevCard'),'danger',false);
+}
+window.closeWalReveal=closeReveal;
+window.walAsk=ask;
+
+/* the other side of it: what a finished day cost */
+function showFine(sum){
+  const box=q('#walReveal'); if(!box||!sum||!sum.fined) return;
+  const card=q('#walRevCard');
+  clearInterval(revTimer);
+  cls(box,'fineside',true);
+  cls(card,'landed',true); cls(card,'big',false);
+  q('#walRevEye').textContent=sum.missed===1?'A task went by':'Tasks went by';
+  q('#walRevAmt').textContent='\u2212'+money(sum.fined);
+  const m=q('#walRevMult');
+  m.hidden=false;
+  m.textContent=sum.missed+(sum.missed===1?' task left open':' tasks left open')+
+    (sum.broke?' \u00b7 streak reset':'');
+  q('#walRevBal').textContent='Balance '+money(W().bal);
+  const go=q('#walRevGo'); if(go) go.textContent='Noted';
+  q('#walSpark').innerHTML='';
+  box.classList.add('on');
+  hap(24);
+}
+
+/* ===========================================================
+   WIRING
+   =========================================================== */
+safe(()=>{
+  buildWallet(); buildTabs();
+  safe(normWallet);
+
+  q('#walRows').addEventListener('click',e=>{
+    const b=e.target.closest('[data-go]'); if(!b) return;
+    if(b.dataset.go==='tasks') openTasks();
+    else if(b.dataset.go==='badges' && typeof window.walBadges==='function') window.walBadges();
+  });
+  q('#walTasksClose').addEventListener('click',closeTasks);
+  q('#walEditBtn').addEventListener('click',()=>{
+    walEdit=!walEdit; renderTasks(); hap(6);
+    if(walEdit) setTimeout(()=>{ const i=q('#walAddIn'); if(i) i.focus(); },120);
+  });
+  q('#walDays').addEventListener('click',e=>{
+    const b=e.target.closest('.walday'); if(!b) return;
+    walDay=b.dataset.d; renderTasks(); hap(4);
+  });
+  q('#walAddGo').addEventListener('click',()=>{
+    const i=q('#walAddIn'); addTask(i.value); i.value=''; i.focus();
+  });
+  q('#walAddIn').addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ e.preventDefault(); const i=e.target; addTask(i.value); i.value=''; }
+  });
+  q('#walList').addEventListener('click',e=>{
+    const row=e.target.closest('.waltask'); if(!row) return;
+    const id=row.dataset.id;
+    const act=(e.target.closest('[data-act]')||{}).dataset;
+    if(!act) return;
+    if(act.act==='del'){ if(walEdit) delTask(id); return; }
+    if(act.act==='edit'){ if(walEdit) renameTask(id,row); return; }
+    if(act.act==='tick'){
+      if(walEdit) return;
+      tapTask(id);
+    }
+  });
+  q('#walActBar').addEventListener('click',()=>{
+    const log=q('#walLog'), bar=q('#walActBar');
+    const open=log.hidden;
+    log.hidden=!open;
+    cls(bar,'on',open);
+    hap(6);
+  });
+  q('#walRevGo').addEventListener('click',()=>{
+    if(q('#walReveal').classList.contains('asking')) askYes(); else closeReveal();
+  });
+  q('#walRevNo').addEventListener('click',closeReveal);
+  q('#walRanges').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    walRange=Number(b.dataset.r)||0;
+    qa('#walRanges button').forEach(x=>cls(x,'on',x===b));
+    drawChart(); hap(4);
+  });
+  safe(()=>{
+    const host=q('#walChart');
+    let on=false;
+    host.addEventListener('pointerdown',e=>{ on=true; host.setPointerCapture&&host.setPointerCapture(e.pointerId); scrubAt(e.clientX); hap(3); });
+    host.addEventListener('pointermove',e=>{ if(on) scrubAt(e.clientX); });
+    ['pointerup','pointercancel','pointerleave'].forEach(t=>host.addEventListener(t,()=>{ if(on){ on=false; scrubOff(); } }));
+  });
+  q('#walReveal').addEventListener('click',e=>{ if(e.target.id==='walReveal') closeReveal(); });
+
+  /* the back gesture and the scrim know about the tasks page */
+  safe(()=>{ if(Array.isArray(BACK_SHEETS)) BACK_SHEETS.unshift(['#walTasks',closeTasks]); });
+  safe(()=>{
+    const orig=window.topLayer;
+    if(typeof orig!=='function') return;
+    window.topLayer=function(){
+      const box=q('#walReveal');
+      if(box && box.classList.contains('on')) return closeReveal;
+      const out=orig.apply(this,arguments);
+      if(out) return out;
+      const v=q('#v-wallet');
+      if(v && v.classList.contains('active')) return ()=>showView('today');
+      return null;
+    };
+  });
+
+  /* every draw of the app draws the wallet too, and each new day is settled */
+  const after=(name,fn)=>{
+    try{
+      const orig=window[name];
+      if(typeof orig!=='function') return;
+      window[name]=function(){ const out=orig.apply(this,arguments); try{ fn(); }catch(e){} return out; };
+    }catch(e){}
+  };
+  after('renderAll',()=>{ renderWallet(); placeTabs(); });
+  after('renderHeroRail',placeTabs);
+  after('showView',placeTabs);
+  after('checkRollover',()=>{ const sum=walSettle(); renderWallet(); renderTasks(); if(sum&&sum.fined) showFine(sum); });
+  addEventListener('resize',()=>safe(placeTabs),{passive:true});
+
+  /* on the way in: settle whatever finished while the app was shut */
+  setTimeout(()=>safe(()=>{
+    const sum=walSettle();
+    renderWallet(); placeTabs();
+    if(sum && sum.fined) setTimeout(()=>showFine(sum),700);
+  }),900);
+});
+
+})();
+</script>
+
+<script id="polish-js-14">
+/* ===========================================================
+   MILESTONES, BADGES, AND THE WALLET ON HOME
+   Milestones run on for ever: $10k, $25k, $50k, $100k and up the same three
+   steps every decade, so the next one is always further than the last.
+   Badges are yours to make — a picture, a name and a price, set in Settings —
+   and bought out of the wallet. What you own sits under the quote on Home.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards badges',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+const esc2=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const el=(t,c,h)=>{ const n=document.createElement(t); if(c) n.className=c; if(h!=null) n.innerHTML=h; return n; };
+const money=n=>'$'+Math.round(Math.abs(Number(n)||0)).toLocaleString('en-US');
+const W=()=>{ if(typeof normWallet==='function') normWallet(); return S.wallet; };
+const saveW=()=>{ try{ saveSettings(); }catch(e){} };
+
+/* ---------- the ladder ---------- */
+const STEPS=[1,2.5,5];
+function mileAt(i){
+  const dec=Math.floor(i/3), k=STEPS[i%3];
+  return Math.round(10000*k*Math.pow(10,dec));
+}
+function nextMile(bal){
+  let i=0;
+  while(i<60 && mileAt(i)<=bal) i++;
+  return {i,amt:mileAt(i),prev:i?mileAt(i-1):0};
+}
+
+function normBadges(){
+  const w=W();
+  if(!Array.isArray(w.badges)) w.badges=[];
+  w.badges=w.badges.filter(b=>b&&typeof b==='object').map(b=>({
+    id:String(b.id||uid()),
+    name:String(b.name||'Badge').slice(0,40),
+    price:Math.max(0,Math.round(Number(b.price)||0)),
+    img:typeof b.img==='string'?b.img:'',
+    owned:!!b.owned,
+    at:Math.round(Number(b.at)||0)
+  })).slice(0,60);
+  if(typeof w.mile!=='number'||!isFinite(w.mile)) w.mile=nextMile(w.bal).i;
+  return w.badges;
+}
+
+/* ---------- a milestone, when it is passed ---------- */
+function walMilestone(){
+  const w=W(); normBadges();
+  const now=nextMile(w.bal).i;
+  if(now<=w.mile) return;        /* already passed; a dip does not hand it back */
+  const hit=mileAt(now-1);
+  w.mile=now; saveW();
+  const show=()=>{
+    if(typeof window.walAsk!=='function') return;
+    const box=q('#walReveal');
+    if(box && box.classList.contains('on')) return setTimeout(show,900);
+    card(hit,nextMile(w.bal).amt);
+  };
+  setTimeout(show,900);
+}
+window.walMilestone=walMilestone;
+function card(hit,next){
+  const box=q('#walReveal'); if(!box) return;
+  const c=q('#walRevCard');
+  cls(box,'fineside',false); cls(box,'asking',false); cls(box,'spinning',false);
+  cls(box,'mileside',true);
+  cls(c,'landed',true); cls(c,'big',true); cls(c,'jackpot',true); cls(c,'danger',false);
+  q('#walRevEye').textContent='Milestone';
+  q('#walRevAmt').textContent=money(hit);
+  const m=q('#walRevMult'); m.hidden=false; m.textContent='Passed for the first time';
+  q('#walRevBal').innerHTML='Next up '+esc2(money(next));
+  q('#walRevNo').hidden=true;
+  q('#walRevGo').textContent='Onwards';
+  box.classList.add('on');
+  hap(30);
+  safe(()=>{ const s=q('#walSpark'); if(s&&!RM()){
+    let h=''; for(let i=0;i<38;i++){ const a=(i/38)*360+Math.random()*20, d=70+Math.random()*120;
+      h+='<i style="--a:'+a.toFixed(1)+'deg;--d:'+d.toFixed(0)+'px;--t:'+(Math.random()*160).toFixed(0)+'ms"></i>'; }
+    s.innerHTML=h; }});
+  const go=q('#walRevGo');
+  const off=()=>{ cls(box,'mileside',false); go.removeEventListener('click',off); };
+  go.addEventListener('click',off);
+}
+
+/* the bar on the wallet page */
+function walMileBar(){
+  const host=q('#walMile'); if(!host) return;
+  const w=W(); normBadges();
+  const n=nextMile(w.bal);
+  const from=n.prev, span=Math.max(1,n.amt-from);
+  const k=Math.max(0,Math.min(1,(w.bal-from)/span));
+  host.innerHTML=
+    '<div class="walmiletop"><span>Next milestone</span><b>'+esc2(money(n.amt))+'</b></div>'+
+    '<div class="walmilebar"><i style="width:'+(k*100).toFixed(1)+'%"></i></div>'+
+    '<div class="walmilefoot"><span>'+esc2(money(w.bal))+'</span>'+
+      '<span>'+esc2(money(Math.max(0,n.amt-w.bal)))+' to go</span></div>';
+}
+window.walMileBar=walMileBar;
+
+/* ---------- the badges row on the wallet page ---------- */
+window.walBadgeRow=function(){
+  const b=normBadges();
+  const owned=b.filter(x=>x.owned).length;
+  const sub = !b.length ? 'None made yet \u00b7 add them in Settings'
+    : owned===b.length ? 'All '+b.length+' earned'
+    : owned+' of '+b.length+' earned';
+  return '<button class="walbig" data-go="badges">'+
+    '<span class="walbigico alt"><svg viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6 6.9 19.3l1-5.7-4.1-4 5.7-.8z"/></svg></span>'+
+    '<span class="walbigt"><b>Badges</b><span>'+esc2(sub)+'</span></span>'+
+    '<svg class="gochev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+};
+
+/* ---------- the shop ---------- */
+function buildShop(){
+  if(q('#walShop')) return;
+  const sheet=el('div','sheet fullsheet');
+  sheet.id='walShop';
+  sheet.innerHTML=
+    '<div class="fshead"><div class="fsbar">'+
+      '<button class="fsx" id="walShopClose" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>'+
+      '<h3>Badges</h3>'+
+      '<span class="walshopbal" id="walShopBal"></span>'+
+    '</div></div>'+
+    '<div class="fsbody"><div class="walshop" id="walShopList"></div></div>';
+  document.body.appendChild(sheet);
+  q('#walShopClose').addEventListener('click',closeShop);
+  q('#walShopList').addEventListener('click',e=>{
+    const b=e.target.closest('[data-buy]'); if(!b) return;
+    buy(b.dataset.buy);
+  });
+  safe(()=>{ if(Array.isArray(BACK_SHEETS)) BACK_SHEETS.unshift(['#walShop',closeShop]); });
+}
+function openShop(){
+  buildShop(); renderShop();
+  q('#scrim').classList.add('on');
+  q('#walShop').classList.add('on');
+  hap(8);
+}
+function closeShop(){
+  const s=q('#walShop'); if(!s) return;
+  s.classList.remove('on');
+  if(!q('.sheet.on')) q('#scrim').classList.remove('on');
+  if(typeof renderWallet==='function') renderWallet();
+}
+window.walBadges=openShop;
+function tileHTML(b,shop){
+  const img=b.img? '<img src="'+esc2(b.img)+'" alt="">' : '<i>\u2726</i>';
+  return '<div class="bdgtile'+(b.owned?' owned':'')+'">'+
+    '<span class="bdgimg">'+img+'</span>'+
+    '<span class="bdgname">'+esc2(b.name)+'</span>'+
+    (shop? '<span class="bdgprice">'+(b.owned?'Earned':esc2(money(b.price)))+'</span>' : '')+
+    '</div>';
+}
+function renderShop(){
+  const w=W(), list=normBadges();
+  const bal=q('#walShopBal'); if(bal) bal.textContent=money(w.bal);
+  const host=q('#walShopList'); if(!host) return;
+  if(!list.length){
+    host.innerHTML='<div class="walnone">No badges yet. Make them in Settings \u00b7 Badges: '+
+      'a picture, a name and what it costs.</div>';
+    return;
+  }
+  const toEarn=list.filter(b=>!b.owned).sort((a,b)=>a.price-b.price);
+  const earned=list.filter(b=>b.owned).sort((a,b)=>(b.at||0)-(a.at||0));
+  let h='';
+  if(toEarn.length){
+    h+='<div class="secbar"><h3>To earn</h3><span class="bdgcount">'+
+      esc2(money(w.bal))+' in hand</span></div><div class="bdggrid">'+
+      toEarn.map(b=>{
+        const can=w.bal>=b.price;
+        return '<div class="bdgcell">'+tileHTML(b,true)+
+          '<button class="bdgbuy'+(can?'':' off')+'" data-buy="'+b.id+'">'+
+          (can?'Buy':esc2(money(b.price-w.bal))+' short')+'</button></div>';
+      }).join('')+'</div>';
+  }
+  if(earned.length){
+    h+='<div class="secbar mt"><h3>Earned</h3><span class="bdgcount">'+earned.length+
+      ' of '+list.length+'</span></div><div class="bdggrid">'+
+      earned.map(b=>'<div class="bdgcell">'+tileHTML(b,true)+'</div>').join('')+'</div>';
+  }
+  host.innerHTML=h;
+}
+function buy(id){
+  const w=W(), b=normBadges().find(x=>x.id===id);
+  if(!b || b.owned) return;
+  if(w.bal<b.price){ toast('Not enough in the wallet'); hap(14); return; }
+  if(typeof window.walAsk!=='function') return;
+  window.walAsk({
+    eye:'Buy this badge',
+    title:b.name,
+    line:money(b.price)+' out of '+money(w.bal)+', leaving '+money(w.bal-b.price)+'.',
+    go:'Buy it',
+    then:()=>{
+      const w2=W();
+      if(w2.bal<b.price){ toast('Not enough in the wallet'); return; }
+      w2.bal=Math.round(w2.bal-b.price);
+      b.owned=true; b.at=Date.now();
+      w2.log.unshift({id:uid(),t:Date.now(),date:TSTR,kind:'fine',amt:-b.price,
+        note:'Badge: '+b.name.slice(0,28),mult:1,streak:0});
+      if(w2.log.length>120) w2.log.length=120;
+      const row=w2.days.find(d=>d.date===TSTR);
+      if(row) row.delta-=b.price; else w2.days.push({date:TSTR,delta:-b.price});
+      saveW();
+      renderShop();
+      if(typeof renderWallet==='function') renderWallet();
+      renderHomeBadges();
+      toast(b.name+' is yours');
+      hap(24);
+    }
+  });
+}
+
+/* ---------- what you own, under the quote on Home ---------- */
+function renderHomeBadges(){
+  const side=q('#tSide'); if(!side) return;
+  const all=normBadges();
+  const list=all.filter(b=>b.owned).sort((a,b)=>(b.at||0)-(a.at||0));
+  let sec=q('#walHomeBadges');
+  if(!list.length){ if(sec) sec.remove(); return; }
+  if(!sec){
+    /* Home reveals its children as they come into view and the watcher was
+       armed before this was made, so it is marked seen */
+    sec=el('section','walshelf inview'); sec.id='walHomeBadges';
+    const card=q('#quoteCard');
+    if(card && card.parentNode===side) side.insertBefore(sec,card.nextSibling);
+    else side.appendChild(sec);
+  }
+  sec.innerHTML=
+    '<div class="secbar"><h3>Badges</h3><span class="bdgcount">'+list.length+' of '+all.length+'</span></div>'+
+    '<div class="bdgshelf"><div class="bdgtrack">'+
+      list.map(b=>tileHTML(b,false)).join('')+
+    '</div><div class="bdgplank"></div></div>';
+  const go=q('.bdgshelf',sec);
+  if(go) go.addEventListener('click',()=>{ hap(6); openShop(); });
+}
+window.walHomeBadges=renderHomeBadges;
+
+/* ---------- the wallet, in short, on Home ---------- */
+function renderHomeWallet(){
+  const side=q('#tSide'); if(!side) return;
+  const w=W(); normBadges();
+  let sec=q('#walHomeCard');
+  if(!sec){
+    /* Home reveals its children as they come into view, and the watcher was
+       armed before these were made: they are marked seen so they cannot be
+       left at nothing */
+    sec=el('section','walhomesec inview'); sec.id='walHomeCard';
+    const board=q('#boardSec')||q('#tSide>section.board');
+    if(board && board.parentNode===side) side.insertBefore(sec,board.nextSibling);
+    else side.appendChild(sec);
+  }
+  const today=(w.days.find(d=>d.date===TSTR)||{delta:0}).delta;
+  const n=nextMile(w.bal);
+  const from=n.prev, k=Math.max(0,Math.min(1,(w.bal-from)/Math.max(1,n.amt-from)));
+  const open=w.tasks.filter(t=>t.date===TSTR&&!t.done).length;
+  sec.innerHTML=
+    '<div class="secbar"><h3>Wallet</h3><button class="seeall" id="walHomeGo">Open</button></div>'+
+    '<button class="walhomecard" id="walHomeTap">'+
+      '<div class="walhometop">'+
+        '<span class="walhomebal">'+esc2(money(w.bal))+'</span>'+
+        '<i class="walchg'+(today>0?' up':today<0?' down':'')+'">'+
+          esc2(today? (today>0?'+':'\u2212')+money(today) : 'Flat')+'</i>'+
+      '</div>'+
+      '<div class="walmilebar sm"><i style="width:'+(k*100).toFixed(1)+'%"></i></div>'+
+      '<div class="walhomefoot">'+
+        '<span>'+(w.streak? w.streak+'-day streak' : 'No streak')+'</span>'+
+        '<span>'+(open? open+(open===1?' task open':' tasks open') : 'Nothing open today')+'</span>'+
+        '<span>'+esc2(money(Math.max(0,n.amt-w.bal)))+' to '+esc2(money(n.amt))+'</span>'+
+      '</div>'+
+    '</button>';
+  const go=()=>{ hap(8); showView('wallet'); };
+  q('#walHomeGo').addEventListener('click',e=>{ e.stopPropagation(); go(); });
+  q('#walHomeTap').addEventListener('click',go);
+}
+window.walHomeCard=renderHomeWallet;
+
+/* ===========================================================
+   THE BADGE WORKSHOP, IN SETTINGS
+   =========================================================== */
+function buildBadgeSheet(){
+  if(q('#walBadgeEdit')) return;
+  const sh=el('div','sheet igpop');
+  sh.id='walBadgeEdit';
+  sh.innerHTML=
+    '<i class="grabber"></i><h3 id="walBeTitle">New badge</h3>'+
+    '<div class="field"><span class="eyebrow">Picture</span>'+
+      '<button class="walbepic" id="walBePic"><span id="walBeThumb"></span><b>Choose a picture</b></button>'+
+      '<input type="file" id="walBeFile" accept="image/*" hidden></div>'+
+    '<div class="field"><span class="eyebrow">Name</span>'+
+      '<input class="input" id="walBeName" type="text" maxlength="40" placeholder="Desk of my own"></div>'+
+    '<div class="field"><span class="eyebrow">Price</span>'+
+      '<input class="input" id="walBePrice" type="number" inputmode="numeric" min="0" step="500" placeholder="25000"></div>'+
+    '<div class="sheet-actions">'+
+      '<button class="btn ghost" id="walBeCancel">Cancel</button>'+
+      '<button class="btn" id="walBeSave">Save</button></div>'+
+    '<div id="walBeDelWrap" hidden><button class="btn danger" id="walBeDel">Delete badge</button></div>';
+  document.body.appendChild(sh);
+  q('#walBePic').addEventListener('click',()=>q('#walBeFile').click());
+  q('#walBeFile').addEventListener('change',async e=>{
+    const f=e.target.files&&e.target.files[0]; e.target.value='';
+    if(!f) return;
+    try{
+      const {src}=await shrinkImage(f,600,.88);
+      beImg=src;
+      q('#walBeThumb').innerHTML='<img src="'+esc2(src)+'" alt="">';
+      hap(8);
+    }catch(err){ toast('That picture could not be read'); }
+  });
+  q('#walBeCancel').addEventListener('click',closeBadgeEdit);
+  q('#walBeSave').addEventListener('click',saveBadge);
+  q('#walBeDel').addEventListener('click',e=>{
+    const b=e.target;
+    if(b.dataset.armed!=='1'){ b.dataset.armed='1'; b.textContent='Tap again to delete'; hap(12); return; }
+    const w=W(), i=w.badges.findIndex(x=>x.id===beId);
+    if(i>=0) w.badges.splice(i,1);
+    saveW(); closeBadgeEdit(); renderBadgeSettings(); renderHomeBadges();
+    if(typeof renderWallet==='function') renderWallet();
+    toast('Badge deleted');
+  });
+  safe(()=>{ if(Array.isArray(BACK_SHEETS)) BACK_SHEETS.unshift(['#walBadgeEdit',closeBadgeEdit]); });
+}
+let beId=null, beImg='';
+function openBadgeEdit(id){
+  buildBadgeSheet();
+  normBadges();
+  const b=id? W().badges.find(x=>x.id===id) : null;
+  beId=id||null; beImg=b?b.img:'';
+  q('#walBeTitle').textContent=b?'Edit badge':'New badge';
+  q('#walBeName').value=b?b.name:'';
+  q('#walBePrice').value=b?String(b.price):'';
+  q('#walBeThumb').innerHTML=beImg?'<img src="'+esc2(beImg)+'" alt="">':'';
+  const d=q('#walBeDelWrap'); d.hidden=!b;
+  const db=q('#walBeDel'); db.dataset.armed=''; db.textContent='Delete badge';
+  q('#scrim').classList.add('on','high');
+  q('#walBadgeEdit').classList.add('on');
+  setTimeout(()=>q('#walBeName').focus(),260);
+}
+function closeBadgeEdit(){
+  const s=q('#walBadgeEdit'); if(!s) return;
+  s.classList.remove('on');
+  if(!q('.sheet.on')) q('#scrim').classList.remove('on','high');
+}
+function saveBadge(){
+  const name=q('#walBeName').value.trim().slice(0,40);
+  const price=Math.max(0,Math.round(Number(q('#walBePrice').value)||0));
+  if(!name){ toast('Give it a name'); return; }
+  const w=W(); normBadges();
+  if(beId){
+    const b=w.badges.find(x=>x.id===beId);
+    if(b){ b.name=name; b.price=price; b.img=beImg; }
+  }else{
+    w.badges.push({id:uid(),name,price,img:beImg,owned:false,at:0});
+  }
+  saveW(); closeBadgeEdit(); renderBadgeSettings(); renderHomeBadges();
+  if(typeof renderWallet==='function') renderWallet();
+  hap(10); toast('Saved');
+}
+
+/* the row in Settings, and the page behind it */
+function buildSettingsPage(){
+  const menu=q('#setMenu'); if(!menu || q('.smrow[data-sp="badges"]')) return;
+  const look=q('.smrow[data-sp="hero"]');
+  const row=el('button','smrow');
+  row.dataset.sp='badges';
+  row.innerHTML='<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+    'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+
+    '<path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6 6.9 19.3l1-5.7-4.1-4 5.7-.8z"/></svg></span>'+
+    '<span class="n">Badges</span><span class="go"><svg viewBox="0 0 24 24" fill="none" '+
+    'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+
+    '<path d="m9 6 6 6-6 6"/></svg></span>';
+  if(look&&look.parentNode) look.parentNode.insertBefore(row,look.nextSibling);
+  else menu.appendChild(row);
+
+  const pages=q('#setPages'); if(!pages) return;
+  const page=el('section','subpage');
+  page.id='sp-badges';
+  page.innerHTML=
+    '<div class="sphead"><button class="spback" aria-label="Back">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '+
+      'stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>'+
+      '<h2>Badges</h2></div>'+
+    '<div class="group"><span class="eyebrow">What they are</span>'+
+      '<p class="walhint">Things worth working towards. Give each one a picture, a name and a '+
+      'price; buy them out of the wallet, and the ones you own sit under the quote on Home.</p>'+
+      '<div id="walBeList"></div>'+
+      '<div class="btnrow"><button class="btn ghost" id="walBeAdd">'+
+        '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New badge</button></div>'+
+    '</div>';
+  pages.appendChild(page);
+  page.querySelector('.spback').addEventListener('click',()=>{ if(typeof closeSetPage==='function') closeSetPage(); });
+  q('#walBeAdd').addEventListener('click',()=>openBadgeEdit(null));
+  q('#walBeList').addEventListener('click',e=>{
+    const r=e.target.closest('[data-edit]'); if(!r) return;
+    openBadgeEdit(r.dataset.edit);
+  });
+  /* the app keeps a list of the pages it will open; the new one joins it */
+  safe(()=>{ if(Array.isArray(SP_PAGES) && SP_PAGES.indexOf('badges')<0) SP_PAGES.push('badges'); });
+  row.addEventListener('click',()=>{ if(typeof openSetPage==='function') openSetPage('badges'); renderBadgeSettings(); });
+}
+function renderBadgeSettings(){
+  const host=q('#walBeList'); if(!host) return;
+  const list=normBadges();
+  if(!list.length){
+    host.innerHTML='<div class="walnone sm">None yet.</div>';
+  }else{
+    host.innerHTML=list.map(b=>
+      '<button class="walberow" data-edit="'+b.id+'">'+
+        '<span class="walbethumb">'+(b.img?'<img src="'+esc2(b.img)+'" alt="">':'<i>\u2726</i>')+'</span>'+
+        '<span class="walbet"><b>'+esc2(b.name)+'</b><span>'+esc2(money(b.price))+
+          (b.owned?' \u00b7 earned':'')+'</span></span>'+
+        '<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '+
+        'stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>'+
+      '</button>').join('');
+  }
+  const sv=q('.smrow[data-sp="badges"] .pl-sv');
+  if(sv){
+    const owned=list.filter(b=>b.owned).length;
+    sv.textContent = list.length? owned+' of '+list.length+' earned' : 'None yet';
+  }
+}
+
+/* ===========================================================
+   HOME AND WALLET, ONE MOVE APART
+   =========================================================== */
+safe(()=>{
+  const orig=window.showView;
+  if(typeof orig!=='function') return;
+  window.showView=function(v){
+    const was=(q('.view.active')||{}).id||'';
+    const pair=(was==='v-today'&&v==='wallet')||(was==='v-wallet'&&v==='today');
+    const fwd=v==='wallet';
+    if(!pair || RM() || typeof document.startViewTransition!=='function'){
+      const out=orig.apply(this,arguments);
+      if(pair && !RM()) safe(()=>{
+        const now=q('.view.active');
+        if(now&&now.animate) now.animate(
+          [{opacity:0,transform:'translateX('+(fwd?28:-28)+'px)'},{opacity:1,transform:'none'}],
+          {duration:340,easing:'cubic-bezier(.16,1,.3,1)',fill:'none'});
+      });
+      return out;
+    }
+    document.documentElement.classList.add(fwd?'walgo':'walback');
+    let out;
+    const vt=document.startViewTransition(()=>{ out=orig.apply(this,arguments); });
+    const clean=()=>document.documentElement.classList.remove('walgo','walback');
+    vt.finished.then(clean).catch(clean);
+    return out;
+  };
+});
+
+/* ---------- wiring ---------- */
+safe(()=>{
+  safe(normBadges);
+  buildSettingsPage(); buildShop();
+  const after=(name,fn)=>{
+    try{
+      const o=window[name];
+      if(typeof o!=='function') return;
+      window[name]=function(){ const r=o.apply(this,arguments); try{ fn(); }catch(e){} return r; };
+    }catch(e){}
+  };
+  after('renderToday',()=>{ renderHomeWallet(); renderHomeBadges(); });
+  after('renderAll',()=>{ renderHomeWallet(); renderHomeBadges(); renderBadgeSettings(); });
+  after('renderSettings',renderBadgeSettings);
+  after('renderWallet',()=>{ safe(walMileBar); });
+  setTimeout(()=>safe(()=>{ renderHomeWallet(); renderHomeBadges(); renderBadgeSettings(); }),1200);
 });
 
 })();
