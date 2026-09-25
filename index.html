@@ -5758,15 +5758,26 @@ html[data-theme="dark"] .walberow{border-bottom-color:var(--line)}
 
 /* ---------- Home and Wallet, one move apart ---------- */
 @media (prefers-reduced-motion:no-preference){
-  html.walgo::view-transition-old(root){animation:walout .34s cubic-bezier(.16,1,.3,1) both}
-  html.walgo::view-transition-new(root){animation:walin .38s cubic-bezier(.16,1,.3,1) both}
-  html.walback::view-transition-old(root){animation:waloutb .34s cubic-bezier(.16,1,.3,1) both}
-  html.walback::view-transition-new(root){animation:walinb .38s cubic-bezier(.16,1,.3,1) both}
+  html.walgo::view-transition-old(root){animation:walout .36s cubic-bezier(.4,0,.2,1) both}
+  html.walgo::view-transition-new(root){animation:walin .46s cubic-bezier(.16,1,.3,1) both}
+  html.walback::view-transition-old(root){animation:waloutb .34s cubic-bezier(.4,0,.2,1) both}
+  html.walback::view-transition-new(root){animation:walinb .42s cubic-bezier(.16,1,.3,1) both}
+  html.walgo::view-transition-new(root),html.walback::view-transition-new(root){
+    transform-origin:50% 62%}
 }
-@keyframes walin{from{opacity:0;transform:translateX(9%) scale(.98)}to{opacity:1;transform:none}}
-@keyframes walout{to{opacity:0;transform:translateX(-5%) scale(.985)}}
-@keyframes walinb{from{opacity:0;transform:translateX(-9%) scale(.98)}to{opacity:1;transform:none}}
-@keyframes waloutb{to{opacity:0;transform:translateX(5%) scale(.985)}}
+@keyframes walin{
+  from{opacity:0;transform:translateY(10%) scale(.97);filter:blur(4px)}
+  60%{opacity:1}
+  to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes walout{
+  from{opacity:1;transform:none;filter:blur(0)}
+  to{opacity:0;transform:scale(.955);filter:blur(5px)}}
+@keyframes walinb{
+  from{opacity:0;transform:scale(.96);filter:blur(5px)}
+  to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes waloutb{
+  from{opacity:1;transform:none;filter:blur(0)}
+  to{opacity:0;transform:translateY(10%) scale(.97);filter:blur(4px)}}
 
 /* the badge sheet opens over a page that already has a scrim, so it clears
    the raised one the same way the Portions sheets do */
@@ -5953,6 +5964,317 @@ html[data-theme="dark"] .dbroom{background:#111;box-shadow:inset 0 0 0 1px #1F1F
 .dbkeep b.warn{color:var(--h-warm,#DE8C42)}
 .dbfile{display:block;margin-top:8px;padding:10px 12px;border-radius:12px;
   color:var(--h-warm,#DE8C42);background:color-mix(in srgb,var(--h-warm,#DE8C42) 11%,transparent)}
+
+/* ===========================================================
+   THE TABS, THE PICTURE, THE DAYS AND THE CLOCK
+   =========================================================== */
+/* ---------- Today and Wallet, off the picture and into the page ---------- */
+.waltabs{position:relative;display:flex;width:100%;max-width:300px;margin:2px auto 14px;
+  padding:4px;gap:3px;border-radius:16px;
+  background:var(--ig-fill);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+#heroRail .waltabs{position:relative;top:auto;left:auto;transform:none;margin:2px auto 14px;
+  background:var(--ig-fill);box-shadow:none}
+html.igskin #tSide>.waltabs{margin:2px auto 16px}
+#walTabsHost{padding:2px 0 16px}
+.waltab{flex:1 1 0;min-width:0;padding:10px 12px;border-radius:12px;font-size:14px}
+.waltabplate{top:4px;bottom:4px;border-radius:12px;background:var(--bg);
+  box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04)}
+html[data-theme="dark"] .waltabplate{background:var(--line-2);box-shadow:none}
+.waltab.on{color:var(--ink)}
+.waltabs.over .waltab{color:var(--ink-3)}
+.waltabs.over .waltab.on{color:var(--ink)}
+.waltabs.over .waltabplate{background:var(--bg)}
+html[data-theme="dark"] .waltabs.over .waltabplate{background:var(--line-2)}
+
+
+/* ---------- the days across the top of the tasks ---------- */
+.waldays{gap:8px;padding:10px var(--gut) 14px;scroll-snap-type:x mandatory}
+.walday{position:relative;flex-direction:column;align-items:center;gap:2px;min-width:70px;
+  padding:9px 13px 8px;
+  border-radius:16px;background:var(--ig-fill);line-height:1.15}
+.walday .wd{font-size:9.5px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--ink-3)}
+.walday .wn{font-size:17px;font-weight:800;letter-spacing:-.03em;color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+.walday.on{background:var(--ink)}
+.walday.on .wd{color:color-mix(in srgb,var(--bg) 72%,var(--ink))}
+.walday.on .wn{color:var(--bg)}
+.walday.today .wn{color:var(--pl-accent)}
+.walday.today.on .wn{color:var(--bg)}
+.waldaydot{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 3px;
+  font-size:9px;line-height:14px;display:block;text-align:center}
+.walday.on .waldaydot{background:var(--bg);color:var(--ink)}
+
+/* ---------- a task with a time on it ---------- */
+.waltb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.waltime{display:inline-flex;align-items:baseline;gap:4px;align-self:flex-start;
+  border:0;padding:0;background:transparent;
+  font-family:var(--ui);font-size:11.5px;font-weight:800;letter-spacing:.02em;
+  color:var(--pl-accent);font-variant-numeric:tabular-nums}
+.waltime i{font-style:normal;font-weight:600;color:var(--ink-3)}
+.waltask.done .waltime{color:var(--ink-3)}
+.waltimeset{flex:0 0 auto;width:34px;height:34px;border:0;border-radius:11px;display:grid;
+  place-items:center;color:var(--ink-3);background:var(--ig-fill);
+  transition:scale .4s var(--pl-bounce),color .2s var(--ease)}
+.waltimeset svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.waltimeset:active{scale:.88;color:var(--pl-accent)}
+
+/* ---------- the dial ---------- */
+#walClock{text-align:center}
+.clkhead{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 0 2px}
+.clkpart{min-width:74px;padding:8px 10px;border:0;border-radius:14px;background:var(--ig-fill);
+  color:var(--ink-3);font-family:var(--display,inherit);font-size:34px;font-weight:800;
+  letter-spacing:-.04em;font-variant-numeric:tabular-nums;
+  transition:background .2s var(--ease),color .2s var(--ease)}
+.clkpart.on{background:color-mix(in srgb,var(--pl-accent) 14%,transparent);color:var(--pl-accent)}
+.clksep{font-family:var(--display,inherit);font-size:30px;font-weight:800;color:var(--ink-3)}
+.clkap{display:flex;flex-direction:column;gap:3px;margin-left:8px}
+.clkap button{padding:6px 10px;border:0;border-radius:9px;background:var(--ig-fill);
+  color:var(--ink-3);font-family:var(--ui);font-size:12px;font-weight:800;letter-spacing:.03em}
+.clkap button.on{background:var(--ink);color:var(--bg)}
+.clkends{display:flex;align-items:baseline;justify-content:center;gap:7px;flex-wrap:wrap;
+  padding:10px 0 2px;font-size:13.5px;color:var(--ink-3)}
+.clkends b{font-size:14.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.clkends i{font-style:normal;font-size:12px;color:var(--ink-3);opacity:.8}
+.clkdial{display:grid;place-items:center;padding:14px 0 6px}
+.clkface{position:relative;width:min(272px,74vw);aspect-ratio:1;border-radius:50%;
+  background:var(--ig-fill);touch-action:none;user-select:none}
+html[data-theme="dark"] .clkface{background:#151515}
+.clkhand{position:absolute;left:50%;top:50%;width:2px;height:38%;margin-left:-1px;
+  transform-origin:50% 100%;translate:0 -100%;background:var(--pl-accent);
+  transition:transform .28s cubic-bezier(.34,1.4,.64,1)}
+.clkhand b{position:absolute;left:50%;top:-16px;width:34px;height:34px;margin-left:-17px;
+  border-radius:50%;background:var(--pl-accent);opacity:.22}
+.clkpin{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;
+  border-radius:50%;background:var(--pl-accent)}
+.clknums{position:absolute;inset:0}
+.clknum{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;
+  display:grid;place-items:center;border-radius:50%;
+  font-family:var(--ui);font-size:16px;font-weight:700;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;transition:color .2s var(--ease)}
+.clknum.on{color:var(--bg);font-weight:800}
+
+/* it opens over a page that already has a raised scrim */
+#walClock{z-index:97}
+
+/* ===========================================================
+   FOUR THINGS, MADE PLAIN
+   The tabs, the picture, the day strip and the dial — each one rebuilt to
+   sit on the space it is actually given rather than on a guess about it.
+   These rules come last and mean it: earlier passes left several competing
+   definitions of the same element, which is what made them come out
+   differently on different screens.
+   =========================================================== */
+
+/* ---------- Today and Wallet ---------- */
+html.igskin #tSide>.waltabs,
+html.igskin #walTabsHost>.waltabs,
+html.igskin .waltabs{
+  display:flex!important;position:relative!important;
+  width:100%!important;max-width:none!important;
+  margin:6px 0 18px!important;padding:4px!important;gap:4px;
+  border-radius:16px;background:var(--ig-fill)!important;
+  box-shadow:none!important;opacity:1!important;visibility:visible!important;
+  transform:none!important;top:auto!important;left:auto!important}
+html.igskin #walTabsHost{padding:0 0 4px}
+html.igskin .waltab{flex:1 1 0;min-width:0;padding:11px 10px;border-radius:12px;
+  font-size:14.5px;font-weight:700;color:var(--ink-3)}
+html.igskin .waltab.on{color:var(--ink)}
+html.igskin .waltabplate{top:4px;bottom:4px;border-radius:12px;background:var(--bg);
+  box-shadow:0 1px 3px rgba(0,0,0,.16)}
+html[data-theme="dark"].igskin .waltabplate{background:#2A2A2A;box-shadow:none}
+
+/* ---------- the day strip ---------- */
+html.igskin .waldays{display:flex;gap:8px;padding:10px var(--gut) 12px;
+  margin:0 calc(-1 * var(--gut));overflow-x:auto;scroll-snap-type:x proximity}
+html.igskin .walday{position:relative;flex:0 0 auto;width:62px;min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:9px 4px 8px;border:0;border-radius:15px;background:var(--ig-fill);
+  scroll-snap-align:center;line-height:1.1;
+  transition:background .2s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .walday:active{scale:.94}
+html.igskin .walday .wd{font-size:9.5px;font-weight:800;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+html.igskin .walday .wn{font-size:17px;font-weight:800;letter-spacing:-.03em;color:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+html.igskin .walday .wk{display:block;width:5px;height:5px;margin-top:3px;border-radius:50%;
+  background:transparent}
+html.igskin .walday .wk.some{background:var(--pl-accent)}
+html.igskin .walday .wk.all{background:var(--pl-up,#2F9E63)}
+html.igskin .walday.today .wn{color:var(--pl-accent)}
+html.igskin .walday.on{background:var(--ink)}
+html.igskin .walday.on .wd{color:color-mix(in srgb,var(--bg) 70%,var(--ink))}
+html.igskin .walday.on .wn,html.igskin .walday.on.today .wn{color:var(--bg)}
+html.igskin .walday.on .wk.some,html.igskin .walday.on .wk.all{background:var(--bg)}
+html.igskin .waldaydot{display:none}
+html.igskin .waldayhead{padding:2px 0 10px}
+
+/* ---------- the dial ---------- */
+html.igskin #walClock{padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  max-height:92vh;max-height:92dvh;overflow-y:auto}
+html.igskin #walClock>h3{margin-bottom:2px}
+.clkhead{gap:5px;padding:4px 0 0}
+.clkpart{min-width:66px;padding:6px 8px;border-radius:13px;
+  font-size:clamp(26px,8.4vw,32px);line-height:1.1}
+.clksep{font-size:clamp(22px,7vw,26px)}
+.clkap{margin-left:6px;gap:2px}
+.clkap button{padding:5px 9px;font-size:11px}
+.clkends{padding:9px 0 0;font-size:12.5px}
+.clkends b{font-size:13.5px}
+.clkdial{padding:10px 0 2px}
+.clkface{width:min(262px,70vw,36vh);width:min(262px,70vw,36dvh)}
+.clknum{width:34px;height:34px;font-size:15px}
+.clkhand{height:38%}
+#walClock .sheet-actions{margin-top:12px}
+
+/* ===========================================================
+   THE TOP BAR, THE PICTURE, THE TASKS AND THE DIAL
+   =========================================================== */
+#walTabs,#walTabsHost{display:none!important}
+
+/* ---------- the way across, in the bar ---------- */
+html.igskin .iconbtn.pl-walletbtn svg{width:23px;height:23px}
+html.igskin .iconbtn.pl-walletbtn{transition:scale .4s var(--pl-bounce),color .2s var(--ease)}
+html.igskin .iconbtn.pl-walletbtn:active{scale:.9}
+
+/* ---------- the balance ---------- */
+html.igskin .walhero{padding:10px 0 0}
+html.igskin #walBal{font-size:clamp(52px,19vw,88px);letter-spacing:-.06em;line-height:.98;
+  white-space:nowrap}
+html.igskin .waleye{font-size:13px}
+html.igskin .walmeta{margin-top:14px}
+
+/* ---------- the tasks ---------- */
+html.igskin .waltask{align-items:center;gap:11px;padding:12px 0}
+html.igskin .waltb{gap:2px}
+html.igskin .waltime{font-size:11px;letter-spacing:.01em;white-space:nowrap}
+html.igskin .waltime i{white-space:nowrap}
+html.igskin .waltxt{font-size:15.5px;line-height:1.3}
+html.igskin .waltask.done .waltxt{text-decoration-color:color-mix(in srgb,var(--ink) 40%,transparent)}
+html.igskin .waltick{width:26px;height:26px}
+html.igskin .waltag{padding:4px 8px;font-size:11px;white-space:nowrap}
+html.igskin .waltimeset{width:30px;height:30px;border-radius:9px}
+html.igskin .waltimeset svg{width:15px;height:15px}
+html.igskin .waldel{width:30px;height:30px;border-radius:9px}
+html.igskin .waldel svg{width:12px;height:12px}
+/* out of edit mode the clock stays out of the way */
+html.igskin #walTasks:not(.editing) .waltimeset{display:none}
+html.igskin .walediting{padding:9px 16px}
+html.igskin #walTasks .fsbody{padding-top:6px}
+
+html.igskin .waladd .input{height:44px}
+html.igskin .waladdgo{width:44px;height:44px;border-radius:13px}
+
+/* ---------- the dial, rebuilt ---------- */
+html.igskin #walClock>h3{font-size:15px;color:var(--ink-3);font-weight:700;
+  letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px}
+.clkhead{gap:6px;padding:2px 0 0;align-items:center}
+.clkpart{min-width:78px;padding:8px 10px;border-radius:14px;background:var(--ig-fill);
+  color:var(--ink-2);font-size:clamp(28px,9vw,34px);font-weight:800;letter-spacing:-.04em}
+.clkpart.on{background:var(--pl-accent);color:var(--bg)}
+.clksep{color:var(--ink-3);font-weight:800}
+.clkap{gap:3px;margin-left:8px}
+.clkap button{padding:6px 11px;border-radius:10px;font-size:11.5px;font-weight:800;
+  background:var(--ig-fill);color:var(--ink-3)}
+.clkap button.on{background:var(--ink);color:var(--bg)}
+.clkends{padding:11px 0 0;gap:6px;font-size:12.5px;color:var(--ink-3)}
+.clkends b{font-size:14px;color:var(--ink)}
+.clkdial{padding:12px 0 4px}
+.clkface{width:min(280px,76vw,38vh);width:min(280px,76vw,38dvh);
+  background:var(--ig-fill);box-shadow:inset 0 0 0 1px var(--ig-hair)}
+html[data-theme="dark"] .clkface{background:#141414;box-shadow:inset 0 0 0 1px #202020}
+.clknums{position:absolute;inset:0;z-index:2}
+.clknum{width:40px;height:40px;font-size:17px;font-weight:700;color:var(--ink-2)}
+.clknum.on{color:var(--bg);font-weight:800}
+.clkhand{z-index:1;width:2.5px;margin-left:-1.25px;height:38%;
+  background:linear-gradient(to top,color-mix(in srgb,var(--pl-accent) 55%,transparent),var(--pl-accent))}
+.clkhand b{top:-20px;width:40px;height:40px;margin-left:-20px;border-radius:50%;
+  background:var(--pl-accent);opacity:1}
+.clkpin{z-index:3;width:8px;height:8px;margin:-4px 0 0 -4px}
+
+html.igskin #themeIcon[hidden]{display:none!important}
+
+/* ---------- the task page, closer to the rest of the app ---------- */
+html.igskin #walTasks .fshead{padding-bottom:0}
+html.igskin .waldayhead{padding:2px 0 12px;font-size:12.5px;font-weight:700;
+  letter-spacing:.01em;color:var(--ink-3)}
+html.igskin .waltask{border-bottom:1px solid var(--ig-hair);padding:13px 0}
+html[data-theme="dark"].igskin .waltask{border-bottom-color:var(--line)}
+html.igskin .waltask:last-child{border-bottom:0}
+html.igskin .waltick{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ink) 20%,transparent)}
+html.igskin .waltask.done .waltick{background:var(--pl-up,#2F9E63)}
+html.igskin .waltime{color:var(--pl-accent);font-weight:800}
+html.igskin .waltask.done .waltime,html.igskin .waltask.missed .waltime{color:var(--ink-3)}
+html.igskin .waltag.up{font-weight:800}
+html.igskin .walnone{padding:40px 10px}
+
+/* the add row, with a time on it */
+html.igskin .waladd{gap:8px;align-items:center}
+html.igskin .waladdtime{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;
+  height:44px;padding:0 12px;border:0;border-radius:13px;
+  background:var(--ig-fill);color:var(--ink-3);
+  font-family:var(--ui);font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;
+  transition:background .2s var(--ease),color .2s var(--ease),scale .4s var(--pl-bounce)}
+html.igskin .waladdtime svg{width:17px;height:17px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html.igskin .waladdtime i{font-style:normal;white-space:nowrap}
+html.igskin .waladdtime:active{scale:.94}
+html.igskin .waladdtime.on{background:color-mix(in srgb,var(--pl-accent) 14%,transparent);
+  color:var(--pl-accent)}
+
+/* ---------- activity opens and closes ---------- */
+html.igskin .walactivity .wallog{overflow:hidden}
+html.igskin .walactbar{padding:13px 14px;font-size:14.5px}
+
+/* ---------- the balance, set properly ---------- */
+html.igskin .walhero{padding:14px 0 2px}
+html.igskin .waleye{font-size:11.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3)}
+html.igskin #walBal{margin-top:9px;font-variant-numeric:tabular-nums lining-nums}
+
+html.igskin .walmeta{margin-top:17px;gap:9px}
+html.igskin .walchg,html.igskin .walstreak{padding:7px 12px;font-size:12.5px}
+html.igskin .walchartwrap{margin-top:20px}
+
+/* ---------- the add row, spaced evenly ---------- */
+/* it belongs to edit mode: the display is left to the rule that switches it,
+   and only the spacing is set here */
+html.igskin #walTasks.editing .waladd{display:flex}
+html.igskin .waladd{gap:10px;align-items:center;padding:2px 0 14px}
+html.igskin .waladd .input{flex:1 1 auto;min-width:0;height:46px}
+html.igskin .waladdtime{width:46px;height:46px;padding:0;justify-content:center;
+  border-radius:14px;gap:0}
+html.igskin .waladdtime.on{width:auto;padding:0 13px;gap:7px}
+html.igskin .waladdtime i:empty{display:none}
+html.igskin .waladdgo{width:46px;height:46px;border-radius:14px}
+
+/* ---------- the figure ---------- */
+html.igskin #walBal{font-family:var(--display,inherit);font-weight:800;
+  letter-spacing:-.042em;line-height:.96;color:var(--ink);
+  font-feature-settings:"tnum" 1,"lnum" 1,"ss01" 1;
+  font-variant-numeric:tabular-nums lining-nums;margin-top:11px}
+
+html.igskin .walmeta{margin-top:19px}
+
+/* ---------- the quote changes without jumping ---------- */
+html.igskin .qcard{overflow:hidden;will-change:height}
+
+
+/* ---------- the top edge, eased ----------
+   The app's own fade went from nothing to solid in a straight line over a
+   tenth of the band, which reads as a band rather than as a dissolve. The
+   same idea, given a little more room and a softer curve through it: still
+   only the top quarter, so the picture itself is untouched. */
+html.igskin .hrcard img,html.igskin .hrcard::after{
+  -webkit-mask-image:linear-gradient(to bottom,
+    rgba(0,0,0,0) 0%,rgba(0,0,0,.06) 4%,rgba(0,0,0,.20) 8%,rgba(0,0,0,.42) 12%,
+    rgba(0,0,0,.66) 16%,rgba(0,0,0,.87) 20%,#000 25%,
+    #000 58%,rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%);
+  mask-image:linear-gradient(to bottom,
+    rgba(0,0,0,0) 0%,rgba(0,0,0,.06) 4%,rgba(0,0,0,.20) 8%,rgba(0,0,0,.42) 12%,
+    rgba(0,0,0,.66) 16%,rgba(0,0,0,.87) 20%,#000 25%,
+    #000 58%,rgba(0,0,0,.72) 76%,rgba(0,0,0,.28) 90%,transparent 100%)}
 </style>
 </head>
 <body>
@@ -6855,24 +7177,83 @@ function openDB(){
         if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:STORE_KEYS[n]});
       }
     };
-    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+    r.onsuccess=()=>{
+      const d=r.result;
+      /* if anything closes it under us, let go of it so the next call opens
+         a fresh one rather than writing into a dead handle */
+      d.onclose=()=>{ if(db===d) db=null; };
+      d.onversionchange=()=>{ try{ d.close(); }catch(e){} if(db===d) db=null; };
+      res(d);
+    };
+    r.onerror=()=>rej(r.error);
   });
 }
+let dbOpening=null;
+/* one reopen at a time, however many writes are waiting on it */
+function dbAlive(){
+  if(db) return Promise.resolve(db);
+  if(!dbOpening){
+    dbOpening=openDB().then(d=>{ db=d; dbOpening=null; return d; })
+      .catch(e=>{ dbOpening=null; throw e; });
+  }
+  return dbOpening;
+}
+const dbGone=e=>{
+  const n=(e&&e.name)||'';
+  return n==='InvalidStateError'||n==='TransactionInactiveError'||n==='NotFoundError'||
+         /closing|closed/i.test((e&&e.message)||'');
+};
 const hasStore=n=>!!(db&&db.objectStoreNames.contains(n));
 const store=(n,m='readonly')=>db.transaction(n,m).objectStore(n);
 const wrap=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 /* A store the database has never heard of reads as empty and takes no writes,
    rather than throwing and stopping the whole app from opening. */
-const dbAll=n=>hasStore(n)?wrap(store(n).getAll()):Promise.resolve([]);
-const dbPut=(n,v)=>{
-  if(!hasStore(n)) return Promise.resolve();
-  /* a failed write is said out loud rather than lost quietly: silence here is
-     what reads to anyone using it as data disappearing on its own */
-  try{ return wrap(store(n,'readwrite').put(v)).catch(e=>dbFail(n,e)); }
-  catch(e){ return Promise.resolve(dbFail(n,e)); }
-};
-const dbDel=(n,k)=>hasStore(n)?wrap(store(n,'readwrite').delete(k)):Promise.resolve();
-const dbClear=n=>hasStore(n)?wrap(store(n,'readwrite').clear()):Promise.resolve();
+/* every call to the database goes through here: alive, try, and if the
+   connection had gone, open a new one and try the once more */
+const nap=ms=>new Promise(r=>setTimeout(r,ms));
+async function dbGo(name,job,fallback,quiet){
+  /* three goes, letting go of the handle between them. A connection that has
+     been closed under the app — which a phone does freely when it puts a tab
+     to sleep — is opened again rather than reported as a lost write. */
+  for(let i=0;i<3;i++){
+    try{
+      await dbAlive();
+      if(!hasStore(name)) return fallback;
+      return await job();
+    }catch(e){
+      if(i===2 || !dbGone(e)) return quiet?fallback:(dbFail(name,e),fallback);
+      db=null;
+      await nap(90*(i+1));
+    }
+  }
+  return fallback;
+}
+/* anything that still would not go is held and tried again later, so a write
+   is delayed rather than dropped */
+const dbHeld=new Map();
+function dbHold(name,value){
+  if(value==null) return;
+  const key=name+' '+JSON.stringify(
+    (STORE_KEYS[name] && value[STORE_KEYS[name]]) || '');
+  dbHeld.set(key,{name,value});
+}
+async function dbFlush(){
+  if(!dbHeld.size) return;
+  const rows=Array.from(dbHeld.values());
+  dbHeld.clear();
+  for(const r of rows){
+    try{ await dbGo(r.name,()=>wrap(store(r.name,'readwrite').put(r.value)),null,true); }
+    catch(e){ dbHold(r.name,r.value); }
+  }
+}
+setInterval(()=>{ try{ dbFlush(); }catch(e){} },6000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) { try{ dbFlush(); }catch(e){} } });
+const dbAll=n=>dbGo(n,()=>wrap(store(n).getAll()),[],true);
+const dbPut=(n,v)=>dbGo(n,()=>wrap(store(n,'readwrite').put(v)),null)
+  .then(r=>r,e=>{ dbHold(n,v); return null; })
+  .then(r=>{ if(dbTrouble) dbHold(n,v); return r; });
+const dbDel=(n,k)=>dbGo(n,()=>wrap(store(n,'readwrite').delete(k)),null);
+const dbClear=n=>dbGo(n,()=>wrap(store(n,'readwrite').clear()),null);
 
 let legacyNotes=new Map(),
     myNotes=[], plans=new Map(), blocks=[], visionItems=[], ground=[];
@@ -10662,6 +11043,9 @@ function checkRollover(){
   }
 }
 document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && dbReady){
+    dbAlive().then(()=>{ if(dbTrouble){ dbTrouble=''; saveSettings(); } }).catch(()=>{});
+  }
   if(document.hidden){ visionUnlocked=false; deskBank().then(deskSaveState); }
   else{ checkRollover(); renderVision(); deskRollover(); renderDesk(); }
 });
@@ -11342,13 +11726,32 @@ wrap('renderBoard',()=>{
 safe(()=>{
   const t=q('#quoteText'), card=q('#quoteCard'); if(!t||!card) return;
   let prev=t.textContent;
+  let lastH=0;
+  const noteH=()=>{ lastH=card.getBoundingClientRect().height; };
+  setTimeout(noteH,600);
+  addEventListener('resize',()=>setTimeout(noteH,200),{passive:true});
   new MutationObserver(()=>{
     if(t.textContent===prev) return;
     const first=prev==='\u2014'||prev==='';
     prev=t.textContent;
-    if(first) return;
-    play(t,[{opacity:0,filter:'blur(6px)',transform:'translateY(6px)'},{opacity:1,filter:'blur(0)',transform:'none'}],{duration:460,fill:'none'});
-    play(q('.qfoot',card),[{opacity:0},{opacity:1}],{duration:420,delay:90});
+    if(first){ noteH(); return; }
+    /* a longer line used to make the card jump to its new size and then the
+       words arrive. The card is walked from the old height to the new one
+       while the words cross over it, so nothing snaps. */
+    const from=lastH;
+    const to=card.getBoundingClientRect().height;
+    lastH=to;
+    if(!RM() && from && Math.abs(to-from)>1 && card.animate){
+      try{
+        const a=card.animate([{height:from+'px'},{height:to+'px'}],
+          {duration:480,easing:'cubic-bezier(.45,.05,.2,1)'});
+        setTimeout(()=>{ try{ if(a.playState!=='finished') a.finish(); }catch(e){} },760);
+      }catch(e){}
+    }
+    play(t,[{opacity:0,filter:'blur(7px)',transform:'translateY(8px) scale(.985)'},
+            {opacity:1,filter:'blur(0)',transform:'none'}],{duration:480,fill:'none'});
+    play(q('.qfoot',card),[{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'none'}],
+      {duration:420,delay:110,fill:'none'});
   }).observe(t,{childList:true,characterData:true,subtree:true});
   card.addEventListener('click',()=>{ try{ buzz(HAPTIC.light); }catch(e){} });
 });
@@ -12689,6 +13092,19 @@ const daysAhead=ds=>{
   }catch(e){ return 0; }
 };
 const aheadMultOf=n=>Math.min(AHEAD_CAP,Math.pow(1+STREAK_STEP,Math.max(0,n)));
+/* a time of day, written the way the rest of the app writes one */
+function clockLabel(mins){
+  mins=((Math.round(Number(mins)||0))%1440+1440)%1440;
+  const h24=Math.floor(mins/60), m=mins%60;
+  try{
+    if(typeof fmtTimeStr==='function' && typeof str24==='function')
+      return fmtTimeStr(str24(mins));
+  }catch(e){}
+  const ap=h24<12?'am':'pm';
+  const h=((h24+11)%12)+1;
+  return h+':'+String(m).padStart(2,'0')+' '+ap;
+}
+window.clockLabel=clockLabel;
 const money=n=>{
   const v=Math.round(Math.abs(Number(n)||0));
   return '$'+v.toLocaleString('en-US');
@@ -12718,9 +13134,15 @@ function normWalletInner(){
   w.settled=typeof w.settled==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(w.settled)? w.settled : '';
   w.tasks=(Array.isArray(w.tasks)?w.tasks:[])
     .filter(t=>t&&typeof t==='object'&&/^\d{4}-\d{2}-\d{2}$/.test(t.date))
-    .map(t=>({id:String(t.id||uid()),date:t.date,
-      text:String(t.text||'').slice(0,120),
-      done:!!t.done,doneAt:num(t.doneAt,0),amt:Math.max(0,Math.round(num(t.amt,0)))}))
+    .map(t=>{
+      /* no time at all is a real answer, and it is not midnight */
+      const raw=t.time;
+      const mins=(raw===null||raw===undefined||raw==='')?null:Math.round(num(raw,-1));
+      return {id:String(t.id||uid()),date:t.date,
+        text:String(t.text||'').slice(0,120),
+        time:(mins!=null&&isFinite(mins)&&mins>=0&&mins<1440)?mins:null,
+        done:!!t.done,doneAt:num(t.doneAt,0),amt:Math.max(0,Math.round(num(t.amt,0)))};
+    })
     .filter(t=>t.text.trim());
   w.log=(Array.isArray(w.log)?w.log:[])
     .filter(x=>x&&typeof x==='object')
@@ -12909,6 +13331,9 @@ function buildWallet(){
     '<div class="fsbody" id="walTaskBody">'+
       '<div class="waladd" id="walAddRow">'+
         '<input class="input" id="walAddIn" type="text" maxlength="120" placeholder="Add a task" enterkeyhint="done" autocomplete="off">'+
+        '<button class="waladdtime" id="walAddTime" aria-label="Start time">'+
+          '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6V12l3 1.8"/></svg>'+
+          '<i id="walAddTimeT"></i></button>'+
         '<button class="waladdgo" id="walAddGo" aria-label="Add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>'+
       '</div>'+
       '<div id="walList"></div>'+
@@ -12962,12 +13387,11 @@ function placeTabs(){
   const onToday=today && today.classList.contains('active');
   pill.hidden=!(onWallet||onToday);
   if(pill.hidden) return;
-  const rail=q('#heroRail');
-  const overPic = onToday && rail && !rail.hidden;
-  cls(pill,'over',!!overPic);
-  const host = onWallet ? q('#walTabsHost')
-    : overPic ? rail
-    : q('#tSide');
+  /* above the picture, in the page, rather than laid over it */
+  cls(pill,'over',false);
+  const host = onWallet ? q('#walTabsHost') : q('#tSide');
+  cls(pill,'inview',true);              /* Home hides children until seen */
+  pill.hidden=false;
   if(host && pill.parentNode!==host){
     if(host.id==='tSide' && host.firstChild) host.insertBefore(pill,host.firstChild);
     else host.appendChild(pill);
@@ -12984,7 +13408,13 @@ function placeTabs(){
 function renderWallet(){
   const w=W();
   if(!q('#v-wallet')) return;
-  const bal=q('#walBal'); if(bal) bal.textContent=money(w.bal);
+  const bal=q('#walBal');
+  if(bal){
+    /* the sign is set smaller than the figure, the way a price is */
+    /* one piece of type: the sign, the digits and the separators all the same
+       size, weight and colour */
+    bal.textContent=money(w.bal);
+  }
   const today=dayDelta(TSTR);
   const chg=q('#walChg');
   if(chg){
@@ -13134,6 +13564,7 @@ function scrubOff(){
   drawChart();
 }
 window.renderWallet=renderWallet;
+window.renderTasks=()=>{ try{ renderTasks(); }catch(e){} };
 
 function drawLog(){
   const host=q('#walLog'); if(!host) return;
@@ -13182,10 +13613,13 @@ function dayChip(ds,i){
   const list=tasksOn(ds);
   const open=list.filter(t=>!t.done).length;
   const d=parseDay(ds);
-  const label = i===0?'Today' : i===1?'Tomorrow' : DN[d.getDay()]+' '+d.getDate();
-  return '<button class="walday'+(ds===walDay?' on':'')+'" data-d="'+ds+'">'+
-    '<span>'+esc2(label)+'</span>'+
-    (list.length? '<i class="waldaydot'+(open?'':' done')+'">'+(open||list.length)+'</i>' : '')+
+  const top = i===0?'Today' : i===1?'Tmrw' : DN[d.getDay()];
+  const mark = !list.length? '' : open? ' some' : ' all';
+  return '<button class="walday'+(ds===walDay?' on':'')+(ds===TSTR?' today':'')+'" data-d="'+ds+'" '+
+    'aria-label="'+esc2(top+' '+d.getDate()+(list.length?', '+list.length+' tasks':''))+'">'+
+    '<span class="wd">'+esc2(top)+'</span>'+
+    '<span class="wn">'+d.getDate()+'</span>'+
+    '<i class="wk'+mark+'"></i>'+
     '</button>';
 }
 function renderTasks(){
@@ -13205,7 +13639,10 @@ function renderTasks(){
   if(btn){ btn.textContent=walEdit?'Done':'Edit'; cls(btn,'on',walEdit); }
   const list=q('#walList');
   if(!list) return;
-  const rows=tasksOn(walDay);
+  const rows=tasksOn(walDay).slice().sort((a,b)=>{
+    const x=(a.time==null?1e6:a.time), y=(b.time==null?1e6:b.time);
+    return x-y;
+  });
   const past=walDay<TSTR;
   const head=q('#walDayHead');
   if(head){
@@ -13224,7 +13661,14 @@ function renderTasks(){
     return '<div class="waltask'+(t.done?' done':'')+(missed?' missed':'')+'" data-id="'+t.id+'">'+
       '<button class="waltick" data-act="tick" aria-label="Done">'+
         '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button>'+
-      '<span class="waltxt" data-act="'+(walEdit?'edit':'tick')+'">'+esc2(t.text)+'</span>'+
+      '<span class="waltb">'+
+        (t.time!=null? '<span class="waltime" data-act="time">'+esc2(clockLabel(t.time))+
+          '<i>\u2013'+esc2(clockLabel((t.time+30)%1440))+'</i></span>' : '')+
+        '<span class="waltxt" data-act="'+(walEdit?'edit':'tick')+'">'+esc2(t.text)+'</span>'+
+      '</span>'+
+      (walEdit? '<button class="waltimeset" data-act="time" aria-label="Start time">'+
+        '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6V12l3 1.8"/></svg>'+
+        '</button>' : '')+
       (t.done? '<b class="waltag up">'+signed(t.amt)+'</b>' : '')+
       (missed? '<b class="waltag down">missed</b>' : '')+
       '<button class="waldel" data-act="del" aria-label="Delete">'+
@@ -13232,11 +13676,21 @@ function renderTasks(){
       '</div>';
   }).join('');
 }
+let walAddAt=null;                 /* a time waiting on the next task */
+window.walSetAddTime=v=>{
+  walAddAt = v==null? null : ((v%1440)+1440)%1440;
+  const tag=q('#walAddTimeT'), btn=q('#walAddTime');
+  if(tag) tag.textContent = walAddAt==null? '' : clockLabel(walAddAt);
+  cls(btn,'on',walAddAt!=null);
+};
+window.walGetAddTime=()=>walAddAt;
 function addTask(text){
   text=String(text||'').trim().slice(0,120);
   if(!text) return;
   const w=W();
-  w.tasks.push({id:uid(),date:walDay||TSTR,text,done:false,doneAt:0,amt:0});
+  w.tasks.push({id:uid(),date:walDay||TSTR,text,done:false,doneAt:0,amt:0,
+    time:(walAddAt==null?null:walAddAt)});
+  window.walSetAddTime(null);
   saveW(); renderTasks(); renderWallet(); hap(8);
 }
 function delTask(id){
@@ -13486,6 +13940,9 @@ safe(()=>{
     const b=e.target.closest('.walday'); if(!b) return;
     walDay=b.dataset.d; renderTasks(); hap(4);
   });
+  q('#walAddTime').addEventListener('click',()=>{
+    if(typeof window.walClock==='function') window.walClock(null);
+  });
   q('#walAddGo').addEventListener('click',()=>{
     const i=q('#walAddIn'); addTask(i.value); i.value=''; i.focus();
   });
@@ -13498,6 +13955,7 @@ safe(()=>{
     const act=(e.target.closest('[data-act]')||{}).dataset;
     if(!act) return;
     if(act.act==='del'){ if(walEdit) delTask(id); return; }
+    if(act.act==='time'){ if(walEdit && typeof window.walClock==='function') window.walClock(id); return; }
     if(act.act==='edit'){ if(walEdit) renameTask(id,row); return; }
     if(act.act==='tick'){
       if(walEdit) return;
@@ -13506,10 +13964,37 @@ safe(()=>{
   });
   q('#walActBar').addEventListener('click',()=>{
     const log=q('#walLog'), bar=q('#walActBar');
-    const open=log.hidden;
-    log.hidden=!open;
-    cls(bar,'on',open);
+    const opening=log.hidden;
     hap(6);
+    if(RM()){
+      log.hidden=!opening; cls(bar,'on',opening); return;
+    }
+    if(opening){
+      log.hidden=false;
+      cls(bar,'on',true);
+      const h=log.scrollHeight;
+      log.style.overflow='hidden';
+      const a=log.animate([{height:'0px',opacity:0},{height:h+'px',opacity:1}],
+        {duration:340,easing:'cubic-bezier(.16,1,.3,1)'});
+      a.onfinish=()=>{ log.style.overflow=''; log.style.height=''; };
+      setTimeout(()=>{ log.style.overflow=''; log.style.height=''; },700);
+      /* and the page follows it down, so the list is not opened off-screen */
+      setTimeout(()=>{
+        try{
+          const r=log.getBoundingClientRect();
+          const over=r.bottom-(innerHeight-90);
+          if(over>0) scrollBy({top:Math.min(over+12,260),behavior:'smooth'});
+        }catch(e){}
+      },120);
+    }else{
+      const h=log.scrollHeight;
+      cls(bar,'on',false);
+      log.style.overflow='hidden';
+      const a=log.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0}],
+        {duration:260,easing:'cubic-bezier(.4,0,.2,1)'});
+      a.onfinish=()=>{ log.hidden=true; log.style.overflow=''; log.style.height=''; };
+      setTimeout(()=>{ log.hidden=true; log.style.overflow=''; },500);
+    }
   });
   q('#walRevGo').addEventListener('click',()=>{
     if(q('#walReveal').classList.contains('asking')) askYes(); else closeReveal();
@@ -13857,7 +14342,6 @@ function renderHomeWallet(){
       '<div class="walmilebar sm"><i style="width:'+(k*100).toFixed(1)+'%"></i></div>'+
       '<div class="walhomefoot">'+
         '<span>'+(w.streak? w.streak+'-day streak' : 'No streak')+'</span>'+
-        '<span>'+(open? open+(open===1?' task open':' tasks open') : 'Nothing open today')+'</span>'+
         '<span>'+esc2(money(Math.max(0,n.amt-w.bal)))+' to '+esc2(money(n.amt))+'</span>'+
       '</div>'+
     '</button>';
@@ -14245,6 +14729,291 @@ safe(()=>{
   window.renderSettings=function(){ const r=o.apply(this,arguments); safe(paint); return r; };
 });
 setTimeout(()=>safe(paint),1800);
+
+})();
+</script>
+
+<script id="polish-js-18">
+/* ===========================================================
+   THE CLOCK
+   A task can be given a start time, and a task is half an hour, so the end
+   follows from it. The time is set on a dial rather than in a field: tap the
+   hour, tap the minute, or drag the hand round. Nothing is typed.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards clock',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+const el=(t,c,h)=>{ const n=document.createElement(t); if(c) n.className=c; if(h!=null) n.innerHTML=h; return n; };
+const two=n=>String(n).padStart(2,'0');
+
+let clkId=null, clkH=9, clkM=0, clkPM=false, clkStage='h';
+
+function build(){
+  if(q('#walClock')) return;
+  const sh=el('div','sheet igpop');
+  sh.id='walClock';
+  sh.innerHTML=
+    '<i class="grabber"></i><h3>Start time</h3>'+
+    '<div class="clkhead">'+
+      '<button class="clkpart" id="clkHb" data-part="h">09</button>'+
+      '<span class="clksep">:</span>'+
+      '<button class="clkpart" id="clkMb" data-part="m">00</button>'+
+      '<div class="clkap" id="clkAp">'+
+        '<button data-ap="0">AM</button><button data-ap="1">PM</button></div>'+
+    '</div>'+
+    '<div class="clkends" id="clkEnds"></div>'+
+    '<div class="clkdial" id="clkDial">'+
+      '<div class="clkface" id="clkFace">'+
+        '<i class="clkhand" id="clkHand"><b></b></i>'+
+        '<i class="clkpin"></i>'+
+        '<div class="clknums" id="clkNums"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="sheet-actions">'+
+      '<button class="btn ghost" id="clkNone">No time</button>'+
+      '<button class="btn" id="clkSave">Set</button>'+
+    '</div>';
+  document.body.appendChild(sh);
+
+  q('#clkHb').addEventListener('click',()=>stage('h'));
+  q('#clkMb').addEventListener('click',()=>stage('m'));
+  q('#clkAp').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    clkPM=b.dataset.ap==='1'; paint(); hap(6);
+  });
+  q('#clkNone').addEventListener('click',()=>set(null));
+  q('#clkSave').addEventListener('click',()=>set(mins()));
+
+  /* the dial takes a tap or a drag, and reads the angle either way */
+  const face=q('#clkFace');
+  let down=false;
+  const at=e=>{
+    const r=face.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2);
+    let a=Math.atan2(dx,-dy)*180/Math.PI;
+    if(a<0) a+=360;
+    const step=Math.round(a/30)%12;
+    if(clkStage==='h'){
+      const h=step===0?12:step;
+      if(h!==clkH){ clkH=h; hap(4); }
+    }else{
+      const m=(step*5)%60;
+      if(m!==clkM){ clkM=m; hap(4); }
+    }
+    paint();
+  };
+  face.addEventListener('pointerdown',e=>{
+    down=true; face.setPointerCapture&&face.setPointerCapture(e.pointerId); at(e); e.preventDefault();
+  });
+  face.addEventListener('pointermove',e=>{ if(down) at(e); });
+  ['pointerup','pointercancel'].forEach(t=>face.addEventListener(t,()=>{
+    if(!down) return;
+    down=false;
+    if(clkStage==='h') setTimeout(()=>stage('m'),160);   /* hour first, then minutes */
+  }));
+
+  safe(()=>{ if(Array.isArray(BACK_SHEETS)) BACK_SHEETS.unshift(['#walClock',close]); });
+}
+
+const mins=()=>(((clkH%12)+(clkPM?12:0))*60+clkM)%1440;
+
+function nums(){
+  const host=q('#clkNums'); if(!host) return;
+  const list=[];
+  for(let i=0;i<12;i++){
+    const a=i*30, r=38;      /* the same radius the hand reaches */
+    const x=50+r*Math.sin(a*Math.PI/180), y=50-r*Math.cos(a*Math.PI/180);
+    const label = clkStage==='h' ? (i===0?12:i) : two((i*5)%60);
+    const on = clkStage==='h' ? (clkH%12)===(i%12) : clkM===((i*5)%60);
+    list.push('<span class="clknum'+(on?' on':'')+'" style="left:'+x.toFixed(2)+'%;top:'+y.toFixed(2)+'%">'+
+      label+'</span>');
+  }
+  host.innerHTML=list.join('');
+}
+function paint(){
+  const hb=q('#clkHb'), mb=q('#clkMb');
+  if(hb) hb.textContent=two(clkH);
+  if(mb) mb.textContent=two(clkM);
+  cls(hb,'on',clkStage==='h'); cls(mb,'on',clkStage==='m');
+  qa('#clkAp button').forEach(b=>cls(b,'on',(b.dataset.ap==='1')===clkPM));
+  const hand=q('#clkHand');
+  if(hand){
+    const a = clkStage==='h' ? (clkH%12)*30 : (clkM/5)*30;
+    hand.style.transform='rotate('+a+'deg)';
+  }
+  const ends=q('#clkEnds');
+  if(ends && typeof clockLabel==='function'){
+    const s=mins();
+    ends.innerHTML='<b>'+clockLabel(s)+'</b><span>to</span><b>'+clockLabel((s+30)%1440)+'</b>'+
+      '<i>half an hour</i>';
+  }
+  nums();
+}
+function stage(s){
+  clkStage=s; paint(); hap(6);
+}
+function open(id){
+  build();
+  let m=9*60;
+  if(id==null){
+    /* the task being typed has no record yet: the time is held until it does */
+    clkId=null;
+    const held = (typeof window.walGetAddTime==='function')? window.walGetAddTime() : null;
+    if(held!=null) m=held;
+  }else{
+    const w=S.wallet, t=(w&&w.tasks||[]).find(x=>x.id===id);
+    if(!t) return;
+    clkId=id;
+    if(t.time!=null) m=t.time;
+  }
+  clkPM = m>=720;
+  clkH = ((Math.floor(m/60)+11)%12)+1;
+  clkM = Math.round((m%60)/5)*5%60;
+  clkStage='h';
+  paint();
+  q('#scrim').classList.add('on','high');
+  q('#walClock').classList.add('on');
+  hap(8);
+}
+function close(){
+  const sh=q('#walClock'); if(!sh) return;
+  sh.classList.remove('on');
+  if(!q('.sheet.on')) q('#scrim').classList.remove('on','high');
+}
+function set(v){
+  if(clkId==null){
+    if(typeof window.walSetAddTime==='function') window.walSetAddTime(v);
+    try{ toast(v==null?'Time cleared':'Starts '+clockLabel(((v%1440)+1440)%1440)); }catch(e){}
+    close(); hap(10);
+    return;
+  }
+  const w=S.wallet, t=(w&&w.tasks||[]).find(x=>x.id===clkId);
+  if(t){
+    t.time = v==null ? null : ((v%1440)+1440)%1440;
+    try{ saveSettings(); }catch(e){}
+    /* the row has to show the new time at once: these are reached through the
+       window, since this block cannot see inside the wallet's own scope */
+    try{ if(typeof window.renderTasks==='function') window.renderTasks(); }catch(e){}
+    try{ if(typeof window.renderWallet==='function') window.renderWallet(); }catch(e){}
+    try{ toast(v==null?'Time cleared':'Starts '+clockLabel(t.time)); }catch(e){}
+  }
+  close(); hap(10);
+}
+window.walClock=open;
+safe(build);
+
+})();
+</script>
+
+<script id="polish-js-20">
+/* ===========================================================
+   THE WAY IN, THE DIAL, AND THE TASKS
+   The tabs come off both pages; the top bar carries the way between them.
+   The dial is rebuilt to be read at arm's length. The task rows are laid out
+   so a time, a title and a payout can sit on one line without piling up.
+   =========================================================== */
+(function(){
+'use strict';
+const q=(s,r)=>(r||document).querySelector(s);
+const qa=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const cls=(el,n,on)=>{ if(el && el.classList.contains(n)!==!!on) el.classList.toggle(n,!!on); };
+const safe=fn=>{ try{ return fn(); }catch(err){ console.warn('Onwards',err); } };
+const hap=v=>{ try{ buzz(v); }catch(e){} };
+
+/* ---------- the pill goes ---------- */
+safe(()=>{
+  /* taken out of the page rather than hidden: a later rule kept winning the
+     argument about display, and there is nothing for it to do now */
+  const kill=()=>{
+    const p=q('#walTabs'); if(p) p.remove();
+    const h=q('#walTabsHost'); if(h) h.remove();
+  };
+  kill();
+  const o=window.showView;
+  if(typeof o==='function') window.showView=function(){ const r=o.apply(this,arguments); safe(kill); return r; };
+  setInterval(kill,4000);
+});
+
+/* ---------- the top bar takes you across ---------- */
+/* drawn to the same hand as the icons in the bottom bar: one weight, round
+   ends, nothing filled */
+const ICON_WALLET='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" '+
+  'stroke-linecap="round" stroke-linejoin="round">'+
+  '<path d="M20 9V7.6A2.6 2.6 0 0 0 17.4 5H5.6A2.6 2.6 0 0 0 3 7.6v8.8A2.6 2.6 0 0 0 5.6 19h11.8'+
+  'A2.6 2.6 0 0 0 20 16.4V15"/>'+
+  '<path d="M21 9.4v5.2a.9.9 0 0 1-.9.9h-3.3a3.5 3.5 0 0 1 0-7h3.3a.9.9 0 0 1 .9.9Z"/>'+
+  '<path d="M16.9 12.5h.01"/></svg>';
+safe(()=>{
+  const btn=q('#themeBtn'); if(!btn) return;
+  const go=e=>{
+    e.preventDefault(); e.stopImmediatePropagation();
+    if((q('.view.active')||{}).id==='v-wallet') return;
+    hap(8);
+    showView('wallet');
+  };
+  btn.addEventListener('click',go,true);
+  btn.setAttribute('aria-label','Wallet');
+  const paint=()=>{
+    const onWallet=(q('.view.active')||{}).id==='v-wallet';
+    /* the app writes the moon or the sun into #themeIcon whenever it applies
+       the look, so that element stays where it is, out of sight, and the new
+       icon sits beside it. Taking it away stopped the app dead. */
+    btn.innerHTML='<svg id="themeIcon" viewBox="0 0 24 24" hidden aria-hidden="true"></svg>'+ICON_WALLET;
+    btn.setAttribute('aria-label','Wallet');
+    /* on the wallet itself there is nowhere for it to go: the tab bar and the
+       back gesture are the way out */
+    btn.hidden=onWallet;
+    cls(btn,'pl-walletbtn',true);
+  };
+  paint();
+  const o=window.showView;
+  if(typeof o==='function') window.showView=function(){ const r=o.apply(this,arguments); requestAnimationFrame(paint); return r; };
+  /* the app rewrites this icon whenever the theme is applied */
+  const o2=window.applySettings;
+  if(typeof o2==='function') window.applySettings=function(){ const r=o2.apply(this,arguments); requestAnimationFrame(paint); return r; };
+});
+
+/* ---------- a sheet over a full page must not leave the dark behind ---------- */
+safe(()=>{
+  const scrim=q('#scrim'); if(!scrim) return;
+  const tidy=()=>{
+    const open=qa('.sheet.on');
+    const small=open.filter(s=>!s.classList.contains('fullsheet'));
+    if(!small.length){
+      cls(scrim,'high',false);
+      if(!open.length) cls(scrim,'on',false);
+      else cls(scrim,'on',false);      /* a full page covers the screen itself */
+    }
+  };
+  new MutationObserver(tidy).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
+  setInterval(tidy,1500);
+  tidy();
+});
+
+/* ---------- the balance is the page, so it is sized to fit ---------- */
+function fitBalance(){
+  const b=q('#walBal'); if(!b) return;
+  const wrap=b.parentElement; if(!wrap) return;
+  /* measured as a line of type rather than as a block: a block reports the
+     width it was given, not the width the figure actually needs, which is why
+     the balance kept shrinking itself to nothing */
+  b.style.fontSize='';
+  b.style.display='inline-block';
+  const room=wrap.clientWidth-1;
+  const base=parseFloat(getComputedStyle(b).fontSize)||60;
+  const w=b.getBoundingClientRect().width;
+  if(w>room && w>0) b.style.fontSize=Math.max(26,Math.floor(base*room/w))+'px';
+  b.style.display='';
+}
+safe(()=>{
+  const o=window.renderWallet;
+  if(typeof o==='function') window.renderWallet=function(){ const r=o.apply(this,arguments); requestAnimationFrame(fitBalance); return r; };
+  addEventListener('resize',()=>safe(fitBalance),{passive:true});
+});
 
 })();
 </script>
