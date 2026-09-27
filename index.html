@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#191919">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -35,7 +35,7 @@
   --spring:cubic-bezier(.34,1.4,.64,1);
 }
 html[data-theme="dark"]{
-  --bg:#000000; --bg-2:#090909; --surf:#111111; --surf-2:#1A1A1A;
+  --bg:#191919; --bg-2:#191919; --surf:#222222; --surf-2:#2A2A2A;
   --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
   --ink:#F5F5F5; --ink-2:#A1A1A1; --ink-3:#6E6E6E;
   --tint:rgba(255,255,255,.045); --cell:rgba(255,255,255,.06); --well:inset 0 1px 2px rgba(0,0,0,.5);
@@ -96,7 +96,7 @@ html.barhidden .topbar{transform:translate3d(0,-101%,0)}
 /* the day strip travels with the bar: up by its own height plus the bar's,
    which puts its lower edge exactly on the top of the screen */
 html.barhidden .stripwrap{
-  transform:translate3d(0,calc(-100% - var(--barh,58px)),0)}
+  transform:translate3d(0,calc(-100% - var(--barh,0px)),0)}
 .iconbtn{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--ink-2);
   transition:transform .2s var(--spring),color .2s,background .2s}
 .iconbtn:active{transform:scale(.88);background:var(--tint)}
@@ -287,7 +287,7 @@ html.barhidden .stripwrap{
 
 /* ---------- plan ---------- */
 
-.stripwrap{position:sticky;top:var(--barh,calc(58px + env(safe-area-inset-top)));z-index:30;
+.stripwrap{position:sticky;top:var(--barh,env(safe-area-inset-top));z-index:30;
   transform:translate3d(0,0,0);transition:transform .3s var(--ease);
   margin:0 -20px 22px;padding:14px 20px 13px;background:var(--bg)}
 .stripwrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
@@ -301,7 +301,7 @@ html.barhidden .stripwrap{
    Its own dark palette, because this page is not the app: it is
    the place the app is pointing at.
    =========================================================== */
-#v-vision{--ig-bg:#000;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
+#v-vision{--ig-bg:#191919;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
   --ig-fill:#262626;--ig-blue:#4F46E5;--ig-verified:#3897F0;
   padding-left:0;padding-right:0;color:var(--ig-ink)}
 #v-vision.active{padding-bottom:8px}
@@ -394,7 +394,7 @@ html.barhidden .stripwrap{
 
 /* ---------- the grid ---------- */
 .iggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding-top:2px}
-.igtile{position:relative;aspect-ratio:3/4;overflow:hidden;background:#121212;
+.igtile{position:relative;aspect-ratio:3/4;overflow:hidden;background:#222222;
   animation:fadeIn .4s var(--ease) both}
 .igtile img{width:100%;height:100%;object-fit:cover;display:block}
 .igtile:active img{filter:brightness(.82)}
@@ -434,7 +434,7 @@ html.barhidden .stripwrap{
 /* ---------- the carousel: swiped, snapped, counted ---------- */
 /* every photo in a post shares the post's frame, so a swipe never resizes it.
    The frame is square-cornered and runs the full width of the post column. */
-.igcar{position:relative;margin:0;border-radius:0;overflow:hidden;background:#0C0C0C;
+.igcar{position:relative;margin:0;border-radius:0;overflow:hidden;background:#222222;
   max-height:76vh}
 .igtrack{display:flex;height:100%;overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
@@ -684,7 +684,7 @@ html.barhidden .stripwrap{
 .vlock .lockwhy{max-width:30ch;margin:0 auto 26px;font-size:14px;line-height:1.45;color:var(--ig-dim)}
 .vlock .input,.vlock .btn{max-width:290px;margin-left:auto;margin-right:auto}
 .vlock .input{margin-bottom:11px;height:46px;border-radius:11px;font-size:15px;
-  background:#121212;border:1px solid var(--ig-line);box-shadow:none;color:var(--ig-ink)}
+  background:#222222;border:1px solid var(--ig-line);box-shadow:none;color:var(--ig-ink)}
 .vlock .input:focus{border-color:#4a4a4a;box-shadow:none}
 .vlock .input::placeholder{color:var(--ig-dim)}
 .vlock .btn{height:46px;border-radius:9px;font-size:14.5px;font-weight:600;letter-spacing:0;
@@ -700,9 +700,9 @@ html.barhidden .stripwrap{
    The Vision lock, standing in front of the whole app. It reuses .vlock
    whole; all it adds is the full-screen backdrop and the same palette
    variables, which were scoped to the Vision page. */
-#applock{position:fixed;inset:0;z-index:100;background:#000;color:#F5F5F5;
+#applock{position:fixed;inset:0;z-index:100;background:#191919;color:#F5F5F5;
   color-scheme:dark;overflow-y:auto;
-  --ig-bg:#000;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
+  --ig-bg:#191919;--ig-ink:#F5F5F5;--ig-dim:#A8A8A8;--ig-line:#262626;
   --ig-blue:#4F5BF7;--ig-fill:#1A1A1A}
 #applock[hidden]{display:none}
 #applock .vlock{min-height:100%;min-height:100dvh}
@@ -736,7 +736,7 @@ html.locked,html.locked body{overflow:hidden}
 .lbimg.ease{transition:transform .28s var(--ease)}
 .lbq{position:relative;overflow:hidden;width:100%;padding:36px 30px;border-radius:22px;
   background:radial-gradient(88% 72% at 8% 0%,color-mix(in srgb,var(--c) 46%,transparent),transparent 70%),
-             linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#0C0C0C),#0C0C0C 88%);
+             linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#222222),#222222 88%);
   border:1px solid color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.08))}
 .lbq .t{font-family:var(--display);font-size:27px;font-weight:500;letter-spacing:-.035em;line-height:1.28;color:#fff}
 .lbq .a{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
@@ -1161,16 +1161,16 @@ html.igskin,.igpop{
   --r-lg:16px; --r-md:12px;
 }
 html[data-theme="dark"].igskin,html[data-theme="dark"] .igpop{
-  --bg:#000000; --bg-2:#000000; --surf:#000000; --surf-2:#000000;
+  --bg:#191919; --bg-2:#191919; --surf:#191919; --surf-2:#191919;
   --line:#262626; --line-2:#3A3A3C;
   --ink:#FFFFFF; --ink-2:#A8A8A8; --ink-3:#737373;
   --tint:rgba(255,255,255,.07); --cell:#2C2C2E; --well:none;
   --acc:#4F5BF7;
-  --ig-sheet:#1C1C1E;          /* in Dark a sheet lifts off the black page */
-  --ig-fill:#262626;
-  --ig-fill-2:#1C1C1E;
-  --ig-band:#121212;
-  --ig-hair:#262626;
+  --ig-sheet:#242424;          /* in Dark a sheet lifts off the page */
+  --ig-fill:#2A2A2A;
+  --ig-fill-2:#222222;
+  --ig-band:#1F1F1F;
+  --ig-hair:#2E2E2E;
   --ig-blue:#4F5BF7; --ig-blue-2:#4048C8; --ig-blue-soft:#2B2E63;
   --ig-red:#ED4956; --sun:#FF6B61; --ig-purple:#6C77FF;
 }
@@ -1456,14 +1456,14 @@ main:focus-visible,.view:focus-visible{outline:none}
 .lbx svg{width:20px;height:20px;stroke-width:2}
 
 /* the PDF reader */
-.pdfbox{background:#000}
-.pdfbar{background:#000;border-bottom:1px solid #262626;gap:4px}
+.pdfbox{background:#191919}
+.pdfbar{background:#191919;border-bottom:1px solid #262626;gap:4px}
 .pdfbar .nm{font-family:var(--ui);font-size:16px;font-weight:600;letter-spacing:-.015em;color:#fff}
 .pdfbtn{width:36px;height:36px;border-radius:50%;background:transparent;color:#fff}
 .pdfbtn:active{transform:none;background:rgba(255,255,255,.14)}
 .pdfbtn svg{width:18px;height:18px;stroke-width:2}
 .pdfz{font-family:var(--ui);font-size:13px;font-weight:500;letter-spacing:0;color:#A8A8A8}
-.pdfstage,.pdfstage iframe{background:#000}
+.pdfstage,.pdfstage iframe{background:#191919}
 .pdffall h4{font-family:var(--ui);font-size:19px;font-weight:700;letter-spacing:-.025em}
 .pdffall p{font-size:15px;line-height:1.45;color:#A8A8A8}
 .pdffall .btn{height:50px;border-radius:12px;font-size:16px;font-weight:600;
@@ -2306,6 +2306,14 @@ html.igskin #v-notes{--display:var(--ui)}
   #v-today.active::before{display:none}
   #v-today .tcol{max-width:640px;margin:0 auto}
 }
+
+/* ---------- no top bar ----------
+   Every page opens straight onto its own content; a little room is kept
+   above it so nothing presses against the phone's status bar. */
+.app{padding-top:calc(env(safe-area-inset-top) + 14px)}
+#fsBtn{flex:0 0 auto}
+/* the links under the quote follow it directly, with no rule between */
+#tSide>section.gosec,html.igskin #tSide>section.gosec{border-top:0}
 </style>
 <script>
 /* the accent and theme are kept outside the database as well, because the title
@@ -2888,7 +2896,7 @@ html.igskin .dn{
   background:var(--ig-fill-2);border-radius:16px;overflow:hidden;
   box-shadow:inset 0 0 0 1px var(--ig-hair);
   transition:scale .45s var(--pl-soft),background .2s var(--ease)}
-html[data-theme="dark"].igskin .dn{background:#121212;box-shadow:inset 0 0 0 1px #1F1F1F}
+html[data-theme="dark"].igskin .dn{background:#222222;box-shadow:inset 0 0 0 1px #2C2C2C}
 html.igskin .dn:active{scale:.985;opacity:1;background:var(--ig-fill)}
 html.igskin .dn-head{padding:14px 15px 5px;align-items:baseline;gap:10px}
 html.igskin .dn-title{font-size:16.5px;font-weight:700;letter-spacing:-.025em;
@@ -2974,7 +2982,7 @@ html.igskin .hrcard img,html.igskin .hrcell img{image-rendering:auto}
 /* ---------- how much room is left ---------- */
 .dbroom{margin:0 0 20px;padding:15px 16px 16px;border-radius:var(--pl-card,18px);
   background:var(--ig-fill-2);box-shadow:inset 0 0 0 1px var(--ig-hair)}
-html[data-theme="dark"] .dbroom{background:#111;box-shadow:inset 0 0 0 1px #1F1F1F}
+html[data-theme="dark"] .dbroom{background:#222222;box-shadow:inset 0 0 0 1px #2C2C2C}
 .dbroomtop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .dbroomtop span{font-size:12.5px;font-weight:700;letter-spacing:.01em;color:var(--ink-3)}
 .dbroomtop b{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
@@ -3039,19 +3047,6 @@ html.igskin .hrcard img,html.igskin .hrcard::after{
 </div>
 
 <div class="app">
-  <header class="topbar" id="topbar">
-    <span class="barside"></span>
-    <h1 class="wordmark">Onwards</h1>
-    <span class="barside right">
-      <button class="iconbtn fsbtn" id="fsBtn" aria-label="Full screen" hidden>
-        <svg viewBox="0 0 24 24" id="fsIcon"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
-      </button>
-      <button class="iconbtn" id="themeBtn" aria-label="Switch theme">
-        <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      </button>
-    </span>
-  </header>
-
   <main>
     <!-- ===== TODAY =====
          The first thing you see. It answers three things in one screen: what
@@ -3397,6 +3392,15 @@ html.igskin .hrcard img,html.igskin .hrcard::after{
               <div class="seg-ctrl" id="themeCtrl">
                 <button data-t="auto">Auto</button><button data-t="light">Light</button><button data-t="dark">Dark</button>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="group" id="fsGroup" hidden>
+          <span class="eyebrow">Screen</span>
+          <div class="panel">
+            <div class="srow">
+              <div class="t"><div class="n">Full screen</div></div>
+              <button class="switch" id="fsBtn" role="switch" aria-label="Full screen"></button>
             </div>
           </div>
         </div>
@@ -5590,7 +5594,6 @@ $$('.tab').forEach(t=>t.addEventListener('click',()=>{
   const nowTheme=wantDark?'dark':resolvedTheme();
   const swap=()=>{
     visionDark=wantDark;
-    $('#themeBtn').hidden=wantDark;
     /* the profile carries its own bar, so the app's steps out of its way */
     document.querySelector('.app').classList.toggle('onvision',wantDark);
     applySettings();
@@ -5630,7 +5633,6 @@ function barScroll(){
 addEventListener('scroll',()=>{
   /* one decision a frame, so a fast flick cannot thrash the class */
   if(!barTick){ barTick=true; requestAnimationFrame(barScroll); }
-  $('#topbar').classList.toggle('stuck',scrollY>6);
   const bar=$('.igtop');
   if(bar) bar.classList.toggle('stuck',scrollY>4);
   /* past the profile buttons the bar takes the Follow over, as Instagram's does */
@@ -5638,11 +5640,6 @@ addEventListener('scroll',()=>{
   if(b) b.classList.toggle('scrolled',!feedOn && scrollY>210);
 },{passive:true});
 
-$('#themeBtn').addEventListener('click',()=>{
-  visionDark=false;
-  S.theme = resolvedTheme()==='dark'?'light':'dark';
-  applySettings(); saveSettings(); renderSettings(); buzz(8);
-});
 $('#themeCtrl').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   S.theme=b.dataset.t; applySettings(); saveSettings(); renderSettings();
@@ -5653,15 +5650,11 @@ const fsOn=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
 const fsSupported=()=>!!(fsRoot().requestFullscreen||fsRoot().webkitRequestFullscreen);
 function paintFs(){
   const ok=fsSupported(), on=fsOn();
-  const icon = on
-    ? '<path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5"/>'
-    : '<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/>';
-  const label=on?'Leave full screen':'Full screen';
-  const b=$('#fsBtn');
+  const b=$('#fsBtn'), g=$('#fsGroup');
+  if(g) g.hidden=!ok;
   if(b){
-    b.hidden=!ok; b.classList.toggle('live',on);
-    b.setAttribute('aria-label',label);
-    $('#fsIcon').innerHTML=icon;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-checked',on?'true':'false');
   }
 }
 async function toggleFs(){
@@ -5737,14 +5730,14 @@ function applySettings(){
   document.documentElement.dataset.theme=t;
   document.documentElement.style.setProperty('--acc',S.accent);
   cacheLook();
-  $('#themeIcon').innerHTML = t==='dark'
+  if($('#themeIcon')) $('#themeIcon').innerHTML = t==='dark'
     ? '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
   /* Study and Settings paint Instagram's white, so the bar above the page
      follows them there rather than staying on the app's own paper colour */
   const m=document.querySelector('meta[name=theme-color]');
   const ig=document.documentElement.classList.contains('igskin');
-  if(m) m.setAttribute('content', t==='dark' ? '#000000' : (ig?'#FFFFFF':'#F4F4F3'));
+  if(m) m.setAttribute('content', t==='dark' ? '#191919' : (ig?'#FFFFFF':'#F4F4F3'));
 }
 /* the first frame paints before the database answers, so what it needs to look
    right is mirrored into localStorage, which is there immediately */
@@ -5756,7 +5749,7 @@ function cacheLook(){
     localStorage.setItem('dayflow.applock',appLockOn()?'1':'0');
   }catch(e){}
 }
-const THEME_BG={dark:'#000000',light:'#F4F4F3'};
+const THEME_BG={dark:'#191919',light:'#F4F4F3'};
 const sweepBG=t=>(t==='light'&&document.documentElement.classList.contains('igskin'))
   ? '#FFFFFF' : THEME_BG[t];
 function themeSweep(to,origin,atCover){
@@ -6020,8 +6013,8 @@ function buildFallbackManifest(){
     start_url:href, scope:href.replace(/[^/]*$/,''),
     display:'standalone', display_override:['standalone','minimal-ui'],
     orientation:'any',
-    background_color:'#000000',
-    theme_color: resolvedTheme()==='dark' ? '#000000' : '#FFFFFF',
+    background_color:'#191919',
+    theme_color: resolvedTheme()==='dark' ? '#191919' : '#FFFFFF',
     categories:['productivity','lifestyle'],
     icons:[
       {src:ICON_192, sizes:'192x192', type:'image/png', purpose:'any'},
@@ -6965,7 +6958,7 @@ wrap('hideAppLock',ctx=>{
   if(!lock || lock.hidden) return null;
   const veil=document.createElement('div');
   veil.setAttribute('aria-hidden','true');
-  veil.style.cssText='position:fixed;inset:0;z-index:101;background:#000;pointer-events:none';
+  veil.style.cssText='position:fixed;inset:0;z-index:101;background:#191919;pointer-events:none';
   document.body.appendChild(veil);
   return veil;
 });
